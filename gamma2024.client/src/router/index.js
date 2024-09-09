@@ -1,34 +1,29 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomePage from '@/views/Home.vue'
-import LoginPage from '@/views/Login.vue' // Assurez-vous d'avoir créé ce composant
+import Accueil from '@/views/Accueil.vue'
+import Connexion from '@/views/Connexion.vue' // Assurez-vous d'avoir créé ce composant
 
 const routes = [
-  {
-    path: '/',
-    name: 'Home',
-    component: HomePage
-  },
-  {
-    path: '/home',
-    name: 'HomePage',
-    component: HomePage
-  },
-  {
-    path: '/login',
-    name: 'Login',
-    component: LoginPage
-  },
-  {
-    path: '/login',
-    name: 'LoginPage',
-    component: LoginPage
-  }
-  // ... autres routes
+    {
+        path: '/',
+        name: 'Accueil',
+        component: Accueil
+    },
+    {
+        path: '/accueil',
+        name: 'AccueilPage',
+        component: Accueil
+    },
+    {
+        path: '/connexion',
+        name: 'Connexion',
+        component: Connexion
+    }
+    // ... autres routes
 ]
 
 const router = createRouter({
-  history: createWebHistory(),
-  routes
+    history: createWebHistory(),
+    routes
 })
 
 export default router
