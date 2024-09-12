@@ -7,7 +7,7 @@ namespace Gamma2024.Server.Models{
     public string MotPasse { get; set; } = null!;
     public string Avatar { get; set; } = null!;
     
-    public  Client Client { get; set; } = null!;
-    public  Administrateur Administrateur { get; set; } = null!;
+    public string? ApplicationUserId { get; set; }
+    public ApplicationUser? ApplicationUser { get; set; }
 }
 }

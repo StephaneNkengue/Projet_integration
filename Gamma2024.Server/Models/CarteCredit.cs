@@ -7,9 +7,9 @@ namespace Gamma2024.Server.Models{
     public string CVV { get; set; } = null!;
     public int MoisExpiration { get; set; }
     public int AnneeExpiration { get; set; }
-    public int IdClient { get; set; }
+    public string IdClient { get; set; } = null!;
     
-    public  Client Client { get; set; } = null!;
+    public  ApplicationUser Client { get; set; } = null!;
 
 }
 }

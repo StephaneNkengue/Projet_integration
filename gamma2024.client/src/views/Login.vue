@@ -12,6 +12,8 @@
       </div>
       <button type="submit">Se connecter</button>
     </form>
+    <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
+    <p v-if="successMessage" class="success-message">{{ successMessage }}</p>
   </div>
 </template>
 
@@ -20,25 +22,32 @@ export default {
   data() {
     return {
       email: '',
-      password: ''
+      password: '',
+      errorMessage: '',
+      successMessage: ''
     }
   },
   methods: {
-    login() {
-      // Utilisateur fictif pour le test
-      const fakeUser = {
-        email: 'test@example.com',
-        password: 'password123'
-      }
-
-      if (this.email === fakeUser.email && this.password === fakeUser.password) {
-        // Connexion réussie
-        this.$store.dispatch('login', { email: this.email })
-        alert('Connexion réussie !')
-        this.$router.push('/') // Redirection vers la page d'accueil
-      } else {
-        // Échec de la connexion
-        alert('Email ou mot de passe incorrect')
+    async login() {
+      try {
+        const result = await this.$store.dispatch('login', { 
+          email: this.email, 
+          password: this.password
+        })
+        if (result.success) {
+          this.successMessage = `Connexion réussie en tant que ${result.roles.join(', ')}` 
+          this.errorMessage = ''
+          // Redirection après un court délai
+          setTimeout(() => {
+            this.$router.push('/')
+          }, 2000)
+        } else {
+          this.errorMessage = result.error
+          this.successMessage = ''
+        }
+      } catch (error) {
+        this.errorMessage = "Erreur lors de la connexion"
+        this.successMessage = ''
       }
     }
   }
@@ -87,5 +96,15 @@ button {
 
 button:hover {
   background-color: #369f6b;
+}
+
+.error-message {
+  color: red;
+  margin-top: 10px;
+}
+
+.success-message {
+  color: green;
+  margin-top: 10px;
 }
 </style>

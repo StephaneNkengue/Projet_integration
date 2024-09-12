@@ -7,7 +7,8 @@ namespace Gamma2024.Server.Data
 {
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+            : base(options)
         {
         }
 
@@ -22,23 +23,62 @@ namespace Gamma2024.Server.Data
         public DbSet<Administrateur> Administrateurs { get; set; } = default!;
         public DbSet<Personne> Personnes { get; set; } = default!;
         public DbSet<Compte> Comptes { get; set; } = default!;
-        public DbSet<CarteCredit> CartesCredit { get; set; } = default!;
+        public DbSet<CarteCredit> CartesCredits { get; set; } = default!;
         public DbSet<Adresse> Adresses { get; set; } = default!;
+        public DbSet<Medium> Mediums { get; set; } = default!;
+        public DbSet<Charite> Charites { get; set; } = default!;
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
 
-            // Configurations des relations
             ConfigureRelationships(builder);
-
-            // Création des rôles et utilisateurs
             CreateRolesAndUsers(builder);
         }
 
         private void ConfigureRelationships(ModelBuilder builder)
         {
-            
+            // Compte
+            builder.Entity<Compte>()
+                .HasOne(c => c.ApplicationUser)
+                .WithOne()
+                .HasForeignKey<Compte>(c => c.ApplicationUserId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // ApplicationUser
+            builder.Entity<ApplicationUser>()
+                .HasOne(au => au.Personne)
+                .WithOne()
+                .HasForeignKey<ApplicationUser>(au => au.PersonneId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            // Vendeur
+            builder.Entity<Vendeur>()
+                .HasOne(v => v.Personne)
+                .WithOne(p => p.Vendeur)
+                .HasForeignKey<Vendeur>(v => v.IdPersonne)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            // Lot
+            builder.Entity<Lot>()
+                .HasOne(l => l.Categorie)
+                .WithMany(c => c.Lots)
+                .HasForeignKey(l => l.IdCategorie)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            builder.Entity<Lot>()
+                .HasOne(l => l.ClientMise)
+                .WithMany()
+                .HasForeignKey(l => l.IdClientMise)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            builder.Entity<Lot>()
+                .HasOne(l => l.Vendeur)
+                .WithMany(v => v.Lots)
+                .HasForeignKey(l => l.IdVendeur)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            // EncanLot
             builder.Entity<EncanLot>()
                 .HasKey(el => new { el.NumeroEncan, el.IdLot });
 
@@ -50,121 +90,202 @@ namespace Gamma2024.Server.Data
             builder.Entity<EncanLot>()
                 .HasOne(el => el.Lot)
                 .WithMany(l => l.EncanLots)
-                .HasForeignKey(el => el.IdLot);
+                .HasForeignKey(el => el.IdLot)
+                .OnDelete(DeleteBehavior.NoAction);
 
-            builder.Entity<EncanLot>()
-            .HasOne(el => el.Encan)
-            .WithMany()
-            .HasForeignKey(el => el.NumeroEncan)
-            .OnDelete(DeleteBehavior.NoAction);
+            // Facture
+            builder.Entity<Facture>()
+                .HasOne(f => f.Lot)
+                .WithMany()
+                .HasForeignKey(f => f.IdLot)
+                .OnDelete(DeleteBehavior.NoAction);
 
-            builder.Entity<EncanLot>()
-                        .HasOne(el => el.Lot)
-                        .WithMany()
-                        .HasForeignKey(el => el.IdLot)
-                        .OnDelete(DeleteBehavior.NoAction);
+            builder.Entity<Facture>()
+                .HasOne(f => f.Adresse)
+                .WithMany(a => a.Factures)
+                .HasForeignKey(f => f.IdAdresse)
+                .OnDelete(DeleteBehavior.NoAction);
 
-            builder.Entity<Lot>()
-                        .HasOne(l => l.Categorie)
-                        .WithMany(c => c.Lots)
-                        .HasForeignKey(l => l.IdCategorie)
-                        .OnDelete(DeleteBehavior.Restrict);
+            // CarteCredit
+            builder.Entity<CarteCredit>()
+                .HasOne(cc => cc.Client)
+                .WithMany(c => c.CarteCredits)
+                .HasForeignKey(cc => cc.IdClient)
+                .OnDelete(DeleteBehavior.NoAction);
 
-            builder.Entity<Lot>()
-                        .HasOne(l => l.Vendeur)
-                        .WithMany(v => v.Lots)
-                        .HasForeignKey(l => l.IdVendeur)
-                        .OnDelete(DeleteBehavior.Restrict);
+            // Adresse
+            builder.Entity<Adresse>()
+                .HasOne(a => a.Personne)
+                .WithMany(p => p.Adresses)
+                .HasForeignKey(a => a.IdPersonne)
+                .OnDelete(DeleteBehavior.NoAction);
 
+            // Photo
             builder.Entity<Photo>()
                 .HasOne(p => p.Lot)
                 .WithMany(l => l.Photos)
                 .HasForeignKey(p => p.IdLot)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            builder.Entity<Administrateur>()
-                .HasOne(a => a.Compte)
-                .WithOne(c => c.Administrateur)
-                .HasForeignKey<Administrateur>(a => a.IdCompte);
+            // Medium
+            builder.Entity<Medium>()
+                .HasMany(m => m.Lots)
+                .WithOne(l => l.Medium)
+                .HasForeignKey(l => l.IdMedium)
+                .OnDelete(DeleteBehavior.Restrict);
 
-            builder.Entity<Client>()
-                .HasOne(c => c.Compte)
-                .WithOne(c => c.Client)
-                .HasForeignKey<Client>(c => c.IdCompte);  
-
-                      
-
-  
-  
-          builder.Entity<Personne>()
-                .HasOne(p => p.Adresse)
-                .WithOne()
-                .HasForeignKey<Adresse>(a => a.IdPersonne)
+            // Charite
+            builder.Entity<Charite>()
+                .HasOne(c => c.Client)
+                .WithOne(cl => cl.Charite)
+                .HasForeignKey<Charite>(c => c.IdClient)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            builder.Entity<Personne>()
-                .HasOne(p => p.Client)
-                .WithOne(c => c.Personne)
-                .HasForeignKey<Client>(c => c.IdPersonne)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            builder.Entity<Personne>()
-                .HasOne(p => p.Vendeur)
-                .WithOne(v => v.Personne)
-                .HasForeignKey<Vendeur>(v => v.IdPersonne)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            builder.Entity<Personne>()
-                .HasOne(p => p.Administrateur)
-                .WithOne()
-                .HasForeignKey<Administrateur>(a => a.IdPersonne)
-                .OnDelete(DeleteBehavior.Cascade);
-            
-
+            builder.Entity<Charite>()
+            .HasOne(c => c.Facture)
+            .WithOne(f => f.Charite)
+            .HasForeignKey<Charite>(c => c.IdFacture)
+            .OnDelete(DeleteBehavior.Cascade);
         }
 
-        private static void CreateRolesAndUsers(ModelBuilder builder)
+        private void CreateRolesAndUsers(ModelBuilder builder)
         {
-            string adminId = "8e445865-a24d-4543-a6c6-9443d048cdb9";
-            string clientId = "1d8ac862-e54d-4f10-b6f8-638808c02967";
+            var adminId = "8e445865-a24d-4543-a6c6-9443d048cdb9";
+            var clientId = "1d8ac862-e54d-4f10-b6f8-638808c02967";
 
             // Création des rôles
-            builder.Entity<IdentityRole>().HasData(
-                new IdentityRole { Id = "1", Name = ApplicationRoles.ADMINISTRATEUR, NormalizedName = ApplicationRoles.ADMINISTRATEUR.ToUpper() },
-                new IdentityRole { Id = "2", Name = ApplicationRoles.CLIENT, NormalizedName = ApplicationRoles.CLIENT.ToUpper() }
-            );
+            string roleIdAdmin = "7da4163f-edb4-47b5-86ea-999999999999";
+            string roleIdClient = "7da4163f-edb4-47b5-86ea-888888888888";
 
-            // Création des utilisateurs
-            var hasher = new PasswordHasher<ApplicationUser>();
-            builder.Entity<ApplicationUser>().HasData(
-                new ApplicationUser
+            builder.Entity<IdentityRole>().HasData(
+                new IdentityRole
                 {
-                    Id = adminId,
-                    UserName = "admin@example.com",
-                    NormalizedUserName = "ADMIN@EXAMPLE.COM",
-                    Email = "admin@example.com",
-                    NormalizedEmail = "ADMIN@EXAMPLE.COM",
-                    EmailConfirmed = true,
-                    PasswordHash = hasher.HashPassword(null, "AdminPass123!"),
-                    SecurityStamp = string.Empty
+                    Name = ApplicationRoles.ADMINISTRATEUR,
+                    NormalizedName = ApplicationRoles.ADMINISTRATEUR.ToUpper(),
+                    Id = roleIdAdmin,
+                    ConcurrencyStamp = roleIdAdmin
                 },
-                new ApplicationUser
+                new IdentityRole
                 {
-                    Id = clientId,
-                    UserName = "client@example.com",
-                    NormalizedUserName = "CLIENT@EXAMPLE.COM",
-                    Email = "client@example.com",
-                    NormalizedEmail = "CLIENT@EXAMPLE.COM",
-                    EmailConfirmed = true,
-                    PasswordHash = hasher.HashPassword(null, "ClientPass123!"),
-                    SecurityStamp = string.Empty
+                    Name = ApplicationRoles.CLIENT,
+                    NormalizedName = ApplicationRoles.CLIENT.ToUpper(),
+                    Id = roleIdClient,
+                    ConcurrencyStamp = roleIdClient
                 }
             );
 
-            // Attribution des rôles aux utilisateurs
+            // Création des adresses
+            builder.Entity<Adresse>().HasData(
+                new Adresse
+                {
+                    Id = 1,
+                    Numero = 123,
+                    Rue = "Rue Admin",
+                    Ville = "Ville Admin",
+                    CodePostal = "12345",
+                    Pays = "Pays Admin"
+                },
+                new Adresse
+                {
+                    Id = 2,
+                    Numero = 456,
+                    Rue = "Rue Client",
+                    Ville = "Ville Client",
+                    CodePostal = "67890",
+                    Pays = "Pays Client"
+                }
+            );
+
+            // Création des personnes
+            builder.Entity<Personne>().HasData(
+                new Personne
+                {
+                    Id = 1,
+                    Nom = "Admin",
+                    Prenom = "Super",
+                    Courriel = "admin@example.com",
+                    Telephone = "1234567890",
+                    IdAdresse = 1
+                },
+                new Personne
+                {
+                    Id = 2,
+                    Nom = "Client",
+                    Prenom = "Test",
+                    Courriel = "client@example.com",
+                    Telephone = "0987654321",
+                    IdAdresse = 2
+                }
+            );
+
+
+            // Création de l'administrateur et du client avec des mots de passe hachés
+            var passwordHasher = new PasswordHasher<ApplicationUser>();
+
+            var adminUser = new Administrateur
+            {
+                Id = adminId,
+                UserName = "admin@example.com",
+                NormalizedUserName = "ADMIN@EXAMPLE.COM",
+                Email = "admin@example.com",
+                NormalizedEmail = "ADMIN@EXAMPLE.COM",
+                EmailConfirmed = true,
+                SecurityStamp = Guid.NewGuid().ToString(),
+                PersonneId = 1
+            };
+            adminUser.PasswordHash = passwordHasher.HashPassword(adminUser, "MotDePasseAdmin123!");
+
+            var clientUser = new Client
+            {
+                Id = clientId,
+                UserName = "client@example.com",
+                NormalizedUserName = "CLIENT@EXAMPLE.COM",
+                Email = "client@example.com",
+                NormalizedEmail = "CLIENT@EXAMPLE.COM",
+                EmailConfirmed = true,
+                SecurityStamp = Guid.NewGuid().ToString(),
+                PersonneId = 2,
+                EstBloque = false
+            };
+            clientUser.PasswordHash = passwordHasher.HashPassword(clientUser, "MotDePasseClient123!");
+
+            builder.Entity<Administrateur>().HasData(adminUser);
+            builder.Entity<Client>().HasData(clientUser);
+
+            // Attribution des rôles
             builder.Entity<IdentityUserRole<string>>().HasData(
-                new IdentityUserRole<string> { UserId = adminId, RoleId = "1" },
-                new IdentityUserRole<string> { UserId = clientId, RoleId = "2" }
+                new IdentityUserRole<string>
+                {
+                    RoleId = roleIdAdmin,
+                    UserId = adminId
+                },
+                new IdentityUserRole<string>
+                {
+                    RoleId = roleIdClient,
+                    UserId = clientId
+                }
+            );
+
+            // Création des comptes
+            builder.Entity<Compte>().HasData(
+                new Compte
+                {
+                    Id = 1,
+                    NomUtilisateur = "admin@example.com",
+                    Pseudonyme = "SuperAdmin",
+                    Avatar = "admin.png",
+                    MotPasse = "HashedPasswordHere",
+                    ApplicationUserId = adminId
+                },
+                new Compte
+                {
+                    Id = 2,
+                    NomUtilisateur = "client@example.com",
+                    Pseudonyme = "TestClient",
+                    Avatar = "client.png",
+                    MotPasse = "HashedPasswordHere",
+                    ApplicationUserId = clientId
+                }
             );
         }
     }

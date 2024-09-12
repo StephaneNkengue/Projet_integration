@@ -7,9 +7,10 @@ namespace Gamma2024.Server.Models{
     public double PrixTotal { get; set; }
     public bool EstLivree { get; set; }
     public int IdLot { get; set; }
-    public int IdAdresseFacturation { get; set; }
+    public int IdAdresse { get; set; }
     
     public  Lot Lot { get; set; } = null!;
-    public  Adresse AdresseFacturation { get; set; } = null!;
+    public  Adresse Adresse { get; set; } = null!;
+    public Charite? Charite { get; set; }
 }
 }
