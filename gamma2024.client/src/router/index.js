@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import BarreDeNavigation from '@/components/BarreDeNavigation.vue'
+import BarreDeNavigation from '@/components/views/BarreDeNavigation.vue'
 
 const routes = [
     //{

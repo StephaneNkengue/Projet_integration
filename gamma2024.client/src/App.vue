@@ -1,6 +1,6 @@
 <script setup>
-    import BarreDeNavigation from './components/BarreDeNavigation.vue'
-    import PiedDePage from './components/PiedDePage.vue'
+    import BarreDeNavigation from './components/views/BarreDeNavigation.vue'
+    import PiedDePage from './components/views/PiedDePage.vue'
 </script>
 
 <template>
