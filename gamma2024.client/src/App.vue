@@ -1,5 +1,6 @@
 <script setup>
     import BarreDeNavigation from './components/BarreDeNavigation.vue'
+    import PiedDePage from './components/PiedDePage.vue'
 </script>
 
 <template>
@@ -8,6 +9,8 @@
     <div id="app">
         <router-view></router-view>
     </div>
+
+    <PiedDePage />
 
 </template>
 
