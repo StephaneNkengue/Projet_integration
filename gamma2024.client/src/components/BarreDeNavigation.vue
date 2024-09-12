@@ -35,7 +35,7 @@
                     <li class="nav-item">
                         <router-link to="/" class="text-decoration-none">
                             <a class="nav-link">
-                                Encan présent
+                                Encan prÃ©sent
                             </a>
                         </router-link>
                     </li>
@@ -51,7 +51,7 @@
                     <li class="nav-item">
                         <router-link to="/" class="text-decoration-none">
                             <a class="nav-link">
-                                Encan passé
+                                Encan passÃ©
                             </a>
                         </router-link>
                     </li>
@@ -76,7 +76,7 @@
                 <li class="nav-item">
                     <router-link to="/" class="text-decoration-none">
                         <a class="nav-link">
-                            Déroulement d'un encan
+                            DÃ©roulement d'un encan
                         </a>
                     </router-link>
                 </li>
@@ -90,7 +90,7 @@
 
                 <router-link to="/">
                     <img src="/icon/IconeRechercheAvanceeBleu.png"
-                         alt="Icon recherche avancée"
+                         alt="Icon recherche avancÃ©e"
                          height="38" />
                 </router-link>
             </form>
