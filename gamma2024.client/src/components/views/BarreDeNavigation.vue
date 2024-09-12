@@ -24,7 +24,7 @@
                     </button>
 
                     <div class="collapse navbar-collapse justify-content-between" id="navbarSupportedContent">
-                        <ul class="navbar-nav">
+                        <ul class="navbar-nav text-center">
 
                             <li class="nav-item">
                                 <router-link to="/" class="text-decoration-none">
@@ -57,6 +57,13 @@
                                     </a>
                                 </router-link>
                             </li>
+                            <li class="nav-item d-md-none">
+                                <router-link to="/" class="text-decoration-none">
+                                    <a class="nav-link">
+                                        Déroulement d'un encan
+                                    </a>
+                                </router-link>
+                            </li>
 
                         </ul>
 
@@ -73,8 +80,8 @@
             </nav>
 
             <nav class="navbar navbar-expand-md bleuMarinSecondaireFond" data-bs-theme="dark">
-                <div class="container-fluid">
-                    <ul class="navbar-nav">
+                <div class="container-fluid justify-content-center justify-content-md-between">
+                    <ul class="navbar-nav d-none d-md-block">
                         <li class="nav-item">
                             <router-link to="/" class="text-decoration-none">
                                 <a class="nav-link">
