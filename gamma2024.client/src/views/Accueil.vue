@@ -3,6 +3,7 @@
         <h1>Bienvenue sur notre site</h1>
         <p>Ceci est la page d'accueil de notre application.</p>
         <router-link to="/login">Aller à la page de connexion</router-link>
+
     </div>
 </template>
 

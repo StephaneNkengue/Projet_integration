@@ -1,4 +1,4 @@
-<template>
+﻿<template>
     <div class="weather-component">
         <h1>Weather forecast</h1>
         <p>This component demonstrates fetching data from the server.</p>
@@ -67,28 +67,29 @@
 </script>
 
 <style scoped>
-th {
-    font-weight: bold;
-}
-tr:nth-child(even) {
-    background: #F2F2F2;
-}
+    th {
+        font-weight: bold;
+    }
 
-tr:nth-child(odd) {
-    background: #FFF;
-}
+    tr:nth-child(even) {
+        background: #F2F2F2;
+    }
 
-th, td {
-    padding-left: .5rem;
-    padding-right: .5rem;
-}
+    tr:nth-child(odd) {
+        background: #FFF;
+    }
 
-.weather-component {
-    text-align: center;
-}
+    th, td {
+        padding-left: .5rem;
+        padding-right: .5rem;
+    }
 
-table {
-    margin-left: auto;
-    margin-right: auto;
-}
+    .weather-component {
+        text-align: center;
+    }
+
+    table {
+        margin-left: auto;
+        margin-right: auto;
+    }
 </style>
