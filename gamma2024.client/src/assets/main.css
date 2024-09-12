@@ -9,3 +9,29 @@
 .bleuMoyenFond {
     background-color: #5A708A;
 }
+
+html, body, div#app {
+    margin: 0;
+    height: 100%;
+    min-height: 100%;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+}
+
+div#app {
+    display: grid;
+}
+
+header,
+footer {
+    flex: none;
+}
+
+
+main {
+    margin: 0;
+    flex: auto;
+}

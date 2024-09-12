@@ -1,5 +1,5 @@
 <template>
-    <footer class="bleuMarinFond text-white py-1 justify-content-between d-flex align-items-center fixed-bottom">
+    <footer class="bleuMarinFond text-white py-1 justify-content-between d-flex align-items-center">
 
         <p class="col-md-6 mb-0 ps-3">
             © Les Encans de Nantes 2024
@@ -36,4 +36,5 @@
 
 <script setup></script>
 
-<style scoped></style>
+<style scoped>
+</style>
