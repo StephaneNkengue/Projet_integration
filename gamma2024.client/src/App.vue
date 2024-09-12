@@ -1,12 +1,16 @@
 <script setup>
     import HelloWorld from './components/HelloWorld.vue'
     import TheWelcome from './components/TheWelcome.vue'
+    import BarreDeNavigation from './components/BarreDeNavigation.vue'
 </script>
 
 <template>
+    <BarreDeNavigation />
+
     <div id="app">
         <router-view></router-view>
     </div>
+
 </template>
 
 <script>

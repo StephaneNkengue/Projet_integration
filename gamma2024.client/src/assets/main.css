@@ -1,5 +1,8 @@
 @import './base.css';
 
+.bleuMarinFond {
+    background-color: #052445;
+}
 
 
 a,
@@ -8,4 +11,10 @@ a,
     color: hsla(160, 100%, 37%, 1);
     transition: 0.4s;
     padding: 3px;
+.bleuMarinSecondaireFond {
+    background-color: #1C3755;
+}
+
+.bleuMoyenFond {
+    background-color: #5A708A;
 }
