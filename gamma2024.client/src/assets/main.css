@@ -14,6 +14,10 @@
     text-align: justify;
 }
 
+.transpositionImage {
+    transform: scaleX(-1);
+}
+
 html, body, div#app {
     margin: 0;
     height: 100%;

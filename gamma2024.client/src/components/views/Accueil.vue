@@ -7,7 +7,7 @@
         </div>
 
         <div class="w-50 text-center">
-            <p class="justifyText">
+            <p class="justifyText mb-0">
                 Les Encans de Nantes au Québec est une entreprise spécialisée dans la gestion d'encans virtuels, axée principalement sur la vente d'œuvres d'art. Elle est co-propriétée par Frédérique Nantes, en collaboration avec deux autres associées, Monique Inverness et Patricia DeNice. L'entreprise est située à Stanstead, dans un bâtiment annexé à la bibliothèque Haskell, un lieu historique partagé entre le Canada et les États-Unis.
             </p>
 
@@ -17,11 +17,27 @@
         </div>
 
         <div class="w-50 pt-3 px-5 mt-4 bleuMoyenFond text-center text-white">
-            Déroulement d'un encan
 
-            <p class="justifyText">
+            <div class="fw-bold">
+                <img src="/icon/IconeMarteauBleuGris.png"
+                     alt="Les Encans de Nantes"
+                     height="60"
+                     class="transpositionImage px-4" />
+
+                Déroulement d'un encan
+
+                <img src="/icon/IconeMarteauBleuGris.png"
+                     alt="Les Encans de Nantes"
+                     height="60"
+                     class="px-4" />
+            </div>
+
+
+            <p class="justifyText mb-0">
                 Les membres peuvent parcourir les lots d'œuvres d'art, faire des mises et des surenchères pendant la durée de l'encan, avec une soirée de clôture en direct. Pendant cette soirée, chaque lot est soumis à un intervalle de temps avant la fermeture définitive, avec la possibilité d'ajouter une minute en cas de surenchère. Un effet visuel indique les 20 dernières secondes pour chaque lot, et une notification par courriel est envoyée en cas de surenchère ou d'achat conclu.
             </p>
+
+
 
             <router-link to="/" class="text-decoration-none text-white">
                 <a>Lire plus -></a>
@@ -34,7 +50,4 @@
 </script>
 
 <style scoped>
-    .justifyText {
-        text-align: justify;
-    }
 </style>
