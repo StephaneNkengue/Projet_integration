@@ -19,25 +19,22 @@
         <div class="w-50 pt-3 px-5 mt-4 bleuMoyenFond text-center text-white">
 
             <div class="fw-bold">
-                <img src="/icon/IconeMarteauBleuGris.png"
+                <img src="/icons/IconeMarteauBleuGris.png"
                      alt="Les Encans de Nantes"
                      height="60"
                      class="transpositionImage px-4" />
 
                 Déroulement d'un encan
 
-                <img src="/icon/IconeMarteauBleuGris.png"
+                <img src="/icons/IconeMarteauBleuGris.png"
                      alt="Les Encans de Nantes"
                      height="60"
                      class="px-4" />
             </div>
 
-
             <p class="justifyText mb-0">
                 Les membres peuvent parcourir les lots d'œuvres d'art, faire des mises et des surenchères pendant la durée de l'encan, avec une soirée de clôture en direct. Pendant cette soirée, chaque lot est soumis à un intervalle de temps avant la fermeture définitive, avec la possibilité d'ajouter une minute en cas de surenchère. Un effet visuel indique les 20 dernières secondes pour chaque lot, et une notification par courriel est envoyée en cas de surenchère ou d'achat conclu.
             </p>
-
-
 
             <router-link to="/" class="text-decoration-none text-white">
                 <a>Lire plus -></a>

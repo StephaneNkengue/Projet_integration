@@ -98,7 +98,7 @@
                         </router-link>
 
                         <router-link to="/">
-                            <img src="/icon/IconeRechercheAvanceeBleu.png"
+                            <img src="/icons/IconeRechercheAvanceeBleu.png"
                                  alt="Icon recherche avancée"
                                  height="38" />
                         </router-link>
