@@ -25,13 +25,13 @@ div#app {
     display: grid;
 }
 
-header,
 footer {
     flex: none;
 }
 
 
 main {
-    margin: 0;
-    flex: auto;
+    /* margin: 0;
+    flex: auto;*/
+    padding-top: 10rem;
 }

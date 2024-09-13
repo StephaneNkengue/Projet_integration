@@ -6,7 +6,7 @@
 <template>
     <BarreDeNavigation />
 
-    <main class="pt-xs-5">
+    <main>
         <router-view></router-view>
     </main>
 
