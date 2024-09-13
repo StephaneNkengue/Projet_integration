@@ -10,6 +10,10 @@
     background-color: #5A708A;
 }
 
+.justifyText {
+    text-align: justify;
+}
+
 html, body, div#app {
     margin: 0;
     height: 100%;
