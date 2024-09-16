@@ -20,15 +20,21 @@
                     </div>
                     <div class="d-flex flex-row justify-content-center mt-4 mb-1">
                         <div class="form-group" style="width: 80%;">
-                            <p class="text-center">J'ai oublié mon Mot de passe</p>
+                            <router-link to="/" style="text-decoration: none;">
+                                <p class="text-center lienEnTexteNoir">J'ai oublié mon Mot de passe</p>
+                            </router-link>
                         </div>
                     </div>
                     <div class="d-flex flex-row justify-content-center mb-2">
-                        <button class="btn rounded-pill px-5 bleuMoyenFond text-white" @click="submitForm">Connexion</button>
+                        <router-link to="/">
+                            <button class="btn btnSurvolerBleuMoyenFond rounded-pill px-5 bleuMoyenFond text-white" @click="submitForm">Connexion</button>
+                        </router-link>
                     </div>
                     <div class="d-flex flex-row justify-content-center mb-3">
                         <div class="form-group" style="width: 80%;">
-                            <p class="fs-5 text-center fw-bold">M'inscrire</p>
+                            <router-link to="/" style="text-decoration: none;">
+                                <p class="fs-5 text-center fw-bold lienEnTexteNoir">M'inscrire</p>
+                            </router-link>
                         </div>
                     </div>
 

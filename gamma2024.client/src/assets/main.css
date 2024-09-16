@@ -17,3 +17,15 @@
 .bleuMoyenFond {
     background-color: #5A708A;
 }
+
+.btnSurvolerBleuMoyenFond:hover {
+    background-color: #83a0ba;
+}
+
+.lienEnTexteNoir {
+    color: #000000;
+}
+
+    .lienEnTexteNoir:hover {
+        color: #6c757d;
+    }
