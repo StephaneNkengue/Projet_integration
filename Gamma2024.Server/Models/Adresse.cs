@@ -13,8 +13,11 @@ namespace Gamma2024.Server.Models{
     [StringLength(6)]
     public string CodePostal { get; set; } = null!;
     public bool EstDomicile { get; set; }
+    public string? IdApplicationUser { get; set; }
+    public int? IdVendeur { get; set; }
     
-    public Personne? Personne { get; set; }
+    public ApplicationUser? ApplicationUser { get; set; }
+    public Vendeur? Vendeur { get; set; }
     public ICollection<Facture> Factures { get; set; } = [];
 }
 }

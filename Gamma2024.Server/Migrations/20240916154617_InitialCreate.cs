@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Gamma2024.Server.Migrations
 {
     /// <inheritdoc />
-    public partial class CreationInitialeBDAjoutDonnees : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -25,6 +25,36 @@ namespace Gamma2024.Server.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetRoles", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AspNetUsers",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Pseudonym = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Avatar = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IdAdresse = table.Column<int>(type: "int", nullable: false),
+                    UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                    NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                    Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                    NormalizedEmail = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                    EmailConfirmed = table.Column<bool>(type: "bit", nullable: false),
+                    PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    SecurityStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PhoneNumberConfirmed = table.Column<bool>(type: "bit", nullable: false),
+                    TwoFactorEnabled = table.Column<bool>(type: "bit", nullable: false),
+                    LockoutEnd = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
+                    LockoutEnabled = table.Column<bool>(type: "bit", nullable: false),
+                    AccessFailedCount = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AspNetUsers", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -58,7 +88,20 @@ namespace Gamma2024.Server.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Personnes",
+                name: "Mediums",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Type = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Mediums", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Vendeurs",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -71,7 +114,7 @@ namespace Gamma2024.Server.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Personnes", x => x.Id);
+                    table.PrimaryKey("PK_Vendeurs", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -93,83 +136,6 @@ namespace Gamma2024.Server.Migrations
                         principalTable: "AspNetRoles",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Adresses",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    IdPersonne = table.Column<int>(type: "int", nullable: true),
-                    Numero = table.Column<int>(type: "int", nullable: false),
-                    Appartement = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Rue = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Ville = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Pays = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CodePostal = table.Column<string>(type: "nvarchar(6)", maxLength: 6, nullable: false),
-                    EstDomicile = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Adresses", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Adresses_Personnes_IdPersonne",
-                        column: x => x.IdPersonne,
-                        principalTable: "Personnes",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "AspNetUsers",
-                columns: table => new
-                {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    PersonneId = table.Column<int>(type: "int", nullable: true),
-                    IdCompte = table.Column<int>(type: "int", nullable: false),
-                    Discriminator = table.Column<string>(type: "nvarchar(21)", maxLength: 21, nullable: false),
-                    EstBloque = table.Column<bool>(type: "bit", nullable: true),
-                    UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
-                    NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
-                    Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
-                    NormalizedEmail = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
-                    EmailConfirmed = table.Column<bool>(type: "bit", nullable: false),
-                    PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    SecurityStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    PhoneNumberConfirmed = table.Column<bool>(type: "bit", nullable: false),
-                    TwoFactorEnabled = table.Column<bool>(type: "bit", nullable: false),
-                    LockoutEnd = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
-                    LockoutEnabled = table.Column<bool>(type: "bit", nullable: false),
-                    AccessFailedCount = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AspNetUsers", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_AspNetUsers_Personnes_PersonneId",
-                        column: x => x.PersonneId,
-                        principalTable: "Personnes",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Vendeurs",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    IdPersonne = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Vendeurs", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Vendeurs_Personnes_IdPersonne",
-                        column: x => x.IdPersonne,
-                        principalTable: "Personnes",
-                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -265,7 +231,6 @@ namespace Gamma2024.Server.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Nom = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Numero = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CVV = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     MoisExpiration = table.Column<int>(type: "int", nullable: false),
                     AnneeExpiration = table.Column<int>(type: "int", nullable: false),
                     IdClient = table.Column<string>(type: "nvarchar(450)", nullable: false)
@@ -281,31 +246,35 @@ namespace Gamma2024.Server.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Comptes",
+                name: "Adresses",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    NomUtilisateur = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Pseudonyme = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    MotPasse = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Avatar = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ApplicationUserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    ApplicationUserId1 = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                    IdPersonne = table.Column<int>(type: "int", nullable: true),
+                    Numero = table.Column<int>(type: "int", nullable: false),
+                    Appartement = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Rue = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Ville = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Pays = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CodePostal = table.Column<string>(type: "nvarchar(6)", maxLength: 6, nullable: false),
+                    EstDomicile = table.Column<bool>(type: "bit", nullable: false),
+                    IdApplicationUser = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    IdVendeur = table.Column<int>(type: "int", nullable: true),
+                    VendeurId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Comptes", x => x.Id);
+                    table.PrimaryKey("PK_Adresses", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Comptes_AspNetUsers_ApplicationUserId",
-                        column: x => x.ApplicationUserId,
+                        name: "FK_Adresses_AspNetUsers_IdApplicationUser",
+                        column: x => x.IdApplicationUser,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_Comptes_AspNetUsers_ApplicationUserId1",
-                        column: x => x.ApplicationUserId1,
-                        principalTable: "AspNetUsers",
+                        name: "FK_Adresses_Vendeurs_VendeurId",
+                        column: x => x.VendeurId,
+                        principalTable: "Vendeurs",
                         principalColumn: "Id");
                 });
 
@@ -322,14 +291,14 @@ namespace Gamma2024.Server.Migrations
                     ValeurEstimeMax = table.Column<double>(type: "float", nullable: false),
                     DateDepot = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Artiste = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Medium = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     DateCreation = table.Column<DateTime>(type: "datetime2", nullable: false),
                     IdCategorie = table.Column<int>(type: "int", nullable: false),
                     IdClientMise = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     Mise = table.Column<double>(type: "float", nullable: true),
                     EstVendu = table.Column<bool>(type: "bit", nullable: false),
                     DateFinVente = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    IdVendeur = table.Column<int>(type: "int", nullable: false)
+                    IdVendeur = table.Column<int>(type: "int", nullable: false),
+                    IdMedium = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -344,6 +313,12 @@ namespace Gamma2024.Server.Migrations
                         column: x => x.IdCategorie,
                         principalTable: "Categories",
                         principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Lots_Mediums_IdMedium",
+                        column: x => x.IdMedium,
+                        principalTable: "Mediums",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Lots_Vendeurs_IdVendeur",
                         column: x => x.IdVendeur,
@@ -386,7 +361,8 @@ namespace Gamma2024.Server.Migrations
                     PrixTotal = table.Column<double>(type: "float", nullable: false),
                     EstLivree = table.Column<bool>(type: "bit", nullable: false),
                     IdLot = table.Column<int>(type: "int", nullable: false),
-                    IdAdresse = table.Column<int>(type: "int", nullable: false)
+                    IdAdresse = table.Column<int>(type: "int", nullable: false),
+                    IdClient = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -395,6 +371,11 @@ namespace Gamma2024.Server.Migrations
                         name: "FK_Factures_Adresses_IdAdresse",
                         column: x => x.IdAdresse,
                         principalTable: "Adresses",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Factures_AspNetUsers_IdClient",
+                        column: x => x.IdClient,
+                        principalTable: "AspNetUsers",
                         principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Factures_Lots_IdLot",
@@ -423,13 +404,32 @@ namespace Gamma2024.Server.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.InsertData(
-                table: "Adresses",
-                columns: new[] { "Id", "Appartement", "CodePostal", "EstDomicile", "IdPersonne", "Numero", "Pays", "Rue", "Ville" },
-                values: new object[,]
+            migrationBuilder.CreateTable(
+                name: "Charites",
+                columns: table => new
                 {
-                    { 1, null, "12345", false, null, 123, "Pays Admin", "Rue Admin", "Ville Admin" },
-                    { 2, null, "67890", false, null, 456, "Pays Client", "Rue Client", "Ville Client" }
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    MontantDon = table.Column<double>(type: "float", nullable: false),
+                    NomOrganisme = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IdClient = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    IdFacture = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Charites", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Charites_AspNetUsers_IdClient",
+                        column: x => x.IdClient,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Charites_Factures_IdFacture",
+                        column: x => x.IdFacture,
+                        principalTable: "Factures",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.InsertData(
@@ -442,23 +442,22 @@ namespace Gamma2024.Server.Migrations
                 });
 
             migrationBuilder.InsertData(
-                table: "Personnes",
-                columns: new[] { "Id", "Courriel", "IdAdresse", "Nom", "Prenom", "Telephone" },
+                table: "AspNetUsers",
+                columns: new[] { "Id", "AccessFailedCount", "Avatar", "ConcurrencyStamp", "Email", "EmailConfirmed", "FirstName", "IdAdresse", "LockoutEnabled", "LockoutEnd", "Name", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "Pseudonym", "SecurityStamp", "TwoFactorEnabled", "UserName" },
                 values: new object[,]
                 {
-                    { 1, "admin@example.com", 1, "Admin", "Super", "1234567890" },
-                    { 2, "client@example.com", 2, "Client", "Test", "0987654321" }
+                    { "1d8ac862-e54d-4f10-b6f8-638808c02967", 0, "Avatars/client.jpg", "941ccaf0-4ec2-4b35-a61b-69a79f1255e7", "client@example.com", true, "Jean", 2, false, null, "Dupont", "CLIENT@EXAMPLE.COM", "CLIENT@EXAMPLE.COM", "AQAAAAIAAYagAAAAEEOAH94bBUHxufSbVtmjLV0rhHXRDX/INGsFqJS/DszIGXMiHfgeeTo8iFKw3NlOLg==", null, false, "JeanDu", "573ee18d-f15f-4bb4-913f-cf176dbe5b09", false, "client@example.com" },
+                    { "8e445865-a24d-4543-a6c6-9443d048cdb9", 0, "Avatars/admin.jpg", "4ef971b7-fbcc-4830-9180-53f7e9209a9e", "admin@example.com", true, "Super", 1, false, null, "Admin", "ADMIN@EXAMPLE.COM", "ADMIN@EXAMPLE.COM", "AQAAAAIAAYagAAAAEFx3xwTrqUPVBmmU0EGDhHrmtmKj7GlKDiaEQr7oVXXL4L1RnEu93gyiC72/29D9nA==", null, false, "SuperAdmin", "45de26ea-9bfb-4acb-95b7-979c9e5f7d70", false, "admin@example.com" }
                 });
 
             migrationBuilder.InsertData(
-                table: "AspNetUsers",
-                columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Discriminator", "Email", "EmailConfirmed", "EstBloque", "IdCompte", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PersonneId", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
-                values: new object[] { "1d8ac862-e54d-4f10-b6f8-638808c02967", 0, "ee9c9a98-1f25-425c-9e3b-f0be72f149f6", "Client", "client@example.com", true, false, 0, false, null, "CLIENT@EXAMPLE.COM", "CLIENT@EXAMPLE.COM", "AQAAAAIAAYagAAAAEJvViN31+aynskp6sqiuN0tnVeiOIPoMqJJaaj4nWE7nb5DzvHhVjRowwVzdzbhU6w==", 2, null, false, "810e7a21-3dd8-4107-804e-d8a8d6b79fc3", false, "client@example.com" });
-
-            migrationBuilder.InsertData(
-                table: "AspNetUsers",
-                columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Discriminator", "Email", "EmailConfirmed", "IdCompte", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PersonneId", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
-                values: new object[] { "8e445865-a24d-4543-a6c6-9443d048cdb9", 0, "f3b5f1a7-3f40-4003-b633-2990f69a132e", "Administrateur", "admin@example.com", true, 0, false, null, "ADMIN@EXAMPLE.COM", "ADMIN@EXAMPLE.COM", "AQAAAAIAAYagAAAAEBcsxf0ZEBuyeOp0BOAW5Gzj80tGQ51djByPT9e9brNbsjduu9cjap8aYQY4l8XRAg==", 1, null, false, "6699cb7b-cdc4-46ed-9e45-0fea6f2eb566", false, "admin@example.com" });
+                table: "Adresses",
+                columns: new[] { "Id", "Appartement", "CodePostal", "EstDomicile", "IdApplicationUser", "IdPersonne", "IdVendeur", "Numero", "Pays", "Rue", "VendeurId", "Ville" },
+                values: new object[,]
+                {
+                    { 1, null, "12345", false, "8e445865-a24d-4543-a6c6-9443d048cdb9", null, null, 123, "Pays Admin", "Rue Admin", null, "Ville Admin" },
+                    { 2, null, "67890", false, "1d8ac862-e54d-4f10-b6f8-638808c02967", null, null, 456, "Pays Client", "Rue Client", null, "Ville Client" }
+                });
 
             migrationBuilder.InsertData(
                 table: "AspNetUserRoles",
@@ -469,19 +468,15 @@ namespace Gamma2024.Server.Migrations
                     { "7da4163f-edb4-47b5-86ea-999999999999", "8e445865-a24d-4543-a6c6-9443d048cdb9" }
                 });
 
-            migrationBuilder.InsertData(
-                table: "Comptes",
-                columns: new[] { "Id", "ApplicationUserId", "ApplicationUserId1", "Avatar", "MotPasse", "NomUtilisateur", "Pseudonyme" },
-                values: new object[,]
-                {
-                    { 1, "8e445865-a24d-4543-a6c6-9443d048cdb9", null, "admin.png", "HashedPasswordHere", "admin@example.com", "SuperAdmin" },
-                    { 2, "1d8ac862-e54d-4f10-b6f8-638808c02967", null, "client.png", "HashedPasswordHere", "client@example.com", "TestClient" }
-                });
+            migrationBuilder.CreateIndex(
+                name: "IX_Adresses_IdApplicationUser",
+                table: "Adresses",
+                column: "IdApplicationUser");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Adresses_IdPersonne",
+                name: "IX_Adresses_VendeurId",
                 table: "Adresses",
-                column: "IdPersonne");
+                column: "VendeurId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -516,13 +511,6 @@ namespace Gamma2024.Server.Migrations
                 column: "NormalizedEmail");
 
             migrationBuilder.CreateIndex(
-                name: "IX_AspNetUsers_PersonneId",
-                table: "AspNetUsers",
-                column: "PersonneId",
-                unique: true,
-                filter: "[PersonneId] IS NOT NULL");
-
-            migrationBuilder.CreateIndex(
                 name: "UserNameIndex",
                 table: "AspNetUsers",
                 column: "NormalizedUserName",
@@ -535,18 +523,16 @@ namespace Gamma2024.Server.Migrations
                 column: "IdClient");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Comptes_ApplicationUserId",
-                table: "Comptes",
-                column: "ApplicationUserId",
-                unique: true,
-                filter: "[ApplicationUserId] IS NOT NULL");
+                name: "IX_Charites_IdClient",
+                table: "Charites",
+                column: "IdClient",
+                unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Comptes_ApplicationUserId1",
-                table: "Comptes",
-                column: "ApplicationUserId1",
-                unique: true,
-                filter: "[ApplicationUserId1] IS NOT NULL");
+                name: "IX_Charites_IdFacture",
+                table: "Charites",
+                column: "IdFacture",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_EncanLots_IdLot",
@@ -557,6 +543,11 @@ namespace Gamma2024.Server.Migrations
                 name: "IX_Factures_IdAdresse",
                 table: "Factures",
                 column: "IdAdresse");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Factures_IdClient",
+                table: "Factures",
+                column: "IdClient");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Factures_IdLot",
@@ -574,6 +565,11 @@ namespace Gamma2024.Server.Migrations
                 column: "IdClientMise");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Lots_IdMedium",
+                table: "Lots",
+                column: "IdMedium");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Lots_IdVendeur",
                 table: "Lots",
                 column: "IdVendeur");
@@ -582,12 +578,6 @@ namespace Gamma2024.Server.Migrations
                 name: "IX_Photos_IdLot",
                 table: "Photos",
                 column: "IdLot");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Vendeurs_IdPersonne",
-                table: "Vendeurs",
-                column: "IdPersonne",
-                unique: true);
         }
 
         /// <inheritdoc />
@@ -612,19 +602,19 @@ namespace Gamma2024.Server.Migrations
                 name: "CartesCredits");
 
             migrationBuilder.DropTable(
-                name: "Comptes");
+                name: "Charites");
 
             migrationBuilder.DropTable(
                 name: "EncanLots");
-
-            migrationBuilder.DropTable(
-                name: "Factures");
 
             migrationBuilder.DropTable(
                 name: "Photos");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
+                name: "Factures");
 
             migrationBuilder.DropTable(
                 name: "Encans");
@@ -642,10 +632,10 @@ namespace Gamma2024.Server.Migrations
                 name: "Categories");
 
             migrationBuilder.DropTable(
-                name: "Vendeurs");
+                name: "Mediums");
 
             migrationBuilder.DropTable(
-                name: "Personnes");
+                name: "Vendeurs");
         }
     }
 }

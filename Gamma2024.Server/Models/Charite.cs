@@ -6,8 +6,10 @@ namespace Gamma2024.Server.Models
         public double MontantDon { get; set; }
         public string NomOrganisme { get; set; } = null!;
         public string IdClient { get; set; } = null!;
-        public Client Client { get; set; } = null!;
         public int IdFacture { get; set; }
+
+
+        public ApplicationUser Client { get; set; } = null!;
         public Facture Facture { get; set; } = null!;
     }
 }
