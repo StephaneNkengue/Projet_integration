@@ -21,3 +21,10 @@
 main {
     padding-top: 10rem;
 }
+
+.contourDiv {
+    border-style: solid;
+    border-width: 2px;
+    border-color: #1C3755;
+    border-radius: 10px;
+}

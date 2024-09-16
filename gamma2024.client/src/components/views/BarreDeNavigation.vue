@@ -69,10 +69,10 @@
 
                         <div class="d-flex justify-content-center gap-3">
                             <router-link to="/">
-                                <button class="btn btn-outline bleuMoyenFond" type="button">Inscription</button>
+                                <button class="btn btn-outline bleuMoyenFond text-white" type="button">Inscription</button>
                             </router-link>
                             <router-link to="/">
-                                <button class="btn btn-outline bleuMoyenFond" type="button">Connexion</button>
+                                <button class="btn btn-outline bleuMoyenFond text-white" type="button">Connexion</button>
                             </router-link>
                         </div>
                     </div>
@@ -94,7 +94,7 @@
                     <form class="d-flex">
                         <input class="form-control me-3" data-bs-theme="light" type="search" placeholder="Faire une recherche" aria-label="Search">
                         <router-link to="/">
-                            <button class="btn btn-outline bleuMoyenFond me-3" type="submit">Rechercher</button>
+                            <button class="btn btn-outline bleuMoyenFond me-3 text-white" type="submit">Rechercher</button>
                         </router-link>
 
                         <router-link to="/">

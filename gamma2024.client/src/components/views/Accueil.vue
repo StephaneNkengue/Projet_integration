@@ -16,7 +16,13 @@
             </router-link>
         </div>
 
-        <div class="w-50 pt-3 px-5 mt-4 bleuMoyenFond text-center text-white">
+        <div class="d-flex d-inline gap-5 flex-column flex-md-row mx-sm-2 mt-4 w-100 justify-content-center">
+            <AffichageEncanAccueil :type="passe" />
+            <AffichageEncanAccueil :type="present" />
+            <AffichageEncanAccueil :type="futur" />
+        </div>
+
+        <div class="w-50 pt-3 px-5 mt-4 bleuMoyenFond text-center text-white contourDiv">
 
             <div class="fw-bold">
                 <img src="/icons/IconeMarteauBleuGris.png"
@@ -44,6 +50,12 @@
 </template>
 
 <script setup>
+    import AffichageEncanAccueil from '@/components/views/AffichageEncanAccueil.vue'
+    import { ref } from 'vue'
+
+    const passe = ref(-1);
+    const present = ref(0);
+    const futur = ref(1);
 </script>
 
 <style scoped>
