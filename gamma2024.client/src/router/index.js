@@ -26,4 +26,21 @@ const router = createRouter({
     routes
 })
 
+router.beforeEach((to, from, next) => {
+  const isLoggedIn = store.state.isLoggedIn
+  const requiredRole = to.meta.requiredRole
+
+  if (to.matched.some(record => record.meta.requiresAuth)) {
+    if (!isLoggedIn) {
+      next('/login')
+    } else if (requiredRole && !store.state.roles.includes(requiredRole)) {
+      next('/unauthorized') // Créez une vue pour les accès non autorisés
+    } else {
+      next()
+    }
+  } else {
+    next()
+  }
+})
+
 export default router
