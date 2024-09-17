@@ -9,3 +9,22 @@
 .bleuMoyenFond {
     background-color: #5A708A;
 }
+
+.justifyText {
+    text-align: justify;
+}
+
+.transpositionImage {
+    transform: scaleX(-1);
+}
+
+main {
+    padding-top: 10rem;
+}
+
+.contourDiv {
+    border-style: solid;
+    border-width: 2px;
+    border-color: #1C3755;
+    border-radius: 10px;
+}
