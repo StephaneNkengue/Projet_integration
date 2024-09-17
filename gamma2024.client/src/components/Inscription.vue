@@ -1,5 +1,3 @@
-
-
 <template>
     <div class="container d-flex flex-column justify-content-start align-items-stretch vh-100 container col-md-6">
         <h2 class="fs-1 text-center fw-bold mt-5">Inscription</h2>
@@ -9,7 +7,6 @@
         <div class="mt-3">
             <form @submit.prevent="submitForm">
                 <Stepper v-model:activeIndex="activeIndex" :class="['mb-4']">
-
                     <!-- Informations générales -->
                     <StepItem :disabled="activeIndex !== 1">
                         <Step value="1" class="border-top border-2 p-2 border-dark fs-2">
@@ -20,63 +17,104 @@
                             <div class="d-flex flex-column justify-content-start align-items-stretch">
                                 <div class="px-4 py-2 mb-4">
                                     <div class="d-flex flex-row justify-content-between mb-3">
-                                        <div class="form-group" style="width: 45%;">
+                                        <div class="form-group">
                                             <label for="nom" class="ms-3">Nom</label>
-                                            <input type="text" v-model="formData.generalInfo.nom" class="form-control" id="nom" @blur="v$.generalInfo.nom.$touch()" />
-                                            <span class="text-danger" v-for="error in v$.generalInfo.nom.$errors" :key="error.$uid">
-                                                {{error.$message}}
+                                            <input type="text"
+                                                   v-model="formData.generalInfo.nom"
+                                                   class="form-control"
+                                                   id="nom"
+                                                   @blur="v.generalInfo.nom.$touch()" />
+                                            <span class="text-danger"
+                                                  v-for="error in v.generalInfo.nom.$errors"
+                                                  :key="error.$uid">
+                                                {{ error.$message }}
                                             </span>
                                         </div>
-                                        <div class="form-group" style="width: 45%;">
+                                        <div class="form-group">
                                             <label for="prenom" class="ms-3">Prénom</label>
-                                            <input type="text" v-model="formData.generalInfo.prenom" class="form-control" id="prenom" @blur="v$.generalInfo.prenom.$touch()" />
-                                            <span class="text-danger" v-for="error in v$.generalInfo.prenom.$errors" :key="error.$uid">
-                                                {{error.$message}}
+                                            <input type="text"
+                                                   v-model="formData.generalInfo.prenom"
+                                                   class="form-control"
+                                                   id="prenom"
+                                                   @blur="v.generalInfo.prenom.$touch()" />
+                                            <span class="text-danger"
+                                                  v-for="error in v.generalInfo.prenom.$errors"
+                                                  :key="error.$uid">
+                                                {{ error.$message }}
                                             </span>
                                         </div>
                                     </div>
 
                                     <div class="d-flex flex-row justify-content-between mb-3">
-                                        <div class="form-group" style="width: 45%;">
+                                        <div class="form-group">
                                             <label for="courriel" class="ms-3">Courriel</label>
-                                            <input type="email" v-model="formData.generalInfo.courriel" class="form-control" id="courriel" @blur="v$.generalInfo.courriel.$touch()" />
-                                            <span class="text-danger" v-for="error in v$.generalInfo.courriel.$errors" :key="error.$uid">
-                                                {{error.$message}}
+                                            <input type="email"
+                                                   v-model="formData.generalInfo.courriel"
+                                                   class="form-control"
+                                                   id="courriel"
+                                                   @blur="v.generalInfo.courriel.$touch()" />
+                                            <span class="text-danger"
+                                                  v-for="error in v.generalInfo.courriel.$errors"
+                                                  :key="error.$uid">
+                                                {{ error.$message }}
                                             </span>
                                         </div>
-                                        <div class="form-group" style="width: 45%;">
+                                        <div class="form-group">
                                             <label for="telephone" class="ms-3">Téléphone</label>
-                                            <input type="tel" v-model="formData.generalInfo.telephone" class="form-control" id="telephone" @blur="v$.generalInfo.telephone.$touch()" />
-                                            <span class="text-danger" v-for="error in v$.generalInfo.telephone.$errors" :key="error.$uid">
-                                                {{error.$message}}
+                                            <input type="tel"
+                                                   v-model="formData.generalInfo.telephone"
+                                                   class="form-control"
+                                                   id="telephone"
+                                                   @blur="v.generalInfo.telephone.$touch()" />
+                                            <span class="text-danger"
+                                                  v-for="error in v.generalInfo.telephone.$errors"
+                                                  :key="error.$uid">
+                                                {{ error.$message }}
                                             </span>
                                         </div>
                                     </div>
 
                                     <div class="d-flex flex-row justify-content-between mb-3">
-                                        <div class="form-group" style="width: 45%;">
+                                        <div class="form-group">
                                             <label for="pseudonyme" class="ms-3">Pseudonyme</label>
-                                            <input type="text" v-model="formData.generalInfo.pseudo" class="form-control" id="pseudonyme" @blur="v$.generalInfo.pseudo.$touch()" />
-                                            <span class="text-danger" v-for="error in v$.generalInfo.pseudo.$errors" :key="error.$uid">
-                                                {{error.$message}}
+                                            <input type="text"
+                                                   v-model="formData.generalInfo.pseudo"
+                                                   class="form-control"
+                                                   id="pseudonyme"
+                                                   @blur="v.generalInfo.pseudo.$touch()" />
+                                            <span class="text-danger"
+                                                  v-for="error in v.generalInfo.pseudo.$errors"
+                                                  :key="error.$uid">
+                                                {{ error.$message }}
                                             </span>
                                         </div>
-
                                     </div>
 
                                     <div class="d-flex flex-row justify-content-between mb-3">
-                                        <div class="form-group" style="width: 45%;">
+                                        <div class="form-group">
                                             <label for="motDePasse" class="ms-3">Mot de passe</label>
-                                            <input type="password" v-model="formData.generalInfo.motDePasse" class="form-control" id="motDePasse" @blur="v$.generalInfo.motDePasse.$touch()" />
-                                            <span class="text-danger" v-for="error in v$.generalInfo.motDePasse.$errors" :key="error.$uid">
-                                                {{error.$message}}
+                                            <input type="password"
+                                                   v-model="formData.generalInfo.motDePasse"
+                                                   class="form-control"
+                                                   id="motDePasse"
+                                                   @blur="v.generalInfo.motDePasse.$touch()" />
+                                            <span class="text-danger"
+                                                  v-for="error in v.generalInfo.motDePasse.$errors"
+                                                  :key="error.$uid">
+                                                {{ error.$message }}
                                             </span>
                                         </div>
-                                        <div class="form-group" style="width: 45%;">
+                                        <div class="form-group">
                                             <label for="confirmMotPasse" class="ms-3">Confirmation de mot de passe</label>
-                                            <input type="password" class="form-control" v-model="formData.generalInfo.confirmMotPasse" id="confirmMotPasse" @blur="v$.generalInfo.confirmMotPasse.$touch()" />
-                                            <span class="text-danger" v-for="error in v$.generalInfo.confirmMotPasse.$errors" :key="error.$uid">
-                                                {{error.$message}}
+                                            <input type="password"
+                                                   class="form-control"
+                                                   v-model="formData.generalInfo.confirmMotPasse"
+                                                   id="confirmMotPasse"
+                                                   @blur="v.generalInfo.confirmMotPasse.$touch()" />
+                                            <span class="text-danger"
+                                                  v-for="error in v.generalInfo.confirmMotPasse.$errors"
+                                                  :key="error.$uid">
+                                                {{ error.$message }}
                                             </span>
                                         </div>
                                     </div>
@@ -84,14 +122,20 @@
                             </div>
 
                             <div class="d-flex justify-content-end gap-2 py-3">
-                                <button type="button" class="btn btn-primary px-5 rounded-pill me-4" :disabled="etatBouton(1)" @click="allerAuSuivantPrecedent(2)">Suivant</button>
+                                <button type="button"
+                                        class="btn btn-primary px-5 rounded-pill me-4"
+                                        :disabled="state1"
+                                        @click="allerAuSuivantPrecedent(2)">
+                                    Suivant
+                                </button>
                             </div>
                         </StepPanel>
                     </StepItem>
 
                     <!-- Step 2: Carte de crédit -->
                     <StepItem :disabled="activeIndex !== 2">
-                        <Step value="2" class="step2 border-top border-2 p-2 border-dark fs-2">
+                        <Step value="2"
+                              class="step2 border-top border-2 p-2 border-dark fs-2">
                             <span>2 - Carte de crédit</span>
                         </Step>
 
@@ -99,38 +143,76 @@
                             <div class="d-flex flex-column justify-content-start align-items-stretch">
                                 <div class="form-group flex-fill mb-3">
                                     <label for="nomPropio" class="ms-3">Nom du propriétaire de la carte</label>
-                                    <input type="text" v-model="formData.carteCredit.nomProprio" class="form-control" id="nomPropio" @blur="v$.carteCredit.nomProprio.$touch()" />
-                                    <span class="text-danger" v-for="error in v$.carteCredit.nomProprio.$errors" :key="error.$uid">
-                                        {{error.$message}}
+                                    <input type="text"
+                                           v-model="formData.carteCredit.nomProprio"
+                                           class="form-control"
+                                           id="nomPropio"
+                                           @blur="v.carteCredit.nomProprio.$touch()" />
+                                    <span class="text-danger"
+                                          v-for="error in v.carteCredit.nomProprio.$errors"
+                                          :key="error.$uid">
+                                        {{ error.$message }}
                                     </span>
                                 </div>
                                 <div class="d-flex flex-row justify-content-between mb-3">
                                     <div class="form-group col-md-6">
                                         <label for="numeroCarte" class="ms-3">Numéro de la carte</label>
-                                        <input type="text" class="form-control" v-model="formData.carteCredit.numeroCarte" id="numeroCarte" placeholder="1234 5678 9012 3456" @blur="v$.carteCredit.numeroCarte.$touch()" />
-                                        <span class="text-danger" v-for="error in v$.carteCredit.cvc.$errors" :key="error.$uid">
-                                            {{error.$message}}
+                                        <input type="text"
+                                               class="form-control"
+                                               v-model="formData.carteCredit.numeroCarte"
+                                               id="numeroCarte"
+                                               placeholder="1234 5678 9012 3456"
+                                               @blur="v.carteCredit.numeroCarte.$touch()" />
+                                        <span class="text-danger"
+                                              v-for="error in v.carteCredit.cvc.$errors"
+                                              :key="error.$uid">
+                                            {{ error.$message }}
                                         </span>
                                     </div>
                                     <div class="form-group col-md-3">
                                         <label for="dateExpiration" class="ms-3">Date d'expiration</label>
-                                        <input type="text" placeholder="MM/AA" pattern="\d{2}/\d{2}" v-model="formData.carteCredit.dateExpiration" class="form-control" id="dateExpiration" @blur="v$.carteCredit.dateExpiration.$touch()" />
-                                        <span class="text-danger" v-for="error in v$.carteCredit.dateExpiration.$errors" :key="error.$uid">
-                                            {{error.$message}}
+                                        <input type="text"
+                                               placeholder="MM/AA"
+                                               pattern="\d{2}/\d{2}"
+                                               v-model="formData.carteCredit.dateExpiration"
+                                               class="form-control"
+                                               id="dateExpiration"
+                                               @blur="v.carteCredit.dateExpiration.$touch()" />
+                                        <span class="text-danger"
+                                              v-for="error in v.carteCredit.dateExpiration.$errors"
+                                              :key="error.$uid">
+                                            {{ error.$message }}
                                         </span>
                                     </div>
                                     <div class="form-group col-md-1">
                                         <label for="cvc" class="ms-3">CVC</label>
-                                        <input type="tel" pattern="\d{3}" v-model="formData.carteCredit.cvc" inputmode="numeric" class="form-control" id="cvc" @blur="v$.carteCredit.cvc.$touch()" />
-                                        <span class="text-danger" v-for="error in v$.carteCredit.cvc.$errors" :key="error.$uid">
-                                            {{error.$message}}
+                                        <input type="tel"
+                                               pattern="\d{3}"
+                                               v-model="formData.carteCredit.cvc"
+                                               inputmode="numeric"
+                                               class="form-control"
+                                               id="cvc"
+                                               @blur="v.carteCredit.cvc.$touch()" />
+                                        <span class="text-danger"
+                                              v-for="error in v.carteCredit.cvc.$errors"
+                                              :key="error.$uid">
+                                            {{ error.$message }}
                                         </span>
                                     </div>
                                 </div>
                             </div>
                             <div class="d-flex justify-content-between gap-2 py-3">
-                                <button type="button" class="btn btn-secondary px-5 rounded-pill ms-4" :disabled="etatBouton(2)" @click="allerAuSuivantPrecedent(1)">Précédent</button>
-                                <button type="button" class="btn btn-primary px-5 rounded-pill me-4" @click="allerAuSuivantPrecedent(3)">Suivant</button>
+                                <button type="button"
+                                        class="btn btn-secondary px-5 rounded-pill ms-4"
+                                        @click="allerAuSuivantPrecedent(1)">
+                                    Précédent
+                                </button>
+                                <button type="button"
+                                        class="btn btn-primary px-5 rounded-pill me-4"
+                                        :disabled="state2"
+                                        @click="allerAuSuivantPrecedent(3)">
+                                    Suivant
+                                </button>
                             </div>
                         </StepPanel>
                     </StepItem>
@@ -142,41 +224,68 @@
                         <StepPanel v-if="activeIndex === 3">
                             <div class="d-flex flex-column justify-content-start align-items-stretch">
                                 <div class="d-flex flex-row justify-content-between mb-3">
-                                    <div class="form-group" style="width: 45%;">
+                                    <div class="form-group">
                                         <label for="numeroCivique" class="ms-3">Numéro Civique</label>
-                                        <input type="text" v-model="formData.adresse.numeroCivique" class="form-control" id="numeroCivique" @blur="v$.adresse.numeroCivique.$touch()" />
-                                        <span class="text-danger" v-for="error in v$.adresse.numeroCivique.$errors" :key="error.$uid">
-                                            {{error.$message}}
+                                        <input type="text"
+                                               v-model="formData.adresse.numeroCivique"
+                                               class="form-control"
+                                               id="numeroCivique"
+                                               @blur="v.adresse.numeroCivique.$touch()" />
+                                        <span class="text-danger"
+                                              v-for="error in v.adresse.numeroCivique.$errors"
+                                              :key="error.$uid">
+                                            {{ error.$message }}
                                         </span>
                                     </div>
-                                    <div class="form-group" style="width: 45%;">
+                                    <div class="form-group">
                                         <label for="rue" class="ms-3">Rue</label>
-                                        <input type="text" v-model="formData.adresse.rue" class="form-control" id="rue" @blur="v$.adresse.rue.$touch()" />
-                                        <span class="text-danger" v-for="error in v$.adresse.rue.$errors" :key="error.$uid">
-                                            {{error.$message}}
+                                        <input type="text"
+                                               v-model="formData.adresse.rue"
+                                               class="form-control"
+                                               id="rue"
+                                               @blur="v.adresse.rue.$touch()" />
+                                        <span class="text-danger"
+                                              v-for="error in v.adresse.rue.$errors"
+                                              :key="error.$uid">
+                                            {{ error.$message }}
                                         </span>
                                     </div>
                                 </div>
 
                                 <div class="d-flex flex-row justify-content-between mb-3">
-                                    <div class="form-group" style="width: 45%;">
+                                    <div class="form-group">
                                         <label for="appartement" class="ms-3">Appartement/Bureau</label>
-                                        <input type="text" v-model="formData.adresse.appartement" class="form-control" id="appartement" />
+                                        <input type="text"
+                                               v-model="formData.adresse.appartement"
+                                               class="form-control"
+                                               id="appartement" />
                                     </div>
-                                    <div class="form-group" style="width: 45%;">
+                                    <div class="form-group">
                                         <label for="ville" class="ms-3">Ville</label>
-                                        <input type="text" v-model="formData.adresse.ville" class="form-control" id="ville" @blur="v$.adresse.ville.$touch()" />
-                                        <span class="text-danger" v-for="error in v$.adresse.ville.$errors" :key="error.$uid">
-                                            {{error.$message}}
+                                        <input type="text"
+                                               v-model="formData.adresse.ville"
+                                               class="form-control"
+                                               id="ville"
+                                               @blur="v.adresse.ville.$touch()" />
+                                        <span class="text-danger"
+                                              v-for="error in v.adresse.ville.$errors"
+                                              :key="error.$uid">
+                                            {{ error.$message }}
                                         </span>
                                     </div>
                                 </div>
 
                                 <div class="d-flex flex-row justify-content-between mb-3">
-                                    <div class="form-group" style="width: 45%;">
+                                    <div class="form-group">
                                         <label for="province" class="ms-3">Province </label>
-                                        <select id="province" name="province" v-model="formData.adresse.province" class="form-control" placeholder="Sélectionnez une province">
-                                            <option value="" disabled selected>Sélectionner une province</option>
+                                        <select id="province"
+                                                name="province"
+                                                v-model="formData.adresse.province"
+                                                class="form-control"
+                                                placeholder="Sélectionnez une province">
+                                            <option value="" disabled selected>
+                                                Sélectionner une province
+                                            </option>
                                             <option value="AB">Alberta</option>
                                             <option value="BC">Colombie-Britannique</option>
                                             <option value="MB">Manitoba</option>
@@ -191,28 +300,40 @@
                                             <option value="NU">Nunavut</option>
                                             <option value="YT">Yukon</option>
                                         </select>
-
                                     </div>
-                                    <div class="form-group" style="width: 45%;">
+                                    <div class="form-group">
                                         <label for="pays" class="ms-3">Pays</label>
-                                        <input type="text" class="form-control" v-model="formData.adresse.pays" id="pays" />
+                                        <input type="text"
+                                               class="form-control"
+                                               v-model="formData.adresse.pays"
+                                               id="pays" />
                                     </div>
-
                                 </div>
 
                                 <div class="d-flex flex-row justify-content-between mb-3">
-
-                                    <div class="form-group" style="width: 45%;">
+                                    <div class="form-group">
                                         <label for="postalCode" class="ms-3">Code Postal</label>
-                                        <input type="text" class="form-control" v-model="formData.adresse.codePostal" id="postalCode" placeholder="A1A 2B2" @blur="v$.adresse.codePostal.$touch()" />
-                                        <span class="text-danger" v-if="v$.adresse.codePostal.$error">Code postal requis</span>
+                                        <input type="text"
+                                               class="form-control"
+                                               v-model="formData.adresse.codePostal"
+                                               id="postalCode"
+                                               placeholder="A1A 2B2"
+                                               @blur="v.adresse.codePostal.$touch()" />
+                                        <span class="text-danger" v-if="v.adresse.codePostal.$error">Ce champ est requis</span>
                                     </div>
                                 </div>
                             </div>
 
                             <div class="d-flex justify-content-between gap-2 py-3">
-                                <button class="btn btn-secondary rounded-pill px-5 ms-4" @click="allerAuSuivantPrecedent(2)">Précédent</button>
-                                <button type="submit" class="btn btn-success rounded-pill px-5 me-4">Créer le compte</button>
+                                <button class="btn btn-secondary rounded-pill px-5 ms-4"
+                                        @click="allerAuSuivantPrecedent(2)">
+                                    Précédent
+                                </button>
+                                <button type="submit"
+                                        :disabled="stateFinal"
+                                        class="btn btn-success rounded-pill px-5 me-4">
+                                    Créer le compte
+                                </button>
                             </div>
                         </StepPanel>
                     </StepItem>
@@ -222,30 +343,24 @@
     </div>
 </template>
 
-
 <script setup>
-    import { ref, computed } from 'vue';
-    import Stepper from 'primevue/stepper';
-    import StepItem from 'primevue/stepitem';
-    import Step from 'primevue/step';
-    import StepPanel from 'primevue/steppanel';
-    import Button from 'primevue/button';
-    import { useVuelidate } from '@vuelidate/core'
-    import { required, email, helpers, minLength, maxLength, between, maxValue, minValue, sameAs, not } from '@vuelidate/validators'
-
+    import { ref, computed, reactive } from "vue";
+    import Stepper from "primevue/stepper";
+    import StepItem from "primevue/stepitem";
+    import Step from "primevue/step";
+    import StepPanel from "primevue/steppanel";
+    import { useVuelidate } from "@vuelidate/core";
+    import { required, email, helpers } from "@vuelidate/validators";
 
     const activeIndex = ref(1);
-    const messageRequis = helpers.withMessage('Ce champ est requis', required);
-    const messageCourriel = helpers.withMessage('Veuillez entrer un courriel valide', email);
-
-
-    //let styleBouton = computed(() => {
-
-    //});
-
+    const messageRequis = helpers.withMessage("Ce champ est requis", required);
+    const messageCourriel = helpers.withMessage(
+        "Veuillez entrer un courriel valide",
+        email
+    );
 
     //objet qui contient tous les champs remplis correctement
-    let formData = ref({
+    let formData = reactive({
         generalInfo: {
             nom: "",
             prenom: "",
@@ -253,14 +368,13 @@
             telephone: "",
             pseudo: "",
             motDePasse: "",
-            confirmMotPasse: ""
+            confirmMotPasse: "",
         },
         carteCredit: {
             nomProprio: "",
             numeroCarte: "",
             dateExpiration: "",
             cvc: "",
-
         },
         adresse: {
             numeroCivique: "",
@@ -269,7 +383,7 @@
             ville: "",
             province: "",
             pays: "Canada",
-            codePostal: ""
+            codePostal: "",
         },
     });
 
@@ -285,14 +399,13 @@
                 motDePasse: { required: messageRequis },
                 confirmMotPasse: {
                     required: messageRequis,
-                    sameAs: sameAs(formData.value.generalInfo.motDePasse)
-                }
+                },
             },
             carteCredit: {
                 nomProprio: { required: messageRequis },
                 numeroCarte: { required: messageRequis },
                 dateExpiration: { required: messageRequis },
-                cvc: { required: messageRequis }
+                cvc: { required: messageRequis },
             },
             adresse: {
                 numeroCivique: { required: messageRequis },
@@ -301,72 +414,69 @@
                 ville: { required: messageRequis },
                 province: { required: messageRequis },
                 pays: { required: messageRequis },
-                codePostal: { required: messageRequis }
-            }
+                codePostal: { required: messageRequis },
+            },
         };
     });
 
+    const v = useVuelidate(rules, formData);
+    const info = useVuelidate(rules.value.generalInfo, formData.generalInfo);
+    const carte = useVuelidate(rules.value.carteCredit, formData.carteCredit);
 
-    const v$ = useVuelidate(rules, formData);
-    const info$ = useVuelidate(rules.value.generalInfo, formData.value.generalInfo);
-    const carte$ = useVuelidate(rules.value.carteCredit, formData.value.carteCredit);
+    const state1 = computed(() => {
+        return info.value.$invalid;
+    });
 
+    const state2 = computed(() => {
+        return carte.value.$invalid;
+    });
 
+    const stateFinal = computed(() => {
+        return v.value.$invalid;
+    });
 
-    const etatBouton = async (numeroEtape) => {
-        const validate1 = await info$.value.$validate();
-        const validate2 = await carte$.value.$validate();
-
-        if (numeroEtape == 1) {
-            return validate1 ? false : true
-        }
-
-        if (numeroEtape == 2) {
-            return validate2 ? false : true
-        }
-
-    };
-
-
-    async function allerAuSuivantPrecedent(stepIndex) {
-        this.activeIndex = stepIndex;
+    function allerAuSuivantPrecedent(stepIndex) {
+        activeIndex.value = stepIndex;
     }
 
     const submitForm = async () => {
-        const result = await v$.value.$validate();
+        const result = await v.value.$validate();
         if (result) {
-            alert('Form submitted successfully!');
-        }
-        else {
-            alert('Form not submitted!');
+            alert("Form submitted successfully!");
+            creerCompteUtilisateur();
+        } else {
+            alert("Form not submitted!");
         }
     };
 
 
     //envoi des données vers le backEnd
     async function creerCompteUtilisateur() {
-
-        //try {
-        //    const response = await fetch('https://your-api-url.com/api/users/register', {
-        //        method: 'POST',
-        //        headers: {
-        //            'Content-Type': 'application/json'
-        //        },
-        //        body: JSON.stringify(this.user)
-        //    });
-
-        //    if (response.ok) {
-        //        console.log('Compte créé avec succès !');
-        //    } else {
-        //        console.error('Erreur lors de la création du compte');
-        //    }
-        //} catch (error) {
-        //    console.error('Erreur réseau:', error);
-        //}
-    };
+        try {
+            const response = await fetch("/api/users/register", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(formData),
+            });
+            if (response.ok) {
+                console.log("Compte créé avec succès !");
+            } else {
+                console.error("Erreur lors de la création du compte");
+            }
+        } catch (error) {
+            console.error("Erreur réseau:", error);
+        }
+    }
 </script>
 
 <style scoped>
+
+    .form-group {
+        width: 45%;
+    }
+
     .is-invalid {
         border-color: red;
     }
