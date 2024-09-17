@@ -45,7 +45,7 @@
                             <li class="nav-item">
                                 <router-link to="/" class="text-decoration-none">
                                     <a class="nav-link">
-                                        Encan furur
+                                        Encans futurs
                                     </a>
                                 </router-link>
                             </li>
@@ -53,7 +53,7 @@
                             <li class="nav-item">
                                 <router-link to="/" class="text-decoration-none">
                                     <a class="nav-link">
-                                        Encan passé
+                                        Encans passés
                                     </a>
                                 </router-link>
                             </li>
