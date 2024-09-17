@@ -26,6 +26,56 @@
                 <p>Frédérique Nantes</p>
             </div>
         </div>
+
+        <div class="mt-4 d-flex flex-column align-items-center">
+            <h2>Membre de l'équipe</h2>
+
+            <div class="d-flex gap-3">
+                <div class="contourDiv align-items-center d-flex flex-column p-2 w-25">
+                    <p>Charles</p>
+                    <p>Directeur financières</p>
+                    <img src="/images/membresEquipe/directeurFinanciere.png"
+                         alt="Directeur financière"
+                         height="200"
+                         class="mt-4" />
+                </div>
+
+                <div class="contourDiv align-items-center d-flex flex-column p-2 w-25">
+                    <p>Audrey</p>
+                    <p>Directrice technique</p>
+                    <img src="/images/membresEquipe/directriceTechnique.png"
+                         alt="Directrice technique"
+                         height="200"
+                         class="mt-4" />
+                </div>
+
+                <div class="contourDiv align-items-center d-flex flex-column p-2 w-25">
+                    <p>Albert</p>
+                    <p>Directeur technique</p>
+                    <img src="/images/membresEquipe/directeurTechnique.png"
+                         alt="Directeur technique"
+                         height="200"
+                         class="mt-4" />
+                </div>
+
+                <div class="contourDiv align-items-center d-flex flex-column p-2 w-25">
+                    <p>David</p>
+                    <p class="text-center">Directeur des opérations</p>
+                    <img src="/images/membresEquipe/directeurDesOperations.png"
+                         alt="Directeur des opérations"
+                         height="200" />
+                </div>
+
+                <div class="contourDiv align-items-center d-flex flex-column p-2 w-25">
+                    <p>Victoria</p>
+                    <p class="text-center">Responsable des communications</p>
+                    <img src="/images/membresEquipe/responsableDesCommunications.png"
+                         alt="Responsable des communications"
+                         height="200" />
+                </div>
+            </div>
+        </div>
+
     </div>
 </template>
 
