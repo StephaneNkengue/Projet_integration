@@ -15,7 +15,7 @@
                     </router-link>
                 </li>
                 <li>
-                    <router-link to="/" class="text-decoration-none">
+                    <router-link to="/contact" class="text-decoration-none">
                         <a class="nav-link text-white">
                             Contact
                         </a>
