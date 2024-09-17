@@ -1,6 +1,4 @@
 <script setup>
-    import HelloWorld from './components/HelloWorld.vue'
-    import TheWelcome from './components/TheWelcome.vue'
     import BarreDeNavigation from './components/BarreDeNavigation.vue'
 </script>
 
