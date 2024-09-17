@@ -16,26 +16,26 @@
             </router-link>
         </div>
 
-        <div class="d-flex d-inline gap-5 flex-column flex-md-row mx-sm-2 mt-4 w-100 justify-content-center">
+        <div class="d-flex gap-5 flex-column flex-lg-row m-4 ">
             <AffichageEncanAccueil :type="passe" />
             <AffichageEncanAccueil :type="present" />
             <AffichageEncanAccueil :type="futur" />
         </div>
 
-        <div class="w-50 pt-3 px-5 mt-4 bleuMoyenFond text-center text-white contourDiv">
+        <div class="w-50 pt-3 px-4 mt-4 bleuMoyenFond text-center text-white contourDiv">
 
             <div class="fw-bold">
                 <img src="/icons/IconeMarteauBleuGris.png"
                      alt="Les Encans de Nantes"
                      height="60"
-                     class="transpositionImage px-4" />
+                     class="transpositionImage px-2 d-none d-lg-inline" />
 
                 Déroulement d'un encan
 
                 <img src="/icons/IconeMarteauBleuGris.png"
                      alt="Les Encans de Nantes"
                      height="60"
-                     class="px-4" />
+                     class="px-2" />
             </div>
 
             <p class="justifyText mb-0">
