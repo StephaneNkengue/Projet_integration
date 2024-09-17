@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import BarreDeNavigation from '@/components/BarreDeNavigation.vue'
+import Inscription from '@/components/inscription.vue'
 import Connexion from '@/components/Connexion.vue'
 
 const routes = [
@@ -8,11 +9,11 @@ const routes = [
     //    name: 'Accueil',
     //    component: Accueil
     //},
-    //{
-    //    path: '/accueil',
-    //    name: 'AccueilPage',
-    //    component: Accueil
-    //},
+    {
+        path: '/connexion',
+        name: 'Connexion',
+        component: Connexion
+    },
     {
         path: '/inscription',
         name: 'inscription',

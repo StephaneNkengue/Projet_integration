@@ -1,4 +1,7 @@
 <template>
+    <div>
+
+    </div>
     <div class="container d-flex flex-column justify-content-start align-items-stretch vh-100 container col-md-6">
         <h2 class="fs-1 text-center fw-bold mt-5">Inscription</h2>
         <p class="text-center">Obtenir un compte membre</p>
