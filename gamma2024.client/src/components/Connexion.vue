@@ -9,13 +9,13 @@
                     <div class="d-flex flex-row justify-content-center mb-3">
                         <div class="form-group w-90">
                             <label for="nomutilisateur" class="fw-bold ms-3">Nom d'utilisateur</label>
-                            <input type="text" class="form-control" id="nomutilisateur" />
+                            <input type="text" class="form-control" id="nomUtilisateur" />
                         </div>
                     </div>
                     <div class="d-flex flex-row justify-content-center mb-3">
                         <div class="form-group w-90">
                             <label for="motdepasse" class="fw-bold ms-3">Mot de passe</label>
-                            <input type="text" class="form-control" id="motdepasse" />
+                            <input type="text" class="form-control" id="motDePasse" />
                         </div>
                     </div>
                     <div class="d-flex flex-row justify-content-center mt-4 mb-1">
