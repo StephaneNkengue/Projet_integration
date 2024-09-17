@@ -5,7 +5,6 @@
 }
 
 
-a,
 .green {
     text-decoration: none;
     color: hsla(160, 100%, 37%, 1);
@@ -19,4 +18,25 @@ a,
 
 .bleuMoyenFond {
     background-color: #5A708A;
+}
+
+.btnSurvolerBleuMoyenFond:hover {
+    background-color: #83a0ba;
+}
+
+.lienEnTexteNoir {
+    color: #000000;
+}
+
+    .lienEnTexteNoir:hover {
+        color: #6c757d;
+    }
+
+.imageDeFondEsquise {
+    background-image: url('/public/images/DessinGris.PNG');
+    background-size: cover;
+    background-position: 0px -100px;
+    position: fixed;
+    height: 100vh;
+    width: 100%;
 }

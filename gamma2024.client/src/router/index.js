@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Inscription from '@/components/Inscription.vue'
+import BarreDeNavigation from '@/components/BarreDeNavigation.vue'
+import Connexion from '@/components/Connexion.vue'
 
 const routes = [
     //{
