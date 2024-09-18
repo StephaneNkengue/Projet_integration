@@ -9,16 +9,11 @@
 
                 <div class="d-flex flex-column align-items-center">
                     <p class="mb-1">Adresse:</p>
-                    <p class="text-center">1 rue Church <br /> Stanstead, QC <br /> J0B 3E2, Canada</p>
+                    <p class="text-center mb-1">1 rue Church Stanstead, QC J0B 3E2, Canada</p>
+                    <a href="https://maps.app.goo.gl/kS5TjtZ7Q2gfChCG7" target="_blank">
+                        <img src="/icons/maps.png" alt="carte" height="100" />
+                    </a>
                 </div>
-            </div>
-            <div>
-                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1994.6945548108804!2d-72.0976130141144!3d45.00616334838177!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4cb66f442b8d2677%3A0xe3542c488d5c1062!2s1%20Church%20St%2C%20Stanstead%2C%20QC%20J0B%203E2!5e0!3m2!1sen!2sca!4v1726587933561!5m2!1sen!2sca"
-                        height="300"
-                        style="border:0;"
-                        allowfullscreen=""
-                        loading="lazy"
-                        referrerpolicy="no-referrer-when-downgrade"></iframe>
             </div>
         </div>
 
@@ -90,7 +85,4 @@
 </script>
 
 <style scoped>
-    .test {
-        font-size: 20px;
-    }
 </style>
