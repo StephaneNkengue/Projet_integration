@@ -2,7 +2,14 @@ import { createRouter, createWebHistory } from 'vue-router'
 import store from '@/store'
 
 import BarreDeNavigation from '@/components/BarreDeNavigation.vue'
+import Inscription from '@/components/inscription.vue'
 import Connexion from '@/components/Connexion.vue'
+//import HomePage from '@/views/Home.vue'
+import LoginPage from '@/views/Login.vue'
+
+import BarreDeNavigation from '@/components/BarreDeNavigation.vue'
+import Connexion from '@/components/Connexion.vue'
+import Inscription from '@/components/Inscription.vue'
 //import HomePage from '@/views/Home.vue'
 import LoginPage from '@/views/Login.vue'
 
@@ -21,6 +28,27 @@ const routes = [
     path: '/login',
     name: 'Login',
     component: LoginPage
+  },
+    {
+  {
+    path: '/',
+    name: 'Home',
+    component: Connexion
+  },
+  // {
+  //   path: '/home',
+  //   name: 'HomePage',
+  //   component: HomePage
+  // },
+  {
+    path: '/login',
+    name: 'Login',
+    component: LoginPage
+  },
+  {
+    path: '/inscription',
+    name: 'Inscription',
+    component: Inscription
   },
     {
         //    path: '/',

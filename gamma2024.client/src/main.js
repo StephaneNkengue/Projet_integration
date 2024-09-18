@@ -7,6 +7,6 @@ import router from './router'
 
 
 const app = createApp(App)
-app.use(store).use(router).mount('#app')
-app.component('Button', Button);
+app.use(store).use(router).mount('#app');
+
 
