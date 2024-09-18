@@ -59,7 +59,7 @@
                 </ul>
 
                 <div class="d-flex justify-content-center gap-3">
-                    <router-link to="/">
+                    <router-link to="/inscription">
                         <button class="btn btn-outline bleuMoyenFond" type="button">Inscription</button>
                     </router-link>
                     <router-link to="/connexion">
