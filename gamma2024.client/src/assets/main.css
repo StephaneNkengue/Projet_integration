@@ -34,7 +34,7 @@
     background-image: url('/public/images/DessinGris.PNG');
     background-size: cover;
     background-position: 0px -100px;
-    position: fixed;
+    background-attachment: fixed;
     height: 100vh;
     width: 100%;
 }
@@ -47,9 +47,9 @@
     transform: scaleX(-1);
 }
 
-main {
+/*main {
     padding-top: 10rem;
-}
+}*/
 
 .contourDiv {
     border-style: solid;

@@ -1,5 +1,5 @@
 <template>
-    <header class="fixed-top">
+    <header class="sticky-top">
         <div>
             <nav class="navbar navbar-expand-md bleuMarinFond" data-bs-theme="dark">
                 <div class="container-fluid justify-content-between">
