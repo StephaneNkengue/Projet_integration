@@ -1,5 +1,8 @@
 <template>
     <div class="d-flex flex-column align-items-center">
+
+        <h1 class="pb-4">Contact</h1>
+
         <div class="contourDiv d-flex gap-5 p-4 flex-column flex-md-row">
             <div class="d-flex flex-column align-items-center justify-content-around">
                 <div class="d-flex flex-column align-items-center">
