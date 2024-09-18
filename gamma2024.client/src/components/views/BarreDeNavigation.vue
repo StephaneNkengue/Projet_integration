@@ -71,7 +71,7 @@
                             <router-link to="/">
                                 <button class="btn btn-outline bleuMoyenFond text-white" type="button">Inscription</button>
                             </router-link>
-                            <router-link to="/">
+                            <router-link to="/connexion">
                                 <button class="btn btn-outline bleuMoyenFond text-white" type="button">Connexion</button>
                             </router-link>
                         </div>
