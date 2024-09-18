@@ -1,5 +1,5 @@
 <template>
-    <div class="d-flex flex-column align-items-center">
+    <div class="d-flex flex-column align-items-center pb-3">
         <div class="text-center">
             <h1>Les Encans de Nantes</h1>
 
