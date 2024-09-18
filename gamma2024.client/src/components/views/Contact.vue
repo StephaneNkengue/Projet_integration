@@ -14,7 +14,7 @@
                     <p class="mb-1">Adresse:</p>
                     <p class="text-center mb-1">1 rue Church Stanstead, QC J0B 3E2, Canada</p>
                     <a href="https://maps.app.goo.gl/kS5TjtZ7Q2gfChCG7" target="_blank">
-                        <img src="/icons/maps.png" alt="carte" height="100" />
+                        <img src="/icons/map.png" alt="carte" height="80" />
                     </a>
                 </div>
             </div>
