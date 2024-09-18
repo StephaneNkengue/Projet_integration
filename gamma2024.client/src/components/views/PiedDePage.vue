@@ -8,21 +8,21 @@
         <div class="col-md-7">
             <ul class="nav justify-content-end d-flex align-items-center flex-column flex-md-row">
                 <li>
-                    <router-link to="/" class="text-decoration-none">
+                    <router-link to="Accueil" class="text-decoration-none">
                         <a class="nav-link text-white">
                             Conditions de la compagnie
                         </a>
                     </router-link>
                 </li>
                 <li>
-                    <router-link to="/contact" class="text-decoration-none">
+                    <router-link to="Contact" class="text-decoration-none">
                         <a class="nav-link text-white">
                             Contact
                         </a>
                     </router-link>
                 </li>
                 <li>
-                    <router-link to="/apropos" class="text-decoration-none">
+                    <router-link to="APropos" class="text-decoration-none">
                         <a class="nav-link text-white">
                             À propos
                         </a>
