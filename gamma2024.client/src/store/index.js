@@ -47,6 +47,23 @@ export default createStore({
       commit('setLoggedIn', false)
       commit('setUser', null)
       commit('setRoles', [])
+    },
+    async creerCompteUtilisateur({ commit }, userData) {
+      try {
+        const response = await api.post('/utilisateurs/creer', userData);
+        if (response.data.success) {
+          console.log("Compte créé avec succès !");
+          return { success: true };
+        } else {
+          return { success: false, error: response.data.message || "Erreur lors de la création du compte" };
+        }
+      } catch (error) {
+        console.error("Erreur détaillée lors de la création du compte:", error.response || error);
+        return { 
+          success: false, 
+          error: error.response?.data?.message || error.message || "Erreur lors de la création du compte" 
+        };
+      }
     }
   },
   getters: {

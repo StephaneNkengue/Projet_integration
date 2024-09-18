@@ -3,6 +3,7 @@ using Gamma2024.Server.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Gamma2024.Server.Models;
+using Gamma2024.Server.Services;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -17,6 +18,7 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.R
 
 // Add services to the container.
 builder.Services.AddControllers();
+builder.Services.AddScoped<InscriptionService>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<PasswordHasher<IdentityUser>>();
@@ -51,9 +53,14 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
     app.UseMigrationsEndPoint();
+    app.UseCors(builder => builder
+        .AllowAnyOrigin()
+        .AllowAnyMethod()
+        .AllowAnyHeader());
 }
 else
 {
+    app.UseCors("AllowSpecificOrigin");
     app.UseExceptionHandler("/Error");
     app.UseHsts();
 }

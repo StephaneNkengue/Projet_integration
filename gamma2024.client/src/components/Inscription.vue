@@ -6,8 +6,15 @@
       <h2 class="fs-1 text-center fw-bold mt-5">Inscription</h2>
       <p class="text-center">Obtenir un compte membre</p>
 
+      <!-- validation des erreurs -->
+      <div v-if="errorMessage" class="alert alert-danger">
+        {{ errorMessage }}
+      </div>
+
+
       <!-- Stepper Navigation -->
       <div class="mt-3">
+
         <form @submit.prevent="submitForm">
           <Stepper v-model:activeIndex="activeIndex" :class="['mb-4']">
             <!-- Informations générales -->
@@ -452,6 +459,7 @@
 
 <script setup>
 import { ref, computed, reactive } from "vue";
+import { useStore } from 'vuex';
 import Stepper from "primevue/stepper";
 import StepItem from "primevue/stepitem";
 import Step from "primevue/step";
@@ -459,12 +467,11 @@ import StepPanel from "primevue/steppanel";
 import { useVuelidate } from "@vuelidate/core";
 import { required, email, helpers } from "@vuelidate/validators";
 
+const store = useStore();
 const activeIndex = ref(1);
 const messageRequis = helpers.withMessage("Ce champ est requis", required);
-const messageCourriel = helpers.withMessage(
-  "Veuillez entrer un courriel valide",
-  email
-);
+const messageCourriel = helpers.withMessage("Veuillez entrer un courriel valide", email);
+const errorMessage = ref('');
 
 //objet qui contient tous les champs remplis correctement
 let formData = reactive({
@@ -530,17 +537,9 @@ const carte = useVuelidate(rules.value.carteCredit, formData.carteCredit);
 
 const classeActiveBouton = ref("btn rounded-pill px-5 me-4");
 
-const state1 = computed(() => {
-  return info.value.$invalid;
-});
-
-const state2 = computed(() => {
-  return carte.value.$invalid;
-});
-
-const stateFinal = computed(() => {
-  return v.value.$invalid;
-});
+const state1 = computed(() => info.value.$invalid);
+const state2 = computed(() => carte.value.$invalid);
+const stateFinal = computed(() => v.value.$invalid);
 
 function allerAuSuivantPrecedent(stepIndex) {
   activeIndex.value = stepIndex;
@@ -549,32 +548,22 @@ function allerAuSuivantPrecedent(stepIndex) {
 const submitForm = async () => {
   const result = await v.value.$validate();
   if (result) {
-    alert("Form submitted successfully!");
-    creerCompteUtilisateur();
+    try {
+      const response = await store.dispatch('creerCompteUtilisateur', formData);
+      if (response.success) {
+        alert("Compte créé avec succès !");
+        // Rediriger vers la page de connexion ou le tableau de bord
+      } else {
+        errorMessage.value = response.error || "Une erreur est survenue lors de la création du compte.";
+      }
+    } catch (error) {
+      console.error("Erreur lors de la création du compte:", error);
+      errorMessage.value = "Une erreur inattendue s'est produite. Veuillez réessayer.";
+    }
   } else {
-    alert("Form not submitted!");
+    errorMessage.value = "Veuillez corriger les erreurs dans le formulaire.";
   }
 };
-
-//envoi des données vers le backEnd
-async function creerCompteUtilisateur() {
-  try {
-    const response = await fetch("/api/users/register", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(formData),
-    });
-    if (response.ok) {
-      console.log("Compte créé avec succès !");
-    } else {
-      console.error("Erreur lors de la création du compte");
-    }
-  } catch (error) {
-    console.error("Erreur réseau:", error);
-  }
-}
 </script>
 
 <style scoped>
@@ -596,7 +585,7 @@ span {
 .background-container {
   width: 100%;
   height: 100vh;
-  background-image: url("/public/images/DessinGris.PNG");
+/*  background-image: url("/public/images/DessinGris.PNG");*/ 
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;

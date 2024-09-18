@@ -1,15 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import store from '@/store'
 
-import BarreDeNavigation from '@/components/BarreDeNavigation.vue'
-import Inscription from '@/components/inscription.vue'
-import Connexion from '@/components/Connexion.vue'
-//import HomePage from '@/views/Home.vue'
-import LoginPage from '@/views/Login.vue'
-
-import BarreDeNavigation from '@/components/BarreDeNavigation.vue'
-import Connexion from '@/components/Connexion.vue'
 import Inscription from '@/components/Inscription.vue'
+import Connexion from '@/components/Connexion.vue'
 //import HomePage from '@/views/Home.vue'
 import LoginPage from '@/views/Login.vue'
 
@@ -29,7 +22,7 @@ const routes = [
     name: 'Login',
     component: LoginPage
   },
-    {
+    
   {
     path: '/',
     name: 'Home',
@@ -79,7 +72,7 @@ router.beforeEach((to, from, next) => {
         if (!isLoggedIn) {
             next('/login')
         } else if (requiredRole && !store.state.roles.includes(requiredRole)) {
-            next('/unauthorized') // Créez une vue pour les accès non autorisés
+            next('/unauthorized') // Crï¿½ez une vue pour les accï¿½s non autorisï¿½s
         } else {
             next()
         }
