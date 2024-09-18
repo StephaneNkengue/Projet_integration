@@ -22,7 +22,7 @@
                     </router-link>
                 </li>
                 <li>
-                    <router-link to="/" class="text-decoration-none">
+                    <router-link to="/apropos" class="text-decoration-none">
                         <a class="nav-link text-white">
                             À propos
                         </a>
