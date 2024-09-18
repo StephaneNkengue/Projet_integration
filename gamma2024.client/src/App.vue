@@ -6,7 +6,7 @@
 <template>
     <BarreDeNavigation />
 
-    <main class="mh-100 flex-grow-1 mb-3">
+    <main class="mh-100 flex-grow-1">
         <router-view></router-view>
     </main>
 
