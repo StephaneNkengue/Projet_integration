@@ -31,19 +31,19 @@ builder.Services.AddAuthorization(options =>
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("VueAppPolicy", builder =>
-    {
-        builder.WithOrigins("http://localhost:5122")
-               .AllowCredentials()
-               .AllowAnyHeader()
-               .AllowAnyMethod();
-    });
+    options.AddPolicy("AllowSpecificOrigin",
+        builder => builder
+            .WithOrigins("https://localhost:5173") // L'origine de votre frontend
+            .AllowAnyMethod()
+            .AllowAnyHeader()
+            .AllowCredentials());
 });
 
 var app = builder.Build();
 
 app.UseDefaultFiles();
 app.UseStaticFiles();
+app.UseCors("AllowSpecificOrigin");
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -69,6 +69,5 @@ app.MapControllers();
 
 app.MapFallbackToFile("/index.html");
 
-app.UseCors("VueAppPolicy");
 
 app.Run();

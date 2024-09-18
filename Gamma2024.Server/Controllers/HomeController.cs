@@ -26,8 +26,12 @@ namespace Gamma2024.Server.Controllers
             if (result.Succeeded)
             {
                 var user = await _userManager.FindByEmailAsync(model.Email);
-                var roles = await _userManager.GetRolesAsync(user);
-                return Ok(new { message = "Connexion réussie", userId = user.Id, roles = roles });
+                if (user != null)
+                {
+                    var roles = await _userManager.GetRolesAsync(user);
+                    return Ok(new { message = "Connexion réussie", userId = user.Id, roles = roles });
+                }
+                return Unauthorized(new { message = "Utilisateur non trouvé" });
             }
             else
             {
