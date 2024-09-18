@@ -47,9 +47,9 @@
     transform: scaleX(-1);
 }
 
-main {
+/*main {
     padding-top: 10rem;
-}
+}*/
 
 .contourDiv {
     border-style: solid;
