@@ -453,7 +453,7 @@
     //envoi des données vers le backEnd
     async function creerCompteUtilisateur() {
         try {
-            const response = await fetch("https://localhost:7206/api/Utilisateurs/creer", {
+            const response = await fetch("https://sqlinfo.cegepgranby.qc.ca/2135621/api", /*"https://localhost:7206/api/Utilisateurs/creer"*/ {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -462,6 +462,9 @@
             });
             if (response.ok) {
                 console.log("Compte créé avec succès !, vérifier votre pour la confirmation");
+                setTimeout(() => {
+                    this.$router.push('/');
+                }, 500);
             } else {
                 const errorData = await response.json();
                 console.error("Erreur lors de la création du compte", errorData);

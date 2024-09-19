@@ -4,6 +4,7 @@ const apiUrls = [
     'https://localhost:7206/api',
     'http://localhost:5121/api',
     'http://localhost:5122/api'
+    'https://sqlinfo.cegepgranby.qc.ca/2135621/api'
 ];
 
 let workingBaseURL = null;
