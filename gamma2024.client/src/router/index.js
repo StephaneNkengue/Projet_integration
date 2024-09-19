@@ -3,8 +3,11 @@ import store from '@/store'
 
 import Inscription from '@/components/Inscription.vue'
 import Connexion from '@/components/Connexion.vue'
-import HomePage from '@/views/Home.vue'
-import LoginPage from '@/views/Login.vue'
+import Accueil from '@/components/views/Accueil.vue'
+import Contact from '@/components/views/Contact.vue'
+import APropos from '@/components/views/APropos.vue'      
+//import HomePage from '@/views/Home.vue'
+//import LoginPage from '@/views/Login.vue'
 
 const routes = [
     {

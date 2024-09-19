@@ -549,7 +549,16 @@ const submitForm = async () => {
   const result = await v.value.$validate();
   if (result) {
     try {
-      const response = await store.dispatch('creerCompteUtilisateur', formData);
+      // Ajustez la structure si nécessaire
+      const dataToSend = {
+        generalInfo: formData.generalInfo,
+        carteCredit: formData.carteCredit,
+        adresse: formData.adresse
+      };
+      console.log("Données d'inscription à envoyer:", dataToSend);
+      const response = await store.dispatch('creerCompteUtilisateur', dataToSend);
+      //console.log("Données d'inscription à envoyer:", formData); // Ajoutez cette ligne
+      //const response = await store.dispatch('creerCompteUtilisateur', formData);
       if (response.success) {
         alert("Compte créé avec succès !");
         // Rediriger vers la page de connexion ou le tableau de bord
@@ -563,6 +572,7 @@ const submitForm = async () => {
   } else {
     errorMessage.value = "Veuillez corriger les erreurs dans le formulaire.";
   }
+
 };
 </script>
 
