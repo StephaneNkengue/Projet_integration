@@ -1,12 +1,10 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import store from '@/store'
 
-import BarreDeNavigation from '@/components/BarreDeNavigation.vue'
+import Inscription from '@/components/Inscription.vue'
 import Connexion from '@/components/Connexion.vue'
 import HomePage from '@/views/Home.vue'
 import LoginPage from '@/views/Login.vue'
-import Connexion from '@/components/Connexion.vue'
-import BarreDeNavigation from '@/components/BarreDeNavigation.vue'
 
 const routes = [
     {
@@ -33,6 +31,11 @@ const routes = [
         path: '/connexion',
         name: 'Connexion',
         component: Connexion
+    },
+    {
+        path: '/inscription',
+        name: 'Inscription',
+        component: Inscription
     },
     {
         //    path: '/',

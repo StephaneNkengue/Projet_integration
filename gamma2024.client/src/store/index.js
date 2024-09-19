@@ -23,30 +23,47 @@ export default createStore({
   actions: {
     async login({ commit }, userData) {
       try {
-        console.log('Tentative de connexion avec:', userData); // Log des données envoyées
-        const response = await api.post('/api/home/login', {
+        console.log('Tentative de connexion avec:', userData);
+        const response = await api.post('/home/login', {
           email: userData.email,
           password: userData.password
-        })
-        console.log('Réponse du serveur:', response.data); // Log de la réponse du serveur
+        });
+        console.log('Réponse du serveur:', response.data);
         if (response.data.message === "Connexion réussie") {
-          commit('setLoggedIn', true)
+          commit('setLoggedIn', true);
           commit('setUser', {
             email: userData.email,
             id: response.data.userId
-          })
-          commit('setRoles', response.data.roles)
-          return { success: true, roles: response.data.roles }
+          });
+          commit('setRoles', response.data.roles);
+          return { success: true, roles: response.data.roles };
         }
       } catch (error) {
-        console.error("Erreur de connexion détaillée:", error.response); // Log détaillé de l'erreur
-        return { success: false, error: error.response?.data?.message || "Erreur de connexion" }
+        console.error("Erreur de connexion détaillée:", error.response);
+        return { success: false, error: error.response?.data?.message || "Erreur de connexion" };
       }
     },
     logout({ commit }) {
       commit('setLoggedIn', false)
       commit('setUser', null)
       commit('setRoles', [])
+    },
+    async creerCompteUtilisateur({ commit }, userData) {
+      try {
+        const response = await api.post('/utilisateurs/creer', userData);
+        if (response.data.success) {
+          console.log("Compte créé avec succès !");
+          return { success: true };
+        } else {
+          return { success: false, error: response.data.message || "Erreur lors de la création du compte" };
+        }
+      } catch (error) {
+        console.error("Erreur détaillée lors de la création du compte:", error.response || error);
+        return { 
+          success: false, 
+          error: error.response?.data?.message || error.message || "Erreur lors de la création du compte" 
+        };
+      }
     }
   },
   getters: {

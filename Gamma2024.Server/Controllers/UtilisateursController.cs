@@ -1,0 +1,49 @@
+using Microsoft.AspNetCore.Mvc;
+using Gamma2024.Server.Models;
+using System.Threading.Tasks;
+using Gamma2024.Server.Data;
+using Gamma2024.Server.Services;
+using Gamma2024.Server.ViewModels;
+using Microsoft.AspNetCore.Authorization;
+
+namespace Gamma2024.Server.Controllers
+{
+    [ApiController]
+    [Route("api/[controller]")]
+    [AllowAnonymous]
+    public class UtilisateursController : ControllerBase
+    {
+        private readonly InscriptionService _inscriptionService;
+
+        public UtilisateursController(InscriptionService inscriptionService)
+        {
+            _inscriptionService = inscriptionService;
+        }
+
+        [HttpPost("creer")]
+        public async Task<IActionResult> Creer([FromBody] InscriptionVM model)
+        {
+            if (!ModelState.IsValid)
+            {
+                
+                return BadRequest(ModelState);
+            }
+
+            var (success, message) = await _inscriptionService.InscrireUtilisateur(model);
+
+            if (success)
+            {
+                return Ok(new { success = true, message = message });
+            }
+            else
+            {
+                return BadRequest(new { success = false, message = message });
+            }
+        }
+    }
+
+    public class UtilisateurModel
+    {
+        // Définissez ici les propriétés correspondant à votre formData
+    }
+}
