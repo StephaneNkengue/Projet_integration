@@ -458,27 +458,19 @@ const store = useStore();
     //envoi des données vers le backEnd
     async function creerCompteUtilisateur() {
         try {
-            const response = await fetch("https://localhost:7206/api/Utilisateurs/creer", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(formData),
-            });
-            if (response.ok) {
-                console.log("Compte créé avec succès !, vérifier votre pour la confirmation");
+            const result = await store.dispatch('creerCompteUtilisateur', formData);
+            if (result.success) {
+                console.log("Compte créé avec succès !, vérifier votre email pour la confirmation");
+                // Rediriger l'utilisateur ou afficher un message de succès
             } else {
-                const errorData = await response.json();
-                console.error("Erreur lors de la création du compte", errorData);
+                console.error("Erreur lors de la création du compte", result.error);
+                // Afficher un message d'erreur à l'utilisateur
             }
         } catch (error) {
             console.error("Erreur réseau:", error);
+            // Afficher un message d'erreur à l'utilisateur
         }
-  } else {
-    errorMessage.value = "Veuillez corriger les erreurs dans le formulaire.";
     }
-
-};
 </script>
 
 <style scoped>

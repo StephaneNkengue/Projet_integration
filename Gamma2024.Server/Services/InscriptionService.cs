@@ -2,7 +2,7 @@ using Gamma2024.Server.Data;
 using Gamma2024.Server.Models;
 using Gamma2024.Server.ViewModels;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore; // Ajoutez cette ligne en haut du fichier
+using Microsoft.EntityFrameworkCore; 
 
 namespace Gamma2024.Server.Services
 {
@@ -171,6 +171,7 @@ namespace Gamma2024.Server.Services
             if (string.IsNullOrWhiteSpace(model.GeneralInfo.Pseudo))
             {
                 return (false, "Le pseudo est obligatoire.");
+            }
 
             if (model.GeneralInfo.Pseudo.Length < 3 || model.GeneralInfo.Pseudo.Length > 20)
                 return (false, "Le pseudo doit contenir entre 3 et 20 caractères.");
