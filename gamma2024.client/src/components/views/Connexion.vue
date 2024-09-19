@@ -50,7 +50,6 @@
 <style scoped>
     .cadreBlanc {
         border-radius: 15px;
-        overflow: hidden;
         height: 450px;
         width: 410px;
     }
