@@ -453,7 +453,7 @@
     //envoi des données vers le backEnd
     async function creerCompteUtilisateur() {
         try {
-            const response = await fetch("/api/Utilisateurs/creer", {
+            const response = await fetch("https://localhost:7206/api/Utilisateurs/creer", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

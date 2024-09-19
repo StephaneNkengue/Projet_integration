@@ -1,8 +1,8 @@
-using Microsoft.AspNetCore.Authentication.Negotiate;
 using Gamma2024.Server.Data;
+using Gamma2024.Server.Models;
+using Microsoft.AspNetCore.Authentication.Negotiate;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Gamma2024.Server.Models;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -33,7 +33,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("VueAppPolicy", builder =>
     {
-        builder.WithOrigins("http://localhost:5122")
+        builder.WithOrigins("https://localhost:5173/")
                .AllowCredentials()
                .AllowAnyHeader()
                .AllowAnyMethod();
