@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
 using System.Threading.Tasks;
 using Gamma2024.Server.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Gamma2024.Server.Controllers
 {
@@ -21,28 +22,31 @@ namespace Gamma2024.Server.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginModel model)
         {
-            var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, false, false);
+            var user = await _userManager.FindByEmailAsync(model.EmailOuPseudo) 
+                       ?? await _userManager.Users.FirstOrDefaultAsync(u => u.Pseudonym.ToLower() == model.EmailOuPseudo.ToLower());
+
+            if (user == null)
+            {
+                return Unauthorized(new { message = "Utilisateur non trouvé" });
+            }
+
+            var result = await _signInManager.PasswordSignInAsync(user.UserName ?? string.Empty, model.Password, false, false);
 
             if (result.Succeeded)
             {
-                var user = await _userManager.FindByEmailAsync(model.Email);
-                if (user != null)
-                {
-                    var roles = await _userManager.GetRolesAsync(user);
-                    return Ok(new { message = "Connexion réussie", userId = user.Id, roles = roles });
-                }
-                return Unauthorized(new { message = "Utilisateur non trouvé" });
+                var roles = await _userManager.GetRolesAsync(user);
+                return Ok(new { message = "Connexion réussie", userId = user.Id, roles = roles });
             }
             else
             {
                 return Unauthorized(new { message = "Échec de la connexion" });
             }
         }
-    }
 
-    public class LoginModel
-    {
-        public string Email { get; set; } = null!;
-        public string Password { get; set; } = null!;
+        public class LoginModel
+        {
+            public string EmailOuPseudo { get; set; } = null!;
+            public string Password { get; set; } = null!;
+        }
     }
 }

@@ -2,6 +2,7 @@ using Gamma2024.Server.Data;
 using Gamma2024.Server.Models;
 using Gamma2024.Server.ViewModels;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore; // Ajoutez cette ligne en haut du fichier
 
 namespace Gamma2024.Server.Services
 {
@@ -23,6 +24,12 @@ namespace Gamma2024.Server.Services
             if (!isValid)
             {
                 return (false, errorMessage);
+            }
+
+            // Vérifier l'unicité du pseudonyme
+            if (!await IsPseudonymUnique(model.GeneralInfo.Pseudo))
+            {
+                return (false, "Ce pseudonyme est déjà utilisé. Veuillez en choisir un autre.");
             }
 
             using var transaction = await _context.Database.BeginTransactionAsync();
@@ -96,6 +103,11 @@ namespace Gamma2024.Server.Services
             }
         }
 
+        private async Task<bool> IsPseudonymUnique(string pseudonym)
+        {
+            return !await _context.Users.AnyAsync(u => u.Pseudonym == pseudonym);
+        }
+
         private (bool IsValid, int Mois, int Annee) ValidateAndParseExpirationDate(string expirationDate)
         {
             if (!System.Text.RegularExpressions.Regex.IsMatch(expirationDate, @"^(0[1-9]|1[0-2])\/([0-9]{2})$"))
@@ -146,6 +158,12 @@ namespace Gamma2024.Server.Services
 
             if (string.IsNullOrWhiteSpace(model.GeneralInfo.Pseudo))
                 return (false, "Le pseudo est obligatoire.");
+
+            if (model.GeneralInfo.Pseudo.Length < 3 || model.GeneralInfo.Pseudo.Length > 20)
+                return (false, "Le pseudo doit contenir entre 3 et 20 caractères.");
+
+            if (!System.Text.RegularExpressions.Regex.IsMatch(model.GeneralInfo.Pseudo, "^[a-zA-Z0-9_]+$"))
+                return (false, "Le pseudo ne peut contenir que des lettres, des chiffres et des underscores.");
 
             if (string.IsNullOrWhiteSpace(model.GeneralInfo.MotDePasse) || model.GeneralInfo.MotDePasse.Length < 8)
                 return (false, "Le mot de passe doit contenir au moins 8 caractères.");

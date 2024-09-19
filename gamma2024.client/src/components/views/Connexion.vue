@@ -8,16 +8,16 @@
                 <div class="px-4 py-2 mb-4">
                     <div class="d-flex flex-row justify-content-center mb-3">
                         <div class="form-group w-90">
-                            <label for="email" class="fw-bold ms-3">Email</label>
+                            <label for="emailOuPseudo" class="fw-bold ms-3">Email ou pseudonyme</label>
                             <input 
-                                type="email" 
+                                type="text" 
                                 class="form-control" 
-                                id="email" 
-                                v-model="email" 
-                                @input="validateEmail"
-                                :class="{ 'is-invalid': emailError }"
+                                id="emailOuPseudo" 
+                                v-model="emailOuPseudo" 
+                                @input="validateEmailOuPseudo"
+                                :class="{ 'is-invalid': emailOuPseudoError }"
                             />
-                            <div v-if="emailError" class="invalid-feedback">{{ emailError }}</div>
+                            <div v-if="emailOuPseudoError" class="invalid-feedback">{{ emailOuPseudoError }}</div>
                         </div>
                     </div>
                     <div class="d-flex flex-row justify-content-center mb-3">
@@ -63,20 +63,20 @@
 export default {
     data() {
         return {
-            email: '',
+            emailOuPseudo: '',
             password: '',
-            emailError: '',
+            emailOuPseudoError: '',
             passwordError: '',
             messageErreur: '',
             messageSucces: ''
         }
     },
     methods: {
-        validateEmail() {
-            if (!this.email) {
-                this.emailError = "L'email est obligatoire";
+        validateEmailOuPseudo() {
+            if (!this.emailOuPseudo) {
+                this.emailOuPseudoError = "L'email ou le pseudonyme est obligatoire";
             } else {
-                this.emailError = "";
+                this.emailOuPseudoError = "";
             }
         },
         validatePassword() {
@@ -87,10 +87,10 @@ export default {
             }
         },
         connexion() {
-            this.validateEmail();
+            this.validateEmailOuPseudo();
             this.validatePassword();
 
-            if (this.emailError || this.passwordError) {
+            if (this.emailOuPseudoError || this.passwordError) {
                 return; // Empêche la soumission si des erreurs sont présentes
             }
 
@@ -98,9 +98,9 @@ export default {
         },
         async tenterConnexion() {
             try {
-                console.log('Tentative de connexion avec:', { email: this.email, password: this.password });
+                console.log('Tentative de connexion avec:', { emailOuPseudo: this.emailOuPseudo, password: this.password });
                 const result = await this.$store.dispatch('login', { 
-                    email: this.email, 
+                    emailOuPseudo: this.emailOuPseudo, 
                     password: this.password
                 });
                 if (result.success) {

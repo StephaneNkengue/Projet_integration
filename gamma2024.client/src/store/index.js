@@ -25,14 +25,14 @@ export default createStore({
       try {
         console.log('Tentative de connexion avec:', userData);
         const response = await api.post('/home/login', {
-          email: userData.email,
+          emailOuPseudo: userData.emailOuPseudo,  // Modifié ici
           password: userData.password
         });
         console.log('Réponse du serveur:', response.data);
         if (response.data.message === "Connexion réussie") {
           commit('setLoggedIn', true);
           commit('setUser', {
-            email: userData.email,
+            email: userData.emailOuPseudo,  // Modifié ici
             id: response.data.userId
           });
           commit('setRoles', response.data.roles);
