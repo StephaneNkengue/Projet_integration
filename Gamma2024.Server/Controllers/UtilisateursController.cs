@@ -28,7 +28,6 @@ namespace Gamma2024.Server.Controllers
         {
             if (!ModelState.IsValid)
             {
-                
                 return BadRequest(ModelState);
             }
 
@@ -47,6 +46,6 @@ namespace Gamma2024.Server.Controllers
 
     public class UtilisateurModel
     {
-        // Définissez ici les propriétés correspondant à votre formData
+        // Dfinissez ici les proprits correspondant votre formData
     }
 }

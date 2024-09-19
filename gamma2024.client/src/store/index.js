@@ -50,7 +50,7 @@ export default createStore({
     },
     async creerCompteUtilisateur({ commit }, userData) {
       try {
-        console.log("Données envoyées au serveur:", userData); // Ajoutez cette ligne
+        console.log("Données envoyées au serveur:", userData);
         const response = await api.post('/utilisateurs/creer', userData);
         if (response.data.success) {
           console.log("Compte créé avec succès !");
