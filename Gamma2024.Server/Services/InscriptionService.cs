@@ -43,7 +43,7 @@ namespace Gamma2024.Server.Services
                     return (false, "La date d'expiration de la carte est invalide ou expirée.");
                 }
 
-               
+
 
                 // Créer le client (ApplicationUser)
                 var client = new ApplicationUser
@@ -139,24 +139,37 @@ namespace Gamma2024.Server.Services
         private (bool IsValid, string ErrorMessage) ValidateInscription(InscriptionVM model)
         {
             if (model == null)
+            {
                 return (false, "Les données d'inscription sont manquantes.");
+            }
 
             if (model.GeneralInfo == null)
+            {
                 return (false, "Les informations générales sont manquantes.");
+            }
 
             if (string.IsNullOrWhiteSpace(model.GeneralInfo.Nom))
+            {
                 return (false, "Le nom est obligatoire.");
+            }
 
             if (string.IsNullOrWhiteSpace(model.GeneralInfo.Prenom))
+            {
                 return (false, "Le prénom est obligatoire.");
+            }
 
             if (string.IsNullOrWhiteSpace(model.GeneralInfo.Courriel) || !IsValidEmail(model.GeneralInfo.Courriel))
+            {
                 return (false, "L'adresse courriel est invalide ou manquante.");
+            }
 
             if (string.IsNullOrWhiteSpace(model.GeneralInfo.Telephone) || !IsValidPhoneNumber(model.GeneralInfo.Telephone))
+            {
                 return (false, "Le numéro de téléphone est invalide ou manquant.");
+            }
 
             if (string.IsNullOrWhiteSpace(model.GeneralInfo.Pseudo))
+            {
                 return (false, "Le pseudo est obligatoire.");
 
             if (model.GeneralInfo.Pseudo.Length < 3 || model.GeneralInfo.Pseudo.Length > 20)
@@ -166,47 +179,75 @@ namespace Gamma2024.Server.Services
                 return (false, "Le pseudo ne peut contenir que des lettres, des chiffres et des underscores.");
 
             if (string.IsNullOrWhiteSpace(model.GeneralInfo.MotDePasse) || model.GeneralInfo.MotDePasse.Length < 8)
+            {
                 return (false, "Le mot de passe doit contenir au moins 8 caractères.");
+            }
 
             if (model.GeneralInfo.MotDePasse != model.GeneralInfo.ConfirmMotPasse)
+            {
                 return (false, "Les mots de passe ne correspondent pas.");
+            }
 
             if (model.CarteCredit == null)
+            {
                 return (false, "Les informations de carte de crédit sont manquantes.");
+            }
 
             if (string.IsNullOrWhiteSpace(model.CarteCredit.NomProprio))
+            {
                 return (false, "Le nom du propriétaire de la carte est obligatoire.");
+            }
 
             if (string.IsNullOrWhiteSpace(model.CarteCredit.NumeroCarte) || !IsValidCreditCardNumber(model.CarteCredit.NumeroCarte))
+            {
                 return (false, "Le numéro de carte de crédit est invalide ou manquant.");
+            }
 
             if (string.IsNullOrWhiteSpace(model.CarteCredit.DateExpiration))
+            {
                 return (false, "La date d'expiration de la carte est manquante.");
+            }
 
             var (isValidExpiration, _, _) = ValidateAndParseExpirationDate(model.CarteCredit.DateExpiration);
             if (!isValidExpiration)
+            {
                 return (false, "La date d'expiration de la carte est invalide ou expirée.");
+            }
 
             if (model.Adresse == null)
+            {
                 return (false, "Les informations d'adresse sont manquantes.");
+            }
 
             if (string.IsNullOrWhiteSpace(model.Adresse.NumeroCivique))
+            {
                 return (false, "Le numéro civique est obligatoire.");
+            }
 
             if (string.IsNullOrWhiteSpace(model.Adresse.Rue))
+            {
                 return (false, "La rue est obligatoire.");
+            }
 
             if (string.IsNullOrWhiteSpace(model.Adresse.Ville))
+            {
                 return (false, "La ville est obligatoire.");
+            }
 
             if (string.IsNullOrWhiteSpace(model.Adresse.Province))
+            {
                 return (false, "La province est obligatoire.");
+            }
 
             if (string.IsNullOrWhiteSpace(model.Adresse.Pays))
+            {
                 return (false, "Le pays est obligatoire.");
+            }
 
             if (string.IsNullOrWhiteSpace(model.Adresse.CodePostal) || !IsValidPostalCode(model.Adresse.CodePostal))
+            {
                 return (false, "Le code postal est invalide ou manquant.");
+            }
 
             return (true, null);
         }
@@ -236,7 +277,7 @@ namespace Gamma2024.Server.Services
 
         private bool IsValidPostalCode(string postalCode)
         {
-            return System.Text.RegularExpressions.Regex.IsMatch(postalCode, 
+            return System.Text.RegularExpressions.Regex.IsMatch(postalCode,
                 @"^[ABCEGHJKLMNPRSTVXYabceghjklmnprstvwxyz]\d[ABCEGHJKLMNPRSTVWXYZabceghjklmnprstvwxyz][ -]?\d[ABCEGHJKLMNPRSTVWXYZabceghjklmnprstvwxyz]\d$",
                 System.Text.RegularExpressions.RegexOptions.IgnoreCase);
         }

@@ -1,3 +1,6 @@
+using Gamma2024.Server.Services;
+using Gamma2024.Server.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Gamma2024.Server.Models;
 using System.Threading.Tasks;
@@ -44,6 +47,6 @@ namespace Gamma2024.Server.Controllers
 
     public class UtilisateurModel
     {
-        // DÃ©finissez ici les propriÃ©tÃ©s correspondant Ã  votre formData
+        // Définissez ici les propriétés correspondant à votre formData
     }
 }
