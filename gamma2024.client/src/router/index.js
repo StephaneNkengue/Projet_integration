@@ -37,11 +37,6 @@ const routes = [
         path: '/inscription',
         name: 'Inscription',
         component: Inscription
-    },
-    {
-        path: '/connexion',
-        name: 'Connexion',
-        component: Connexion
     }
 ]
 
