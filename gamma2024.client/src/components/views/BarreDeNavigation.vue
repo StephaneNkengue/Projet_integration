@@ -64,6 +64,13 @@
                                     </a>
                                 </router-link>
                             </li>
+                            <li class="nav-item d-md-none" v-if="estAdmin">
+                                <router-link to="Accueil" class="text-decoration-none">
+                                    <a class="nav-link">
+                                        Tableau de bord
+                                    </a>
+                                </router-link>
+                            </li>
 
                         </ul>
 
@@ -85,11 +92,18 @@
 
             <nav class="navbar navbar-expand-md bleuMarinSecondaireFond" data-bs-theme="dark">
                 <div class="container-fluid justify-content-center justify-content-md-between">
-                    <ul class="navbar-nav d-none d-md-block">
+                    <ul class="navbar-nav d-none d-md-flex">
                         <li class="nav-item">
                             <router-link to="Accueil" class="text-decoration-none">
                                 <a class="nav-link">
                                     Déroulement d'un encan
+                                </a>
+                            </router-link>
+                        </li>
+                        <li class="nav-item" v-if="estAdmin">
+                            <router-link to="Accueil" class="text-decoration-none">
+                                <a class="nav-link">
+                                    Tableau de bord
                                 </a>
                             </router-link>
                         </li>
@@ -117,6 +131,7 @@
     import { ref } from 'vue'
 
     const estConnecte = ref(false);
+    const estAdmin = ref(true);
 </script>
 
 <style scoped></style>
