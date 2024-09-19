@@ -1,7 +1,9 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import BarreDeNavigation from '@/components/BarreDeNavigation.vue'
-import Inscription from '@/components/inscription.vue'
-import Connexion from '@/components/Connexion.vue'
+import BarreDeNavigation from '@/components/views/BarreDeNavigation.vue'
+import Accueil from '@/components/views/Accueil.vue'
+import Contact from '@/components/views/Contact.vue'
+import APropos from '@/components/views/APropos.vue'
+import Connexion from '@/components/views/Connexion.vue'
 
 import BarreDeNavigation from '@/components/BarreDeNavigation.vue'
 import Connexion from '@/components/Connexion.vue'
@@ -11,24 +13,34 @@ import Inscription from '@/components/Inscription.vue'
 const routes = [
     {
         path: '/',
-        name: 'Home',
-        component: Connexion
+        name: 'Accueil',
+        component: Accueil
     },
     {
-        path: '/login',
-        name: 'Login',
-        component: LoginPage
+        path: '/accueil',
+        name: 'AccueilPage',
+        component: Accueil
+    },
+    {
+        path: '/contact',
+        name: 'Contact',
+        component: Contact
+    },
+    {
+        path: '/apropos',
+        name: 'APropos',
+        component: APropos
+    },
+    {
+        path: '/connexion',
+        name: 'Connexion',
+        component: Connexion
     },
     {
         path: '/inscription',
         name: 'Inscription',
         component: Inscription
     },
-    {
-        path: '/connexion',
-        name: 'Connexion',
-        component: Connexion
-    }
 ]
 
 const router = createRouter({
