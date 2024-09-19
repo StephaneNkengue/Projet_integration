@@ -4,12 +4,15 @@
             <h2 class="fs-1 text-center fw-bold mt-5">Inscription</h2>
             <p class="text-center">Obtenir un compte membre</p>
 
+      <!-- validation des erreurs -->
             <div v-if="errorMessage" class="alert alert-danger">
                 {{ errorMessage }}
             </div>
 
+
             <!-- Stepper Navigation -->
             <div class="mt-3">
+
                 <form @submit.prevent="submitForm">
                     <Stepper v-model:activeIndex="activeIndex" :class="['mb-4']">
                         <!-- Informations générales -->
@@ -346,6 +349,7 @@
 
 <script setup>
     import { ref, computed, reactive } from "vue";
+import { useStore } from 'vuex';
     import Stepper from "primevue/stepper";
     import StepItem from "primevue/stepitem";
     import Step from "primevue/step";
@@ -353,6 +357,7 @@
     import { useVuelidate } from "@vuelidate/core";
     import { required, email, helpers } from "@vuelidate/validators";
 
+const store = useStore();
     const activeIndex = ref(1);
     const messageRequis = helpers.withMessage("Ce champ est requis", required);
     const messageCourriel = helpers.withMessage(
@@ -466,14 +471,14 @@
                     this.$router.push('/');
                 }, 500);
             } else {
-                const errorData = await response.json();
-                console.error("Erreur lors de la création du compte", errorData);
+                console.error("Erreur lors de la création du compte", result.error);
+                // Afficher un message d'erreur à l'utilisateur
             }
         } catch (error) {
             console.error("Erreur réseau:", error);
+            // Afficher un message d'erreur à l'utilisateur
         }
     }
-
 </script>
 
 <style scoped>

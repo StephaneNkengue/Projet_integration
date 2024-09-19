@@ -47,6 +47,10 @@ namespace Gamma2024.Server.Data
                 .HasForeignKey(cc => cc.IdClient)
                 .OnDelete(DeleteBehavior.NoAction);
 
+            builder.Entity<ApplicationUser>()
+                .HasIndex(u => u.Pseudonym)
+                .IsUnique();
+
             // Vendeur
             builder.Entity<Vendeur>()
                 .HasMany(v => v.Lots)

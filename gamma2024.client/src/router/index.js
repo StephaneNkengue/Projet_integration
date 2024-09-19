@@ -1,11 +1,11 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import BarreDeNavigation from '@/components/views/BarreDeNavigation.vue'
-import Accueil from '@/components/views/Accueil.vue'
-import Contact from '@/components/views/Contact.vue'
-import APropos from '@/components/views/APropos.vue'
-import Connexion from '@/components/views/Connexion.vue'
+import store from '@/store'
 
 import Inscription from '@/components/views/Inscription.vue'
+import Connexion from '@/components/views/Connexion.vue'
+import Accueil from '@/components/views/Accueil.vue'
+import Contact from '@/components/views/Contact.vue'
+import APropos from '@/components/views/APropos.vue'   
 
 
 const routes = [
@@ -38,7 +38,7 @@ const routes = [
         path: '/inscription',
         name: 'Inscription',
         component: Inscription
-    },
+    }
 ]
 
 const router = createRouter({
