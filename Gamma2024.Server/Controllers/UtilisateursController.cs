@@ -2,12 +2,6 @@ using Gamma2024.Server.Services;
 using Gamma2024.Server.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Gamma2024.Server.Models;
-using System.Threading.Tasks;
-using Gamma2024.Server.Data;
-using Gamma2024.Server.Services;
-using Gamma2024.Server.ViewModels;
-using Microsoft.AspNetCore.Authorization;
 
 namespace Gamma2024.Server.Controllers
 {
@@ -28,7 +22,7 @@ namespace Gamma2024.Server.Controllers
         {
             if (!ModelState.IsValid)
             {
-                
+
                 return BadRequest(ModelState);
             }
 
@@ -47,6 +41,6 @@ namespace Gamma2024.Server.Controllers
 
     public class UtilisateurModel
     {
-        // Définissez ici les propriétés correspondant à votre formData
+        // Dï¿½finissez ici les propriï¿½tï¿½s correspondant ï¿½ votre formData
     }
 }
