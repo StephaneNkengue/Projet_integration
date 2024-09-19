@@ -167,7 +167,7 @@
                                                    class="form-control"
                                                    v-model="formData.carteCredit.numeroCarte"
                                                    id="numeroCarte"
-                                                   placeholder="1234 5678 9012 3456"
+                                                   placeholder="1234567890123456"
                                                    @blur="v.carteCredit.numeroCarte.$touch()" />
                                             <span class="text-danger"
                                                   v-for="error in v.carteCredit.numeroCarte.$errors"

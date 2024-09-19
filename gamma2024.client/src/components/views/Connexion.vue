@@ -44,9 +44,72 @@
         </div>
     </div>
 </template>
-<script setup>
 
+
+<script>
+    export default {
+        data() {
+            return {
+                email: '',
+                password: '',
+                emailError: '',
+                passwordError: '',
+                messageErreur: '',
+                messageSucces: ''
+            }
+        },
+        methods: {
+            validateEmail() {
+                if (!this.email) {
+                    this.emailError = "L'email est obligatoire";
+                } else {
+                    this.emailError = "";
+                }
+            },
+            validatePassword() {
+                if (!this.password) {
+                    this.passwordError = "Le mot de passe est obligatoire";
+                } else {
+                    this.passwordError = "";
+                }
+            },
+            connexion() {
+                this.validateEmail();
+                this.validatePassword();
+
+                if (this.emailError || this.passwordError) {
+                    return; // Empêche la soumission si des erreurs sont présentes
+                }
+
+                this.tenterConnexion();
+            },
+            async tenterConnexion() {
+                try {
+                    console.log('Tentative de connexion avec:', { email: this.email, password: this.password });
+                    const result = await this.$store.dispatch('login', {
+                        email: this.email,
+                        password: this.password
+                    });
+                    if (result.success) {
+                        this.messageSucces = `Connexion réussie en tant que ${result.roles.join(', ')}`;
+                        console.log('Utilisateur connecté:', this.$store.state.user);
+                        console.log('Rôles:', this.$store.state.roles);
+                        // Redirection après un court délai
+                        setTimeout(() => {
+                            this.$router.push('/');
+                        }, 500);
+                    } else {
+                        this.messageErreur = 'Échec de la connexion: ' + result.error;
+                    }
+                } catch (error) {
+                    this.messageErreur = "Erreur lors de la connexion: " + error;
+                }
+            }
+        }
+    }
 </script>
+
+
 <style scoped>
     .cadreBlanc {
         border-radius: 15px;
