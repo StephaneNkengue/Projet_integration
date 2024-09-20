@@ -451,12 +451,13 @@
     };
 
 
+    //"https://localhost:7206/api/Utilisateurs/creer"
     // url : "https://sqlinfo.cegepgranby.qc.ca/2135621/api",
 
     //envoi des données vers le backEnd
     async function creerCompteUtilisateur() {
         try {
-            const response = await fetch("https://localhost:7206/api/Utilisateurs/creer", {
+            const response = await fetch("https://sqlinfo.cegepgranby.qc.ca/2135621/api", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
