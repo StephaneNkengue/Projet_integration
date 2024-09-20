@@ -1,6 +1,6 @@
 <template>
-    <div class="background-container">
-        <div class="container d-flex flex-column justify-content-start align-items-stretch vh-100 container col-md-6">
+    <div class="bg-image pt-5 imageDeFondEsquise">
+        <div class="container d-flex flex-column justify-content-start align-items-stretch container col-md-6">
             <h2 class="fs-1 text-center fw-bold mt-5">Inscription</h2>
             <p class="text-center">Obtenir un compte membre</p>
 
@@ -494,15 +494,6 @@
     span {
         border-color: red;
         font-weight: 600;
-    }
-
-    .background-container {
-        width: 100%;
-        height: 100vh;
-        background-image: url("/public/images/DessinGris.PNG");
-        background-size: cover;
-        background-position: center;
-        background-repeat: no-repeat;
     }
 
     .cadreBlanc {
