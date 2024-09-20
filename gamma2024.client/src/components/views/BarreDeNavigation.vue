@@ -64,15 +64,26 @@
                                     </a>
                                 </router-link>
                             </li>
+                            <li class="nav-item d-md-none" v-if="estAdmin">
+                                <router-link to="Accueil" class="text-decoration-none">
+                                    <a class="nav-link">
+                                        Tableau de bord
+                                    </a>
+                                </router-link>
+                            </li>
 
                         </ul>
 
                         <div class="d-flex justify-content-center gap-3">
-                            <router-link to="Accueil">
+                            <router-link to="Accueil" v-if="!estConnecte">
                                 <button class="btn btn-outline bleuMoyenFond text-white" type="button">Inscription</button>
                             </router-link>
-                            <router-link to="Connexion">
+                            <router-link to="Connexion" v-if="!estConnecte">
                                 <button class="btn btn-outline bleuMoyenFond text-white" type="button">Connexion</button>
+                            </router-link>
+                            <router-link to="Accueil" v-if="estConnecte" class="text-decoration-none text-white d-flex align-items-center gap-3">
+                                <a class="nav-link">USERNAME</a>
+                                <img src="/icons/Avatar.png" alt="Avatar" height="40" />
                             </router-link>
                         </div>
                     </div>
@@ -81,11 +92,18 @@
 
             <nav class="navbar navbar-expand-md bleuMarinSecondaireFond" data-bs-theme="dark">
                 <div class="container-fluid justify-content-center justify-content-md-between">
-                    <ul class="navbar-nav d-none d-md-block">
+                    <ul class="navbar-nav d-none d-md-flex">
                         <li class="nav-item">
                             <router-link to="Accueil" class="text-decoration-none">
                                 <a class="nav-link">
                                     Déroulement d'un encan
+                                </a>
+                            </router-link>
+                        </li>
+                        <li class="nav-item" v-if="estAdmin">
+                            <router-link to="Accueil" class="text-decoration-none">
+                                <a class="nav-link">
+                                    Tableau de bord
                                 </a>
                             </router-link>
                         </li>
@@ -110,6 +128,10 @@
 </template>
 
 <script setup>
+    import { ref } from 'vue'
+
+    const estConnecte = ref(false);
+    const estAdmin = ref(true);
 </script>
 
 <style scoped></style>
