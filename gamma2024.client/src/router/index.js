@@ -1,9 +1,12 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import BarreDeNavigation from '@/components/views/BarreDeNavigation.vue'
+
+import store from '@/store'
+import Inscription from '@/components/views/Inscription.vue'
+import Connexion from '@/components/views/Connexion.vue'
 import Accueil from '@/components/views/Accueil.vue'
 import Contact from '@/components/views/Contact.vue'
 import APropos from '@/components/views/APropos.vue'
-import Connexion from '@/components/views/Connexion.vue'
+
 
 const routes = [
     {
@@ -30,6 +33,11 @@ const routes = [
         path: '/connexion',
         name: 'Connexion',
         component: Connexion
+    },
+    {
+        path: '/inscription',
+        name: 'Inscription',
+        component: Inscription
     }
 ]
 
@@ -38,6 +46,23 @@ const router = createRouter({
     routes,
     scrollBehavior(to, from, savedPosition) {
         return { top: 0 }
+    }
+})
+
+router.beforeEach((to, from, next) => {
+    const isLoggedIn = store.state.isLoggedIn
+    const requiredRole = to.meta.requiredRole
+
+    if (to.matched.some(record => record.meta.requiresAuth)) {
+        if (!isLoggedIn) {
+            next('/login')
+        } else if (requiredRole && !store.state.roles.includes(requiredRole)) {
+            next('/unauthorized') // Cr�ez une vue pour les acc�s non autoris�s
+        } else {
+            next()
+        }
+    } else {
+        next()
     }
 })
 

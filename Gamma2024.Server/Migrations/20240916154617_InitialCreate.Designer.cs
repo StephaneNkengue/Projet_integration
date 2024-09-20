@@ -4,6 +4,7 @@ using Gamma2024.Server.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Gamma2024.Server.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240916154617_InitialCreate")]
+    partial class InitialCreate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -159,7 +162,7 @@ namespace Gamma2024.Server.Migrations
 
                     b.Property<string>("Pseudonym")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
@@ -181,9 +184,6 @@ namespace Gamma2024.Server.Migrations
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
-                    b.HasIndex("Pseudonym")
-                        .IsUnique();
-
                     b.ToTable("AspNetUsers", (string)null);
 
                     b.HasData(
@@ -192,7 +192,7 @@ namespace Gamma2024.Server.Migrations
                             Id = "8e445865-a24d-4543-a6c6-9443d048cdb9",
                             AccessFailedCount = 0,
                             Avatar = "Avatars/admin.jpg",
-                            ConcurrencyStamp = "be084a16-de80-460d-81da-8de70dfe2727",
+                            ConcurrencyStamp = "4ef971b7-fbcc-4830-9180-53f7e9209a9e",
                             Email = "admin@example.com",
                             EmailConfirmed = true,
                             FirstName = "Super",
@@ -201,10 +201,10 @@ namespace Gamma2024.Server.Migrations
                             Name = "Admin",
                             NormalizedEmail = "ADMIN@EXAMPLE.COM",
                             NormalizedUserName = "ADMIN@EXAMPLE.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEPS9DoDHnFK3ulIs95BZk6SxRlGiH6Q6GokbOqqfqCZRVMXMFvg+QSUehqmIvo+UMQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEFx3xwTrqUPVBmmU0EGDhHrmtmKj7GlKDiaEQr7oVXXL4L1RnEu93gyiC72/29D9nA==",
                             PhoneNumberConfirmed = false,
                             Pseudonym = "SuperAdmin",
-                            SecurityStamp = "f3adb294-061b-43c4-b160-e4f63451ffb1",
+                            SecurityStamp = "45de26ea-9bfb-4acb-95b7-979c9e5f7d70",
                             TwoFactorEnabled = false,
                             UserName = "admin@example.com"
                         },
@@ -213,7 +213,7 @@ namespace Gamma2024.Server.Migrations
                             Id = "1d8ac862-e54d-4f10-b6f8-638808c02967",
                             AccessFailedCount = 0,
                             Avatar = "Avatars/client.jpg",
-                            ConcurrencyStamp = "5f25ab3f-142a-4ffe-88ce-a4f95cdf7519",
+                            ConcurrencyStamp = "941ccaf0-4ec2-4b35-a61b-69a79f1255e7",
                             Email = "client@example.com",
                             EmailConfirmed = true,
                             FirstName = "Jean",
@@ -222,10 +222,10 @@ namespace Gamma2024.Server.Migrations
                             Name = "Dupont",
                             NormalizedEmail = "CLIENT@EXAMPLE.COM",
                             NormalizedUserName = "CLIENT@EXAMPLE.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEBA1XoYBRQSTx1EWbKRWNj2wr9DsnyUOqVRsj67cDu8ONgWgAlR6wY4Cp4i/UAi6cg==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEEOAH94bBUHxufSbVtmjLV0rhHXRDX/INGsFqJS/DszIGXMiHfgeeTo8iFKw3NlOLg==",
                             PhoneNumberConfirmed = false,
                             Pseudonym = "JeanDu",
-                            SecurityStamp = "c3a2d98f-c7d8-4ac7-83b2-a3015a48a2df",
+                            SecurityStamp = "573ee18d-f15f-4bb4-913f-cf176dbe5b09",
                             TwoFactorEnabled = false,
                             UserName = "client@example.com"
                         });

@@ -1,40 +1,52 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
 using System.Threading.Tasks;
+using Gamma2024.Server.Models;
+using Microsoft.EntityFrameworkCore;
 
-[ApiController]
-[Route("api/[controller]")]
-public class HomeController : ControllerBase
+namespace Gamma2024.Server.Controllers
 {
-    private readonly UserManager<IdentityUser> _userManager;
-    private readonly SignInManager<IdentityUser> _signInManager;
-
-    public HomeController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager)
+    [ApiController]
+    [Route("api/[controller]")]
+    public class HomeController : ControllerBase
     {
-        _userManager = userManager;
-        _signInManager = signInManager;
-    }
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
 
-    [HttpPost("login")]
-    public async Task<IActionResult> Login(LoginModel model)
-    {
-        var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, false, false);
-
-        if (result.Succeeded)
+        public HomeController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
         {
-            // Authentification réussie
-            return Ok(new { message = "Connexion réussie" });
+            _userManager = userManager;
+            _signInManager = signInManager;
         }
-        else
+
+        [HttpPost("login")]
+        public async Task<IActionResult> Login(LoginModel model)
         {
-            // Échec de l'authentification
-            return Unauthorized(new { message = "Échec de la connexion" });
+            var user = await _userManager.FindByEmailAsync(model.EmailOuPseudo) 
+                       ?? await _userManager.Users.FirstOrDefaultAsync(u => u.Pseudonym.ToLower() == model.EmailOuPseudo.ToLower());
+
+            if (user == null)
+            {
+                return Unauthorized(new { message = "Utilisateur non trouvé" });
+            }
+
+            var result = await _signInManager.PasswordSignInAsync(user.UserName ?? string.Empty, model.Password, false, false);
+
+            if (result.Succeeded)
+            {
+                var roles = await _userManager.GetRolesAsync(user);
+                return Ok(new { message = "Connexion réussie", userId = user.Id, roles = roles });
+            }
+            else
+            {
+                return Unauthorized(new { message = "Échec de la connexion" });
+            }
+        }
+
+        public class LoginModel
+        {
+            public string EmailOuPseudo { get; set; } = null!;
+            public string Password { get; set; } = null!;
         }
     }
-}
-
-public class LoginModel
-{
-    public string Email { get; set; }
-    public string Password { get; set; }
 }
