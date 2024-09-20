@@ -38,7 +38,9 @@
                         </div>
                     </div>
                     <div class="d-flex flex-row justify-content-center mb-2">
-                        <button type="submit" class="btn btnSurvolerBleuMoyenFond rounded-pill px-5 bleuMoyenFond text-white">Connexion</button>
+                        <router-link to="Accueil">
+                            <button class="btn btnSurvolerBleuMoyenFond rounded-pill px-5 bleuMoyenFond text-white" @click="submitForm">Connexion</button>
+                        </router-link>
                     </div>
                     <div class="d-flex flex-row justify-content-center mb-3">
                         <div class="form-group w-80">

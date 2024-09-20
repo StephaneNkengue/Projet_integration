@@ -1,6 +1,6 @@
 <template>
-    <div class="background-container">
-        <div class="container d-flex flex-column justify-content-start align-items-stretch vh-100 container col-md-6">
+    <div class="bg-image pt-5 imageDeFondEsquise">
+        <div class="container d-flex flex-column justify-content-start align-items-stretch container col-md-6">
             <h2 class="fs-1 text-center fw-bold mt-5">Inscription</h2>
             <p class="text-center">Obtenir un compte membre</p>
 
@@ -324,14 +324,17 @@
                                             @click="allerAuSuivantPrecedent(2)">
                                         Précédent
                                     </button>
-                                    <button type="submit"
-                                            :disabled="stateFinal"
-                                            :class="[
+
+                                    <router-link to="Accueil">
+                                        <button type="submit"
+                                                :disabled="stateFinal"
+                                                :class="[
                       stateFinal ? 'bleuValide' : 'bleuNonValide',
                       classeActiveBouton
                     ]">
-                                        Créer le compte
-                                    </button>
+                                            Créer le compte
+                                        </button>
+                                    </router-link>
                                 </div>
                             </StepPanel>
                         </StepItem>
@@ -485,15 +488,6 @@
     span {
         border-color: red;
         font-weight: 600;
-    }
-
-    .background-container {
-        width: 100%;
-        height: 100vh;
-        background-image: url("/public/images/DessinGris.PNG");
-        background-size: cover;
-        background-position: center;
-        background-repeat: no-repeat;
     }
 
     .cadreBlanc {
