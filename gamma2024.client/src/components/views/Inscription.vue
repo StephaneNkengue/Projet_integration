@@ -4,15 +4,12 @@
             <h2 class="fs-1 text-center fw-bold mt-5">Inscription</h2>
             <p class="text-center">Obtenir un compte membre</p>
 
-      <!-- validation des erreurs -->
             <div v-if="errorMessage" class="alert alert-danger">
                 {{ errorMessage }}
             </div>
 
-
             <!-- Stepper Navigation -->
             <div class="mt-3">
-
                 <form @submit.prevent="submitForm">
                     <Stepper v-model:activeIndex="activeIndex" :class="['mb-4']">
                         <!-- Informations générales -->
@@ -204,7 +201,7 @@
                                     <button type="button"
                                             :class="[
                       state2 ? 'bleuValide' : 'bleuNonValide',
-                      classeActiveBouton,
+                      classeActiveBouton
                     ]"
                                             :disabled="state2"
                                             @click="allerAuSuivantPrecedent(3)">
@@ -333,7 +330,7 @@
                                             :disabled="stateFinal"
                                             :class="[
                       stateFinal ? 'bleuValide' : 'bleuNonValide',
-                      classeActiveBouton,
+                      classeActiveBouton
                     ]">
                                         Créer le compte
                                     </button>
@@ -349,7 +346,6 @@
 
 <script setup>
     import { ref, computed, reactive } from "vue";
-import { useStore } from 'vuex';
     import Stepper from "primevue/stepper";
     import StepItem from "primevue/stepitem";
     import Step from "primevue/step";
@@ -357,7 +353,6 @@ import { useStore } from 'vuex';
     import { useVuelidate } from "@vuelidate/core";
     import { required, email, helpers } from "@vuelidate/validators";
 
-const store = useStore();
     const activeIndex = ref(1);
     const messageRequis = helpers.withMessage("Ce champ est requis", required);
     const messageCourriel = helpers.withMessage(
@@ -455,10 +450,13 @@ const store = useStore();
         }
     };
 
+
+    // url : "https://sqlinfo.cegepgranby.qc.ca/2135621/api",
+
     //envoi des données vers le backEnd
     async function creerCompteUtilisateur() {
         try {
-            const response = await fetch("https://sqlinfo.cegepgranby.qc.ca/2135621/api", /*"https://localhost:7206/api/Utilisateurs/creer"*/ {
+            const response = await fetch("https://localhost:7206/api/Utilisateurs/creer", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -467,18 +465,15 @@ const store = useStore();
             });
             if (response.ok) {
                 console.log("Compte créé avec succès !, vérifier votre pour la confirmation");
-                setTimeout(() => {
-                    this.$router.push('/');
-                }, 500);
             } else {
-                console.error("Erreur lors de la création du compte", result.error);
-                // Afficher un message d'erreur à l'utilisateur
+                const errorData = await response.json();
+                console.error("Erreur lors de la création du compte", errorData);
             }
         } catch (error) {
             console.error("Erreur réseau:", error);
-            // Afficher un message d'erreur à l'utilisateur
         }
     }
+
 </script>
 
 <style scoped>
@@ -511,8 +506,6 @@ const store = useStore();
         opacity: 0.4;
         border-radius: 15px;
         height: auto;
-        /*        width: 410px;
-    */
     }
 
     .bleuNonValide {
@@ -535,3 +528,5 @@ const store = useStore();
         }
     }
 </style>
+
+

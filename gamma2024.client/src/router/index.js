@@ -1,11 +1,11 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import store from '@/store'
 
+import store from '@/store'
 import Inscription from '@/components/views/Inscription.vue'
 import Connexion from '@/components/views/Connexion.vue'
 import Accueil from '@/components/views/Accueil.vue'
 import Contact from '@/components/views/Contact.vue'
-import APropos from '@/components/views/APropos.vue'   
+import APropos from '@/components/views/APropos.vue'
 
 
 const routes = [
@@ -46,21 +46,21 @@ const router = createRouter({
     routes
 })
 
-//router.beforeEach((to, from, next) => {
-//    const isLoggedIn = store.state.isLoggedIn
-//    const requiredRole = to.meta.requiredRole
+router.beforeEach((to, from, next) => {
+    const isLoggedIn = store.state.isLoggedIn
+    const requiredRole = to.meta.requiredRole
 
-//    if (to.matched.some(record => record.meta.requiresAuth)) {
-//        if (!isLoggedIn) {
-//            next('/login')
-//        } else if (requiredRole && !store.state.roles.includes(requiredRole)) {
-//            next('/unauthorized') // Cr�ez une vue pour les acc�s non autoris�s
-//        } else {
-//            next()
-//        }
-//    } else {
-//        next()
-//    }
-//})
+    if (to.matched.some(record => record.meta.requiresAuth)) {
+        if (!isLoggedIn) {
+            next('/login')
+        } else if (requiredRole && !store.state.roles.includes(requiredRole)) {
+            next('/unauthorized') // Cr�ez une vue pour les acc�s non autoris�s
+        } else {
+            next()
+        }
+    } else {
+        next()
+    }
+})
 
 export default router

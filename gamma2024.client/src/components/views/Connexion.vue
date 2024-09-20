@@ -9,28 +9,24 @@
                     <div class="d-flex flex-row justify-content-center mb-3">
                         <div class="form-group w-90">
                             <label for="emailOuPseudo" class="fw-bold ms-3">Email ou pseudonyme</label>
-                            <input 
-                                type="text" 
-                                class="form-control" 
-                                id="emailOuPseudo" 
-                                v-model="emailOuPseudo" 
-                                @input="validateEmailOuPseudo"
-                                :class="{ 'is-invalid': emailOuPseudoError }"
-                            />
+                            <input type="text"
+                                   class="form-control"
+                                   id="emailOuPseudo"
+                                   v-model="emailOuPseudo"
+                                   @input="validateEmailOuPseudo"
+                                   :class="{ 'is-invalid': emailOuPseudoError }" />
                             <div v-if="emailOuPseudoError" class="invalid-feedback">{{ emailOuPseudoError }}</div>
                         </div>
                     </div>
                     <div class="d-flex flex-row justify-content-center mb-3">
                         <div class="form-group w-90">
                             <label for="motdepasse" class="fw-bold ms-3">Mot de passe</label>
-                            <input 
-                                type="password" 
-                                class="form-control" 
-                                id="motDePasse" 
-                                v-model="password" 
-                                @input="validatePassword"
-                                :class="{ 'is-invalid': passwordError }"
-                            />
+                            <input type="password"
+                                   class="form-control"
+                                   id="motDePasse"
+                                   v-model="password"
+                                   @input="validatePassword"
+                                   :class="{ 'is-invalid': passwordError }" />
                             <div v-if="passwordError" class="invalid-feedback">{{ passwordError }}</div>
                         </div>
                     </div>
@@ -60,66 +56,66 @@
 </template>
 
 <script>
-export default {
-    data() {
-        return {
-            emailOuPseudo: '',
-            password: '',
-            emailOuPseudoError: '',
-            passwordError: '',
-            messageErreur: '',
-            messageSucces: ''
-        }
-    },
-    methods: {
-        validateEmailOuPseudo() {
-            if (!this.emailOuPseudo) {
-                this.emailOuPseudoError = "L'email ou le pseudonyme est obligatoire";
-            } else {
-                this.emailOuPseudoError = "";
+    export default {
+        data() {
+            return {
+                emailOuPseudo: '',
+                password: '',
+                emailOuPseudoError: '',
+                passwordError: '',
+                messageErreur: '',
+                messageSucces: ''
             }
         },
-        validatePassword() {
-            if (!this.password) {
-                this.passwordError = "Le mot de passe est obligatoire";
-            } else {
-                this.passwordError = "";
-            }
-        },
-        connexion() {
-            this.validateEmailOuPseudo();
-            this.validatePassword();
-
-            if (this.emailOuPseudoError || this.passwordError) {
-                return; // Empêche la soumission si des erreurs sont présentes
-            }
-
-            this.tenterConnexion();
-        },
-        async tenterConnexion() {
-            try {
-                console.log('Tentative de connexion avec:', { emailOuPseudo: this.emailOuPseudo, password: this.password });
-                const result = await this.$store.dispatch('login', { 
-                    emailOuPseudo: this.emailOuPseudo, 
-                    password: this.password
-                });
-                if (result.success) {
-                    this.messageSucces = `Connexion réussie en tant que ${result.roles.join(', ')}`;
-                    console.log('Utilisateur connecté:', this.$store.state.user);
-                    console.log('Rôles:', this.$store.state.roles);
-                    // Redirection après un court délai
-                    setTimeout(() => {
-                        this.$router.push('/');
-                    }, 2000);
+        methods: {
+            validateEmailOuPseudo() {
+                if (!this.emailOuPseudo) {
+                    this.emailOuPseudoError = "L'email ou le pseudonyme est obligatoire";
                 } else {
-                    this.messageErreur = 'Échec de la connexion: ' + result.error;
+                    this.emailOuPseudoError = "";
                 }
-            } catch (error) {
-                this.messageErreur = "Erreur lors de la connexion: " + error;
+            },
+            validatePassword() {
+                if (!this.password) {
+                    this.passwordError = "Le mot de passe est obligatoire";
+                } else {
+                    this.passwordError = "";
+                }
+            },
+            connexion() {
+                this.validateEmailOuPseudo();
+                this.validatePassword();
+
+                if (this.emailOuPseudoError || this.passwordError) {
+                    return; // Empêche la soumission si des erreurs sont présentes
+                }
+
+                this.tenterConnexion();
+            },
+            async tenterConnexion() {
+                try {
+                    console.log('Tentative de connexion avec:', { emailOuPseudo: this.emailOuPseudo, password: this.password });
+                    const result = await this.$store.dispatch('login', {
+                        emailOuPseudo: this.emailOuPseudo,
+                        password: this.password
+                    });
+                    if (result.success) {
+                        this.messageSucces = `Connexion réussie en tant que ${result.roles.join(', ')}`;
+                        console.log('Utilisateur connecté:', this.$store.state.user);
+                        console.log('Rôles:', this.$store.state.roles);
+                        // Redirection après un court délai
+                        setTimeout(() => {
+                            this.$router.push('/');
+                        }, 2000);
+                    } else {
+                        this.messageErreur = 'Échec de la connexion: ' + result.error;
+                    }
+                } catch (error) {
+                    this.messageErreur = "Erreur lors de la connexion: " + error;
+                }
             }
         }
     }
-}
 </script>
 
 <style scoped>
@@ -128,20 +124,14 @@ export default {
         height: 450px;
         width: 410px;
     }
+
     .imageDeFondEsquise {
-
         background-image: url('/public/images/DessinGris.PNG');
-
         background-size: cover;
-
         background-position: 0px -100px;
-
         background-attachment: fixed;
-
         height: 100vh;
-
         width: 100%;
-
     }
 
     .w-80 {
