@@ -27,7 +27,7 @@ namespace Gamma2024.Server.Services
             }
 
             // Vérifier l'unicité du pseudonyme
-            if (!await IsPseudonymUnique(model.GeneralInfo.Pseudo))
+            if (!await IsUsernameUnique(model.GeneralInfo.Pseudo))
             {
                 return (false, "Ce pseudonyme est déjà utilisé. Veuillez en choisir un autre.");
             }
@@ -48,12 +48,15 @@ namespace Gamma2024.Server.Services
                 // Créer le client (ApplicationUser)
                 var client = new ApplicationUser
                 {
-                    UserName = model.GeneralInfo.Courriel,
+                    UserName = model.GeneralInfo.Pseudo,
+                    NormalizedUserName = model.GeneralInfo.Pseudo.ToUpper(),
                     Email = model.GeneralInfo.Courriel,
+                    EmailConfirmed = true,
+                    NormalizedEmail = model.GeneralInfo.Courriel.ToUpper(),
                     Name = model.GeneralInfo.Nom,
                     FirstName = model.GeneralInfo.Prenom,
                     PhoneNumber = model.GeneralInfo.Telephone,
-                    Pseudonym = model.GeneralInfo.Pseudo
+                    PhoneNumberConfirmed = true,
                 };
 
                 var result = await _userManager.CreateAsync(client, model.GeneralInfo.MotDePasse);
@@ -103,9 +106,9 @@ namespace Gamma2024.Server.Services
             }
         }
 
-        private async Task<bool> IsPseudonymUnique(string pseudonym)
+        private async Task<bool> IsUsernameUnique(string username)
         {
-            return !await _context.Users.AnyAsync(u => u.Pseudonym == pseudonym);
+            return !await _context.Users.AnyAsync(u => u.UserName == username);
         }
 
         private (bool IsValid, int Mois, int Annee) ValidateAndParseExpirationDate(string expirationDate)

@@ -8,6 +8,10 @@
                 {{ errorMessage }}
             </div>
 
+            <div v-if="successMessage" class="alert alert-success">
+                {{ successMessage }}
+            </div>
+
             <!-- Stepper Navigation -->
             <div class="mt-3">
                 <form @submit.prevent="submitForm">
@@ -26,26 +30,24 @@
                                             <input type="text"
                                                    v-model="formData.generalInfo.nom"
                                                    class="form-control"
+                                                   :class="{ 'is-invalid': v.generalInfo.nom.$error }"
                                                    id="nom"
                                                    @blur="v.generalInfo.nom.$touch()" />
-                                            <span class="text-danger"
-                                                  v-for="error in v.generalInfo.nom.$errors"
-                                                  :key="error.$uid">
-                                                {{ error.$message }}
-                                            </span>
+                                            <div class="invalid-feedback" v-if="v.generalInfo.nom.$error">
+                                                {{ v.generalInfo.nom.$errors[0].$message }}
+                                            </div>
                                         </div>
                                         <div class="form-group">
                                             <label for="prenom" class="ms-3">Prénom</label>
                                             <input type="text"
                                                    v-model="formData.generalInfo.prenom"
                                                    class="form-control"
+                                                   :class="{ 'is-invalid': v.generalInfo.prenom.$error }"
                                                    id="prenom"
                                                    @blur="v.generalInfo.prenom.$touch()" />
-                                            <span class="text-danger"
-                                                  v-for="error in v.generalInfo.prenom.$errors"
-                                                  :key="error.$uid">
-                                                {{ error.$message }}
-                                            </span>
+                                            <div class="invalid-feedback" v-if="v.generalInfo.prenom.$error">
+                                                {{ v.generalInfo.prenom.$errors[0].$message }}
+                                            </div>
                                         </div>
                                     </div>
 
@@ -55,26 +57,24 @@
                                             <input type="email"
                                                    v-model="formData.generalInfo.courriel"
                                                    class="form-control"
+                                                   :class="{ 'is-invalid': v.generalInfo.courriel.$error }"
                                                    id="courriel"
                                                    @blur="v.generalInfo.courriel.$touch()" />
-                                            <span class="text-danger"
-                                                  v-for="error in v.generalInfo.courriel.$errors"
-                                                  :key="error.$uid">
-                                                {{ error.$message }}
-                                            </span>
+                                            <div class="invalid-feedback" v-if="v.generalInfo.courriel.$error">
+                                                {{ v.generalInfo.courriel.$errors[0].$message }}
+                                            </div>
                                         </div>
                                         <div class="form-group">
                                             <label for="telephone" class="ms-3">Téléphone</label>
                                             <input type="tel"
                                                    v-model="formData.generalInfo.telephone"
                                                    class="form-control"
+                                                   :class="{ 'is-invalid': v.generalInfo.telephone.$error }"
                                                    id="telephone"
                                                    @blur="v.generalInfo.telephone.$touch()" />
-                                            <span class="text-danger"
-                                                  v-for="error in v.generalInfo.telephone.$errors"
-                                                  :key="error.$uid">
-                                                {{ error.$message }}
-                                            </span>
+                                            <div class="invalid-feedback" v-if="v.generalInfo.telephone.$error">
+                                                {{ v.generalInfo.telephone.$errors[0].$message }}
+                                            </div>
                                         </div>
                                     </div>
 
@@ -84,13 +84,12 @@
                                             <input type="text"
                                                    v-model="formData.generalInfo.pseudo"
                                                    class="form-control"
+                                                   :class="{ 'is-invalid': v.generalInfo.pseudo.$error }"
                                                    id="pseudonyme"
                                                    @blur="v.generalInfo.pseudo.$touch()" />
-                                            <span class="text-danger"
-                                                  v-for="error in v.generalInfo.pseudo.$errors"
-                                                  :key="error.$uid">
-                                                {{ error.$message }}
-                                            </span>
+                                            <div class="invalid-feedback" v-if="v.generalInfo.pseudo.$error">
+                                                {{ v.generalInfo.pseudo.$errors[0].$message }}
+                                            </div>
                                         </div>
                                     </div>
 
@@ -100,26 +99,24 @@
                                             <input type="password"
                                                    v-model="formData.generalInfo.motDePasse"
                                                    class="form-control"
+                                                   :class="{ 'is-invalid': v.generalInfo.motDePasse.$error }"
                                                    id="motDePasse"
                                                    @blur="v.generalInfo.motDePasse.$touch()" />
-                                            <span class="text-danger"
-                                                  v-for="error in v.generalInfo.motDePasse.$errors"
-                                                  :key="error.$uid">
-                                                {{ error.$message }}
-                                            </span>
+                                            <div class="invalid-feedback" v-if="v.generalInfo.motDePasse.$error">
+                                                {{ v.generalInfo.motDePasse.$errors[0].$message }}
+                                            </div>
                                         </div>
                                         <div class="form-group">
                                             <label for="confirmMotPasse" class="ms-3">Confirmation de mot de passe</label>
                                             <input type="password"
                                                    class="form-control"
                                                    v-model="formData.generalInfo.confirmMotPasse"
+                                                   :class="{ 'is-invalid': v.generalInfo.confirmMotPasse.$error }"
                                                    id="confirmMotPasse"
                                                    @blur="v.generalInfo.confirmMotPasse.$touch()" />
-                                            <span class="text-danger"
-                                                  v-for="error in v.generalInfo.confirmMotPasse.$errors"
-                                                  :key="error.$uid">
-                                                {{ error.$message }}
-                                            </span>
+                                            <div class="invalid-feedback" v-if="v.generalInfo.confirmMotPasse.$error">
+                                                {{ v.generalInfo.confirmMotPasse.$errors[0].$message }}
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -152,13 +149,12 @@
                                         <input type="text"
                                                v-model="formData.carteCredit.nomProprio"
                                                class="form-control"
+                                               :class="{ 'is-invalid': v.carteCredit.nomProprio.$error }"
                                                id="nomPropio"
                                                @blur="v.carteCredit.nomProprio.$touch()" />
-                                        <span class="text-danger"
-                                              v-for="error in v.carteCredit.nomProprio.$errors"
-                                              :key="error.$uid">
-                                            {{ error.$message }}
-                                        </span>
+                                        <div class="invalid-feedback" v-if="v.carteCredit.nomProprio.$error">
+                                            {{ v.carteCredit.nomProprio.$errors[0].$message }}
+                                        </div>
                                     </div>
                                     <div class="d-flex flex-row justify-content-between mb-3">
                                         <div class="form-group col-md-6">
@@ -166,14 +162,13 @@
                                             <input type="text"
                                                    class="form-control"
                                                    v-model="formData.carteCredit.numeroCarte"
+                                                   :class="{ 'is-invalid': v.carteCredit.numeroCarte.$error }"
                                                    id="numeroCarte"
                                                    placeholder="1234567890123456"
                                                    @blur="v.carteCredit.numeroCarte.$touch()" />
-                                            <span class="text-danger"
-                                                  v-for="error in v.carteCredit.numeroCarte.$errors"
-                                                  :key="error.$uid">
-                                                {{ error.$message }}
-                                            </span>
+                                            <div class="invalid-feedback" v-if="v.carteCredit.numeroCarte.$error">
+                                                {{ v.carteCredit.numeroCarte.$errors[0].$message }}
+                                            </div>
                                         </div>
                                         <div class="form-group col-md-5">
                                             <label for="dateExpiration" class="ms-3">Date d'expiration</label>
@@ -182,13 +177,12 @@
                                                    pattern="\d{2}/\d{2}"
                                                    v-model="formData.carteCredit.dateExpiration"
                                                    class="form-control"
+                                                   :class="{ 'is-invalid': v.carteCredit.dateExpiration.$error }"
                                                    id="dateExpiration"
                                                    @blur="v.carteCredit.dateExpiration.$touch()" />
-                                            <span class="text-danger"
-                                                  v-for="error in v.carteCredit.dateExpiration.$errors"
-                                                  :key="error.$uid">
-                                                {{ error.$message }}
-                                            </span>
+                                            <div class="invalid-feedback" v-if="v.carteCredit.dateExpiration.$error">
+                                                {{ v.carteCredit.dateExpiration.$errors[0].$message }}
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -225,26 +219,24 @@
                                             <input type="text"
                                                    v-model="formData.adresse.numeroCivique"
                                                    class="form-control"
+                                                   :class="{ 'is-invalid': v.adresse.numeroCivique.$error }"
                                                    id="numeroCivique"
                                                    @blur="v.adresse.numeroCivique.$touch()" />
-                                            <span class="text-danger"
-                                                  v-for="error in v.adresse.numeroCivique.$errors"
-                                                  :key="error.$uid">
-                                                {{ error.$message }}
-                                            </span>
+                                            <div class="invalid-feedback" v-if="v.adresse.numeroCivique.$error">
+                                                {{ v.adresse.numeroCivique.$errors[0].$message }}
+                                            </div>
                                         </div>
                                         <div class="form-group">
                                             <label for="rue" class="ms-3">Rue</label>
                                             <input type="text"
                                                    v-model="formData.adresse.rue"
                                                    class="form-control"
+                                                   :class="{ 'is-invalid': v.adresse.rue.$error }"
                                                    id="rue"
                                                    @blur="v.adresse.rue.$touch()" />
-                                            <span class="text-danger"
-                                                  v-for="error in v.adresse.rue.$errors"
-                                                  :key="error.$uid">
-                                                {{ error.$message }}
-                                            </span>
+                                            <div class="invalid-feedback" v-if="v.adresse.rue.$error">
+                                                {{ v.adresse.rue.$errors[0].$message }}
+                                            </div>
                                         </div>
                                     </div>
 
@@ -261,13 +253,12 @@
                                             <input type="text"
                                                    v-model="formData.adresse.ville"
                                                    class="form-control"
+                                                   :class="{ 'is-invalid': v.adresse.ville.$error }"
                                                    id="ville"
                                                    @blur="v.adresse.ville.$touch()" />
-                                            <span class="text-danger"
-                                                  v-for="error in v.adresse.ville.$errors"
-                                                  :key="error.$uid">
-                                                {{ error.$message }}
-                                            </span>
+                                            <div class="invalid-feedback" v-if="v.adresse.ville.$error">
+                                                {{ v.adresse.ville.$errors[0].$message }}
+                                            </div>
                                         </div>
                                     </div>
 
@@ -278,6 +269,8 @@
                                                     name="province"
                                                     v-model="formData.adresse.province"
                                                     class="form-control"
+                                                    :class="{ 'is-invalid': v.adresse.province.$error }"
+                                                    @blur="v.adresse.province.$touch()"
                                                     placeholder="Sélectionnez une province">
                                                 <option value="" disabled selected>
                                                     Sélectionner une province
@@ -296,6 +289,9 @@
                                                 <option value="NU">Nunavut</option>
                                                 <option value="YT">Yukon</option>
                                             </select>
+                                            <div class="invalid-feedback" v-if="v.adresse.province.$error">
+                                                {{ v.adresse.province.$errors[0].$message }}
+                                            </div>
                                         </div>
                                         <div class="form-group">
                                             <label for="pays" class="ms-3">Pays</label>
@@ -312,11 +308,13 @@
                                             <input type="text"
                                                    class="form-control"
                                                    v-model="formData.adresse.codePostal"
+                                                   :class="{ 'is-invalid': v.adresse.codePostal.$error }"
                                                    id="postalCode"
                                                    placeholder="A1A 2B2"
                                                    @blur="v.adresse.codePostal.$touch()" />
-                                            <span class="text-danger"
-                                                  v-if="v.adresse.codePostal.$error">Ce champ est requis</span>
+                                            <div class="invalid-feedback" v-if="v.adresse.codePostal.$error">
+                                                {{ v.adresse.codePostal.$errors[0].$message }}
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -352,6 +350,8 @@
     import StepPanel from "primevue/steppanel";
     import { useVuelidate } from "@vuelidate/core";
     import { required, email, helpers } from "@vuelidate/validators";
+    import { useStore } from 'vuex';
+    import { useRouter } from 'vue-router';
 
     const activeIndex = ref(1);
     const messageRequis = helpers.withMessage("Ce champ est requis", required);
@@ -440,40 +440,34 @@
         activeIndex.value = stepIndex;
     }
 
+    const store = useStore();
+    const router = useRouter();
+
+    const errorMessage = ref('');
+    const successMessage = ref('');
+
     const submitForm = async () => {
         const result = await v.value.$validate();
         if (result) {
-            alert("Form submitted successfully!");
-            creerCompteUtilisateur();
+            try {
+                const response = await store.dispatch('creerCompteUtilisateur', formData);
+                if (response.success) {
+                    successMessage.value = "Compte créé avec succès !";
+                    console.log('Nouveau compte créé:', response.user);
+                    console.log('Rôles:', response.roles);
+                    setTimeout(() => {
+                        router.push('/');
+                    }, 2000);
+                } else {
+                    errorMessage.value = response.error || "Une erreur est survenue lors de la création du compte.";
+                }
+            } catch (error) {
+                errorMessage.value = "Une erreur est survenue lors de la création du compte.";
+            }
         } else {
-            alert("Form not submitted!");
+            errorMessage.value = "Veuillez corriger les erreurs dans le formulaire.";
         }
     };
-
-
-    //"https://localhost:7206/api/Utilisateurs/creer"
-    // url : "https://sqlinfo.cegepgranby.qc.ca/2135621/api",
-
-    //envoi des données vers le backEnd
-    async function creerCompteUtilisateur() {
-        try {
-            const response = await fetch("https://sqlinfo.cegepgranby.qc.ca/2135621/api", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(formData),
-            });
-            if (response.ok) {
-                console.log("Compte créé avec succès !, vérifier votre pour la confirmation");
-            } else {
-                const errorData = await response.json();
-                console.error("Erreur lors de la création du compte", errorData);
-            }
-        } catch (error) {
-            console.error("Erreur réseau:", error);
-        }
-    }
 
 </script>
 
@@ -527,6 +521,25 @@
             flex-basis: 100%;
             flex-direction: column;
         }
+    }
+
+    .alert {
+        margin-top: 1rem;
+        padding: 0.75rem 1.25rem;
+        border: 1px solid transparent;
+        border-radius: 0.25rem;
+    }
+
+    .alert-danger {
+        color: #721c24;
+        background-color: #f8d7da;
+        border-color: #f5c6cb;
+    }
+
+    .alert-success {
+        color: #155724;
+        background-color: #d4edda;
+        border-color: #c3e6cb;
     }
 </style>
 

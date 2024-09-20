@@ -47,10 +47,6 @@ namespace Gamma2024.Server.Data
                 .HasForeignKey(cc => cc.IdClient)
                 .OnDelete(DeleteBehavior.NoAction);
 
-            builder.Entity<ApplicationUser>()
-                .HasIndex(u => u.Pseudonym)
-                .IsUnique();
-
             // Vendeur
             builder.Entity<Vendeur>()
                 .HasMany(v => v.Lots)
@@ -211,9 +207,9 @@ namespace Gamma2024.Server.Data
                 SecurityStamp = Guid.NewGuid().ToString(),
                 Name = "Admin",
                 FirstName = "Super",
-                Pseudonym = "SuperAdmin",
                 Avatar = "Avatars/admin.jpg",
                 IdAdresse = 1
+
             };
             adminUser.PasswordHash = passwordHasher.HashPassword(adminUser, "MotDePasseAdmin123!");
 
@@ -228,9 +224,9 @@ namespace Gamma2024.Server.Data
                 SecurityStamp = Guid.NewGuid().ToString(),
                 Name = "Dupont",
                 FirstName = "Jean",
-                Pseudonym = "JeanDu",
                 Avatar = "Avatars/client.jpg",
                 IdAdresse = 2
+
             };
             clientUser.PasswordHash = passwordHasher.HashPassword(clientUser, "MotDePasseClient123!");
 
