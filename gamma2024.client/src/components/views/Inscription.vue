@@ -326,14 +326,17 @@
                                             @click="allerAuSuivantPrecedent(2)">
                                         Précédent
                                     </button>
-                                    <button type="submit"
-                                            :disabled="stateFinal"
-                                            :class="[
+
+                                    <router-link to="Accueil">
+                                        <button type="submit"
+                                                :disabled="stateFinal"
+                                                :class="[
                       stateFinal ? 'bleuValide' : 'bleuNonValide',
                       classeActiveBouton
                     ]">
-                                        Créer le compte
-                                    </button>
+                                            Créer le compte
+                                        </button>
+                                    </router-link>
                                 </div>
                             </StepPanel>
                         </StepItem>
