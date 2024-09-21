@@ -23,7 +23,7 @@ namespace Gamma2024.Server.Controllers
         public async Task<IActionResult> Login(LoginModel model)
         {
             var user = await _userManager.FindByEmailAsync(model.EmailOuPseudo) 
-                       ?? await _userManager.Users.FirstOrDefaultAsync(u => u.Pseudonym.ToLower() == model.EmailOuPseudo.ToLower());
+                       ?? await _userManager.Users.FirstOrDefaultAsync(u => u.UserName.ToLower() == model.EmailOuPseudo.ToLower());
 
             if (user == null)
             {
