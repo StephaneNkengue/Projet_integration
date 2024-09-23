@@ -7,6 +7,7 @@ import Accueil from '@/components/views/Accueil.vue'
 import Contact from '@/components/views/Contact.vue'
 import APropos from '@/components/views/APropos.vue'
 import EncanPresent from '@/components/views/EncanPresent.vue'
+import TousLesEncans from '@/components/views/TousLesEncans.vue'
 
 
 const routes = [
@@ -44,6 +45,11 @@ const routes = [
         path: '/encanpresent',
         name: 'EncanPresent',
         component: EncanPresent
+    },
+    {
+        path: '/touslesencans',
+        name: "TousLesEncans",
+        component: TousLesEncans
     }
 ]
 
