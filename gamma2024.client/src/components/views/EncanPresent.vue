@@ -8,6 +8,8 @@
     </div>
 </template>
 
-<script></script>
+<script setup>
+    import AffichageLotTuile from '@/components/views/AffichageLotTuile.vue'
+</script>
 
-<style></style>
+<style scoped></style>
