@@ -17,5 +17,6 @@ namespace Gamma2024.Server.ViewModels
         public string Province { get; set; } = null!;
         public string Country { get; set; } = "Canada";
         public string PostalCode { get; set; } = null!;
+        public string? Photo { get; set; }
     }
 }
