@@ -57,7 +57,7 @@ namespace Gamma2024.Server.Services
             }
 
             // Mettre à jour les informations d'adresse
-            var adresse = await _context.Adresses.FirstOrDefaultAsync(a => a.IdApplicationUser == user.Id);
+            var adresse = await _context.Adresses.FirstOrDefaultAsync(a => a.IdApplicationUser == user.Id && a.EstDomicile);
             if (adresse != null)
             {
                 adresse.Numero = int.Parse(model.CivicNumber);
