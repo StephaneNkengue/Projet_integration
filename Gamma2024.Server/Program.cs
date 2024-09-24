@@ -1,5 +1,6 @@
 using Gamma2024.Server.Data;
 using Gamma2024.Server.Models;
+using Gamma2024.Server.Models.Email;
 using Gamma2024.Server.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -14,16 +15,19 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.R
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
 builder.Services.AddControllers();
-builder.Services.AddScoped<ClientInscriptionService>();
-builder.Services.AddScoped<ClientModificationService>();
+builder.Services.AddScoped<InscriptionService>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection("SmtpSettings"));
+
+builder.Services.AddTransient<Gamma2024.Server.Interface.MailSender, EmailSender>();
 
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("Development", builder =>
     {
-        builder.WithOrigins("http://localhost:5173") 
+        builder.WithOrigins("http://localhost:5173")
                .SetIsOriginAllowed(_ => true)
                .AllowAnyMethod()
                .AllowAnyHeader()
@@ -44,6 +48,7 @@ else
     app.UseExceptionHandler("/Error");
     app.UseHsts();
 }
+
 
 app.UseHttpsRedirection();
 app.UseRouting();
