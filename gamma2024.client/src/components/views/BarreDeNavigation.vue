@@ -114,12 +114,12 @@
                                 <button class="btn btn-outline bleuMoyenFond me-3 text-white butttonNavBar py-0 btnSurvolerBleuMoyenFond" type="submit">Rechercher</button>
                             </router-link>
                         </div>
-                        <router-link to="Accueil" @click="activationRecherche = !activationRecherche">
+                        <a @click="activationRecherche = !activationRecherche">
                             <img src="/icons/IconeRechercheAvanceeBleu.png"
                                  alt="Icon recherche avancée"
                                  height="30"
                                  class="my-1" />
-                        </router-link>
+                        </a>
                     </form>
                 </div>
             </nav>
