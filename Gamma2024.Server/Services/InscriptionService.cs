@@ -2,7 +2,7 @@ using Gamma2024.Server.Data;
 using Gamma2024.Server.Models;
 using Gamma2024.Server.ViewModels;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore; 
+using Microsoft.EntityFrameworkCore;
 
 namespace Gamma2024.Server.Services
 {
@@ -57,6 +57,7 @@ namespace Gamma2024.Server.Services
                     FirstName = model.GeneralInfo.Prenom,
                     PhoneNumber = model.GeneralInfo.Telephone,
                     PhoneNumberConfirmed = true,
+
                 };
 
                 var result = await _userManager.CreateAsync(client, model.GeneralInfo.MotDePasse);
@@ -97,7 +98,7 @@ namespace Gamma2024.Server.Services
                 await _context.SaveChangesAsync();
                 await transaction.CommitAsync();
 
-                return (true, "Inscription réussie");
+                return (true, "Inscription réussie, un email de confirmation a été envoyé.");
             }
             catch (Exception ex)
             {
@@ -105,6 +106,7 @@ namespace Gamma2024.Server.Services
                 return (false, "Une erreur est survenue lors de l'inscription : " + ex.Message);
             }
         }
+
 
         private async Task<bool> IsUsernameUnique(string username)
         {
@@ -177,10 +179,14 @@ namespace Gamma2024.Server.Services
             }
 
             if (model.GeneralInfo.Pseudo.Length < 3 || model.GeneralInfo.Pseudo.Length > 20)
+            {
                 return (false, "Le pseudo doit contenir entre 3 et 20 caractères.");
+            }
 
             if (!System.Text.RegularExpressions.Regex.IsMatch(model.GeneralInfo.Pseudo, "^[a-zA-Z0-9_]+$"))
+            {
                 return (false, "Le pseudo ne peut contenir que des lettres, des chiffres et des underscores.");
+            }
 
             if (string.IsNullOrWhiteSpace(model.GeneralInfo.MotDePasse) || model.GeneralInfo.MotDePasse.Length < 8)
             {
