@@ -3,13 +3,13 @@
         <h1>Encan présent</h1>
         <p>Date de debut de la soirée de cloture</p>
 
-        <br />
+        <AffichageLotsTuiles />
 
     </div>
 </template>
 
 <script setup>
-    import AffichageLotTuile from '@/components/views/AffichageLotTuile.vue'
+    import AffichageLotsTuiles from '@/components/views/AffichageLotsTuiles.vue'
 </script>
 
 <style scoped></style>
