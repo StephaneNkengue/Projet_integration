@@ -56,10 +56,10 @@
 
                         <div class="d-flex justify-content-center gap-3">
                             <router-link to="Accueil" v-if="!estConnecte">
-                                <button class="btn btn-outline bleuMoyenFond text-white py-0 butttonNavBar" type="button">Inscription</button>
+                                <button class="btn btn-outline bleuMoyenFond text-white py-0 butttonNavBar btnSurvolerBleuMoyenFond" type="button">Inscription</button>
                             </router-link>
                             <router-link to="Connexion" v-if="!estConnecte">
-                                <button class="btn btn-outline bleuMoyenFond text-white py-0 butttonNavBar" type="button">Connexion</button>
+                                <button class="btn btn-outline bleuMoyenFond text-white py-0 butttonNavBar btnSurvolerBleuMoyenFond" type="button">Connexion</button>
                             </router-link>
                             <div class="collapse navbar-collapse dropdown text-white" v-if="estAdmin">
                                 <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -111,7 +111,7 @@
                             <input class="form-control me-3 butttonNavBar" data-bs-theme="light" type="search" placeholder="Faire une recherche" aria-label="Search">
 
                             <router-link to="Accueil">
-                                <button class="btn btn-outline bleuMoyenFond me-3 text-white butttonNavBar py-0" type="submit">Rechercher</button>
+                                <button class="btn btn-outline bleuMoyenFond me-3 text-white butttonNavBar py-0 btnSurvolerBleuMoyenFond" type="submit">Rechercher</button>
                             </router-link>
                         </div>
                         <router-link to="Accueil" @click="activationRecherche = !activationRecherche">
