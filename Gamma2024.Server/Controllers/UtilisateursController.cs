@@ -2,6 +2,9 @@ using Gamma2024.Server.Services;
 using Gamma2024.Server.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Identity;
+using System.Security.Claims;
+
 
 namespace Gamma2024.Server.Controllers
 {
@@ -10,11 +13,15 @@ namespace Gamma2024.Server.Controllers
     [AllowAnonymous]
     public class UtilisateursController : ControllerBase
     {
-        private readonly InscriptionService _inscriptionService;
+        private readonly ClientInscriptionService _inscriptionService;
+        private readonly ClientModificationService _modificationService;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public UtilisateursController(InscriptionService inscriptionService)
+        public UtilisateursController(ClientInscriptionService inscriptionService, ClientModificationService modificationService, UserManager<IdentityUser> userManager)
         {
             _inscriptionService = inscriptionService;
+            _modificationService = modificationService;
+            _userManager = userManager;
         }
 
         [HttpPost("creer")]
@@ -29,12 +36,92 @@ namespace Gamma2024.Server.Controllers
 
             if (success)
             {
-                return Ok(new { success = true, message = message });
+                return Ok(new { success = true, message = message, user = model, roles = new List<string> { "Client" } });
             }
             else
             {
                 return BadRequest(new { success = false, message = message });
             }
+        }
+
+        [Authorize(Roles = "Client")]
+        [HttpGet("me")]
+        public async Task<IActionResult> GetClientInfo()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var user = await _userManager.FindByIdAsync(userId);
+
+            if (user == null)
+            {
+                return NotFound("Utilisateur non trouvé.");
+            }
+
+            var clientInfo = new
+            {
+                user.Name,
+                user.FirstName,
+                user.Email,
+                user.PhoneNumber,
+                user.Pseudonym
+            };
+
+            return Ok(clientInfo);
+        }
+
+        [Authorize(Roles = "Client")]
+        [HttpPut("me")]
+        public async Task<IActionResult> UpdateClientInfo([FromBody] UpdateClientInfoVM model)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var user = await _userManager.FindByIdAsync(userId);
+
+            if (user == null)
+            {
+                return NotFound("Utilisateur non trouvé.");
+            }
+
+            user.Name = model.Name;
+            user.FirstName = model.FirstName;
+            user.Email = model.Email;
+            user.PhoneNumber = model.PhoneNumber;
+            user.Pseudonym = model.Pseudonym;
+            // Ajoutez les champs supplémentaires ici
+            user.CardOwnerName = model.CardOwnerName;
+            user.CardNumber = model.CardNumber;
+            user.CardExpiryDate = model.CardExpiryDate;
+            user.CivicNumber = model.CivicNumber;
+            user.Street = model.Street;
+            user.Apartment = model.Apartment;
+            user.City = model.City;
+            user.Province = model.Province;
+            user.Country = model.Country;
+            user.PostalCode = model.PostalCode;
+
+            var result = await _userManager.UpdateAsync(user);
+
+            if (!result.Succeeded)
+            {
+                return BadRequest("Erreur lors de la mise à jour des informations.");
+            }
+
+            return Ok(new
+            {
+                user.Name,
+                user.FirstName,
+                user.Email,
+                user.PhoneNumber,
+                user.Pseudonym,
+                user.CardOwnerName,
+                user.CardNumber,
+                user.CardExpiryDate,
+                user.CivicNumber,
+                user.Street,
+                user.Apartment,
+                user.City,
+                user.Province,
+                user.Country,
+                user.PostalCode
+            });
         }
     }
 

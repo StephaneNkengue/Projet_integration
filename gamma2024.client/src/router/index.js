@@ -6,7 +6,7 @@ import Connexion from '@/components/views/Connexion.vue'
 import Accueil from '@/components/views/Accueil.vue'
 import Contact from '@/components/views/Contact.vue'
 import APropos from '@/components/views/APropos.vue'
-
+import Modification from '@/components/views/Modification.vue'
 
 const routes = [
     {
@@ -38,6 +38,12 @@ const routes = [
         path: '/inscription',
         name: 'Inscription',
         component: Inscription
+    },
+    {
+        path: '/modification',
+        name: 'Modification',
+        component: Modification,
+        meta: { requiresAuth: true, requiredRole: 'CLIENT' }
     }
 ]
 
@@ -57,7 +63,7 @@ router.beforeEach((to, from, next) => {
         if (!isLoggedIn) {
             next('/login')
         } else if (requiredRole && !store.state.roles.includes(requiredRole)) {
-            next('/unauthorized') // Cr�ez une vue pour les acc�s non autoris�s
+            next('/unauthorized') // Crez une vue pour les accs non autoriss
         } else {
             next()
         }

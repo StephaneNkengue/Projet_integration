@@ -4,13 +4,17 @@
 </script>
 
 <template>
-    <BarreDeNavigation />
+    <header>
+        <BarreDeNavigation />
+    </header>
 
     <main class="mh-100 flex-grow-1">
         <router-view></router-view>
     </main>
 
-    <PiedDePage />
+    <footer>
+        <PiedDePage />
+    </footer>
 
 </template>
 
