@@ -43,7 +43,6 @@ namespace Gamma2024.Server.Controllers
             {
                 return BadRequest(ModelState);
             }
-            Url.Action("Index", "Home");
 
             var (success, message) = await _inscriptionService.InscrireUtilisateur(model);
             if (success)
