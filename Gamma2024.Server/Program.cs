@@ -15,8 +15,7 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.R
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
 builder.Services.AddControllers();
-builder.Services.AddScoped<ClientInscriptionService>();
-builder.Services.AddScoped<ClientModificationService>();
+builder.Services.AddScoped<InscriptionService>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
