@@ -69,9 +69,31 @@ export default createStore({
                     error: error.response?.data?.message || error.message || "Erreur lors de la création du compte"
                 };
             }
+        },
+
+
+        async fetchClientInfo({ commit }) {
+            try {
+                const response = await api.get('/utilisateurs/me');
+                commit('setUser', response.data);
+                return response;
+            } catch (error) {
+                console.error("Erreur lors de la récupération des informations du client:", error.response || error);
+                throw error;
+            }
+        },
+
+
+        async updateClientInfo({ commit }, userData) {
+            try {
+                const response = await api.put('/utilisateurs/me', userData);
+                commit('setUser', response.data);
+                return response;
+            } catch (error) {
+                console.error("Erreur lors de la mise à jour des informations du client:", error.response || error);
+                throw error;
+            }
         }
-
-
     },
     getters: {
         isAdmin: state => state.roles.includes('ADMINISTRATEUR'),
