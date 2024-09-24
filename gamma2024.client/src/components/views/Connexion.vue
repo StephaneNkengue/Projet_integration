@@ -38,11 +38,15 @@
                         </div>
                     </div>
                     <div class="d-flex flex-row justify-content-center mb-2">
+                        <router-link to="Accueil">
                             <button class="btn btnSurvolerBleuMoyenFond rounded-pill px-5 bleuMoyenFond text-white" @click="submitForm">Connexion</button>
+                        </router-link>
                     </div>
                     <div class="d-flex flex-row justify-content-center mb-3">
                         <div class="form-group w-80">
+                            <router-link to="Inscription" class="text-decoration-none">
                                 <p class="fs-5 text-center fw-bold lienEnTexteNoir">M'inscrire</p>
+                            </router-link>
                         </div>
                     </div>
 

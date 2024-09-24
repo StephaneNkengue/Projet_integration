@@ -71,9 +71,6 @@ export default defineConfig(({ mode }) => {
                 key: fs.readFileSync(keyFilePath),
                 cert: fs.readFileSync(certFilePath),
             }
-        },
-        build: {
-            sourcemap: true,
         }
     }
 });
