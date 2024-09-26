@@ -17,7 +17,7 @@
                 <form @submit.prevent="submitForm">
                     <Stepper v-model:activeIndex="activeIndex" :class="['mb-4']">
                         <!-- Informations générales -->
-                        <StepItem :disabled="activeIndex !== 1">
+                        <StepItem :disabled="activeIndex !== 1" id="itemStep1">
                             <Step value="1" class="border-top border-3 p-2 border-dark fs-2">
                                 <span>1 - Informations générales</span>
                             </Step>
@@ -189,7 +189,7 @@
                                                     <InputMask type="text"
                                                                v-model="formData.carteCredit.numeroCarte"
                                                                mask="9999999999999999"
-                                                               placeholder="9999 9999 9999 9999"
+                                                               placeholder="9999999999999999"
                                                                :class="['form-control', { 'is-invalid': v.carteCredit.numeroCarte.$error }]"
                                                                id="numeroCarte"
                                                                @blur="v.carteCredit.numeroCarte.$touch()" />
@@ -318,19 +318,9 @@
                                                     <option value="" disabled selected>
                                                         Sélectionner une province
                                                     </option>
-                                                    <option value="AB">Alberta</option>
-                                                    <option value="BC">Colombie-Britannique</option>
-                                                    <option value="MB">Manitoba</option>
-                                                    <option value="NB">Nouveau-Brunswick</option>
-                                                    <option value="NL">Terre-Neuve-et-Labrador</option>
-                                                    <option value="NS">Nouvelle-Écosse</option>
-                                                    <option value="ON">Ontario</option>
-                                                    <option value="PE">Île-du-Prince-Édouard</option>
-                                                    <option value="QC" selected>Québec</option>
-                                                    <option value="SK">Saskatchewan</option>
-                                                    <option value="NT">Territoires du Nord-Ouest</option>
-                                                    <option value="NU">Nunavut</option>
-                                                    <option value="YT">Yukon</option>
+                                                    <option v-for="province in provinces" :value="province.value">
+                                                        {{ province.text }}
+                                                    </option>
                                                 </select>
                                                 <div class="invalid-feedback" v-if="v.adresse.province.$error">
                                                     {{ v.adresse.province.$errors[0].$message }}
@@ -401,7 +391,7 @@
     import InputMask from 'primevue/inputmask';
     import StepPanel from "primevue/steppanel";
     import { useVuelidate } from "@vuelidate/core";
-    import { required, email, helpers, sameAs, minLength } from "@vuelidate/validators";
+    import { required, email, helpers, sameAs, minLength, maxLength } from "@vuelidate/validators";
     import { useStore } from 'vuex';
     import { toast } from 'vue3-toastify';
     import { useRouter } from 'vue-router';
@@ -426,6 +416,33 @@
         "Le mot de passe doit contenir au moins 8 caractères, 1 majuscule, 1 minuscule, 1 chiffre et 1 caractère spécial.",
         minLength(8)
     );
+
+    const messageMinLengthPseudo = helpers.withMessage(
+        "Le pseudo doit contenir au moins 3 caractères.",
+        minLength(3)
+    );
+
+    const messageMaxLengthPseudo = helpers.withMessage(
+        "Le pseudo doit contenir au maximum 20 caractères.",
+        maxLength(20)
+    );
+
+
+    const provinces = ref([
+        { text: 'Alberta', value: 'AB' },
+        { text: 'Colombie-Britannique', value: 'BC' },
+        { text: 'Manitoba', value: 'MB' },
+        { text: 'Nouveau-Brunswick', value: 'NB' },
+        { text: 'Terre-Neuve-et-Labrador', value: 'NL' },
+        { text: 'Nouvelle-Écosse', value: 'NS' },
+        { text: 'Ontario', value: 'ON' },
+        { text: 'Île-du-Prince-Édouard', value: 'PE' },
+        { text: 'Québec', value: 'QC' },
+        { text: 'Saskatchewan', value: 'SK' },
+        { text: 'Territoires du Nord-Ouest', value: 'NT' },
+        { text: 'Nunavut', value: 'NU' },
+        { text: 'Yukon', value: 'YT' }
+    ])
 
     //objet qui contient tous les champs remplis correctement
     let formData = reactive({
@@ -468,9 +485,16 @@
             generalInfo: {
                 nom: { required: messageRequis },
                 prenom: { required: messageRequis },
-                courriel: { required: messageRequis, email: messageCourriel },
+                courriel: {
+                    required: messageRequis,
+                    email: messageCourriel
+                },
                 telephone: { required: messageRequis },
-                pseudo: { required: messageRequis },
+                pseudo: {
+                    required: messageRequis,
+                    minLengthValue: messageMinLengthPseudo,
+                    maxLengthValue: messageMaxLengthPseudo
+                },
                 motDePasse: {
                     required: messageRequis,
                     minLength: messageMinLength,
@@ -517,12 +541,6 @@
 
     function allerAuSuivantPrecedent(stepIndex) {
         activeIndex.value = stepIndex;
-        toast.success("Compte crée avec succès !", {
-            position: toast.POSITION.TOP_CENTER,
-            pauseOnFocusLoss: false,
-            theme: 'dark',
-            autoClose: 3000,
-        });
 
     }
 
@@ -539,7 +557,6 @@
         try {
             const response = await store.dispatch('creerCompteUtilisateur', formData);
             if (response.success) {
-                console.log('Nouveau compte créé:', response.user);
                 setTimeout(() => {
                     router.push('/connexion');
                 }, 1000);

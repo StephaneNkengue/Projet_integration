@@ -89,7 +89,7 @@ namespace Gamma2024.Server.Services
                     Appartement = model.Adresse.Appartement,
                     Ville = model.Adresse.Ville,
                     Pays = model.Adresse.Pays,
-                    CodePostal = model.Adresse.CodePostal,
+                    CodePostal = ParseCodePostal(model.Adresse.CodePostal),
                     EstDomicile = true,
                     IdApplicationUser = client.Id
                 };
@@ -139,6 +139,13 @@ namespace Gamma2024.Server.Services
             }
 
             return (true, mois, annee);
+        }
+
+
+        private string ParseCodePostal(string code)
+        {
+            var parts = code.Split(' ');
+            return parts[0] + parts[1];
         }
 
         private (bool IsValid, string ErrorMessage) ValidateInscription(InscriptionVM model)
