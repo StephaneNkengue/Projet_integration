@@ -9,8 +9,8 @@
             <button class="d-flex align-items-center text-center rounded bleuMoyenFond text-white contourDiv btnSurvolerBleuMoyenFond" @click="encanParPage = 50">50</button>
             <button class="d-flex align-items-center text-center rounded bleuMoyenFond text-white contourDiv btnSurvolerBleuMoyenFond" @click="encanParPage = 20">20</button>
         </div>
-        <div class="w-100 px-3 row row-cols-2">
-            <div v-for="index in encanParPage" class="col w-50 py-3">
+        <div class="w-100 px-3 row row-cols-lg-2 row-cols-1">
+            <div v-for="index in encanParPage" class="col py-3">
                 <router-link to="Accueil" class="text-decoration-none text-black">
                     <AffichageEncanTuile />
                 </router-link>

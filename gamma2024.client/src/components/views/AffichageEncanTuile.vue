@@ -2,8 +2,8 @@
 
     <div class="contourDiv p-2 align-items-center d-flex d-flex flex-column">
         <h2>Encan #105</h2>
-        <div class="d-flex w-100 ps-5 mt-3">
-            <div class="col d-flex align-items-center justify-content-center flex-column">
+        <div class="d-flex w-100 mt-3 flex-sm-row flex-column">
+            <div class="col d-flex align-items-center justify-content-center flex-column text-center">
                 <div class="row justify-content-start w-100">
                     <p>Encan d'oeuvres d'art</p>
                 </div>
@@ -44,7 +44,6 @@
 
 <style scoped>
     img {
-        width: 200px;
         height: 200px;
     }
 </style>
