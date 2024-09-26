@@ -55,10 +55,8 @@
         if (valeur == -1 && pageCourante.value > 1) {
             pageCourante.value--
         }
-        else {
-            if (pageCourante.value < nbPages.value) {
-                pageCourante.value++
-            }
+        else if (valeur == 1 && pageCourante.value < nbPages.value) {
+            pageCourante.value++
         }
     })
 
