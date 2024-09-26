@@ -193,6 +193,8 @@ namespace Gamma2024.Server.Services
                 return (false, "Le mot de passe doit contenir au moins 8 caractères.");
             }
 
+
+
             if (model.GeneralInfo.MotDePasse != model.GeneralInfo.ConfirmMotPasse)
             {
                 return (false, "Les mots de passe ne correspondent pas.");

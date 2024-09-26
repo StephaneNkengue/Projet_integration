@@ -98,7 +98,12 @@ namespace Gamma2024.Server.Controllers
         }
 
 
-
+        //[HttpGet]
+        //public IActionResult returnAllEmail()
+        //{
+        //    List<string> TousLesCouuriels = _context.Users.Select(c => c.Email).ToList();
+        //    return Ok(TousLesCouuriels);
+        //}
 
     }
 
