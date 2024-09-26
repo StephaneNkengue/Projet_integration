@@ -7,8 +7,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
-using System.Net;
-using System.Net.Mail;
 using System.Text;
 
 
@@ -20,20 +18,18 @@ namespace Gamma2024.Server.Controllers
     public class UtilisateursController : ControllerBase
     {
         private readonly InscriptionService _inscriptionService;
-        private readonly MailSender _emailSender;
+        private readonly IEmailSender _emailSender;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ApplicationDbContext _context;
-        private readonly IConfiguration _configuration;
 
 
-        public UtilisateursController(InscriptionService inscriptionService, MailSender emailSender,
-            UserManager<ApplicationUser> userManager, ApplicationDbContext context, IConfiguration configuration)
+        public UtilisateursController(InscriptionService inscriptionService, IEmailSender emailSender,
+            UserManager<ApplicationUser> userManager, ApplicationDbContext context)
         {
             _inscriptionService = inscriptionService;
             _emailSender = emailSender;
             _userManager = userManager;
             _context = context;
-            _configuration = configuration;
         }
 
         [HttpPost("creer")]
@@ -57,10 +53,10 @@ namespace Gamma2024.Server.Controllers
                     // Construire le lien de confirmation
                     var confirmationLink = Url.Action("ConfirmEmail", "Utilisateurs", new { userId = client.Id, token }, protocol: Request.Scheme);
 
-                    var subject = "Confirmation de votre compte";
-                    var messageText = $"Veuillez confirmer votre compte en cliquant sur ce lien : <a href='{confirmationLink}'>Confirmer votre compte</a>";
+                    var subject = "Confirmation de courriel";
+                    var messageText = $"Veuillez confirmer votre courriel en cliquant sur ce lien : <a href='{confirmationLink}'>Confirmer votre compte</a>";
 
-                    await SendEmailAsync(client.Email, subject, messageText);
+                    _emailSender.Send(client.Email, subject, messageText);
 
                 }
 
@@ -76,7 +72,7 @@ namespace Gamma2024.Server.Controllers
 
 
         [HttpGet]
-        public async Task<IActionResult> ConfirmEmail(string idClient, string token)
+        public async Task<IActionResult> ConfirmEmail([FromQuery(Name = "userId")] string idClient, string token)
         {
             if (string.IsNullOrEmpty(idClient) || string.IsNullOrEmpty(token))
             {
@@ -96,33 +92,7 @@ namespace Gamma2024.Server.Controllers
             await _context.SaveChangesAsync();
 
 
-            return BadRequest("Token invalide.");
-        }
-
-        [HttpPost]
-        public async Task SendEmailAsync(string email, string subject, string messageText)
-        {
-            var smtpClient = new SmtpClient
-            {
-                Host = _configuration["SmtpSettings:Server"],
-                Port = int.Parse(_configuration["SmtpSettings:Port"]),
-                EnableSsl = bool.Parse(_configuration["SmtpSettings:EnableSsl"]),
-                Credentials = new NetworkCredential(
-                    _configuration["SmtpSettings:Username"],
-                    _configuration["SmtpSettings:Password"])
-            };
-
-            var mailMessage = new MailMessage
-            {
-                From = new MailAddress(_configuration["SmtpSettings:SenderEmail"], _configuration["SmtpSettings:SenderName"]),
-                Subject = subject,
-                Body = messageText,
-                IsBodyHtml = true,
-            };
-
-            mailMessage.To.Add(email);
-
-            await smtpClient.SendMailAsync(mailMessage);
+            return Ok("Email confirmé avec succès.");
         }
 
 
