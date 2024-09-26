@@ -189,7 +189,7 @@
                                                     <InputMask type="text"
                                                                v-model="formData.carteCredit.numeroCarte"
                                                                mask="9999999999999999"
-                                                               placeholder="9999999999999999"
+                                                               placeholder="4444444444444444"
                                                                :class="['form-control', { 'is-invalid': v.carteCredit.numeroCarte.$error }]"
                                                                id="numeroCarte"
                                                                @blur="v.carteCredit.numeroCarte.$touch()" />
@@ -413,7 +413,7 @@
     );
 
     const messageMinLength = helpers.withMessage(
-        "Le mot de passe doit contenir au moins 8 caractères, 1 majuscule, 1 minuscule, 1 chiffre et 1 caractère spécial.",
+        "Le mot de passe doit contenir au moins 8 caractères, minimum 1 majuscule, 1 minuscule, 1 chiffre et 1 caractère spécial.",
         minLength(8)
     );
 
