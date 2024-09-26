@@ -11,7 +11,9 @@
         </div>
         <div class="w-100 px-3 row row-cols-2">
             <div v-for="index in encanParPage" class="col w-50 py-3">
-                <AffichageEncanTuile />
+                <router-link to="Accueil" class="text-decoration-none text-black">
+                    <AffichageEncanTuile />
+                </router-link>
             </div>
         </div>
     </div>

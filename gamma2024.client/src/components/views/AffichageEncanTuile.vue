@@ -5,7 +5,7 @@
         <div class="d-flex w-100 ps-5 mt-3">
             <div class="col d-flex align-items-center justify-content-center flex-column">
                 <div class="row justify-content-start w-100">
-                    <p>Description : <br />Encan d'oeuvre d'art</p>
+                    <p>Encan d'oeuvres d'art</p>
                 </div>
                 <div class="row justify-content-start w-100">
                     <p>Date de début : <br />15 septembre 2024</p>

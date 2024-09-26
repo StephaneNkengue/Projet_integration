@@ -43,7 +43,7 @@
                             </li>
 
                             <li class="nav-item">
-                                <router-link to="Accueil" class="text-decoration-none">
+                                <router-link to="TousLesEncans" class="text-decoration-none">
                                     <a class="nav-link">
                                         Encans futurs
                                     </a>
