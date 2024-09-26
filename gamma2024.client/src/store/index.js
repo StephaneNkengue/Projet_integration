@@ -1,5 +1,7 @@
 import { createStore } from 'vuex'
 import api from '@/services/api'
+import { toast } from 'vue3-toastify';
+
 
 export default createStore({
     state() {
@@ -54,10 +56,14 @@ export default createStore({
 
         async creerCompteUtilisateur({ commit }, userData) {
             try {
-                console.log("Données envoyées au serveur:", JSON.stringify(userData, null, 2));
                 const response = await api.post('/utilisateurs/creer', userData);
                 if (response.data.success) {
-                    console.log("Compte créé avec succès !");
+                    toast.success("Compte crée avec succès !", {
+                        position: toast.POSITION.TOP_CENTER,
+                        pauseOnFocusLoss: false,
+                        theme: 'dark',
+                        autoClose: 3000,
+                    });
                     return { success: true };
                 } else {
                     return { success: false, error: response.data.message || "Erreur lors de la création du compte" };
