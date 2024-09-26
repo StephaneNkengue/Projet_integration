@@ -6,7 +6,7 @@
         </div>
     </div>
 
-    <Pagination :nbPages="nbPages" @nouvellePageCourante="infoPage" />
+    <Pagination :nbPages="nbPages" :pageCourante="pageCourante" @nouvellePageCourante="infoPage" @changePage="changePage" />
 
 </template>
 
@@ -51,8 +51,19 @@
         pageCourante.value = nouvPage
     })
 
+    const changePage = ref(function (valeur) {
+        if (valeur == -1 && pageCourante.value > 1) {
+            pageCourante.value--
+        }
+        else {
+            if (pageCourante.value < nbPages.value) {
+                pageCourante.value++
+            }
+        }
+    })
+
     watch(pageCourante, async (nouvPage, viellePage) => {
-        console.log("page " + viellePage + " -> page" + nouvPage)
+        console.log("page " + pageCourante.value)
     })
 </script>
 
