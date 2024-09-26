@@ -5,7 +5,7 @@ using Microsoft.Extensions.Options;
 using MimeKit;
 using MimeKit.Text;
 
-namespace Gamma2024.Server.Models.Email
+namespace Gamma2024.Server.Services.Email
 {
 
     public class EmailService : IEmailSender

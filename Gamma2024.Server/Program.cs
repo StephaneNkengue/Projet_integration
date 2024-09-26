@@ -1,8 +1,8 @@
 using Gamma2024.Server.Data;
 using Gamma2024.Server.Interface;
 using Gamma2024.Server.Models;
-using Gamma2024.Server.Models.Email;
 using Gamma2024.Server.Services;
+using Gamma2024.Server.Services.Email;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 

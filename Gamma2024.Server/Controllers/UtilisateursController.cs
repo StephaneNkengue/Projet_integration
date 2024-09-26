@@ -21,17 +21,15 @@ namespace Gamma2024.Server.Controllers
         private readonly IEmailSender _emailSender;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ApplicationDbContext _context;
-        private readonly IConfiguration _configuration;
 
 
         public UtilisateursController(InscriptionService inscriptionService, IEmailSender emailSender,
-            UserManager<ApplicationUser> userManager, ApplicationDbContext context, IConfiguration configuration)
+            UserManager<ApplicationUser> userManager, ApplicationDbContext context)
         {
             _inscriptionService = inscriptionService;
             _emailSender = emailSender;
             _userManager = userManager;
             _context = context;
-            _configuration = configuration;
         }
 
         [HttpPost("creer")]
@@ -74,7 +72,7 @@ namespace Gamma2024.Server.Controllers
 
 
         [HttpGet]
-        public async Task<IActionResult> ConfirmEmail(string idClient, string token)
+        public async Task<IActionResult> ConfirmEmail([FromQuery(Name = "userId")] string idClient, string token)
         {
             if (string.IsNullOrEmpty(idClient) || string.IsNullOrEmpty(token))
             {
@@ -97,13 +95,6 @@ namespace Gamma2024.Server.Controllers
             return Ok("Email confirmé avec succès.");
         }
 
-
-        //[HttpGet]
-        //public IActionResult returnAllEmail()
-        //{
-        //    List<string> TousLesCouuriels = _context.Users.Select(c => c.Email).ToList();
-        //    return Ok(TousLesCouuriels);
-        //}
 
     }
 
