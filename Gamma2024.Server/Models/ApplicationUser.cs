@@ -6,7 +6,7 @@ namespace Gamma2024.Server.Models
     {
         public string Name { get; set; } = null!;
         public string FirstName { get; set; } = null!;
-        public string? Avatar { get; set; } = null!;
+        public string? Avatar { get; set; }
         public int IdAdresse { get; set; }
         
         public ICollection<Adresse> Adresses { get; set; } = [];

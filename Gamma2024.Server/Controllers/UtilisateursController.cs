@@ -19,14 +19,14 @@ namespace Gamma2024.Server.Controllers
     {
         private readonly ClientInscriptionService _inscriptionService;
         private readonly ClientModificationService _modificationService;
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<ApplicationUser> _userManager;
         private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public UtilisateursController(ClientInscriptionService inscriptionService, ClientModificationService modificationService, UserManager<IdentityUser> userManager, IWebHostEnvironment webHostEnvironment)
+        public UtilisateursController(UserManager<ApplicationUser> userManager, ClientInscriptionService inscriptionService, ClientModificationService modificationService, IWebHostEnvironment webHostEnvironment)
         {
+            _userManager = userManager;
             _inscriptionService = inscriptionService;
             _modificationService = modificationService;
-            _userManager = userManager;
             _webHostEnvironment = webHostEnvironment;
         }
 
