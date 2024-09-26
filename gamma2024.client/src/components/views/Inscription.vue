@@ -95,12 +95,19 @@
                                                 <label for="pseudonyme">Pseudonyme</label>
                                                 <input type="text"
                                                        v-model="formData.generalInfo.pseudo"
-                                                       :class="['form-control', { 'is-invalid': v.generalInfo.pseudo.$error }]"
+                                                       :class="['form-control', { 'is-invalid': v.generalInfo.pseudo.$error || (!pseudoDisponible && pseudoVerifie) }]"
                                                        id="pseudonyme"
                                                        placeholder="johnDoe45"
-                                                       @blur="v.generalInfo.pseudo.$touch()" />
+                                                       @blur="v.generalInfo.pseudo.$touch(); verifierPseudo()"
+                                                       @input="pseudoVerifie = false" />
                                                 <div class="invalid-feedback" v-if="v.generalInfo.pseudo.$error">
                                                     {{ v.generalInfo.pseudo.$errors[0].$message }}
+                                                </div>
+                                                <div class="invalid-feedback" v-if="!pseudoDisponible && pseudoVerifie">
+                                                    Ce pseudonyme est déjà utilisé.
+                                                </div>
+                                                <div class="valid-feedback" v-if="pseudoDisponible && pseudoVerifie">
+                                                    Ce pseudonyme est disponible.
                                                 </div>
                                             </div>
                                         </div>
@@ -447,7 +454,16 @@
                 prenom: { required: messageRequis },
                 courriel: { required: messageRequis, email: messageCourriel },
                 telephone: { required: messageRequis },
-                pseudo: { required: messageRequis },
+                pseudo: {
+                    required: messageRequis,
+                    asyncValidator: async (value) => {
+                        if (value) {
+                            await verifierPseudo();
+                            return pseudoDisponible.value;
+                        }
+                        return true;
+                    }
+                },
                 motDePasse: { required: messageRequis },
                 confirmMotPasse: {
                     required: messageRequis,
@@ -498,28 +514,22 @@
     const errorMessage = ref('');
     const successMessage = ref('');
 
+    const pseudoDisponible = ref(true);
+    const pseudoVerifie = ref(false);
 
-    //try {
-    //    const response = await fetch('/api/utilisateurs/creer', {
-    //        method: 'post',
-    //        headers: {
-    //            'content-type': 'application/json'
-    //        },
-    //        body: json.stringify(formadata)
-    //    });
-
-    //    if (!response.ok) {
-    //        throw new error('erreur lors de l\'envoi des données');
-    //    }
-
-    //    const result = await response.json();
-    //    alert('données envoyées avec succès : ' + result.message);
-    //} catch (error) {
-    //    console.error('erreur : ', error);
-    //    alert('une erreur est survenue');
-    //}
-    //}
-
+    const verifierPseudo = async () => {
+        if (formData.generalInfo.pseudo.length > 0) {
+            try {
+                pseudoVerifie.value = false;
+                pseudoDisponible.value = await store.dispatch('verifierPseudonyme', formData.generalInfo.pseudo);
+                pseudoVerifie.value = true;
+            } catch (error) {
+                console.error("Erreur lors de la vérification du pseudonyme:", error);
+                pseudoDisponible.value = false;
+                pseudoVerifie.value = true;
+            }
+        }
+    };
 
     const submitForm = async () => {
         const result = await v.value.$validate();

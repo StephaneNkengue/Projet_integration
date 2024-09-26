@@ -110,6 +110,16 @@ export default createStore({
                 console.error("Erreur lors de la mise à jour de l'avatar:", error.response || error);
                 throw error;
             }
+        },
+
+        async verifierPseudonyme({ commit }, pseudo) {
+            try {
+                const response = await api.get(`/utilisateurs/verifier-pseudonyme?pseudo=${encodeURIComponent(pseudo)}`);
+                return response.data.disponible;
+            } catch (error) {
+                console.error("Erreur lors de la vérification du pseudonyme:", error);
+                throw error;
+            }
         }
     },
     getters: {

@@ -28,9 +28,17 @@ namespace Gamma2024.Server.Services
             }
 
             // Vérifier l'unicité du pseudonyme
-            if (!await IsUsernameUnique(model.GeneralInfo.Pseudo))
+            var existingUserByUsername = await _userManager.FindByNameAsync(model.GeneralInfo.Pseudo);
+            if (existingUserByUsername != null)
             {
                 return (false, "Ce pseudonyme est déjà utilisé. Veuillez en choisir un autre.");
+            }
+
+            // Vérifier l'unicité de l'email
+            var existingUserByEmail = await _userManager.FindByEmailAsync(model.GeneralInfo.Courriel);
+            if (existingUserByEmail != null)
+            {
+                return (false, "Cette adresse email est déjà utilisée.");
             }
 
             using var transaction = await _context.Database.BeginTransactionAsync();
