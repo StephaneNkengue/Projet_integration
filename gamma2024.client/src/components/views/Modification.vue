@@ -1,6 +1,13 @@
 <template>
     <div class="bg-image pt-5 imageDeFondEsquise">
         <div class="container d-flex flex-column justify-content-start align-items-stretch container col-md-6">
+            <!-- Ajout de la section avatar -->
+            <div class="avatar-section mb-4">
+                <img :src="avatarUrl" alt="Avatar" class="avatar-image" @click="triggerFileInput" />
+                <input type="file" ref="fileInput" @change="handleFileChange" accept="image/*" style="display: none;" />
+                <button @click="triggerFileInput" class="btn btn-primary mt-2">Modifier l'avatar</button>
+            </div>
+
             <h2 class="fs-1 text-center fw-bold mt-5">Modification des informations</h2>
             <p class="text-center">Modifier vos informations personnelles</p>
 
@@ -267,6 +274,8 @@ import { required, email, helpers } from "@vuelidate/validators";
 
 const store = useStore();
 const activeIndex = ref(1);
+const fileInput = ref(null);
+const avatarUrl = ref('');
 const messageRequis = helpers.withMessage("Ce champ est requis", required);
 const messageCourriel = helpers.withMessage(
     "Veuillez entrer un courriel valide",
@@ -362,10 +371,37 @@ onMounted(async () => {
         formData.adresse.province = response.data.Province;
         formData.adresse.pays = response.data.Country;
         formData.adresse.codePostal = response.data.PostalCode;
+        avatarUrl.value = response.data.Photo || '/Gamma2024.Server/Avatars/default.png';
     } catch (error) {
         errorMessage.value = "Erreur lors de la récupération des informations du client.";
     }
 });
+
+
+const triggerFileInput = () => {
+    fileInput.value.click();
+};
+
+const handleFileChange = async (event) => {
+    const file = event.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = async (e) => {
+            avatarUrl.value = e.target.result;
+            try {
+                await store.dispatch("updateAvatar", file);
+                alert("Avatar mis à jour avec succès !");
+            } catch (error) {
+                errorMessage.value = "Erreur lors de la mise à jour de l'avatar.";
+                errorMessage.value = "Erreur lors de la mise à jour de l'avatar.";
+                // Réinitialiser à l'avatar par défaut en cas d'erreur
+                avatarUrl.value = '/Gamma2024.Server/Avatars/default.png';
+            }
+        };
+        reader.readAsDataURL(file);
+    }
+};
+
 
 const submitForm = async () => {
     const result = await v.value.$validate();
@@ -374,7 +410,9 @@ const submitForm = async () => {
             await store.dispatch("updateClientInfo", {
                 ...formData.generalInfo,
                 ...formData.carteCredit,
-                ...formData.adresse
+                ...formData.adresse,
+                Photo: avatarUrl.value
+
             });
             alert("Informations mises à jour avec succès !");
         } catch (error) {
@@ -416,6 +454,20 @@ const submitForm = async () => {
     .bleuValide {
         background-color: #5a708a;
         color: white;
+    }
+
+    .avatar-section {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    }
+
+    .avatar-image {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        object-fit: cover;
+        cursor: pointer;
     }
 
     @media only screen and (max-width: 1000px) {

@@ -93,6 +93,23 @@ export default createStore({
                 console.error("Erreur lors de la mise à jour des informations du client:", error.response || error);
                 throw error;
             }
+        },
+
+        async updateAvatar({ commit }, file) {
+            try {
+                const formData = new FormData();
+                formData.append('avatar', file);
+                const response = await api.put('/utilisateurs/avatar', formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    }
+                });
+                commit('setUser', { ...this.state.user, Photo: response.data.avatarUrl });
+                return response;
+            } catch (error) {
+                console.error("Erreur lors de la mise à jour de l'avatar:", error.response || error);
+                throw error;
+            }
         }
     },
     getters: {

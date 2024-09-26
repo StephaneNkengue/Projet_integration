@@ -5,6 +5,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
 using System.Linq;
+using Gamma2024.Server.Models;
+using Microsoft.EntityFrameworkCore;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace Gamma2024.Server.Controllers
 {
@@ -16,12 +20,14 @@ namespace Gamma2024.Server.Controllers
         private readonly ClientInscriptionService _inscriptionService;
         private readonly ClientModificationService _modificationService;
         private readonly UserManager<IdentityUser> _userManager;
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public UtilisateursController(ClientInscriptionService inscriptionService, ClientModificationService modificationService, UserManager<IdentityUser> userManager)
+        public UtilisateursController(ClientInscriptionService inscriptionService, ClientModificationService modificationService, UserManager<IdentityUser> userManager, IWebHostEnvironment webHostEnvironment)
         {
             _inscriptionService = inscriptionService;
             _modificationService = modificationService;
             _userManager = userManager;
+            _webHostEnvironment = webHostEnvironment;
         }
 
         [HttpPost("creer")]
@@ -45,12 +51,14 @@ namespace Gamma2024.Server.Controllers
         }
 
         [Authorize(Roles = "Client")]
-        [HttpGet("me")]
+        [HttpGet("ObtentionInfoClient")]
         public async Task<IActionResult> GetClientInfo()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
             var user = await _userManager.Users
-                .Include(u => u.Adresses)
+                .OfType<ApplicationUser>() 
+                .Include(u => u.Adresses.Where(a => a.EstDomicile))
                 .Include(u => u.CarteCredits)
                 .FirstOrDefaultAsync(u => u.Id == userId);
 
@@ -59,9 +67,6 @@ namespace Gamma2024.Server.Controllers
                 return NotFound("Utilisateur non trouvé.");
             }
 
-            var adresse = user.Adresses.FirstOrDefault(a => a.EstDomicile);
-            var carteCredit = user.CarteCredits.FirstOrDefault();
-
             var clientInfo = new UpdateClientInfoVM
             {
                 Name = user.Name,
@@ -69,16 +74,18 @@ namespace Gamma2024.Server.Controllers
                 Email = user.Email,
                 PhoneNumber = user.PhoneNumber,
                 Pseudonym = user.UserName,
-                CardOwnerName = carteCredit?.Nom,
-                CardNumber = carteCredit?.Numero,
-                CardExpiryDate = carteCredit != null ? $"{carteCredit.MoisExpiration}/{carteCredit.AnneeExpiration}" : null,
-                CivicNumber = adresse?.Numero.ToString(),
-                Street = adresse?.Rue,
-                Apartment = adresse?.Appartement,
-                City = adresse?.Ville,
-                Province = adresse?.Province,
-                Country = adresse?.Pays,
-                PostalCode = adresse?.CodePostal,
+                CardOwnerName = user.CarteCredits.FirstOrDefault()?.Nom,
+                CardNumber = user.CarteCredits.FirstOrDefault()?.Numero,
+                CardExpiryDate = user.CarteCredits.Any() 
+                    ? $"{user.CarteCredits.First().MoisExpiration}/{user.CarteCredits.First().AnneeExpiration}" 
+                    : null,
+                CivicNumber = user.Adresses.FirstOrDefault()?.Numero.ToString(),
+                Street = user.Adresses.FirstOrDefault()?.Rue,
+                Apartment = user.Adresses.FirstOrDefault()?.Appartement,
+                City = user.Adresses.FirstOrDefault()?.Ville,
+                Province = user.Adresses.FirstOrDefault()?.Province,
+                Country = user.Adresses.FirstOrDefault()?.Pays,
+                PostalCode = user.Adresses.FirstOrDefault()?.CodePostal,
                 Photo = user.Avatar
             };
 
@@ -86,8 +93,26 @@ namespace Gamma2024.Server.Controllers
         }
 
         [Authorize(Roles = "Client")]
-        [HttpPut("me")]
+        [HttpPut("MiseAJourInfoClient")]
         public async Task<IActionResult> UpdateClientInfo([FromBody] UpdateClientInfoVM model)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            
+            var (success, message, updatedUser) = await _modificationService.MettreAJourClient(userId, model);
+
+            if (success)
+            {
+                return Ok(new { success = true, message = message, user = updatedUser });
+            }
+            else
+            {
+                return BadRequest(new { success = false, message = message });
+            }
+        }
+
+        [Authorize(Roles = "Client")]
+        [HttpPut("avatar")]
+        public async Task<IActionResult> UpdateAvatar(IFormFile avatar)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var user = await _userManager.FindByIdAsync(userId);
@@ -97,48 +122,24 @@ namespace Gamma2024.Server.Controllers
                 return NotFound("Utilisateur non trouvé.");
             }
 
-            user.Name = model.Name;
-            user.FirstName = model.FirstName;
-            user.Email = model.Email;
-            user.PhoneNumber = model.PhoneNumber;
-            user.Pseudonym = model.Pseudonym;
-            // Ajoutez les champs supplémentaires ici
-            user.CardOwnerName = model.CardOwnerName;
-            user.CardNumber = model.CardNumber;
-            user.CardExpiryDate = model.CardExpiryDate;
-            user.CivicNumber = model.CivicNumber;
-            user.Street = model.Street;
-            user.Apartment = model.Apartment;
-            user.City = model.City;
-            user.Province = model.Province;
-            user.Country = model.Country;
-            user.PostalCode = model.PostalCode;
-
-            var result = await _userManager.UpdateAsync(user);
-
-            if (!result.Succeeded)
+            if (avatar != null && avatar.Length > 0)
             {
-                return BadRequest("Erreur lors de la mise à jour des informations.");
+                var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "Avatars");
+                var uniqueFileName = Guid.NewGuid().ToString() + "_" + avatar.FileName;
+                var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    await avatar.CopyToAsync(fileStream);
+                }
+
+                user.Avatar = "/Gamma2024.Server/Avatars/" + uniqueFileName;
+                await _userManager.UpdateAsync(user);
+
+                return Ok(new { avatarUrl = user.Avatar });
             }
 
-            return Ok(new
-            {
-                user.Name,
-                user.FirstName,
-                user.Email,
-                user.PhoneNumber,
-                user.Pseudonym,
-                user.CardOwnerName,
-                user.CardNumber,
-                user.CardExpiryDate,
-                user.CivicNumber,
-                user.Street,
-                user.Apartment,
-                user.City,
-                user.Province,
-                user.Country,
-                user.PostalCode
-            });
+            return BadRequest("Aucun fichier n'a été envoyé.");
         }
     }
 

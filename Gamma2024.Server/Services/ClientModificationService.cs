@@ -18,20 +18,20 @@ namespace Gamma2024.Server.Services
             _userManager = userManager;
         }
 
-        public async Task<(bool Success, string Message)> MettreAJourClient(string userId, UpdateClientInfoVM model)
+        public async Task<(bool Success, string Message, object UpdatedUser)> MettreAJourClient(string userId, UpdateClientInfoVM model)
         {
             // Vérification des données
             var (isValid, errorMessage) = ClientValidation.ValidateClientUpdate(model);
             if (!isValid)
             {
-                return (false, errorMessage);
+                return (false, errorMessage, null);
             }
 
             var user = await _userManager.FindByIdAsync(userId);
 
             if (user == null)
             {
-                return (false, "Utilisateur non trouvé.");
+                return (false, "Utilisateur non trouvé.", null);
             }
 
             // Mettre à jour les informations générales
@@ -50,17 +50,25 @@ namespace Gamma2024.Server.Services
                 var (isValidExpiration, moisExpiration, anneeExpiration) = ClientValidation.ValidateAndParseExpirationDate(model.CardExpiryDate);
                 if (!isValidExpiration)
                 {
-                    return (false, "La date d'expiration de la carte est invalide ou expirée.");
+                    return (false, "La date d'expiration de la carte est invalide ou expirée.", null);
                 }
                 carteCredit.MoisExpiration = moisExpiration;
                 carteCredit.AnneeExpiration = anneeExpiration;
+            }
+            else
+            {
+                return (false, "Aucune carte de crédit trouvée pour cet utilisateur.", null);
             }
 
             // Mettre à jour les informations d'adresse
             var adresse = await _context.Adresses.FirstOrDefaultAsync(a => a.IdApplicationUser == user.Id && a.EstDomicile);
             if (adresse != null)
             {
-                adresse.Numero = int.Parse(model.CivicNumber);
+                if (!int.TryParse(model.CivicNumber, out int numeroCivique))
+                {
+                    return (false, "Le numéro civique doit être un nombre entier.", null);
+                }
+                adresse.Numero = numeroCivique;
                 adresse.Rue = model.Street;
                 adresse.Appartement = model.Apartment;
                 adresse.Ville = model.City;
@@ -68,17 +76,40 @@ namespace Gamma2024.Server.Services
                 adresse.Pays = model.Country;
                 adresse.CodePostal = model.PostalCode;
             }
+            else
+            {
+                return (false, "Aucune adresse trouvée pour cet utilisateur.", null);
+            }
 
             var result = await _userManager.UpdateAsync(user);
 
             if (!result.Succeeded)
             {
-                return (false, "Erreur lors de la mise à jour des informations : " + string.Join(", ", result.Errors.Select(e => e.Description)));
+                return (false, "Erreur lors de la mise à jour des informations : " + string.Join(", ", result.Errors.Select(e => e.Description)), null);
             }
 
             await _context.SaveChangesAsync();
 
-            return (true, "Informations mises à jour avec succès.");
+            var updatedUser = new
+            {
+                user.Name,
+                user.FirstName,
+                user.Email,
+                user.PhoneNumber,
+                user.UserName,
+                CardOwnerName = carteCredit.Nom,
+                CardNumber = carteCredit.Numero,
+                CardExpiryDate = $"{carteCredit.MoisExpiration:D2}/{carteCredit.AnneeExpiration}",
+                CivicNumber = adresse.Numero.ToString(),
+                Street = adresse.Rue,
+                Apartment = adresse.Appartement,
+                City = adresse.Ville,
+                Province = adresse.Province,
+                Country = adresse.Pays,
+                PostalCode = adresse.CodePostal
+            };
+
+            return (true, "Informations mises à jour avec succès.", updatedUser);
         }
     }
 }
