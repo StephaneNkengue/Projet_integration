@@ -141,6 +141,13 @@ namespace Gamma2024.Server.Controllers
 
             return BadRequest("Aucun fichier n'a été envoyé.");
         }
+
+        [HttpGet("verifier-email")]
+        public async Task<IActionResult> VerifierEmail([FromQuery] string email)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            return Ok(new { disponible = user == null });
+        }
     }
 
 }

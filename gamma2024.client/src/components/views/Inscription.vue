@@ -64,11 +64,18 @@
                                                 <input type="email"
                                                        placeholder="johndoe@gmail.com"
                                                        v-model="formData.generalInfo.courriel"
-                                                       :class="['form-control', { 'is-invalid': v.generalInfo.courriel.$error }]"
+                                                       :class="['form-control', { 'is-invalid': v.generalInfo.courriel.$error || (!emailDisponible && emailVerifie) }]"
                                                        id="courriel"
-                                                       @blur="v.generalInfo.courriel.$touch()" />
+                                                       @blur="v.generalInfo.courriel.$touch(); verifierEmail()"
+                                                       @input="emailVerifie = false" />
                                                 <div class="invalid-feedback" v-if="v.generalInfo.courriel.$error">
                                                     {{ v.generalInfo.courriel.$errors[0].$message }}
+                                                </div>
+                                                <div class="invalid-feedback" v-if="!emailDisponible && emailVerifie">
+                                                    Cette adresse email est déjà utilisée.
+                                                </div>
+                                                <div class="valid-feedback" v-if="emailDisponible && emailVerifie">
+                                                    Cette adresse email est disponible.
                                                 </div>
                                             </div>
                                         </div>
@@ -531,6 +538,23 @@
         }
     };
 
+    const emailDisponible = ref(true);
+    const emailVerifie = ref(false);
+
+    const verifierEmail = async () => {
+        if (formData.generalInfo.courriel.length > 0 && v.generalInfo.courriel.$valid) {
+            try {
+                emailVerifie.value = false;
+                emailDisponible.value = await store.dispatch('verifierEmail', formData.generalInfo.courriel);
+                emailVerifie.value = true;
+            } catch (error) {
+                console.error("Erreur lors de la vérification de l'email:", error);
+                emailDisponible.value = false;
+                emailVerifie.value = true;
+            }
+        }
+    };
+
     const submitForm = async () => {
         const result = await v.value.$validate();
 
@@ -605,6 +629,28 @@
         color: #155724;
         background-color: #d4edda;
         border-color: #c3e6cb;
+    }
+
+    .invalid-feedback {
+        color: #dc3545;
+        font-size: 0.875em;
+        margin-top: 0.25rem;
+        display: block;
+    }
+
+    .valid-feedback {
+        color: #28a745;
+        font-size: 0.875em;
+        margin-top: 0.25rem;
+        display: block;
+    }
+
+    .is-invalid {
+        border-color: #dc3545;
+    }
+
+    .is-valid {
+        border-color: #28a745;
     }
 </style>
 

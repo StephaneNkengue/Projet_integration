@@ -64,10 +64,17 @@
                                     </a>
                                 </router-link>
                             </li>
-                            <li class="nav-item d-md-none" v-if="estAdmin">
-                                <router-link to="Accueil" class="text-decoration-none">
+                            <li class="nav-item" v-if="estAdmin">
+                                <router-link to="TableauDeBord" class="text-decoration-none">
                                     <a class="nav-link">
                                         Tableau de bord
+                                    </a>
+                                </router-link>
+                            </li>
+                            <li class="nav-item" v-if="estClient">
+                                <router-link to="EspaceClient" class="text-decoration-none">
+                                    <a class="nav-link">
+                                        Espace client
                                     </a>
                                 </router-link>
                             </li>
@@ -82,9 +89,12 @@
                             <router-link to="Connexion" v-if="!estConnecte">
                                 <button class="btn btn-outline bleuMoyenFond text-white" type="button">Connexion</button>
                             </router-link>
+                            <router-link to="Modification" v-if="estConnecte">
+                                <button class="btn btn-outline bleuMoyenFond text-white" type="button">Modification</button>
+                            </router-link>
                             <router-link to="Accueil" v-if="estConnecte" class="text-decoration-none text-white d-flex align-items-center gap-3">
-                                <a class="nav-link">USERNAME</a>
-                                <img src="/icons/Avatar.png" alt="Avatar" height="40" />
+                                <a class="nav-link">{{ username }}</a>
+                                <img :src="avatarUrl" alt="Avatar" height="40" />
                             </router-link>
                         </div>
                     </div>
@@ -129,10 +139,16 @@
 </template>
 
 <script setup>
-    import { ref } from 'vue'
+    import { computed } from 'vue'
+    import { useStore } from 'vuex'
 
-    const estConnecte = ref(false);
-    const estAdmin = ref(true);
+    const store = useStore()
+
+    const estConnecte = computed(() => store.state.isLoggedIn)
+    const estAdmin = computed(() => store.state.roles.includes('Administrateur'))
+    const estClient = computed(() => store.state.roles.includes('Client'))
+    const username = computed(() => `${store.state.user?.firstName} ${store.state.user?.name}` || 'USERNAME')
+    const avatarUrl = computed(() => store.state.user?.Photo || '/Gamma2024.Server/Avatars/default.png')
 </script>
 
 <style scoped></style>

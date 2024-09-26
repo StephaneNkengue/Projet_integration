@@ -6,7 +6,8 @@ export default createStore({
         return {
             isLoggedIn: false,
             user: null,
-            roles: []
+            roles: [],
+            token: null
         }
     },
     mutations: {
@@ -18,29 +19,44 @@ export default createStore({
         },
         setRoles(state, roles) {
             state.roles = roles
+        },
+        setToken(state, token) {
+            state.token = token
         }
     },
     actions: {
         async login({ commit }, userData) {
             try {
-                console.log('Tentative de connexion avec:', userData);
-                const response = await api.post('/home/login', {
-                    emailOuPseudo: userData.emailOuPseudo,  // Modifié ici
-                    password: userData.password
-                });
-                console.log('Réponse du serveur:', response.data);
-                if (response.data.message === "Connexion réussie") {
+                console.log("Tentative de connexion avec:", userData);
+                const response = await api.post('/home/login', userData);
+                console.log("Réponse de l'API:", response);
+                if (response.data && response.data.message === "Connexion réussie") {
                     commit('setLoggedIn', true);
                     commit('setUser', {
-                        email: userData.emailOuPseudo,  // Modifié ici
-                        id: response.data.userId
+                        id: response.data.userId,
+                        username: response.data.username,
+                        name: response.data.name,
+                        firstName: response.data.firstName,
+                        roles: response.data.roles,
+                        photo: response.data.photo 
                     });
                     commit('setRoles', response.data.roles);
+                    if (response.data.token) {
+                        commit('setToken', response.data.token);
+                        // Assurez-vous que api.defaults existe avant d'essayer d'accéder à headers
+                        if (api.defaults) {
+                            api.defaults.headers = api.defaults.headers || {};
+                            api.defaults.headers.common = api.defaults.headers.common || {};
+                            api.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`;
+                        }
+                    }
                     return { success: true, roles: response.data.roles };
+                } else {
+                    return { success: false, error: response.data?.message || "Réponse inattendue du serveur" };
                 }
             } catch (error) {
-                console.error("Erreur de connexion détaillée:", error.response);
-                return { success: false, error: error.response?.data?.message || "Erreur de connexion" };
+                console.error("Erreur détaillée de connexion:", error);
+                return { success: false, error: error.response?.data?.message || error.message || "Erreur de connexion" };
             }
         },
 
@@ -49,6 +65,8 @@ export default createStore({
             commit('setLoggedIn', false)
             commit('setUser', null)
             commit('setRoles', [])
+            commit('setToken', null)
+            delete api.defaults.headers.common['Authorization'];
         },
 
 
@@ -74,7 +92,7 @@ export default createStore({
 
         async fetchClientInfo({ commit }) {
             try {
-                const response = await api.get('/utilisateurs/me');
+                const response = await api.get('/utilisateurs/obtentioninfoclient');
                 commit('setUser', response.data);
                 return response;
             } catch (error) {
@@ -86,7 +104,7 @@ export default createStore({
 
         async updateClientInfo({ commit }, userData) {
             try {
-                const response = await api.put('/utilisateurs/me', userData);
+                const response = await api.put('/utilisateurs/miseajourinfoclient', userData);
                 commit('setUser', response.data);
                 return response;
             } catch (error) {
@@ -118,6 +136,16 @@ export default createStore({
                 return response.data.disponible;
             } catch (error) {
                 console.error("Erreur lors de la vérification du pseudonyme:", error);
+                throw error;
+            }
+        },
+
+        async verifierEmail({ commit }, email) {
+            try {
+                const response = await api.get(`/utilisateurs/verifier-email?email=${encodeURIComponent(email)}`);
+                return response.data.disponible;
+            } catch (error) {
+                console.error("Erreur lors de la vérification de l'email:", error);
                 throw error;
             }
         }

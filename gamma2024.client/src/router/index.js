@@ -43,7 +43,7 @@ const routes = [
         path: '/modification',
         name: 'Modification',
         component: Modification,
-        meta: { requiresAuth: true, requiredRole: 'CLIENT' }
+        meta: { requiresAuth: true, requiredRole: 'Client' }
     }
 ]
 
@@ -57,16 +57,12 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
     const isLoggedIn = store.state.isLoggedIn
-    const requiredRole = to.meta.requiredRole
+    const userRoles = store.state.roles
 
-    if (to.matched.some(record => record.meta.requiresAuth)) {
-        if (!isLoggedIn) {
-            next('/login')
-        } else if (requiredRole && !store.state.roles.includes(requiredRole)) {
-            next('/unauthorized') // Crez une vue pour les accs non autoriss
-        } else {
-            next()
-        }
+    if (to.meta.requiresAuth && !isLoggedIn) {
+        next('/login')
+    } else if (to.meta.requiredRole && !userRoles.includes(to.meta.requiredRole)) {
+        next('/unauthorized')
     } else {
         next()
     }

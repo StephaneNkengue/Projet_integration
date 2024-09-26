@@ -179,6 +179,7 @@ namespace Gamma2024.Server.Data
                     Ville = "Ville Admin",
                     CodePostal = "12345",
                     Pays = "Pays Admin",
+                    Province = "Québec",
                     IdApplicationUser = adminId
                 },
                 new Adresse
@@ -189,6 +190,7 @@ namespace Gamma2024.Server.Data
                     Ville = "Ville Client",
                     CodePostal = "67890",
                     Pays = "Pays Client",
+                    Province = "Québec",
                     IdApplicationUser = clientId
                 }
             );

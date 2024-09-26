@@ -94,6 +94,7 @@ namespace Gamma2024.Server.Services
                     Rue = model.Adresse.Rue,
                     Appartement = model.Adresse.Appartement,
                     Ville = model.Adresse.Ville,
+                    Province = model.Adresse.Province,
                     Pays = model.Adresse.Pays,
                     CodePostal = model.Adresse.CodePostal,
                     EstDomicile = true,
