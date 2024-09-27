@@ -1,5 +1,32 @@
 <template>
 
+    <div class="d-flex flex-row-reverse w-100 px-4 me-2 gap-2">
+        <button class="rounded bleuMoyenFond contourDiv btnSurvolerBleuMoyenFond">
+            <img src="/icons/IconTableau.png" alt="Affichage en tableau" height="25" />
+        </button>
+        <button class="rounded bleuMoyenFond contourDiv btnSurvolerBleuMoyenFond">
+            <img src="/icons/IconListe.png" alt="Affichage en liste" height="25" />
+        </button>
+        <button class="d-flex align-items-center text-center rounded bleuMoyenFond text-white contourDiv btnSurvolerBleuMoyenFond">
+            Tous
+        </button>
+        <button class="d-flex align-items-center text-center rounded bleuMoyenFond text-white contourDiv btnSurvolerBleuMoyenFond"
+                @click="changerNbLotParPage(100)"
+                v-bind:disabled="lotsParPage == 100">
+            100
+        </button>
+        <button class="d-flex align-items-center text-center rounded bleuMoyenFond text-white contourDiv btnSurvolerBleuMoyenFond"
+                @click="changerNbLotParPage(50)"
+                v-bind:disabled="lotsParPage == 50">
+            50
+        </button>
+        <button class="d-flex align-items-center text-center rounded bleuMoyenFond text-white contourDiv btnSurvolerBleuMoyenFond"
+                @click="changerNbLotParPage(20)"
+                v-bind:disabled="lotsParPage == 20">
+            20
+        </button>
+    </div>
+
     <div class="row row-cols-lg-5 row-cols-md-3 row-cols-sm-2 row-cols-1 w-100 px-3">
         <div v-for="index in lotsParPage" class="col p-2">
             <LotTuile />
@@ -37,7 +64,7 @@
 
 <script setup>
     import LotTuile from '@/components/views/LotTuile.vue'
-    import { ref, watch } from 'vue'
+    import { ref } from 'vue'
 
     //code temporaire afin de tester l'affichage des lots par page
     let unLot = {
@@ -69,7 +96,13 @@
     const nbLotsRecus = ref(listeLots.length)
     const pageCourante = ref(1)
 
-    const nbPages = ref(Math.ceil(nbLotsRecus.value / lotsParPage.value))
+    const nbPages = ref(recalculerNbPages())
+
+    const changerNbLotParPage = ref(function (nouvLotsParPage) {
+        lotsParPage.value = nouvLotsParPage;
+        nbPages.value = recalculerNbPages();
+        pageCourante.value = 1
+    })
 
     const reculerPage = ref(function () {
         if (pageCourante.value > 1) {
@@ -86,6 +119,11 @@
     const changerPage = ref(function () {
         pageCourante.value = event.srcElement.id
     })
+
+    function recalculerNbPages() {
+        return Math.ceil(nbLotsRecus.value / lotsParPage.value)
+    }
+
 </script>
 
 <style scoped>
