@@ -77,7 +77,7 @@ namespace Gamma2024.Server.Controllers
                 CardOwnerName = user.CarteCredits.FirstOrDefault()?.Nom,
                 CardNumber = user.CarteCredits.FirstOrDefault()?.Numero,
                 CardExpiryDate = user.CarteCredits.Any() 
-                    ? $"{user.CarteCredits.First().MoisExpiration}/{user.CarteCredits.First().AnneeExpiration}" 
+                    ? $"{user.CarteCredits.First().MoisExpiration:D2}/{user.CarteCredits.First().AnneeExpiration % 100:D2}" 
                     : null,
                 CivicNumber = user.Adresses.FirstOrDefault()?.Numero.ToString(),
                 Street = user.Adresses.FirstOrDefault()?.Rue,
@@ -86,7 +86,9 @@ namespace Gamma2024.Server.Controllers
                 Province = user.Adresses.FirstOrDefault()?.Province,
                 Country = user.Adresses.FirstOrDefault()?.Pays,
                 PostalCode = user.Adresses.FirstOrDefault()?.CodePostal,
-                Photo = user.Avatar
+                Photo = string.IsNullOrEmpty(user.Avatar) 
+                    ? "/Avatars/default.png" 
+                    : $"/Avatars/{user.Avatar}"
             };
 
             return Ok(clientInfo);
@@ -133,7 +135,7 @@ namespace Gamma2024.Server.Controllers
                     await avatar.CopyToAsync(fileStream);
                 }
 
-                user.Avatar = "/Gamma2024.Server/Avatars/" + uniqueFileName;
+                user.Avatar = uniqueFileName;
                 await _userManager.UpdateAsync(user);
 
                 return Ok(new { avatarUrl = user.Avatar });

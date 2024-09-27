@@ -2,17 +2,19 @@
     <div class="bg-image pt-5 imageDeFondEsquise">
         <div class="container d-flex flex-column justify-content-start align-items-stretch container col-md-6">
             <!-- Ajout de la section avatar -->
-            <div class="avatar-section mb-4">
-                <img :src="avatarUrl" alt="Avatar" class="avatar-image" @click="triggerFileInput" />
-                <input type="file" ref="fileInput" @change="handleFileChange" accept="image/*" style="display: none;" />
+            <div class="avatar-section mb-4 d-flex flex-column align-items-center">
+                <div class="avatar-container">
+                <img :src="avatarUrl" alt="Avatar" class="avatar-image mb-2" @click="triggerFileInput" @error="handleImageError" />
+                </div>
                 <button @click="triggerFileInput" class="btn btn-primary mt-2">Modifier l'avatar</button>
+                <input type="file" ref="fileInput" @change="handleFileChange" accept="image/*" style="display: none;" />
             </div>
 
             <h2 class="fs-1 text-center fw-bold mt-5">Modification des informations</h2>
             <p class="text-center">Modifier vos informations personnelles</p>
 
-            <div v-if="errorMessage" class="alert alert-danger">
-                {{ errorMessage }}
+            <div v-if="message" :class="['alert', message.type === 'success' ? 'alert-success' : 'alert-danger']">
+                {{ message.text }}
             </div>
 
             <div class="mt-3">
@@ -253,11 +255,11 @@
                     <div class="d-flex justify-content-end gap-2 py-3">
                         <button type="submit"
                                 :class="[
-                  state1 ? 'bleuValide' : 'bleuNonValide',
-                  'btn rounded-pill px-5 me-4',
-                ]"
-                                :disabled="state1">
-                            Enregistrer
+                                !isFormValid ? 'bleuNonValide' : 'bleuValide',
+                                'btn rounded-pill px-5 me-4',
+                                ]"
+                                :disabled="!isFormValid">
+                        Enregistrer
                         </button>
                     </div>
                 </form>
@@ -267,13 +269,17 @@
 </template>
 
 <script setup>
-import { ref, computed, reactive, onMounted } from "vue";
+import { ref, computed, reactive, onMounted, watch } from "vue";
 import { useStore } from "vuex";
 import { useVuelidate } from "@vuelidate/core";
 import { required, email, helpers } from "@vuelidate/validators";
+import api from '@/services/api';
+import { useRouter } from 'vue-router'; 
+
 
 const store = useStore();
 const activeIndex = ref(1);
+const message = ref(null);
 const fileInput = ref(null);
 const avatarUrl = ref('');
 const messageRequis = helpers.withMessage("Ce champ est requis", required);
@@ -281,6 +287,7 @@ const messageCourriel = helpers.withMessage(
     "Veuillez entrer un courriel valide",
     email
 );
+const router = useRouter();
 
 // objet qui contient tous les champs remplis correctement
 let formData = reactive({
@@ -353,129 +360,233 @@ const state3 = computed(() => {
 
 const errorMessage = ref("");
 
+const isLoading = ref(true);
+
 onMounted(async () => {
-    try {
-        const response = await store.dispatch("fetchClientInfo");
-        formData.generalInfo.nom = response.data.Name;
-        formData.generalInfo.prenom = response.data.FirstName;
-        formData.generalInfo.courriel = response.data.Email;
-        formData.generalInfo.telephone = response.data.PhoneNumber;
-        formData.generalInfo.pseudo = response.data.Pseudonym;
-        formData.carteCredit.nomProprio = response.data.CardOwnerName;
-        formData.carteCredit.numeroCarte = response.data.CardNumber;
-        formData.carteCredit.dateExpiration = response.data.CardExpiryDate;
-        formData.adresse.numeroCivique = response.data.CivicNumber;
-        formData.adresse.rue = response.data.Street;
-        formData.adresse.appartement = response.data.Apartment;
-        formData.adresse.ville = response.data.City;
-        formData.adresse.province = response.data.Province;
-        formData.adresse.pays = response.data.Country;
-        formData.adresse.codePostal = response.data.PostalCode;
-        avatarUrl.value = response.data.Photo || '/Gamma2024.Server/Avatars/default.png';
-    } catch (error) {
-        errorMessage.value = "Erreur lors de la récupération des informations du client.";
-    }
+  try {
+    isLoading.value = true;
+    const response = await store.dispatch("fetchClientInfo");
+    console.log("Données reçues:", response.data);
+    
+    // Mise à jour des données du formulaire
+    formData.generalInfo = {
+      nom: response.data.name || '',
+      prenom: response.data.firstName || '',
+      courriel: response.data.email || '',
+      telephone: response.data.phoneNumber || '',
+      pseudo: response.data.pseudonym || '',
+    };
+
+    formData.carteCredit = {
+      nomProprio: response.data.cardOwnerName || '',
+      numeroCarte: response.data.cardNumber || '',
+      dateExpiration: response.data.cardExpiryDate || '',
+    };
+
+    formData.adresse = {
+      numeroCivique: response.data.civicNumber || '',
+      rue: response.data.street || '',
+      appartement: response.data.apartment || '',
+      ville: response.data.city || '',
+      province: mapProvince(response.data.province) || '',
+      pays: response.data.country || 'Canada',
+      codePostal: response.data.postalCode || '',
+    };
+
+    // Utiliser l'URL de base de l'API pour construire l'URL de l'avatar
+    avatarUrl.value = response.data.photo ? `${api.defaults.baseURL.replace('/api', '')}${response.data.photo}` : '/icons/Avatar.png';
+  } catch (error) {
+    console.error("Erreur lors de la récupération des données:", error);
+    errorMessage.value = "Erreur lors de la récupération des informations du client.";
+    avatarUrl.value = '/icons/Avatar.png';
+  } finally {
+    isLoading.value = false;
+  }
 });
 
 
+const mapProvince = (province) => {
+  const provinceMap = {
+    'Québec': 'QC',
+    'Ontario': 'ON',
+    'Alberta': 'AB',
+    'Colombie-Britannique': 'BC',
+    'Manitoba': 'MB',
+    'Nouveau-Brunswick': 'NB',
+    'Terre-Neuve-et-Labrador': 'NL',
+    'Nouvelle-Écosse': 'NS',
+    'Île-du-Prince-Édouard': 'PE',
+    'Saskatchewan': 'SK',
+    'Territoires du Nord-Ouest': 'NT',
+    'Nunavut': 'NU',
+    'Yukon': 'YT'
+  };
+  return provinceMap[province] || province;
+};
+// Observateur pour vérifier les changements dans formData
+watch(formData, (newVal) => {
+  console.log("formData mis à jour:", newVal);
+}, { deep: true });
+
 const triggerFileInput = () => {
-    fileInput.value.click();
+  fileInput.value.click();
 };
 
-const handleFileChange = async (event) => {
+const handleImageError = () => {
+  console.error("Erreur de chargement de l'image:", avatarUrl.value);
+  avatarUrl.value = '/icons/Avatar.png';
+};
+
+    const handleFileChange = async (event) => {
     const file = event.target.files[0];
     if (file) {
-        const reader = new FileReader();
-        reader.onload = async (e) => {
-            avatarUrl.value = e.target.result;
-            try {
-                await store.dispatch("updateAvatar", file);
-                alert("Avatar mis à jour avec succès !");
-            } catch (error) {
-                errorMessage.value = "Erreur lors de la mise à jour de l'avatar.";
-                errorMessage.value = "Erreur lors de la mise à jour de l'avatar.";
-                // Réinitialiser à l'avatar par défaut en cas d'erreur
-                avatarUrl.value = '/Gamma2024.Server/Avatars/default.png';
-            }
-        };
-        reader.readAsDataURL(file);
+        try {
+        const formData = new FormData();
+        formData.append('avatar', file);
+        const response = await store.dispatch("updateAvatar", formData);
+        avatarUrl.value = response.data.avatarUrl;
+        alert("Avatar mis à jour avec succès !");
+        } catch (error) {
+        console.error("Erreur lors de la mise à jour de l'avatar:", error);
+        errorMessage.value = "Erreur lors de la mise à jour de l'avatar: " + (error.response?.data?.message || error.message);
+        }
     }
-};
+    };
 
 
-const submitForm = async () => {
+    const isFormValid = computed(() => {
+    return !v.value.$invalid && formDataChanged.value;
+    });
+
+    const formDataChanged = ref(false);
+
+    watch(formData, () => {
+    formDataChanged.value = true;
+    }, { deep: true });
+
+
+    const submitForm = async () => {
     const result = await v.value.$validate();
     if (result) {
         try {
-            await store.dispatch("updateClientInfo", {
-                ...formData.generalInfo,
-                ...formData.carteCredit,
-                ...formData.adresse,
+            const mappedData = {
+                Name: formData.generalInfo.nom,
+                FirstName: formData.generalInfo.prenom,
+                Email: formData.generalInfo.courriel,
+                PhoneNumber: formData.generalInfo.telephone,
+                Pseudonym: formData.generalInfo.pseudo,
+                CardOwnerName: formData.carteCredit.nomProprio,
+                CardNumber: formData.carteCredit.numeroCarte,
+                CardExpiryDate: formData.carteCredit.dateExpiration,
+                CivicNumber: formData.adresse.numeroCivique,
+                Street: formData.adresse.rue,
+                Apartment: formData.adresse.appartement,
+                City: formData.adresse.ville,
+                Province: formData.adresse.province,
+                Country: formData.adresse.pays,
+                PostalCode: formData.adresse.codePostal,
                 Photo: avatarUrl.value
+            };
 
-            });
-            alert("Informations mises à jour avec succès !");
+            await store.dispatch("updateClientInfo", mappedData);
+            message.value = { type: 'success', text: "Informations mises à jour avec succès !" };
+
+            await store.dispatch("fetchClientInfo");
+
+            setTimeout(() => {
+                router.push('/'); 
+            }, 2000);
         } catch (error) {
-            errorMessage.value = "Erreur lors de la mise à jour des informations.";
+            console.error("Erreur lors de la mise à jour des informations:", error);
+            message.value = { type: 'error', text: "Erreur lors de la mise à jour des informations: " + (error.response?.data?.message || error.message) };
         }
     } else {
-        alert("Formulaire non valide !");
+        message.value = { type: 'error', text: "Formulaire non valide. Veuillez vérifier les champs." };
     }
 };
 </script>
 
 <style scoped>
-    .information .form-group {
-        width: 45%;
-    }
+.information .form-group {
+    width: 45%;
+}
 
-    label {
-        font-weight: bolder;
-    }
+label {
+    font-weight: bolder;
+}
 
-    .is-invalid,
-    span {
-        border-color: red;
-        font-weight: 600;
-    }
+.is-invalid,
+span {
+    border-color: red;
+    font-weight: 600;
+}
 
-    .cadreBlanc {
-        background-color: white;
-        opacity: 0.4;
-        border-radius: 15px;
-        height: auto;
-    }
+.cadreBlanc {
+    background-color: white;
+    opacity: 0.4;
+    border-radius: 15px;
+    height: auto;
+}
 
-    .bleuNonValide {
-        background-color: #052445;
-        color: white;
-    }
+.bleuNonValide {
+    background-color: #052445;
+    color: white;
+}
 
-    .bleuValide {
-        background-color: #5a708a;
-        color: white;
-    }
+.bleuValide {
+    background-color: #5a708a;
+    color: white;
+}
 
-    .avatar-section {
+.avatar-section {
+    text-align: center;
+    margin-bottom: 20px;
+    position: relative;
+    z-index: 10;
+}
+
+.avatar-container {
+    width: 100px;
+    height: 100px;
+    overflow: hidden;
+    border-radius: 50%;
+    margin: 0 auto 10px;
+}
+
+.avatar-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    cursor: pointer;
+}
+
+.imageDeFondEsquise {
+    position: relative;
+}
+
+.imageDeFondEsquise::before {
+    content: '';
     position: absolute;
-    top: 20px;
-    left: 20px;
-    }
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-size: cover;
+    background-position: center;
+    opacity: 0.5;
+    z-index: 1;
+}
 
-    .avatar-image {
-        width: 100px;
-        height: 100px;
-        border-radius: 50%;
-        object-fit: cover;
-        cursor: pointer;
-    }
+.container {
+    position: relative;
+    z-index: 2;
+}
 
-    @media only screen and (max-width: 1000px) {
-        .i div {
+@media only screen and (max-width: 1000px) {
+    .i div {
         display: flex;
         flex-basis: 100%;
         flex-direction: column;
-        }
+    }
 }
 </style>
-

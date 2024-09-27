@@ -1,7 +1,7 @@
 import { createStore } from 'vuex'
 import api from '@/services/api'
 
-export default createStore({
+const store = createStore({
     state() {
         return {
             isLoggedIn: false,
@@ -43,12 +43,7 @@ export default createStore({
                     commit('setRoles', response.data.roles);
                     if (response.data.token) {
                         commit('setToken', response.data.token);
-                        // Assurez-vous que api.defaults existe avant d'essayer d'accéder à headers
-                        if (api.defaults) {
-                            api.defaults.headers = api.defaults.headers || {};
-                            api.defaults.headers.common = api.defaults.headers.common || {};
-                            api.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`;
-                        }
+                        api.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`;
                     }
                     return { success: true, roles: response.data.roles };
                 } else {
@@ -92,11 +87,12 @@ export default createStore({
 
         async fetchClientInfo({ commit }) {
             try {
-                const response = await api.get('/utilisateurs/obtentioninfoclient');
+                const response = await api.get('/utilisateurs/ObtentionInfoClient');
+                console.log("Données reçues de l'API:", response.data); // Pour le débogage
                 commit('setUser', response.data);
                 return response;
             } catch (error) {
-                console.error("Erreur lors de la récupération des informations du client:", error.response || error);
+                console.error("Erreur détaillée:", error.response || error);
                 throw error;
             }
         },
@@ -105,6 +101,7 @@ export default createStore({
         async updateClientInfo({ commit }, userData) {
             try {
                 const response = await api.put('/utilisateurs/miseajourinfoclient', userData);
+                console.log("Réponse de mise à jour:", response.data); // Pour le débogage
                 commit('setUser', response.data);
                 return response;
             } catch (error) {
@@ -122,10 +119,10 @@ export default createStore({
                         'Content-Type': 'multipart/form-data'
                     }
                 });
-                commit('setUser', { ...this.state.user, Photo: response.data.avatarUrl });
+                commit('setUser', { ...this.state.user, photo: response.data.avatarUrl });
                 return response;
             } catch (error) {
-                console.error("Erreur lors de la mise à jour de l'avatar:", error.response || error);
+                console.error("Erreur lors de la mise à jour de l'avatar:", error);
                 throw error;
             }
         },
@@ -154,4 +151,15 @@ export default createStore({
         isAdmin: state => state.roles.includes('ADMINISTRATEUR'),
         isClient: state => state.roles.includes('CLIENT')
     }
-})
+});
+
+// Ajoutez l'intercepteur ici
+api.interceptors.request.use(config => {
+    const token = store.state.token;
+    if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+});
+
+export default store;

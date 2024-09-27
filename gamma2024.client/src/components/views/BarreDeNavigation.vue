@@ -139,16 +139,47 @@
 </template>
 
 <script setup>
-    import { computed } from 'vue'
-    import { useStore } from 'vuex'
+import { computed, watch, ref } from 'vue'
+import { useStore } from 'vuex'
 
-    const store = useStore()
+const store = useStore()
 
-    const estConnecte = computed(() => store.state.isLoggedIn)
-    const estAdmin = computed(() => store.state.roles.includes('Administrateur'))
-    const estClient = computed(() => store.state.roles.includes('Client'))
-    const username = computed(() => `${store.state.user?.firstName} ${store.state.user?.name}` || 'USERNAME')
-    const avatarUrl = computed(() => store.state.user?.Photo || '/Gamma2024.Server/Avatars/default.png')
+const estConnecte = computed(() => store.state.isLoggedIn)
+const estAdmin = computed(() => store.state.roles.includes('Administrateur'))
+const estClient = computed(() => store.state.roles.includes('Client'))
+const username = computed(() => {
+    const user = store.state.user;
+    console.log("User dans le store:", user); // Pour le débogage
+    return user ? `${user.firstName || ''} ${user.name || ''}`.trim() || 'USERNAME' : 'USERNAME';
+})
+const avatarUrl = computed(() => {
+    const user = store.state.user
+    return user && user.Photo ? user.Photo : '/icons/Avatar.png'
+})
+
+const currentUser = ref(null)
+
+watch(() => store.state.user, (newUser) => {
+    console.log("User mis à jour dans le store:", newUser)
+    currentUser.value = newUser
+}, { deep: true, immediate: true })
+
+// Ajoutez cette fonction pour rafraîchir les informations de l'utilisateur
+const refreshUserInfo = async () => {
+    if (estConnecte.value) {
+        await store.dispatch('fetchClientInfo')
+    }
+}
+
+// Utilisez watch pour observer les changements dans l'état de connexion
+watch(() => store.state.isLoggedIn, (newValue) => {
+    if (newValue) {
+        refreshUserInfo()
+    }
+})
+
+// Rafraîchissez les informations de l'utilisateur au montage du composant
+refreshUserInfo()
 </script>
 
 <style scoped></style>

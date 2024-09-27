@@ -31,6 +31,8 @@ const api = axios.create({
     withCredentials: true
 });
 
+// Supprimez l'intercepteur qui utilise store ici
+
 findWorkingApi()
     .then(baseURL => {
         api.defaults.baseURL = baseURL;
@@ -40,9 +42,4 @@ findWorkingApi()
         api.defaults.baseURL = 'http://localhost:5122/api';
     });
 
-export default {
-    get: (...args) => api.get(...args),
-    post: (...args) => api.post(...args),
-    put: (...args) => api.put(...args),
-    delete: (...args) => api.delete(...args)
-};
+export default api;
