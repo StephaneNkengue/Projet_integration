@@ -6,13 +6,37 @@
         </div>
     </div>
 
-    <Pagination :nbPages="nbPages" :pageCourante="pageCourante" @nouvellePageCourante="infoPage" @changePage="changePage" />
+    <div class="d-flex flex-row justify-content-around gap-2 flex-wrap p-3">
+        <button type="button"
+                class="btn btn-primary"
+                @click="reculerPage"
+                v-bind:disabled="pageCourante == 1">
+            <
+        </button>
+
+        <div v-for="index in nbPages">
+            <button type="button"
+                    class="btn btn-primary"
+                    v-bind:id="index"
+                    @click="changerPage()"
+                    v-bind:disabled="pageCourante == index">
+                {{index}}
+            </button>
+
+        </div>
+
+        <button type="button"
+                class="btn btn-primary"
+                @click="avancerPage"
+                v-bind:disabled="pageCourante == nbPages">
+            >
+        </button>
+    </div>
 
 </template>
 
 <script setup>
     import LotTuile from '@/components/views/LotTuile.vue'
-    import Pagination from '@/components/views/Pagination.vue'
     import { ref, watch } from 'vue'
 
     //code temporaire afin de tester l'affichage des lots par page
@@ -35,7 +59,7 @@
         ]
     };
     let listeLots = [];
-    for (let i = 0; i < 30; i++) {
+    for (let i = 0; i < 300; i++) {
         listeLots.push(unLot)
     }
     //fin du code temporaire
@@ -47,21 +71,20 @@
 
     const nbPages = ref(Math.ceil(nbLotsRecus.value / lotsParPage.value))
 
-    const infoPage = ref(function (nouvPage) {
-        pageCourante.value = nouvPage
-    })
-
-    const changePage = ref(function (valeur) {
-        if (valeur == -1 && pageCourante.value > 1) {
+    const reculerPage = ref(function () {
+        if (pageCourante.value > 1) {
             pageCourante.value--
         }
-        else if (valeur == 1 && pageCourante.value < nbPages.value) {
+    })
+
+    const avancerPage = ref(function () {
+        if (pageCourante.value < nbPages.value) {
             pageCourante.value++
         }
     })
 
-    watch(pageCourante, async (nouvPage, viellePage) => {
-        console.log("page " + pageCourante.value)
+    const changerPage = ref(function () {
+        pageCourante.value = event.srcElement.id
     })
 </script>
 
