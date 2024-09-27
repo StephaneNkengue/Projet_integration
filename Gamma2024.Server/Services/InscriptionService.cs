@@ -51,7 +51,7 @@ namespace Gamma2024.Server.Services
                     UserName = model.GeneralInfo.Pseudo,
                     NormalizedUserName = model.GeneralInfo.Pseudo.ToUpper(),
                     Email = model.GeneralInfo.Courriel,
-                    EmailConfirmed = true,
+                    EmailConfirmed = false,
                     NormalizedEmail = model.GeneralInfo.Courriel.ToUpper(),
                     Name = model.GeneralInfo.Nom,
                     FirstName = model.GeneralInfo.Prenom,
@@ -74,7 +74,7 @@ namespace Gamma2024.Server.Services
                 var carteCredit = new Models.CarteCredit
                 {
                     Nom = model.CarteCredit.NomProprio,
-                    Numero = model.CarteCredit.NumeroCarte,
+                    Numero = ParseNumeroCarteCredit(model.CarteCredit.NumeroCarte),
                     MoisExpiration = moisExpiration,
                     AnneeExpiration = anneeExpiration,
                     IdClient = client.Id
@@ -146,6 +146,12 @@ namespace Gamma2024.Server.Services
         {
             var parts = code.Split(' ');
             return parts[0] + parts[1];
+        }
+
+        private string ParseNumeroCarteCredit(string numeroCarte)
+        {
+            var parts = numeroCarte.Split(' ');
+            return parts[0] + parts[1] + parts[2] + parts[3];
         }
 
         private (bool IsValid, string ErrorMessage) ValidateInscription(InscriptionVM model)
@@ -291,7 +297,7 @@ namespace Gamma2024.Server.Services
 
         private bool IsValidCreditCardNumber(string cardNumber)
         {
-            return System.Text.RegularExpressions.Regex.IsMatch(cardNumber, @"^(?:4[0-9]{12}(?:[0-9]{3})?|5[1-5][0-9]{14}|6(?:011|5[0-9][0-9])[0-9]{12}|3[47][0-9]{13}|3(?:0[0-5]|[68][0-9])[0-9]{11}|(?:2131|1800|35\d{3})\d{11})$");
+            return System.Text.RegularExpressions.Regex.IsMatch(cardNumber, @"^(?:4[0-9]{3} [0-9]{4} [0-9]{4} [0-9]{4}|5[1-5][0-9]{2} [0-9]{4} [0-9]{4} [0-9]{4}|6(?:011|5[0-9][0-9]) [0-9]{4} [0-9]{4} [0-9]{4}|3[47][0-9]{2} [0-9]{6} [0-9]{5}|3(?:0[0-5]|[68][0-9]) [0-9]{4} [0-9]{6} [0-9]{4}|(?:2131|1800|35\d{3}) [0-9]{4} [0-9]{4} [0-9]{4})$");
         }
 
         private bool IsValidPostalCode(string postalCode)

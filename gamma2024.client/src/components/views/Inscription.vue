@@ -188,8 +188,8 @@
                                                 <div class="input-wrapper">
                                                     <InputMask type="text"
                                                                v-model="formData.carteCredit.numeroCarte"
-                                                               mask="9999999999999999"
-                                                               placeholder="4444444444444444"
+                                                               mask="9999 9999 9999 9999"
+                                                               placeholder="4444 4444 4444 4444"
                                                                :class="['form-control', { 'is-invalid': v.carteCredit.numeroCarte.$error }]"
                                                                id="numeroCarte"
                                                                @blur="v.carteCredit.numeroCarte.$touch()" />
@@ -561,10 +561,9 @@
                     router.push('/connexion');
                 }, 1000);
             } else {
-                errorMessage.value = response.error || "Une erreur est survenue lors de la création du compte.";
+                errorMessage.value = "Une erreur est survenue lors de la création du compte.";
             }
         } catch (error) {
-            console.error("Erreur lors de la création du compte:", error);
             errorMessage.value = "Une erreur est survenue lors de la création du compte.";
         }
     };
@@ -631,31 +630,27 @@
         transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
     }
 
-        .input-wrapper .p-inputmask.is-invalid {
-            border-color: #dc3545; /* Rouge pour erreur */
-        }
-
-        .input-wrapper .p-inputmask:focus {
-            border-color: #80bdff;
-            outline: 0;
-            box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
-        }
-
-
-
-
-
 
     input::placeholder {
-        color: #6c757d; /* Couleur par défaut Bootstrap */
-        opacity: 1; /* Opacité complète */
+        color: #6c757d;
+        opacity: 1;
     }
 
-    /* Spécifiquement pour les placeholders dans InputMask */
+
     .p-inputmask input::placeholder {
-        color: #6c757d; /* Couleur similaire à celle du courriel */
-        opacity: 1; /* Même opacité que l'input classique */
-        font-weight: 400; /* Ajuste la police pour qu'elle corresponde */
+        color: #6c757d;
+        opacity: 1;
+        font-weight: 400;
+    }
+
+    .input-wrapper .p-inputmask.is-invalid {
+        border-color: #dc3545;
+    }
+
+    .input-wrapper .p-inputmask:focus {
+        border-color: #80bdff;
+        outline: 0;
+        box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
     }
 </style>
 

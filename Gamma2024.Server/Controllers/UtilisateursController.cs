@@ -60,11 +60,11 @@ namespace Gamma2024.Server.Controllers
 
                 }
 
-                return Ok(new { success = true, message = message });
+                return Ok();
             }
             else
             {
-                return BadRequest(new { success = false, message = message });
+                return BadRequest();
             }
 
         }
