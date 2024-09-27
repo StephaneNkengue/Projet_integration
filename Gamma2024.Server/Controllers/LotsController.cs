@@ -6,7 +6,7 @@ namespace Gamma2024.Server.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class LotController(LotService lotService) : ControllerBase
+    public class LotsController(LotService lotService) : ControllerBase
     {
         private readonly LotService _lotService;
         public ICollection<LotAffichageVM> ChercherTousLotsParEncan(int idEncan)
