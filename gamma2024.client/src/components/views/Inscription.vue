@@ -7,9 +7,10 @@
             <div v-if="errorMessage" class="alert alert-danger">
                 {{ errorMessage }}
             </div>
-
-            <div v-if="successMessage" class="alert alert-success">
-                {{ successMessage }}
+            <div v-else>
+                <div v-if="successMessage" class="alert alert-success">
+                    {{ successMessage }}
+                </div>
             </div>
 
             <!-- Stepper Navigation -->
@@ -390,7 +391,9 @@
     import Step from "primevue/step";
     import InputMask from 'primevue/inputmask';
     import StepPanel from "primevue/steppanel";
+    import { h } from 'vue';
     import { useVuelidate } from "@vuelidate/core";
+    import ToastContent from '@/components/Toast/toastConfirm.vue'
     import { required, email, helpers, sameAs, minLength, maxLength } from "@vuelidate/validators";
     import { useStore } from 'vuex';
     import { toast } from 'vue3-toastify';
@@ -542,6 +545,7 @@
     function allerAuSuivantPrecedent(stepIndex) {
         activeIndex.value = stepIndex;
 
+
     }
 
 
@@ -557,11 +561,29 @@
         try {
             const response = await store.dispatch('creerCompteUtilisateur', formData);
             if (response.success) {
+                successMessage.value = "Compte crée avec succès !"
+                toast.success(
+                    h(ToastContent, {
+                        title: 'Compte créé avec succès !',
+                        description: "Veuillez confirmer votre courriel afin d'activer votre compte",
+                    }),
+                    {
+                        position: toast.POSITION.TOP_CENTER,
+                        autoClose: 3000,
+                        pauseOnFocusLoss: false,
+                        theme: 'dark',
+                        toastStyle: {
+                            backgroundColor: '#052445',
+                            color: '#fff',
+                        },
+                    }
+                );
+
                 setTimeout(() => {
                     router.push('/connexion');
-                }, 1000);
+                }, 4000);
             } else {
-                errorMessage.value = "Une erreur est survenue lors de la création du compte.";
+                errorMessage.value = response.error || "Une erreur est survenue lors de la création du compte.";
             }
         } catch (error) {
             errorMessage.value = "Une erreur est survenue lors de la création du compte.";

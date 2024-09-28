@@ -32,6 +32,11 @@ namespace Gamma2024.Server.Services
                 return (false, "Ce pseudonyme est déjà utilisé. Veuillez en choisir un autre.");
             }
 
+            if (!await IsEmailUnique(model.GeneralInfo.Courriel))
+            {
+                return (false, "Ce courriel est déjà utilisé. Veuillez en choisir un autre.");
+            }
+
             using var transaction = await _context.Database.BeginTransactionAsync();
 
             try
@@ -112,6 +117,12 @@ namespace Gamma2024.Server.Services
         {
             return !await _context.Users.AnyAsync(u => u.UserName == username);
         }
+
+        private async Task<bool> IsEmailUnique(string email)
+        {
+            return !await _context.Users.AnyAsync(u => u.Email == email);
+        }
+
 
         private (bool IsValid, int Mois, int Annee) ValidateAndParseExpirationDate(string expirationDate)
         {
