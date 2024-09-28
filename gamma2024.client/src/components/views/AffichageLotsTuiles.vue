@@ -125,7 +125,7 @@
     })
 
     const changerPage = ref(function () {
-        pageCourante.value = event.srcElement.id
+        pageCourante.value = parseInt(event.srcElement.id)
     })
 
     function recalculerNbPages() {
