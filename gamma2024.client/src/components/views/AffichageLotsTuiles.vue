@@ -7,7 +7,9 @@
         <button class="rounded bleuMoyenFond contourDiv btnSurvolerBleuMoyenFond">
             <img src="/icons/IconListe.png" alt="Affichage en liste" height="25" />
         </button>
-        <button class="d-flex align-items-center text-center rounded bleuMoyenFond text-white contourDiv btnSurvolerBleuMoyenFond">
+        <button class="d-flex align-items-center text-center rounded bleuMoyenFond text-white contourDiv btnSurvolerBleuMoyenFond"
+                @click="afficherTousLots"
+                v-bind:disabled="lotsParPage == nbLotsRecus">
             Tous
         </button>
         <button class="d-flex align-items-center text-center rounded bleuMoyenFond text-white contourDiv btnSurvolerBleuMoyenFond"
@@ -92,14 +94,20 @@
     //fin du code temporaire
 
 
-    const lotsParPage = ref(20)
     const nbLotsRecus = ref(listeLots.length)
+    const lotsParPage = ref(nbLotsRecus.value)
     const pageCourante = ref(1)
 
     const nbPages = ref(recalculerNbPages())
 
     const changerNbLotParPage = ref(function (nouvLotsParPage) {
         lotsParPage.value = nouvLotsParPage;
+        nbPages.value = recalculerNbPages();
+        pageCourante.value = 1
+    })
+
+    const afficherTousLots = ref(function () {
+        lotsParPage.value = nbLotsRecus.value;
         nbPages.value = recalculerNbPages();
         pageCourante.value = 1
     })
@@ -123,6 +131,7 @@
     function recalculerNbPages() {
         return Math.ceil(nbLotsRecus.value / lotsParPage.value)
     }
+
 
 </script>
 
