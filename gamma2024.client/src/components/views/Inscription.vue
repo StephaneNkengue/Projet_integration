@@ -393,13 +393,11 @@
     import StepPanel from "primevue/steppanel";
     import { h } from 'vue';
     import { useVuelidate } from "@vuelidate/core";
-    import ToastContent from '@/components/Toast/toastConfirm.vue'
+    import ToastContent from '../Toast/toastConfirm.vue'
     import { required, email, helpers, sameAs, minLength, maxLength } from "@vuelidate/validators";
     import { useStore } from 'vuex';
     import { toast } from 'vue3-toastify';
     import { useRouter } from 'vue-router';
-    import api from '@/services/api'
-
 
 
     const store = useStore();
