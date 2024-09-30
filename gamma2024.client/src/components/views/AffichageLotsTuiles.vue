@@ -35,7 +35,7 @@
         </div>
     </div>
 
-    <div class="d-flex flex-row justify-content-around gap-2 flex-wrap p-3">
+    <div class="d-flex flex-row justify-content-around gap-1 flex-wrap p-3">
         <button type="button"
                 class="btn btn-primary"
                 @click="reculerPage"
@@ -43,13 +43,13 @@
             <
         </button>
 
-        <div v-for="index in nbPages">
+        <div v-for="item in listePagination">
             <button type="button"
                     class="btn btn-primary"
-                    v-bind:id="index"
+                    :pageId="item"
                     @click="changerPage()"
-                    v-bind:disabled="pageCourante == index">
-                {{index}}
+                    v-bind:disabled="pageCourante == item || item == '...'">
+                {{item}}
             </button>
 
         </div>
@@ -99,37 +99,61 @@
     const pageCourante = ref(1)
 
     const nbPages = ref(recalculerNbPages())
+    const listePagination = ref([])
+
+    genererListePagination
 
     const changerNbLotParPage = ref(function (nouvLotsParPage) {
         lotsParPage.value = nouvLotsParPage;
         nbPages.value = recalculerNbPages();
         pageCourante.value = 1
+        genererListePagination()
     })
 
     const afficherTousLots = ref(function () {
         lotsParPage.value = nbLotsRecus.value;
         nbPages.value = recalculerNbPages();
         pageCourante.value = 1
+        genererListePagination()
     })
 
     const reculerPage = ref(function () {
         if (pageCourante.value > 1) {
             pageCourante.value--
+            genererListePagination()
         }
     })
 
     const avancerPage = ref(function () {
         if (pageCourante.value < nbPages.value) {
             pageCourante.value++
+            genererListePagination()
         }
     })
 
     const changerPage = ref(function () {
-        pageCourante.value = parseInt(event.srcElement.id)
+        pageCourante.value = parseInt(event.srcElement.getAttribute('pageId'))
+        genererListePagination()
     })
 
     function recalculerNbPages() {
         return Math.ceil(nbLotsRecus.value / lotsParPage.value)
+    }
+
+    function genererListePagination() {
+
+        listePagination.value = []
+
+        for (let i = 1; i <= nbPages.value; i++) {
+            if (i == 1
+                || (i >= pageCourante.value - 1 && i <= pageCourante.value + 1)
+                || (i == nbPages.value)) {
+                listePagination.value.push(i)
+            }
+            else if (listePagination.value[listePagination.value.length - 1] != '...') {
+                listePagination.value.push('...')
+            }
+        }
     }
 
 
