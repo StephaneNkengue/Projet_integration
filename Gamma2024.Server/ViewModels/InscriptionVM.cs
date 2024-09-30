@@ -7,8 +7,6 @@ namespace Gamma2024.Server.ViewModels
         public CarteCredit CarteCredit { get; set; } = null!;
         public Adresse Adresse { get; set; } = null!;
 
-        // Classes internes déplacées à l'extérieur de InscriptionVM
-
     }
     public class InfoGenerale
     {
