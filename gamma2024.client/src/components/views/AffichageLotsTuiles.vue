@@ -66,7 +66,7 @@
 
 <script setup>
     import LotTuile from '@/components/views/LotTuile.vue'
-    import { ref } from 'vue'
+    import { ref, watch } from 'vue'
 
     //code temporaire afin de tester l'affichage des lots par page
     let unLot = {
@@ -96,12 +96,15 @@
 
     const nbLotsRecus = ref(listeLots.length)
     const lotsParPage = ref(nbLotsRecus.value)
+    const listePagination = ref([])
     const pageCourante = ref(1)
 
     const nbPages = ref(recalculerNbPages())
-    const listePagination = ref([])
+    genererListePagination()
 
-    genererListePagination
+    watch(pageCourante, () => {
+        genererListePagination()
+    })
 
     const changerNbLotParPage = ref(function (nouvLotsParPage) {
         lotsParPage.value = nouvLotsParPage;
@@ -120,20 +123,17 @@
     const reculerPage = ref(function () {
         if (pageCourante.value > 1) {
             pageCourante.value--
-            genererListePagination()
         }
     })
 
     const avancerPage = ref(function () {
         if (pageCourante.value < nbPages.value) {
             pageCourante.value++
-            genererListePagination()
         }
     })
 
     const changerPage = ref(function () {
         pageCourante.value = parseInt(event.srcElement.getAttribute('pageId'))
-        genererListePagination()
     })
 
     function recalculerNbPages() {
@@ -141,7 +141,6 @@
     }
 
     function genererListePagination() {
-
         listePagination.value = []
 
         for (let i = 1; i <= nbPages.value; i++) {
