@@ -58,18 +58,12 @@ export default createStore({
             try {
                 const response = await api.post('/utilisateurs/creer', userData);
                 if (response.data.success) {
-                    toast.success("Compte crée avec succès !", {
-                        position: toast.POSITION.TOP_CENTER,
-                        pauseOnFocusLoss: false,
-                        theme: 'dark',
-                        autoClose: 3000,
-                    });
+
                     return { success: true };
                 } else {
                     return { success: false, error: response.data.message || "Erreur lors de la création du compte" };
                 }
             } catch (error) {
-                console.error("Erreur détaillée lors de la création du compte:", error.response || error);
                 return {
                     success: false,
                     error: error.response?.data?.message || error.message || "Erreur lors de la création du compte"
