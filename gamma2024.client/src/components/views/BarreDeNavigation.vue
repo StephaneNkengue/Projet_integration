@@ -150,9 +150,15 @@ const username = computed(() => {
     return user && user.pseudonym ? user.pseudonym    : 'USERNAME';
 })
 const avatarUrl = computed(() => {
-    const user = store.state.user
-    return user && user.Photo ? user.Photo : '/icons/Avatar.png'
-})
+    if (store.state.user && store.state.user.photo) {
+        if (store.state.user.photo.startsWith('http')) {
+            return store.state.user.photo;
+        } else {
+            return `${store.state.api.defaults.baseURL.replace('/api', '')}${store.state.user.photo}`;
+        }
+    }
+    return '/icons/Avatar.png'; 
+});
 
 const currentUser = ref(null)
 

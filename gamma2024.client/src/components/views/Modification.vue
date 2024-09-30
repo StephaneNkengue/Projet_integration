@@ -4,8 +4,7 @@
             <!-- Ajout de la section avatar -->
             <div class="avatar-section mb-4 d-flex flex-column align-items-center">
                 <div class="avatar-container">
-                <img :src="avatarUrl" alt="Avatar" class="avatar-image mb-2" @click="triggerFileInput" @error="handleImageError" />
-                </div>
+                <img :src="avatarUrl" alt="Avatar" class="avatar-image mb-2" @click="triggerFileInput" @error="handleImageError" />                </div>
                 <button @click="triggerFileInput" class="btn btn-primary mt-2">Modifier l'avatar</button>
                 <input type="file" ref="fileInput" @change="handleFileChange" accept="image/*" style="display: none;" />
             </div>
@@ -281,13 +280,23 @@ const store = useStore();
 const activeIndex = ref(1);
 const message = ref(null);
 const fileInput = ref(null);
-const avatarUrl = ref('');
 const messageRequis = helpers.withMessage("Ce champ est requis", required);
 const messageCourriel = helpers.withMessage(
     "Veuillez entrer un courriel valide",
     email
 );
 const router = useRouter();
+
+const avatarUrl = computed(() => {
+    if (store.state.user && store.state.user.photo) {
+        if (store.state.user.photo.startsWith('http')) {
+            return store.state.user.photo;
+        } else {
+            return `${api.defaults.baseURL.replace('/api', '')}${store.state.user.photo}`;
+        }
+    }
+    return '/icons/Avatar.png';
+});
 
 // objet qui contient tous les champs remplis correctement
 let formData = reactive({
@@ -366,7 +375,6 @@ onMounted(async () => {
   try {
     isLoading.value = true;
     const response = await store.dispatch("fetchClientInfo");
-    console.log("Données reçues:", response.data);
     
     // Mise à jour des données du formulaire
     formData.generalInfo = {
@@ -395,6 +403,7 @@ onMounted(async () => {
 
     // Utiliser l'URL de base de l'API pour construire l'URL de l'avatar
     avatarUrl.value = response.data.photo ? `${api.defaults.baseURL.replace('/api', '')}${response.data.photo}` : '/icons/Avatar.png';
+    console("objet crée pour test" + response.data);
   } catch (error) {
     console.error("Erreur lors de la récupération des données:", error);
     errorMessage.value = "Erreur lors de la récupération des informations du client.";
@@ -434,24 +443,33 @@ const triggerFileInput = () => {
 
 const handleImageError = () => {
   console.error("Erreur de chargement de l'image:", avatarUrl.value);
-  avatarUrl.value = '/icons/Avatar.png';
+  setTimeout(() => {
+    if (!avatarUrl.value.includes('Avatar.png')) {
+      avatarUrl.value = '/icons/Avatar.png';
+    }
+  }, 1000); // Attendre 1 seconde avant de remplacer par l'image par défaut
 };
 
     const handleFileChange = async (event) => {
     const file = event.target.files[0];
     if (file) {
         try {
-        const formData = new FormData();
-        formData.append('avatar', file);
-        const response = await store.dispatch("updateAvatar", formData);
-        avatarUrl.value = response.data.avatarUrl;
-        alert("Avatar mis à jour avec succès !");
+            const formData = new FormData();
+            formData.append('avatar', file);
+            const response = await store.dispatch("updateAvatar", formData);
+            console.log("Réponse du serveur pour l'avatar:", response);
+            
+            // Utiliser l'URL complète retournée par l'action du store
+            avatarUrl.value = response.data.avatarUrl;
+            
+            console.log("Nouvelle URL de l'avatar:", avatarUrl.value);
+            alert("Avatar mis à jour avec succès !");
         } catch (error) {
-        console.error("Erreur lors de la mise à jour de l'avatar:", error);
-        errorMessage.value = "Erreur lors de la mise à jour de l'avatar: " + (error.response?.data?.message || error.message);
+            console.error("Erreur lors de la mise à jour de l'avatar:", error);
+            errorMessage.value = "Erreur lors de la mise à jour de l'avatar: " + (error.response?.data?.message || error.message);
         }
     }
-    };
+};
 
 
     const isFormValid = computed(() => {
@@ -464,6 +482,11 @@ const handleImageError = () => {
     formDataChanged.value = true;
     }, { deep: true });
 
+    watch(() => store.state.user?.photo, (newPhotoUrl) => {
+        if (newPhotoUrl) {
+            avatarUrl.value = newPhotoUrl;
+        }
+    });
 
     const submitForm = async () => {
     const result = await v.value.$validate();

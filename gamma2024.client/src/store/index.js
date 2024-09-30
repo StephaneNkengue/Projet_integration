@@ -89,6 +89,12 @@ const store = createStore({
             try {
                 const response = await api.get('/utilisateurs/ObtentionInfoClient');
                 console.log("Données reçues de l'API:", response.data); // Pour le débogage
+
+                // Construire l'URL complète de l'avatar si nécessaire
+                if (response.data.photo && !response.data.photo.startsWith('http')) {
+                    response.data.photo = `${api.defaults.baseURL.replace('/api', '')}${response.data.photo}`;
+                }
+
                 commit('setUser', response.data);
                 return response;
             } catch (error) {
@@ -110,19 +116,27 @@ const store = createStore({
             }
         },
 
-        async updateAvatar({ commit }, file) {
+        async updateAvatar({ commit, state }, formData) {
             try {
-                const formData = new FormData();
-                formData.append('avatar', file);
+                console.log("FormData reçu dans updateAvatar:", formData);
                 const response = await api.put('/utilisateurs/avatar', formData, {
                     headers: {
                         'Content-Type': 'multipart/form-data'
                     }
                 });
-                commit('setUser', { ...this.state.user, photo: response.data.avatarUrl });
-                return response;
+                
+                // Construire l'URL complète de l'avatar
+                const fullAvatarUrl = `${api.defaults.baseURL.replace('/api', '')}${response.data.avatarUrl}`;
+                
+                // Mettre à jour l'utilisateur avec la nouvelle URL de l'avatar
+                const updatedUser = { ...state.user, photo: fullAvatarUrl };
+                commit('setUser', updatedUser);
+                
+                console.log("Avatar mis à jour dans le store:", fullAvatarUrl);
+                
+                return { ...response, data: { ...response.data, avatarUrl: fullAvatarUrl } };
             } catch (error) {
-                console.error("Erreur lors de la mise à jour de l'avatar:", error);
+                console.error("Erreur détaillée lors de la mise à jour de l'avatar:", error.response || error);
                 throw error;
             }
         },

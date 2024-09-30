@@ -116,6 +116,11 @@ namespace Gamma2024.Server.Controllers
         [HttpPut("avatar")]
         public async Task<IActionResult> UpdateAvatar(IFormFile avatar)
         {
+            if (avatar == null || avatar.Length == 0)
+            {
+                return BadRequest("Aucun fichier n'a été envoyé ou le fichier est vide.");
+            }
+
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var user = await _userManager.FindByIdAsync(userId);
 
@@ -138,7 +143,7 @@ namespace Gamma2024.Server.Controllers
                 user.Avatar = uniqueFileName;
                 await _userManager.UpdateAsync(user);
 
-                return Ok(new { avatarUrl = user.Avatar });
+                return Ok(new { avatarUrl = $"/Avatars/{uniqueFileName}" });
             }
 
             return BadRequest("Aucun fichier n'a été envoyé.");
