@@ -81,6 +81,23 @@ namespace Gamma2024.Server.Services
                 return (false, "Aucune adresse trouvée pour cet utilisateur.", null);
             }
 
+            if (!string.IsNullOrWhiteSpace(model.NewPassword))
+            {
+                var passwordValidator = new PasswordValidator<ApplicationUser>();
+                var passwordValidationResult = await passwordValidator.ValidateAsync(_userManager, user, model.NewPassword);
+
+                if (!passwordValidationResult.Succeeded)
+                {
+                    return (false, string.Join(", ", passwordValidationResult.Errors.Select(e => e.Description)), null);
+                }
+
+                var passwordChangeResult = await _userManager.ChangePasswordAsync(user, model.CurrentPassword, model.NewPassword);
+                if (!passwordChangeResult.Succeeded)
+                {
+                    return (false, "Erreur lors de la mise à jour du mot de passe : " + string.Join(", ", passwordChangeResult.Errors.Select(e => e.Description)), null);
+                }
+            }
+
             var result = await _userManager.UpdateAsync(user);
 
             if (!result.Succeeded)

@@ -93,6 +93,33 @@
                                 </span>
                             </div>
                         </div>
+
+                        <div class="form-group">
+                            <label for="newPassword" class="ms-3">Nouveau mot de passe</label>
+                            <input type="password"
+                                   v-model="formData.generalInfo.newPassword"
+                                   class="form-control"
+                                   id="newPassword"
+                                   @blur="v.generalInfo.newPassword.$touch()" />
+                            <span class="text-danger"
+                                  v-for="error in v.generalInfo.newPassword.$errors"
+                                  :key="error.$uid">
+                                {{ error.$message }}
+                            </span>
+                        </div>
+                        <div class="form-group">
+                            <label for="confirmNewPassword" class="ms-3">Confirmer le nouveau mot de passe</label>
+                            <input type="password"
+                                   v-model="formData.generalInfo.confirmNewPassword"
+                                   class="form-control"
+                                   id="confirmNewPassword"
+                                   @blur="v.generalInfo.confirmNewPassword.$touch()" />
+                            <span class="text-danger"
+                                  v-for="error in v.generalInfo.confirmNewPassword.$errors"
+                                  :key="error.$uid">
+                                {{ error.$message }}
+                            </span>
+                        </div>
                     </div>
 
                     <!-- Informations de carte de crédit -->
@@ -271,7 +298,7 @@
 import { ref, computed, reactive, onMounted, watch } from "vue";
 import { useStore } from "vuex";
 import { useVuelidate } from "@vuelidate/core";
-import { required, email, helpers } from "@vuelidate/validators";
+import { required, email, helpers, sameAs, minLength } from "@vuelidate/validators";
 import api from '@/services/api';
 import { useRouter } from 'vue-router'; 
 
@@ -306,6 +333,8 @@ let formData = reactive({
         courriel: "",
         telephone: "",
         pseudo: "",
+        newPassword: "",
+        confirmNewPassword: "",
     },
     carteCredit: {
         nomProprio: "",
@@ -332,6 +361,18 @@ let rules = computed(() => {
             courriel: { required: messageRequis, email: messageCourriel },
             telephone: { required: messageRequis },
             pseudo: { required: messageRequis },
+            newPassword: { 
+                minLength: helpers.withMessage(
+                    "Le mot de passe doit contenir au moins 8 caractères",
+                    minLength(8)
+                )
+            },
+            confirmNewPassword: { 
+                sameAsPassword: helpers.withMessage(
+                    "Les mots de passe ne correspondent pas",
+                    sameAs(formData.generalInfo.newPassword)
+                )
+            },
         },
         carteCredit: {
             nomProprio: { required: messageRequis },
@@ -463,7 +504,7 @@ const handleImageError = () => {
             avatarUrl.value = response.data.avatarUrl;
             
             console.log("Nouvelle URL de l'avatar:", avatarUrl.value);
-            alert("Avatar mis à jour avec succès !");
+            
         } catch (error) {
             console.error("Erreur lors de la mise à jour de l'avatar:", error);
             errorMessage.value = "Erreur lors de la mise à jour de l'avatar: " + (error.response?.data?.message || error.message);

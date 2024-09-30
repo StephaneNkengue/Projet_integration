@@ -7,6 +7,8 @@ namespace Gamma2024.Server.ViewModels
         public string Email { get; set; } = null!;
         public string PhoneNumber { get; set; } = null!;
         public string Pseudonym { get; set; } = null!;
+        public string? NewPassword { get; set; }
+        public string? ConfirmNewPassword { get; set; }
         public string CardOwnerName { get; set; } = null!;
         public string CardNumber { get; set; } = null!;
         public string CardExpiryDate { get; set; } = null!;

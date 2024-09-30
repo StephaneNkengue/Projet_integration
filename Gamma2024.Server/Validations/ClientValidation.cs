@@ -211,6 +211,19 @@ namespace Gamma2024.Server.Validations
                 return (false, "Le code postal est invalide ou manquant.");
             }
 
+            if (!string.IsNullOrWhiteSpace(model.NewPassword))
+            {
+                if (model.NewPassword.Length < 8)
+                {
+                    return (false, "Le nouveau mot de passe doit contenir au moins 8 caractères.");
+                }
+
+                if (model.NewPassword != model.ConfirmNewPassword)
+                {
+                    return (false, "Les mots de passe ne correspondent pas.");
+                }
+            }
+
             return (true, null);
         }
 
