@@ -89,10 +89,7 @@
                             <router-link to="Connexion" v-if="!estConnecte">
                                 <button class="btn btn-outline bleuMoyenFond text-white" type="button">Connexion</button>
                             </router-link>
-                            <router-link to="Modification" v-if="estConnecte">
-                                <button class="btn btn-outline bleuMoyenFond text-white" type="button">Modification</button>
-                            </router-link>
-                            <router-link to="Accueil" v-if="estConnecte" class="text-decoration-none text-white d-flex align-items-center gap-3">
+                            <router-link to="Modification" v-if="estConnecte" class="text-decoration-none text-white d-flex align-items-center gap-3">
                                 <a class="nav-link">{{ username }}</a>
                                 <img :src="avatarUrl" alt="Avatar" height="40" />
                             </router-link>
@@ -150,7 +147,7 @@ const estClient = computed(() => store.state.roles.includes('Client'))
 const username = computed(() => {
     const user = store.state.user;
     console.log("User dans le store:", user); // Pour le débogage
-    return user ? `${user.firstName || ''} ${user.name || ''}`.trim() || 'USERNAME' : 'USERNAME';
+    return user && user.pseudonym ? user.pseudonym    : 'USERNAME';
 })
 const avatarUrl = computed(() => {
     const user = store.state.user
