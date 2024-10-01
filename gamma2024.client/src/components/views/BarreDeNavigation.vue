@@ -104,7 +104,7 @@
                 </div>
             </nav>
 
-            <nav class="navbar navbar-expand-md py-0" data-bs-theme="dark">
+            <nav class="navbar bg-white navbar-expand-md py-0" data-bs-theme="dark">
                 <div class="container-fluid justify-content-center justify-content-md-between d-flex flex-row-reverse ">
                     <form class="d-flex align-items-center">
                         <div class="d-flex" v-if="activationRecherche">
