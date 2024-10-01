@@ -3,15 +3,9 @@
         <h1>
             Tous les encans
         </h1>
-        <div class="d-flex flex-row-reverse w-100 px-4 me-2 gap-2">
-            <button class="d-flex align-items-center text-center rounded bleuMoyenFond text-white contourDiv btnSurvolerBleuMoyenFond" @click="encanParPage = 200">Tous</button>
-            <button class="d-flex align-items-center text-center rounded bleuMoyenFond text-white contourDiv btnSurvolerBleuMoyenFond" @click="encanParPage = 100">100</button>
-            <button class="d-flex align-items-center text-center rounded bleuMoyenFond text-white contourDiv btnSurvolerBleuMoyenFond" @click="encanParPage = 50">50</button>
-            <button class="d-flex align-items-center text-center rounded bleuMoyenFond text-white contourDiv btnSurvolerBleuMoyenFond" @click="encanParPage = 20">20</button>
-        </div>
         <div class="w-100 px-3 row row-cols-lg-2 row-cols-1">
             <div v-for="index in encanParPage" class="col py-3">
-                <router-link to="Accueil" class="text-decoration-none text-black">
+                <router-link to="EncanPresent" class="text-decoration-none text-black">
                     <AffichageEncanTuile />
                 </router-link>
             </div>
