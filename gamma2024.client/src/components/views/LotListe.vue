@@ -1,0 +1,78 @@
+<template>
+    <router-link class="text-decoration-none" to="AffichageDetailsLot">
+        <div class="card">
+            <div class="card-body">
+                <div class=" row">
+                    <div class="col-2 mx-0 px-0 d-flex flex-column justify-content-center align-items-center">
+                        <img v-bind:src="lot.photos[0].lien"
+                             height="150"
+                             alt="Image du lot" />
+                    </div>
+
+
+                    <div class="col-2 mx-0 px-0 d-flex flex-column justify-content-center align-items-left">
+                        <p class=" pe-2 mt-1 mb-0">{{lot.code}}</p>
+                        <p class=" pe-2 mt-1 mb-0">{{lot.artiste}} </p>
+                        <p class=" pe-2 mt-1 mb-0">{{lot.hauteur}} X {{lot.largeur}} po</p>
+                    </div>
+
+                    <div class="col-1 px-0 d-flex flex-column align-self-end pb-3 align-items-left">
+                        <img src="/icons/IconeLivrable.png"
+                             height="50"
+                             width="50"
+                             alt="Livrable"
+                             v-if="lot.livrable" />
+
+                        <img src="/icons/IconeNonLivrable.png"
+                             height="50"
+                             width="50"
+                             alt="Non livrable"
+                             v-else />
+                    </div>
+
+                    <div class="col-2 d-flex flex-column justify-content-center">
+                        <p class=" text-center mb-0">Valeur: {{(lot.valeurEstimeMin).toFixed(0)}}$ - {{(lot.valeurEstimeMax).toFixed(0)}}$</p>
+                        <p class=" text-center mb-0">Mise actuelle: {{(lot.mise).toFixed(0)}}$</p>
+
+                        <div class="d-flex justify-content-around pt-2">
+                            <button type="button" class="btn bleuMoyenFond text-white">Miser</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </router-link>
+</template>
+
+<script setup>
+    import { ref } from 'vue'
+
+    let lotRecu = {
+        code: "1-a",
+        artiste: "Nom de l'artiste",
+        hauteur: 12,
+        largeur: 13,
+        valeurEstimeMin: 1000.00,
+        valeurEstimeMax: 2000.00,
+        mise: 1100.03,
+        livrable: false,
+        photos: [
+            {
+                lien: "https://placehold.co/9000",
+            },
+            {
+                lien: "https://placehold.co/6000",
+            },
+        ]
+    };
+
+    const lot = ref(lotRecu)
+
+</script>
+
+<style scoped>
+    .fs-7 {
+        font-size: 0.89rem;
+    }
+</style>
