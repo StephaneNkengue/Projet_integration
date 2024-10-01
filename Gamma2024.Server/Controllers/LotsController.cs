@@ -9,6 +9,8 @@ namespace Gamma2024.Server.Controllers
     public class LotsController(LotService lotService) : ControllerBase
     {
         private readonly LotService _lotService;
+
+        [HttpGet]
         public ICollection<LotAffichageVM> ChercherTousLotsParEncan(int idEncan)
         {
             ICollection<LotAffichageVM> lots = _lotService.ChercherTousLotsParEncan(idEncan);

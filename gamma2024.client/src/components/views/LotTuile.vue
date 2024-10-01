@@ -5,6 +5,7 @@
                 <div class="d-flex justify-content-between align-items-middle">
                     <p class="text-start mb-0">Lot {{lot.code}}</p>
                     <p class="text-end mb-0">{{lot.artiste}}</p>
+
                 </div>
 
                 <div class="d-flex justify-content-between align-items-middle">
