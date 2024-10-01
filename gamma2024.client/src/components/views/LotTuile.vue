@@ -2,14 +2,8 @@
     <router-link class="text-decoration-none" to="AffichageDetailsLot">
         <div class="card">
             <div class="card-body align-items-middle">
-                <div class="d-flex justify-content-between align-items-middle">
-                    <p class="text-start mb-0">Lot {{lot.code}}</p>
-                    <p class="text-end mb-0">{{lot.artiste}}</p>
-
-                </div>
-
-                <div class="d-flex justify-content-between align-items-middle">
-                    <p class="text-start mb-0">{{lot.hauteur}} X {{lot.largeur}}</p>
+                <div class="d-flex align-items-middle justify-content-between">
+                    <p class="fs-7 pe-2 mt-1 mb-0">Lot {{lot.code}} {{lot.artiste}} {{lot.hauteur}} X {{lot.largeur}}</p>
 
                     <img src="/icons/IconeLivrable.png"
                          height="30"
@@ -70,4 +64,8 @@
 
 </script>
 
-<style scoped></style>
+<style scoped>
+    .fs-7 {
+        font-size: 0.89rem;
+    }
+</style>
