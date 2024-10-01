@@ -6,7 +6,7 @@ import Connexion from '@/components/views/Connexion.vue'
 import Accueil from '@/components/views/Accueil.vue'
 import Contact from '@/components/views/Contact.vue'
 import APropos from '@/components/views/APropos.vue'
-
+import TableauDeBordInventaire from '@/components/views/TableauDeBordInventaire.vue'
 
 const routes = [
     {
@@ -38,6 +38,11 @@ const routes = [
         path: '/inscription',
         name: 'Inscription',
         component: Inscription
+    },
+    {
+        path: '/inventaire',
+        name: 'TableauDeBordInventaire',
+        component: TableauDeBordInventaire
     }
 ]
 
