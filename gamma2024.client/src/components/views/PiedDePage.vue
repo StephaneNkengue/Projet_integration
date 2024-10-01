@@ -2,7 +2,7 @@
     <footer class="bleuMarinSecondaireFond text-white py-1 justify-content-between d-flex align-items-center flex-column flex-md-row">
 
         <p class="col-md-5 mb-0 ps-3">
-            © Les Encans de Nantes 2024
+            © Les Encans de Nantes au Québec 2024
         </p>
 
         <div class="col-md-7">
