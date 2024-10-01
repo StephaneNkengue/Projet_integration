@@ -49,7 +49,7 @@
 
             </div>
 
-            <div class="d-flex justify-content-between align-items-center mt-2 test p-1">
+            <div class="d-flex justify-content-between align-items-center mt-2 carouselFondIndicators p-1">
 
                 <a class="opacity-100 d-flex align-items-center text-decoration-none" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
                     <span class="text-black fs-2" aria-hidden="true"><</span>
@@ -110,7 +110,7 @@
 </script>
 
 <style scoped>
-    .test {
+    .carouselFondIndicators {
         background-color: #C3CBD8;
     }
 </style>
