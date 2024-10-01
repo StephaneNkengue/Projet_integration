@@ -81,34 +81,33 @@ namespace Gamma2024.Server.Services
                 return (false, "Aucune adresse trouvée pour cet utilisateur.", null);
             }
 
-            if (!string.IsNullOrEmpty(model.CurrentPassword))
+            // Gestion du mot de passe
+            if (!string.IsNullOrEmpty(model.NewPassword))
             {
+                if (string.IsNullOrEmpty(model.CurrentPassword))
+                {
+                    return (false, "Le mot de passe actuel est requis pour changer le mot de passe.", null);
+                }
+
                 var passwordCheckResult = await _userManager.CheckPasswordAsync(user, model.CurrentPassword);
                 if (!passwordCheckResult)
                 {
                     return (false, "Mot de passe actuel incorrect.", null);
                 }
 
-                if (!string.IsNullOrWhiteSpace(model.NewPassword))
+                var passwordValidator = new PasswordValidator<ApplicationUser>();
+                var passwordValidationResult = await passwordValidator.ValidateAsync(_userManager, user, model.NewPassword);
+
+                if (!passwordValidationResult.Succeeded)
                 {
-                    var passwordValidator = new PasswordValidator<ApplicationUser>();
-                    var passwordValidationResult = await passwordValidator.ValidateAsync(_userManager, user, model.NewPassword);
-
-                    if (!passwordValidationResult.Succeeded)
-                    {
-                        return (false, string.Join(", ", passwordValidationResult.Errors.Select(e => e.Description)), null);
-                    }
-
-                    var passwordChangeResult = await _userManager.ChangePasswordAsync(user, model.CurrentPassword, model.NewPassword);
-                    if (!passwordChangeResult.Succeeded)
-                    {
-                        return (false, "Erreur lors de la mise à jour du mot de passe : " + string.Join(", ", passwordChangeResult.Errors.Select(e => e.Description)), null);
-                    }
+                    return (false, string.Join(", ", passwordValidationResult.Errors.Select(e => e.Description)), null);
                 }
-            }
-            else if (!string.IsNullOrWhiteSpace(model.NewPassword))
-            {
-                return (false, "Le mot de passe actuel est requis pour changer le mot de passe.", null);
+
+                var passwordChangeResult = await _userManager.ChangePasswordAsync(user, model.CurrentPassword, model.NewPassword);
+                if (!passwordChangeResult.Succeeded)
+                {
+                    return (false, "Erreur lors de la mise à jour du mot de passe : " + string.Join(", ", passwordChangeResult.Errors.Select(e => e.Description)), null);
+                }
             }
 
             var result = await _userManager.UpdateAsync(user);

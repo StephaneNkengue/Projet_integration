@@ -213,6 +213,11 @@ namespace Gamma2024.Server.Validations
 
             if (!string.IsNullOrWhiteSpace(model.NewPassword))
             {
+                if (string.IsNullOrWhiteSpace(model.CurrentPassword))
+                {
+                    return (false, "Le mot de passe actuel est requis pour changer le mot de passe.");
+                }
+
                 if (model.NewPassword.Length < 8)
                 {
                     return (false, "Le nouveau mot de passe doit contenir au moins 8 caractères.");
