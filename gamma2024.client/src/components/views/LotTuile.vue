@@ -3,7 +3,7 @@
         <div class="card">
             <div class="card-body align-items-middle">
                 <div class="d-flex align-items-middle justify-content-between">
-                    <p class="fs-7 pe-2 mt-1 mb-0">Lot {{lot.code}} {{lot.artiste}} {{lot.hauteur}} X {{lot.largeur}}</p>
+                    <p class="fs-7 pe-2 mt-1 mb-0">{{lot.code}}: {{lot.artiste}} ({{lot.hauteur}} X {{lot.largeur}} po)</p>
 
                     <img src="/icons/IconeLivrable.png"
                          height="30"
