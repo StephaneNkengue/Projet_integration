@@ -6,9 +6,14 @@ namespace Gamma2024.Server.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class EncansController(EncanService encanService) : ControllerBase
+    public class EncansController : ControllerBase
     {
         private readonly EncanService _encanService;
+
+        public EncansController(EncanService encanService)
+        {
+            _encanService = encanService;
+        }
 
         [HttpGet]
         public ICollection<EncanAffichageVM> ChercherTousEncans()
