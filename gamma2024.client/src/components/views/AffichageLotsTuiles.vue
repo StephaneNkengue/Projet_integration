@@ -1,10 +1,10 @@
 <template>
 
     <div class="d-flex flex-row-reverse w-100 px-4 me-2 gap-2">
-        <button class="rounded bleuMoyenFond contourDiv btnSurvolerBleuMoyenFond">
+        <button class="rounded bleuMoyenFond contourDiv btnSurvolerBleuMoyenFond" v-if="!siTuile" @click="changerTypeAffichage('tuile')">
             <img src="/icons/IconTableau.png" alt="Affichage en tableau" height="25" />
         </button>
-        <button class="rounded bleuMoyenFond contourDiv btnSurvolerBleuMoyenFond">
+        <button class="rounded bleuMoyenFond contourDiv btnSurvolerBleuMoyenFond" v-else @click="changerTypeAffichage('liste')">
             <img src="/icons/IconListe.png" alt="Affichage en liste" height="25" />
         </button>
         <button class="d-flex align-items-center text-center rounded bleuMoyenFond text-white contourDiv btnSurvolerBleuMoyenFond"
@@ -29,9 +29,18 @@
         </button>
     </div>
 
-    <div class="row row-cols-lg-5 row-cols-md-3 row-cols-sm-2 row-cols-1 w-100 px-3">
+    <div v-if="siTuile"
+         class="row row-cols-lg-5 row-cols-md-3 row-cols-sm-2 row-cols-1 w-100 px-3">
         <div v-for="index in lotsParPage" class="col p-2">
             <LotTuile />
+        </div>
+    </div>
+
+    <div v-else
+         class="d-flex flex-column p-5">
+
+        <div v-for="index in lotsParPage" class="p-2">
+            <LotListe />
         </div>
     </div>
 
@@ -66,6 +75,7 @@
 
 <script setup>
     import LotTuile from '@/components/views/LotTuile.vue'
+    import LotListe from '@/components/views/LotListe.vue'
     import { ref, watch } from 'vue'
 
     //code temporaire afin de tester l'affichage des lots par page
@@ -98,11 +108,23 @@
     const lotsParPage = ref(nbLotsRecus.value)
     const listePagination = ref([])
     const pageCourante = ref(1)
+    const siTuile = ref(true)
 
     const nbPages = ref(recalculerNbPages())
     genererListePagination()
 
     watch(pageCourante, () => {
+        genererListePagination()
+    })
+
+    const changerTypeAffichage = ref(function (typeAffichage) {
+        if (typeAffichage == 'tuile') {
+            siTuile.value = true
+        }
+        else {
+            siTuile.value = false
+        }
+        pageCourante.value = 1
         genererListePagination()
     })
 
