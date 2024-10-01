@@ -95,9 +95,22 @@
                         </div>
 
                         <div class="form-group">
+                            <label for="currentPassword" class="ms-3">Mot de passe actuel</label>
+                            <input type="password"
+                                   v-model="formData.generalInfo.currentPassword"
+                                   class="form-control"
+                                   id="currentPassword"
+                                   @blur="v.generalInfo.currentPassword.$touch()" />
+                            <span class="text-danger"
+                                  v-for="error in v.generalInfo.currentPassword.$errors"
+                                  :key="error.$uid">
+                                {{ error.$message }}
+                            </span>
+                        </div>
+                        <div class="form-group">
                             <label for="newPassword" class="ms-3">Nouveau mot de passe</label>
                             <input type="password"
-                                   v-model="formData.generalInfo.newPassword"
+                                   v-model.trim="formData.generalInfo.newPassword"
                                    class="form-control"
                                    id="newPassword"
                                    @blur="v.generalInfo.newPassword.$touch()" />
@@ -110,7 +123,7 @@
                         <div class="form-group">
                             <label for="confirmNewPassword" class="ms-3">Confirmer le nouveau mot de passe</label>
                             <input type="password"
-                                   v-model="formData.generalInfo.confirmNewPassword"
+                                   v-model.trim="formData.generalInfo.confirmNewPassword"
                                    class="form-control"
                                    id="confirmNewPassword"
                                    @blur="v.generalInfo.confirmNewPassword.$touch()" />
@@ -333,6 +346,7 @@ let formData = reactive({
         courriel: "",
         telephone: "",
         pseudo: "",
+        currentPassword: "",
         newPassword: "",
         confirmNewPassword: "",
     },
@@ -361,7 +375,12 @@ let rules = computed(() => {
             courriel: { required: messageRequis, email: messageCourriel },
             telephone: { required: messageRequis },
             pseudo: { required: messageRequis },
+            currentPassword: { required: messageRequis },
             newPassword: { 
+                required: helpers.withMessage(
+                    "Le nouveau mot de passe est requis si vous souhaitez le changer",
+                    (value) => !value || value.length >= 8
+                ),
                 minLength: helpers.withMessage(
                     "Le mot de passe doit contenir au moins 8 caractères",
                     minLength(8)
@@ -370,7 +389,7 @@ let rules = computed(() => {
             confirmNewPassword: { 
                 sameAsPassword: helpers.withMessage(
                     "Les mots de passe ne correspondent pas",
-                    sameAs(formData.generalInfo.newPassword)
+                    (value, vm) => !vm.newPassword || value === vm.newPassword
                 )
             },
         },
@@ -539,6 +558,9 @@ const handleImageError = () => {
                 Email: formData.generalInfo.courriel,
                 PhoneNumber: formData.generalInfo.telephone,
                 Pseudonym: formData.generalInfo.pseudo,
+                CurrentPassword: formData.generalInfo.currentPassword,
+                NewPassword: formData.generalInfo.newPassword,
+                ConfirmNewPassword: formData.generalInfo.confirmNewPassword,
                 CardOwnerName: formData.carteCredit.nomProprio,
                 CardNumber: formData.carteCredit.numeroCarte,
                 CardExpiryDate: formData.carteCredit.dateExpiration,
@@ -555,6 +577,11 @@ const handleImageError = () => {
             await store.dispatch("updateClientInfo", mappedData);
             message.value = { type: 'success', text: "Informations mises à jour avec succès !" };
 
+            // Réinitialiser les champs de mot de passe
+            formData.generalInfo.currentPassword = "";
+            formData.generalInfo.newPassword = "";
+            formData.generalInfo.confirmNewPassword = "";
+
             await store.dispatch("fetchClientInfo");
 
             setTimeout(() => {
@@ -568,6 +595,10 @@ const handleImageError = () => {
         message.value = { type: 'error', text: "Formulaire non valide. Veuillez vérifier les champs." };
     }
 };
+
+watch(() => formData.generalInfo.newPassword, () => {
+    v.value.generalInfo.confirmNewPassword.$touch();
+});
 </script>
 
 <style scoped>

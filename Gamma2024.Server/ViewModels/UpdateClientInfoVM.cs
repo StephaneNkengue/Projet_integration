@@ -20,5 +20,6 @@ namespace Gamma2024.Server.ViewModels
         public string Country { get; set; } = "Canada";
         public string PostalCode { get; set; } = null!;
         public string? Photo { get; set; }
+        public string? CurrentPassword { get; set; }
     }
 }
