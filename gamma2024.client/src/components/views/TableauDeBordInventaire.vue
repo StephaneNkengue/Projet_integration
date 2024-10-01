@@ -7,101 +7,101 @@
             </button>
             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                 <li>
-                    <input type="checkbox" id="lotIdCheckbox" checked onchange="basculerLaPresentationDeLaColonneLotId()">
-                    <label class="form-check-label">
+                    <input type="checkbox" id="lotIdCheckbox" checked>
+                    <label class="form-check-label" for="lotIdCheckbox">
                         Id
                     </label>
                 </li>
                 <li>
                     <input type="checkbox" id="lotEncanCheckbox" checked>
-                    <label class="form-check-label">
+                    <label class="form-check-label" for="lotEncanCheckbox">
                         Encan
                     </label>
                 </li>
                 <li>
                     <input type="checkbox" id="lot#Checkbox" checked>
-                    <label class="form-check-label">
+                    <label class="form-check-label" for="lot#Checkbox">
                         Lot #
                     </label>
                 </li>
                 <li>
                     <input type="checkbox" id="lotPrixOuvertureCheckbox" checked>
-                    <label class="form-check-label">
+                    <label class="form-check-label" for="lotPrixOuvertureCheckbox">
                         Prix Ouverture
                     </label>
                 </li>
                 <li>
-                    <input type="checkbox" name="lotValeurMinPourVendre" value="lotValeurMinPourVendre" checked>
-                    <label class="form-check-label">
+                    <input type="checkbox" id="lotValeurMinPourVendreCheckbox" checked>
+                    <label class="form-check-label" for="lotValeurMinPourVendreCheckbox">
                         Valeur Minimum Pour Vendre
                     </label>
                 </li>
                 <li>
-                    <input type="checkbox" name="lotEstimationMin" value="lotEstimationMinimale" checked>
-                    <label class="form-check-label">
+                    <input type="checkbox" id="lotEstimationMinCheckbox" checked>
+                    <label class="form-check-label" for="lotEstimationMinCheckbox">
                         Estimation Minimale
                     </label>
                 </li>
                 <li>
-                    <input type="checkbox" name="lotEstimationMax" value="lotEstimationMax" checked>
-                    <label class="form-check-label">
+                    <input type="checkbox" id="lotEstimationMaxCheckbox" checked>
+                    <label class="form-check-label" for="lotEstimationMaxCheckbox">
                         Estimation Maximale
                     </label>
                 </li>
                 <li>
-                    <input type="checkbox" name="lotCategorie" value="lotCategorie" checked>
-                    <label class="form-check-label">
+                    <input type="checkbox" id="lotCategorieCheckbox" checked>
+                    <label class="form-check-label" for="lotCategorieCheckbox">
                         Catégorie
                     </label>
                 </li>
                 <li>
-                    <input type="checkbox" name="lotArtiste" value="lotArtiste" checked>
-                    <label class="form-check-label">
+                    <input type="checkbox" id="lotArtisteCheckbox" checked>
+                    <label class="form-check-label" for="lotArtisteCheckbox">
                         Artiste
                     </label>
                 </li>
                 <li>
-                    <input type="checkbox" name="lotDimension" value="lotDimension" checked>
-                    <label class="form-check-label">
+                    <input type="checkbox" id="lotDimensionCheckbox" checked>
+                    <label class="form-check-label" for="lotDimensionCheckbox">
                         Dimension
                     </label>
                 </li>
                 <li>
-                    <input type="checkbox" name="lotDescription" value="lotDescription" checked>
-                    <label class="form-check-label">
+                    <input type="checkbox" id="lotDescriptionCheckbox" checked>
+                    <label class="form-check-label" for="lotDimensionCheckbox">
                         Description
                     </label>
                 </li>
                 <li>
-                    <input type="checkbox" name="lotMedium" value="lotMedium" checked>
-                    <label class="form-check-label">
+                    <input type="checkbox" id="lotMediumCheckbox" checked>
+                    <label class="form-check-label" for="lotMediumCheckbox">
                         Medium
                     </label>
                 </li>
                 <li>
-                    <input type="checkbox" name="lotLivraison" value="lotLivraison" checked>
-                    <label class="form-check-label">
+                    <input type="checkbox" id="lotLivraisonCheckbox" checked>
+                    <label class="form-check-label" for="lotLivraisonCheckbox">
                         Livraison
                     </label>
                 </li>
             </ul>
         </div>
-        <div class="table-responsive">
+        <div>
             <table class="table table-striped" style="width: 100%;">
                 <colgroup>
                     <col span="1" id="lotIdColonne" class="lotId"> <!--style="visibility:collapse;"-->
-                    <col span="1" id="lotEncan" class="lotEncan">
-                    <col span="1" id="lot# " class="lot#">
-                    <col span="1" id="lotPrixOuverture" class="lotPrixOuverture">
-                    <col span="1" id="lotValeurMinPourVendre" class="lotValeurMinPourVendre">
-                    <col span="1" id="lotEstimationMin" class="lotEstimationMin">
-                    <col span="1" id="lotEstimationMax" class="lotEstimationMax">
-                    <col span="1" id="lotCategorie" class="lotCategorie">
-                    <col span="1" id="lotArtiste" class="lotArtiste">
-                    <col span="1" id="lotDimension" class="lotDimension">
-                    <col span="1" id="lotDescription" class="lotDescription">
-                    <col span="1" id="lotMedium" class="lotMedium">
-                    <col span="1" id="lotLivraison" class="lotLivraison">
+                    <col span="1" id="lotEncanColonne" class="lotEncan">
+                    <col span="1" id="lot#Colonne" class="lot#">
+                    <col span="1" id="lotPrixOuvertureColonne" class="lotPrixOuverture">
+                    <col span="1" id="lotValeurMinPourVendreColonne" class="lotValeurMinPourVendre">
+                    <col span="1" id="lotEstimationMinColonne" class="lotEstimationMin">
+                    <col span="1" id="lotEstimationMaxColonne" class="lotEstimationMax">
+                    <col span="1" id="lotCategorieColonne" class="lotCategorie">
+                    <col span="1" id="lotArtisteColonne" class="lotArtiste">
+                    <col span="1" id="lotDimensionColonne" class="lotDimension">
+                    <col span="1" id="lotDescriptionColonne" class="lotDescription">
+                    <col span="1" id="lotMediumColonne" class="lotMedium">
+                    <col span="1" id="lotLivraisonColonne" class="lotLivraison">
                 </colgroup>
                 <thead>
                     <tr>
@@ -175,14 +175,17 @@
 
 <script setup>
     import { onMounted } from 'vue';
+
     onMounted(() => {
-        function basculerLaPresentationDeLaColonneLotId() {
-            if (this.isChecked) {
-                document.querySelector("#lotIdColonne").style.visibility = "visible";
-            }
-            else { document.querySelector("#lotIdColonne").style.visibility = "collapse"; }
-        }
+        document.querySelector("#lotIdCheckbox").addEventListener("change", basculerLaPresentationDeLaColonneLotId)
     })
+
+    function basculerLaPresentationDeLaColonneLotId() {
+        if (this.isChecked) {
+            document.querySelector("#lotIdColonne").style.visibility = "visible";
+        }
+        else { document.querySelector("#lotIdColonne").style.visibility = "collapse"; }
+    }
 
     //const listeDesCheckboxes = document.getElementByType("checkbox");
     //const listeDesColonnes = document.getElementByType("col");
