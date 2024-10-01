@@ -1,5 +1,5 @@
 <template>
-    <router-link class="text-decoration-none" to="/">
+    <router-link class="text-decoration-none" to="AffichageDetailsLot">
         <div class="card">
             <div class="card-body align-items-middle">
                 <div class="d-flex justify-content-between align-items-middle">
@@ -35,7 +35,6 @@
                 <div class="d-flex justify-content-around pt-2">
                     <button type="button" class="btn btn-primary">Miser</button>
                 </div>
-
 
             </div>
 
