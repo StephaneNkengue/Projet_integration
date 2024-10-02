@@ -74,7 +74,7 @@ router.beforeEach((to, from, next) => {
         if (!isLoggedIn) {
             next('/login')
         } else if (requiredRole && !store.state.roles.includes(requiredRole)) {
-            next('/unauthorized') // Cr�ez une vue pour les acc�s non autoris�s
+            next('/unauthorized')
         } else {
             next()
         }
