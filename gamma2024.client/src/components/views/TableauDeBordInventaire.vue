@@ -1,90 +1,92 @@
 <template>
     <div class="pt-5">
-        <h2>Liste des lots</h2>
-        <div class="dropdown">
-            <button class="btn bleuMoyenFond btnSurvolerBleuMoyenFond text-white dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Sélectionner les colonnes
-            </button>
-            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                <li>
-                    <input type="checkbox" id="lotIdCheckbox" checked>
-                    <label class="form-check-label" for="lotIdCheckbox">
-                        Id
-                    </label>
-                </li>
-                <li>
-                    <input type="checkbox" id="lotEncanCheckbox" checked>
-                    <label class="form-check-label" for="lotEncanCheckbox">
-                        Encan
-                    </label>
-                </li>
-                <li>
-                    <input type="checkbox" id="lotNumeroCheckbox" checked>
-                    <label class="form-check-label" for="lotNumeroCheckbox">
-                        Lot #
-                    </label>
-                </li>
-                <li>
-                    <input type="checkbox" id="lotPrixOuvertureCheckbox" checked>
-                    <label class="form-check-label" for="lotPrixOuvertureCheckbox">
-                        Prix Ouverture
-                    </label>
-                </li>
-                <li>
-                    <input type="checkbox" id="lotValeurMinPourVendreCheckbox" checked>
-                    <label class="form-check-label" for="lotValeurMinPourVendreCheckbox">
-                        Valeur Minimum Pour Vendre
-                    </label>
-                </li>
-                <li>
-                    <input type="checkbox" id="lotEstimationMinCheckbox" checked>
-                    <label class="form-check-label" for="lotEstimationMinCheckbox">
-                        Estimation Minimale
-                    </label>
-                </li>
-                <li>
-                    <input type="checkbox" id="lotEstimationMaxCheckbox" checked>
-                    <label class="form-check-label" for="lotEstimationMaxCheckbox">
-                        Estimation Maximale
-                    </label>
-                </li>
-                <li>
-                    <input type="checkbox" id="lotCategorieCheckbox" checked>
-                    <label class="form-check-label" for="lotCategorieCheckbox">
-                        Catégorie
-                    </label>
-                </li>
-                <li>
-                    <input type="checkbox" id="lotArtisteCheckbox" checked>
-                    <label class="form-check-label" for="lotArtisteCheckbox">
-                        Artiste
-                    </label>
-                </li>
-                <li>
-                    <input type="checkbox" id="lotDimensionCheckbox" checked>
-                    <label class="form-check-label" for="lotDimensionCheckbox">
-                        Dimension
-                    </label>
-                </li>
-                <li>
-                    <input type="checkbox" id="lotDescriptionCheckbox" checked>
-                    <label class="form-check-label" for="lotDimensionCheckbox">
-                        Description
-                    </label>
-                </li>
-                <li>
-                    <input type="checkbox" id="lotMediumCheckbox" checked>
-                    <label class="form-check-label" for="lotMediumCheckbox">
-                        Medium
-                    </label>
-                </li>
-                <li>
-                    <input type="checkbox" id="lotLivraisonCheckbox" checked>
-                    <label class="form-check-label" for="lotLivraisonCheckbox">
-                        Livraison
-                    </label>
-                </li>
-            </ul>
+        <div class="d-flex justify-content-between">
+            <h2 class="d-flex-1">Liste des lots</h2>
+            <div class="dropdown d-flex-1">
+                <button class="btn bleuMoyenFond btnSurvolerBleuMoyenFond text-white dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Sélectionner les colonnes
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    <li>
+                        <input type="checkbox" id="lotIdCheckbox" checked>
+                        <label class="form-check-label" for="lotIdCheckbox">
+                            Id
+                        </label>
+                    </li>
+                    <li>
+                        <input type="checkbox" id="lotEncanCheckbox" checked>
+                        <label class="form-check-label" for="lotEncanCheckbox">
+                            Encan
+                        </label>
+                    </li>
+                    <li>
+                        <input type="checkbox" id="lotNumeroCheckbox" checked>
+                        <label class="form-check-label" for="lotNumeroCheckbox">
+                            Lot #
+                        </label>
+                    </li>
+                    <li>
+                        <input type="checkbox" id="lotPrixOuvertureCheckbox" checked>
+                        <label class="form-check-label" for="lotPrixOuvertureCheckbox">
+                            Prix Ouverture
+                        </label>
+                    </li>
+                    <li>
+                        <input type="checkbox" id="lotValeurMinPourVendreCheckbox" checked>
+                        <label class="form-check-label" for="lotValeurMinPourVendreCheckbox">
+                            Valeur Minimum Pour Vendre
+                        </label>
+                    </li>
+                    <li>
+                        <input type="checkbox" id="lotEstimationMinCheckbox" checked>
+                        <label class="form-check-label" for="lotEstimationMinCheckbox">
+                            Estimation Minimale
+                        </label>
+                    </li>
+                    <li>
+                        <input type="checkbox" id="lotEstimationMaxCheckbox" checked>
+                        <label class="form-check-label" for="lotEstimationMaxCheckbox">
+                            Estimation Maximale
+                        </label>
+                    </li>
+                    <li>
+                        <input type="checkbox" id="lotCategorieCheckbox" checked>
+                        <label class="form-check-label" for="lotCategorieCheckbox">
+                            Catégorie
+                        </label>
+                    </li>
+                    <li>
+                        <input type="checkbox" id="lotArtisteCheckbox" checked>
+                        <label class="form-check-label" for="lotArtisteCheckbox">
+                            Artiste
+                        </label>
+                    </li>
+                    <li>
+                        <input type="checkbox" id="lotDimensionCheckbox" checked>
+                        <label class="form-check-label" for="lotDimensionCheckbox">
+                            Dimension
+                        </label>
+                    </li>
+                    <li>
+                        <input type="checkbox" id="lotDescriptionCheckbox" checked>
+                        <label class="form-check-label" for="lotDimensionCheckbox">
+                            Description
+                        </label>
+                    </li>
+                    <li>
+                        <input type="checkbox" id="lotMediumCheckbox" checked>
+                        <label class="form-check-label" for="lotMediumCheckbox">
+                            Medium
+                        </label>
+                    </li>
+                    <li>
+                        <input type="checkbox" id="lotLivraisonCheckbox" checked>
+                        <label class="form-check-label" for="lotLivraisonCheckbox">
+                            Livraison
+                        </label>
+                    </li>
+                </ul>
+            </div>
         </div>
         <div class="d-flex">
             <div class="table-responsive d-flex-1 d-flex flex-column">
@@ -155,14 +157,13 @@
                     </tbody>
                 </table>
             </div>
-            <div class="d-flex d-flex-1" style="background-color: red;">
-                <button class="btn d-flex-1 bleuMoyenFond btnSurvolerBleuMoyenFond text-white boutonOngletEncans" type="button">
-                    Encans
-                </button>
+            <!--<div class="d-flex d-flex-1" style="background-color: red;">
                 <div class="d-flex-1 bleuMoyenFond ongletEncans">
-
+                    <button class="btn d-flex-1 bleuMoyenFond btnSurvolerBleuMoyenFond text-white boutonOngletEncans" type="button">
+                        Encans
+                    </button>
                 </div>
-            </div>
+            </div>-->
         </div>
     </div>
 </template>
@@ -191,18 +192,21 @@
         visibility: collapse;
     }
 
-    .ongletEncans {
+    /*.ongletEncans {
         height: 200px;
         width: 100px;
     }
 
     .boutonOngletEncans {
+        position: absolute;
+        left: 10px;
+        top: 50px;
         border-top-left-radius: 50px;
         border-top-right-radius: 50px;
         height: 40px;
         width: 180px;
         transform: rotate(-90deg);
-    }
+    }*/
 </style>
 
 <script setup>
