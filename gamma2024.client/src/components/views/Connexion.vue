@@ -39,10 +39,13 @@
                     </div>
                     <div class="d-flex flex-row justify-content-center mb-2">
                             <button class="btn btnSurvolerBleuMoyenFond rounded-pill px-5 bleuMoyenFond text-white" @click="connexion">Connexion</button>
+                        </router-link>
                     </div>
                     <div class="d-flex flex-row justify-content-center mb-3">
                         <div class="form-group w-80">
+                            <router-link to="Inscription" class="text-decoration-none">
                                 <p class="fs-5 text-center fw-bold lienEnTexteNoir">M'inscrire</p>
+                            </router-link>
                         </div>
                     </div>
 
@@ -107,7 +110,7 @@
 <style scoped>
     .cadreBlanc {
         border-radius: 15px;
-        height: 450px;
+        min-height: 450px;
         width: 410px;
     }
 

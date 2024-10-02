@@ -1,6 +1,8 @@
 using Gamma2024.Server.Data;
+using Gamma2024.Server.Interface;
 using Gamma2024.Server.Models;
 using Gamma2024.Server.Services;
+using Gamma2024.Server.Services.Email;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -8,9 +10,11 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
+    ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
-builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString));
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseSqlServer(connectionString));
 
 builder.Services.AddDefaultIdentity<ApplicationUser>(options => 
 {
@@ -22,10 +26,15 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
     .AddDefaultTokenProviders();
 
 builder.Services.AddControllers();
-builder.Services.AddScoped<ClientInscriptionService>();
-builder.Services.AddScoped<ClientModificationService>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddScoped<InscriptionService>();
+
+builder.Services.Configure<EmailConfiguration>(
+    builder.Configuration.GetSection("EmailConfiguration"));
+
+builder.Services.AddTransient<IEmailSender, EmailService>();
 
 builder.Services.AddCors(options =>
 {
@@ -72,6 +81,7 @@ app.UseRouting();
 app.UseCors("Development");
 app.UseAuthentication();
 app.UseAuthorization();
+
 app.MapControllers();
 app.UseStaticFiles();
 
