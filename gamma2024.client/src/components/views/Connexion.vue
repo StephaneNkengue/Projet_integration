@@ -123,7 +123,7 @@
 <style scoped>
     .cadreBlanc {
         border-radius: 15px;
-        height: 450px;
+        min-height: 450px;
         width: 410px;
     }
 
