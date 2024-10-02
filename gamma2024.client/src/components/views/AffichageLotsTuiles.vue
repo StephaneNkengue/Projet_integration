@@ -46,7 +46,7 @@
 
     <div class="d-flex flex-row justify-content-around gap-1 flex-wrap p-3">
         <button type="button"
-                class="btn btn-primary"
+                class="btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
                 @click="reculerPage"
                 v-bind:disabled="pageCourante == 1">
             <
@@ -54,7 +54,7 @@
 
         <div v-for="item in listePagination">
             <button type="button"
-                    class="btn btn-primary"
+                    class="btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
                     :pageId="item"
                     @click="changerPage()"
                     v-bind:disabled="pageCourante == item || item == '...'">
@@ -64,7 +64,7 @@
         </div>
 
         <button type="button"
-                class="btn btn-primary"
+                class="btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
                 @click="avancerPage"
                 v-bind:disabled="pageCourante == nbPages">
             >
