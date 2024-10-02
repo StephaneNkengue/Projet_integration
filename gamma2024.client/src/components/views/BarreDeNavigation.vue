@@ -36,7 +36,7 @@
                             </li>
 
                             <li class="nav-item">
-                                <router-link to="Accueil" class="text-decoration-none">
+                                <router-link to="EncanPresent" class="text-decoration-none">
                                     <a class="nav-link">
                                         Encan courant
                                     </a>
@@ -44,7 +44,7 @@
                             </li>
 
                             <li class="nav-item">
-                                <router-link to="Accueil" class="text-decoration-none">
+                                <router-link to="TousLesEncans" class="text-decoration-none">
                                     <a class="nav-link">
                                         Tous les encans
                                     </a>
