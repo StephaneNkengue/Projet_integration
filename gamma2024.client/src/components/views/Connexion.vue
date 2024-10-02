@@ -39,7 +39,6 @@
                     </div>
                     <div class="d-flex flex-row justify-content-center mb-2">
                             <button class="btn btnSurvolerBleuMoyenFond rounded-pill px-5 bleuMoyenFond text-white" @click="connexion">Connexion</button>
-                        </router-link>
                     </div>
                     <div class="d-flex flex-row justify-content-center mb-3">
                         <div class="form-group w-80">

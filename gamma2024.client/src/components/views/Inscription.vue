@@ -560,12 +560,6 @@
         activeIndex.value = stepIndex;
     }
 
-    const store = useStore();
-    const router = useRouter();
-
-    const errorMessage = ref('');
-    const successMessage = ref('');
-
     const pseudoDisponible = ref(true);
     const pseudoVerifie = ref(false);
 

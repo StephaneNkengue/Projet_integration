@@ -62,6 +62,8 @@ const routes = [
         path: '/inventaire',
         name: 'TableauDeBordInventaire',
         component: TableauDeBordInventaire
+    },
+    {
         path: '/modification',
         name: 'Modification',
         component: Modification,

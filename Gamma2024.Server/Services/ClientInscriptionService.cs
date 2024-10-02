@@ -1,7 +1,7 @@
 using Gamma2024.Server.Data;
 using Gamma2024.Server.Models;
-using Gamma2024.Server.ViewModels;
 using Gamma2024.Server.Validations;
+using Gamma2024.Server.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 

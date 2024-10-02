@@ -65,21 +65,14 @@
                                     </a>
                                 </router-link>
                             </li>
-                            <li class="nav-item" v-if="estAdmin">
-                                <router-link to="TableauDeBord" class="text-decoration-none">
+                            <li class="nav-item d-md-none" v-if="estAdmin">
+                                <router-link to="Accueil" class="text-decoration-none">
                                     <a class="nav-link">
                                         Tableau de bord
                                     </a>
                                 </router-link>
                             </li>
-                            <li class="nav-item" v-if="estClient">
-                                <router-link to="EspaceClient" class="text-decoration-none">
-                                    <a class="nav-link">
-                                        Espace client
-                                    </a>
-                                </router-link>
-                            </li>
-
+                        </ul>
 
                         <div class="d-flex justify-content-center gap-3">
                             <!--<router-link to="Inscription" v-if="estConnecte">-->
@@ -132,15 +125,15 @@ const estAdmin = computed(() => store.state.roles.includes('Administrateur'))
 const estClient = computed(() => store.state.roles.includes('Client'))
 const username = computed(() => {
     const user = store.state.user;
-    console.log("User dans le store:", user); // Pour le débogage
-    return user && user.pseudonym ? user.pseudonym    : 'USERNAME';
+    return user && user.pseudonym ? user.pseudonym : 'USERNAME';
 })
 const avatarUrl = computed(() => {
     if (store.state.user && store.state.user.photo) {
         if (store.state.user.photo.startsWith('http')) {
             return store.state.user.photo;
         } else {
-            return `${store.state.api.defaults.baseURL.replace('/api', '')}${store.state.user.photo}`;
+            // Utilisation d'une URL par défaut si l'API n'est pas disponible
+            return `/images/${store.state.user.photo}`;
         }
     }
     return '/icons/Avatar.png'; 
@@ -153,22 +146,27 @@ watch(() => store.state.user, (newUser) => {
     currentUser.value = newUser
 }, { deep: true, immediate: true })
 
-// Ajoutez cette fonction pour rafraîchir les informations de l'utilisateur
+// Fonction pour rafraîchir les informations de l'utilisateur
 const refreshUserInfo = async () => {
     if (estConnecte.value) {
-        await store.dispatch('fetchClientInfo')
+        try {
+            await store.dispatch('fetchClientInfo')
+        } catch (error) {
+            console.error("Erreur lors de la récupération des informations client:", error)
+        }
     }
 }
 
-// Utilisez watch pour observer les changements dans l'état de connexion
+// Observer les changements dans l'état de connexion
 watch(() => store.state.isLoggedIn, (newValue) => {
     if (newValue) {
         refreshUserInfo()
     }
 })
 
-// Rafraîchissez les informations de l'utilisateur au montage du composant
-refreshUserInfo()
+// Définition de activationRecherche
+const activationRecherche = ref(false)
+
 </script>
 
 <style scoped>
