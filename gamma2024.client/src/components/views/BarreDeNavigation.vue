@@ -55,7 +55,7 @@
                         </ul>
 
                         <div class="d-flex justify-content-center gap-3">
-                            <router-link to="Accueil" v-if="!estConnecte">
+                            <router-link to="Inscription" v-if="!estConnecte">
                                 <button class="btn btn-outline bleuMoyenFond text-white py-0 butttonNavBar btnSurvolerBleuMoyenFond" type="button">Inscription</button>
                             </router-link>
                             <router-link to="Connexion" v-if="!estConnecte">
