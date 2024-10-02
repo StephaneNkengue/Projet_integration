@@ -27,7 +27,7 @@
                 <p class="text-center mb-0">Mise actuelle: {{(lot.mise).toFixed(0)}}$</p>
 
                 <div class="d-flex justify-content-around pt-2">
-                    <button type="button" class="btn btn-primary">Miser</button>
+                    <button type="button" class="btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond">Miser</button>
                 </div>
 
             </div>
