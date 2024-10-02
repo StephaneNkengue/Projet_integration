@@ -36,49 +36,29 @@
             <h2>Membres de l'équipe</h2>
 
             <div class="d-inline-flex flex-lg-row flex-column flex-wrap gap-3 justify-content-around">
-                <div class="contourDiv align-items-center d-flex flex-column p-2 justify-content-between">
+                <div class="align-items-center d-flex flex-column p-2 justify-content-between">
                     <p class="fs-5">Charles</p>
                     <p>Directeur financières</p>
-                    <img src="/images/membresEquipe/directeurFinanciere.png"
-                         alt="Directeur financière"
-                         height="200"
-                         class="m-4" />
                 </div>
 
-                <div class="contourDiv align-items-center d-flex flex-column p-2 justify-content-between">
+                <div class="align-items-center d-flex flex-column p-2 justify-content-between">
                     <p class="fs-5">Audrey</p>
                     <p>Directrice technique</p>
-                    <img src="/images/membresEquipe/directriceTechnique.png"
-                         alt="Directrice technique"
-                         height="200"
-                         class="m-4" />
                 </div>
 
-                <div class="contourDiv align-items-center d-flex flex-column p-2 justify-content-between">
+                <div class="align-items-center d-flex flex-column p-2 justify-content-between">
                     <p class="fs-5">Albert</p>
                     <p>Directeur technique</p>
-                    <img src="/images/membresEquipe/directeurTechnique.png"
-                         alt="Directeur technique"
-                         height="200"
-                         class="m-4" />
                 </div>
 
-                <div class="contourDiv align-items-center d-flex flex-column p-2 justify-content-between">
+                <div class="align-items-center d-flex flex-column p-2 justify-content-between">
                     <p class="fs-5">David</p>
-                    <p class="text-center">Directeur des <br class="d-none d-lg-inline" />opérations</p>
-                    <img src="/images/membresEquipe/directeurDesOperations.png"
-                         alt="Directeur des opérations"
-                         height="200"
-                         class="m-4" />
+                    <p class="text-center">Directeur des <br class="d-none" />opérations</p>
                 </div>
 
-                <div class="contourDiv align-items-center d-flex flex-column p-2 justify-content-between">
+                <div class="align-items-center d-flex flex-column p-2 justify-content-between">
                     <p class="fs-5">Victoria</p>
-                    <p class="text-center">Responsable des <br class="d-none d-lg-inline" />communications</p>
-                    <img src="/images/membresEquipe/responsableDesCommunications.png"
-                         alt="Responsable des communications"
-                         height="200"
-                         class="m-4" />
+                    <p class="text-center">Responsable des <br class="d-none" />communications</p>
                 </div>
             </div>
         </div>

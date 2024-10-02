@@ -1,5 +1,7 @@
 import { createStore } from 'vuex'
 import api from '@/services/api'
+import { toast } from 'vue3-toastify';
+
 
 export default createStore({
     state() {
@@ -54,46 +56,22 @@ export default createStore({
 
         async creerCompteUtilisateur({ commit }, userData) {
             try {
-                console.log("Données envoyées au serveur:", JSON.stringify(userData, null, 2));
                 const response = await api.post('/utilisateurs/creer', userData);
                 if (response.data.success) {
-                    console.log("Compte créé avec succès !");
+
                     return { success: true };
                 } else {
                     return { success: false, error: response.data.message || "Erreur lors de la création du compte" };
                 }
             } catch (error) {
-                console.error("Erreur détaillée lors de la création du compte:", error.response || error);
                 return {
                     success: false,
                     error: error.response?.data?.message || error.message || "Erreur lors de la création du compte"
                 };
             }
-        },
-
-
-        async fetchClientInfo({ commit }) {
-            try {
-                const response = await api.get('/utilisateurs/me');
-                commit('setUser', response.data);
-                return response;
-            } catch (error) {
-                console.error("Erreur lors de la récupération des informations du client:", error.response || error);
-                throw error;
-            }
-        },
-
-
-        async updateClientInfo({ commit }, userData) {
-            try {
-                const response = await api.put('/utilisateurs/me', userData);
-                commit('setUser', response.data);
-                return response;
-            } catch (error) {
-                console.error("Erreur lors de la mise à jour des informations du client:", error.response || error);
-                throw error;
-            }
         }
+
+
     },
     getters: {
         isAdmin: state => state.roles.includes('ADMINISTRATEUR'),
