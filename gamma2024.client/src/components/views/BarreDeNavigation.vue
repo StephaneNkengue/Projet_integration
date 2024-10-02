@@ -130,8 +130,8 @@
 <script setup>
     import { ref } from 'vue'
 
-    const estConnecte = ref(true);
-    const estAdmin = ref(true);
+    const estConnecte = ref(false);
+    const estAdmin = ref(false);
     const activationRecherche = ref(false);
 </script>
 
