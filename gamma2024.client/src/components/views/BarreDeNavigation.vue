@@ -67,7 +67,7 @@
                                 </a>
                                 <ul class="dropdown-menu bleuMarinFond text-center">
                                     <li>
-                                        <router-link to="Accueil" class="text-decoration-none">
+                                        <router-link to="TableauDeBordInventaire" class="text-decoration-none">
                                             <a class="dropdown-item contenuListeDropdown">Inventaire</a>
                                         </router-link>
                                     </li>

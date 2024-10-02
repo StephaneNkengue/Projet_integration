@@ -59,7 +59,7 @@ const routes = [
     },
     {
         path: '/inventaire',
-        name: 'TableauDeBordInventaire',
+        name: 'Inventaire',
         component: TableauDeBordInventaire
     }
 ]
