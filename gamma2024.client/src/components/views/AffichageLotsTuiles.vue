@@ -1,28 +1,29 @@
 <template>
 
     <div class="d-flex flex-row-reverse w-100 px-4 me-2 gap-2">
-        <button class="rounded bleuMoyenFond contourDiv btnSurvolerBleuMoyenFond" v-if="!siTuile" @click="changerTypeAffichage('tuile')">
+        <button class="rounded bleuMoyenFond btn btnSurvolerBleuMoyenFond" v-if="!siTuile" @click="changerTypeAffichage('tuile')">
             <img src="/icons/IconTableau.png" alt="Affichage en tableau" height="25" />
         </button>
-        <button class="rounded bleuMoyenFond contourDiv btnSurvolerBleuMoyenFond" v-else @click="changerTypeAffichage('liste')">
+        <button class="rounded bleuMoyenFond btn btnSurvolerBleuMoyenFond" v-else @click="changerTypeAffichage('liste')">
             <img src="/icons/IconListe.png" alt="Affichage en liste" height="25" />
         </button>
-        <button class="d-flex align-items-center text-center rounded bleuMoyenFond text-white contourDiv btnSurvolerBleuMoyenFond"
+        <button class="d-flex align-items-center text-center rounded btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
+                type="button"
                 @click="afficherTousLots"
                 v-bind:disabled="lotsParPage == nbLotsRecus">
             Tous
         </button>
-        <button class="d-flex align-items-center text-center rounded bleuMoyenFond text-white contourDiv btnSurvolerBleuMoyenFond"
+        <button class="d-flex align-items-center text-center rounded btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
                 @click="changerNbLotParPage(100)"
                 v-bind:disabled="lotsParPage == 100">
             100
         </button>
-        <button class="d-flex align-items-center text-center rounded bleuMoyenFond text-white contourDiv btnSurvolerBleuMoyenFond"
+        <button class="d-flex align-items-center text-center rounded btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
                 @click="changerNbLotParPage(50)"
                 v-bind:disabled="lotsParPage == 50">
             50
         </button>
-        <button class="d-flex align-items-center text-center rounded bleuMoyenFond text-white contourDiv btnSurvolerBleuMoyenFond"
+        <button class="d-flex align-items-center text-center rounded btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
                 @click="changerNbLotParPage(20)"
                 v-bind:disabled="lotsParPage == 20">
             20
