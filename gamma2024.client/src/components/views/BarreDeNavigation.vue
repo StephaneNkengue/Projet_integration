@@ -67,7 +67,7 @@
                                 </a>
                                 <ul class="dropdown-menu bleuMarinFond text-center">
                                     <li>
-                                        <router-link to="Accueil" class="text-decoration-none">
+                                        <router-link to="Inventaire" class="text-decoration-none">
                                             <a class="dropdown-item contenuListeDropdown">Inventaire</a>
                                         </router-link>
                                     </li>
@@ -130,8 +130,8 @@
 <script setup>
     import { ref } from 'vue'
 
-    const estConnecte = ref(false);
-    const estAdmin = ref(false);
+    const estConnecte = ref(true);
+    const estAdmin = ref(true);
     const activationRecherche = ref(false);
 </script>
 
