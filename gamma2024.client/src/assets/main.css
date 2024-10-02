@@ -55,3 +55,12 @@
     border-color: #1C3755;
     border-radius: 10px;
 }
+
+.contenuListeDropdown:hover {
+    background-color: #5A708A;
+}
+
+.butttonNavBar {
+    height: 25px;
+    font-size: 15px;
+}
