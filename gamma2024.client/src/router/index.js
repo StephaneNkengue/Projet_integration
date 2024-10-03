@@ -10,7 +10,6 @@ import TableauDeBordInventaire from '@/components/views/TableauDeBordInventaire.
 import EncanPresent from '@/components/views/EncanPresent.vue'
 import TousLesEncans from '@/components/views/TousLesEncans.vue'
 import DetailsLot from '@/components/views/DetailsLot.vue'
-import AffichageDetailsLot from '@/components/views/AffichageDetailsLot.vue'
 import Modification from '@/components/views/Modification.vue'
 
 const routes = [
