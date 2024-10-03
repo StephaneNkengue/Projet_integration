@@ -80,7 +80,7 @@ namespace Gamma2024.Server.Services
                 var carteCredit = new Models.CarteCredit
                 {
                     Nom = model.CarteCredit.NomProprio,
-                    Numero = model.CarteCredit.NumeroCarte,
+                    Numero = ParseCreditCard(model.CarteCredit.NumeroCarte),
                     MoisExpiration = moisExpiration,
                     AnneeExpiration = anneeExpiration,
                     IdClient = client.Id
@@ -96,7 +96,7 @@ namespace Gamma2024.Server.Services
                     Ville = model.Adresse.Ville,
                     Province = model.Adresse.Province,
                     Pays = model.Adresse.Pays,
-                    CodePostal = model.Adresse.CodePostal,
+                    CodePostal = ParseCodePostal(model.Adresse.CodePostal),
                     EstDomicile = true,
                     IdApplicationUser = client.Id
                 };
@@ -117,6 +117,18 @@ namespace Gamma2024.Server.Services
         private async Task<bool> IsUsernameUnique(string username)
         {
             return !await _context.Users.AnyAsync(u => u.UserName == username);
+        }
+
+        public static string ParseCreditCard(string code)
+        {
+            var parts = code.Split(' ');
+            return parts[0] + parts[1] + parts[2] + parts[3];
+        }
+
+        public static string ParseCodePostal(string code)
+        {
+            var parts = code.Split(' ');
+            return parts[0] + parts[1];
         }
     }
 }
