@@ -100,6 +100,7 @@
                                         {{ v.generalInfo.courriel.$errors[0].$message }}
                                     </div>
                                 </div>
+
                                 <div class="d-flex flex-column col-md-6">
                                     <label class="labels">Mot de passe</label>
                                     <button type="button"
@@ -308,6 +309,9 @@
                     </div>
                 </form>
             </div>
+
+            <MotDePasse :h="dataForModalPassword" />
+
         </div>
     </div>
 </template>
@@ -317,7 +321,7 @@
     import { useStore } from "vuex";
     import { useVuelidate } from "@vuelidate/core";
     import InputMask from "primevue/inputmask";
-    // import MotDePasse from "../BoiteModale/MotDePasse.vue";
+    import MotDePasse from "../BoiteModale/MotDePasse.vue";
     import { required, email, helpers, minLength, sameAs, maxLength } from "@vuelidate/validators";
     import api from '@/services/api';
     import { useRouter } from 'vue-router';
@@ -660,8 +664,6 @@
             v.value.generalInfo.confirmNewPassword.$touch();
         }
     }, { deep: true });
-
-
 
     const dataForModalPassword = {
         idModal: "boiteModalePassword",
