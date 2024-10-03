@@ -65,7 +65,7 @@
                                                 <input type="email"
                                                        placeholder="johndoe@gmail.com"
                                                        v-model="formData.generalInfo.courriel"
-                                                       :class="['form-control', { 'is-invalid': v.generalInfo.courriel.$error || (!emailDisponible && emailVerifie) }]"
+                                                       :class="['form-control', { 'is-invalid': v.generalInfo.courriel.$error || (!emailDisponible && emailVerifie), 'is-valid': emailDisponible && emailVerifie }]"
                                                        id="courriel"
                                                        @blur="v.generalInfo.courriel.$touch(); verifierEmail()"
                                                        @input="emailVerifie = false" />
@@ -493,6 +493,10 @@
         sameAs(computed(() => formData.generalInfo.motDePasse))
     );
 
+    const pseudoDisponible = ref(true);
+    const pseudoVerifie = ref(false);
+    const emailDisponible = ref(true);
+    const emailVerifie = ref(false);
 
     //objet rules qui contient toutes les validations
     let rules = computed(() => {
@@ -560,9 +564,7 @@
         activeIndex.value = stepIndex;
     }
 
-    const pseudoDisponible = ref(true);
-    const pseudoVerifie = ref(false);
-
+    
     const verifierPseudo = async () => {
         if (formData.generalInfo.pseudo.length > 0) {
             try {
@@ -577,21 +579,21 @@
         }
     };
 
-    const emailDisponible = ref(true);
-    const emailVerifie = ref(false);
+    
 
     const verifierEmail = async () => {
-        if (formData.generalInfo.courriel.length > 0 && v.generalInfo.courriel.$valid) {
-            try {
-                emailVerifie.value = false;
-                emailDisponible.value = await store.dispatch('verifierEmail', formData.generalInfo.courriel);
-                emailVerifie.value = true;
-            } catch (error) {
-                console.error("Erreur lors de la vérification de l'email:", error);
-                emailDisponible.value = false;
-                emailVerifie.value = true;
-            }
+    if (formData.generalInfo.courriel.length > 0 && !v.value.generalInfo.courriel.$error) {
+        try {
+            emailVerifie.value = false;
+            const emailEstDisponible = await store.dispatch('verifierEmail', formData.generalInfo.courriel);
+            emailDisponible.value = emailEstDisponible;
+            emailVerifie.value = true;
+        } catch (error) {
+            console.error("Erreur lors de la vérification de l'email:", error);
+            emailDisponible.value = false;
+            emailVerifie.value = true;
         }
+    }
     };
 
     const submitForm = async () => {
@@ -704,6 +706,37 @@
 
     .is-valid {
         border-color: #28a745;
+    }
+
+    .input-wrapper .p-inputmask {
+        width: 100%;
+        border-radius: 0.25rem;
+        padding: 0.375rem 0.75rem;
+        background-color: white;
+        height: calc(1.5em + 0.75rem + 2px);
+        box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.075);
+        transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    }
+
+    input::placeholder {
+        color: #6c757d;
+        opacity: 1;
+    }
+
+    .p-inputmask input::placeholder {
+        color: #6c757d;
+        opacity: 1;
+        font-weight: 400;
+    }
+
+    .input-wrapper .p-inputmask.is-invalid {
+        border-color: #dc3545;
+    }
+
+    .input-wrapper .p-inputmask:focus {
+        border-color: #80bdff;
+        outline: 0;
+        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
     }
 </style>
 
