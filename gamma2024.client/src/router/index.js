@@ -9,7 +9,7 @@ import APropos from '@/components/views/APropos.vue'
 import TableauDeBordInventaire from '@/components/views/TableauDeBordInventaire.vue'
 import EncanPresent from '@/components/views/EncanPresent.vue'
 import TousLesEncans from '@/components/views/TousLesEncans.vue'
-import AffichageDetailsLot from '@/components/views/AffichageDetailsLot.vue'
+import DetailsLot from '@/components/views/DetailsLot.vue'
 
 const routes = [
     {
@@ -53,9 +53,9 @@ const routes = [
         component: TousLesEncans
     },
     {
-        path: '/affichagedetailslot',
+        path: '/detailslot',
         name: 'DetailsLot',
-        component: AffichageDetailsLot
+        component: DetailsLot
     },
     {
         path: '/inventaire',

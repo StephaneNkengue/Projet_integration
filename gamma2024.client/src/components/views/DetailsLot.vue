@@ -89,19 +89,19 @@
     let lotRecu = {
         photos: [
             {
-                lien: "/images/lotsExemple/1a_1.jfif",
+                lien: "/images/lotsExemple/1a_1.png",
             },
             {
-                lien: "/images/lotsExemple/1_2.jfif",
+                lien: "/images/lotsExemple/1_2.png",
             },
             {
-                lien: "/images/lotsExemple/1b_2.jfif",
+                lien: "/images/lotsExemple/1b_2.png",
             },
             {
-                lien: "/images/lotsExemple/1b_3.jfif"
+                lien: "/images/lotsExemple/1b_3.png"
             },
             {
-                lien: "/images/lotsExemple/2_2.jfif"
+                lien: "/images/lotsExemple/2_2.png"
             }
         ]
     };
