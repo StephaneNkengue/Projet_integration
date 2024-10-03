@@ -33,7 +33,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("Development", builder =>
     {
-        builder.WithOrigins("http://localhost:5173")
+        builder.WithOrigins("https://sqlinfocg.cegepgranby.qc.ca/2162067")
                .SetIsOriginAllowed(_ => true)
                .AllowAnyMethod()
                .AllowAnyHeader()
