@@ -58,7 +58,7 @@ namespace Gamma2024.Server.Services
                     UserName = model.GeneralInfo.Pseudo,
                     NormalizedUserName = model.GeneralInfo.Pseudo.ToUpper(),
                     Email = model.GeneralInfo.Courriel,
-                    EmailConfirmed = true,
+                    EmailConfirmed = false,
                     NormalizedEmail = model.GeneralInfo.Courriel.ToUpper(),
                     Name = model.GeneralInfo.Nom,
                     FirstName = model.GeneralInfo.Prenom,

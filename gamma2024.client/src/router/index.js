@@ -67,7 +67,7 @@ const routes = [
         path: '/modification',
         name: 'Modification',
         component: Modification,
-        //meta: { requiresAuth: true, requiredRole: 'Client' }
+        meta: { requiresAuth: true, requiredRole: 'Client' }
     }
 ]
 
