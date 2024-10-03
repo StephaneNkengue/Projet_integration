@@ -51,7 +51,7 @@ namespace Gamma2024.Server.Controllers
             if (success)
             {
 
-                var client = _context.Users.FirstOrDefault(x => x.UserName == model.GeneralInfo.Pseudo);
+                var client = await _userManager.FindByEmailAsync(model.GeneralInfo.Courriel);
                 if (client != null)
                 {
                     var token = await _userManager.GenerateEmailConfirmationTokenAsync(client);
@@ -86,7 +86,7 @@ namespace Gamma2024.Server.Controllers
                 return BadRequest("User ID ou Token manquant");
             }
 
-            var client = _context.Users.FirstOrDefault(x => x.Id == idClient);
+            var client = await _userManager.FindByIdAsync(idClient);
             if (client == null)
             {
                 return NotFound("Utilisateur introuvable");
