@@ -55,7 +55,6 @@
 
 	<ItemGroup>
 		<Folder Include="CSV\" />
-		<Folder Include="Extensions\" />
 	</ItemGroup>
 
 </Project>
