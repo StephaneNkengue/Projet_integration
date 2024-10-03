@@ -1,6 +1,7 @@
 using Gamma2024.Server.Data;
 using Gamma2024.Server.Interface;
 using Gamma2024.Server.Models;
+using Gamma2024.Server.Services;
 using Gamma2024.Server.Services.Email;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -28,6 +29,8 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddScoped<ClientInscriptionService>();
+builder.Services.AddScoped<ClientModificationService>();
 
 builder.Services.Configure<EmailConfiguration>(
     builder.Configuration.GetSection("EmailConfiguration"));
