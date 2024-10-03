@@ -1,13 +1,11 @@
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Identity;
-using System.Threading.Tasks;
 using Gamma2024.Server.Models;
-using Microsoft.EntityFrameworkCore;
-using System.Security.Claims;
-using System.Text;
+using Gamma2024.Server.ViewModels;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
-using Gamma2024.Server.ViewModels;
+using System.Security.Claims;
+using System.Text;
 
 namespace Gamma2024.Server.Controllers
 {
@@ -52,9 +50,10 @@ namespace Gamma2024.Server.Controllers
                 await _signInManager.SignInAsync(user, isPersistent: false);
 
                 var token = GenerateJwtToken(user, roles.ToArray());
-                return Ok(new { 
-                    message = "Connexion réussie", 
-                    userId = user.Id, 
+                return Ok(new
+                {
+                    message = "Connexion réussie",
+                    userId = user.Id,
                     roles = roles,
                     token = token,
                     username = user.UserName,
@@ -73,9 +72,9 @@ namespace Gamma2024.Server.Controllers
         {
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Name, user.UserName ?? string.Empty),
-                new Claim(ClaimTypes.NameIdentifier, user.Id),
-                new Claim(ClaimTypes.Email, user.Email ?? string.Empty)
+                new(ClaimTypes.Name, user.UserName ?? string.Empty),
+                new(ClaimTypes.NameIdentifier, user.Id),
+                new(ClaimTypes.Email, user.Email ?? string.Empty)
             };
 
             foreach (var role in roles)
