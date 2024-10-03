@@ -105,7 +105,7 @@
                         </router-link>-->
                         <router-link to="Modification" v-if="estConnecte" class="text-decoration-none text-white d-flex align-items-center gap-3">
                             <a class="nav-link">{{ username }}</a>
-                            <img :src="'/images' + avatarUrl" alt="Avatar" height="40" />
+                            <img :src="'/icons' + avatarUrl" alt="Avatar" height="40" />
                         </router-link>
                         <!--</div>-->
                     </div>
