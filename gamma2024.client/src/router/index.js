@@ -10,6 +10,8 @@ import TableauDeBordInventaire from '@/components/views/TableauDeBordInventaire.
 import EncanPresent from '@/components/views/EncanPresent.vue'
 import TousLesEncans from '@/components/views/TousLesEncans.vue'
 import DetailsLot from '@/components/views/DetailsLot.vue'
+import AffichageDetailsLot from '@/components/views/AffichageDetailsLot.vue'
+import Modification from '@/components/views/Modification.vue'
 
 const routes = [
     {
@@ -61,6 +63,12 @@ const routes = [
         path: '/inventaire',
         name: 'Inventaire',
         component: TableauDeBordInventaire
+    },
+    {
+        path: '/modification',
+        name: 'Modification',
+        component: Modification,
+        meta: { requiresAuth: true, requiredRole: 'Client' }
     }
 ]
 
@@ -74,16 +82,12 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
     const isLoggedIn = store.state.isLoggedIn
-    const requiredRole = to.meta.requiredRole
+    const userRoles = store.state.roles
 
-    if (to.matched.some(record => record.meta.requiresAuth)) {
-        if (!isLoggedIn) {
-            next('/login')
-        } else if (requiredRole && !store.state.roles.includes(requiredRole)) {
-            next('/unauthorized')
-        } else {
-            next()
-        }
+    if (to.meta.requiresAuth && !isLoggedIn) {
+        next('/login')
+    } else if (to.meta.requiredRole && !userRoles.includes(to.meta.requiredRole)) {
+        next('/unauthorized')
     } else {
         next()
     }
