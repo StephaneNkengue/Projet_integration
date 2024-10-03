@@ -4,7 +4,8 @@
             <!-- Ajout de la section avatar -->
             <div class="avatar-section mb-4 d-flex flex-column align-items-center">
                 <div class="avatar-container">
-                <img :src="avatarUrl" alt="Avatar" class="avatar-image mb-2" @click="triggerFileInput" @error="handleImageError" />                </div>
+                    <img :src="avatarUrl" alt="Avatar" class="avatar-image mb-2" @click="triggerFileInput" @error="handleImageError" />
+                </div>
                 <button @click="triggerFileInput" class="btn btn-primary mt-2">Modifier l'avatar</button>
                 <input type="file" ref="fileInput" @change="handleFileChange" accept="image/*" style="display: none;" />
             </div>
@@ -271,7 +272,7 @@
                                 'btn rounded-pill px-5 me-4',
                                 ]"
                                 :disabled="!isFormValid">
-                        Enregistrer
+                            Enregistrer
                         </button>
                     </div>
                 </form>
@@ -281,254 +282,254 @@
 </template>
 
 <script setup>
-import { ref, computed, reactive, onMounted, watch } from "vue";
-import { useStore } from "vuex";
-import { useVuelidate } from "@vuelidate/core";
-import { required, email, helpers, sameAs, minLength } from "@vuelidate/validators";
-import api from '@/services/api';
-import { useRouter } from 'vue-router'; 
+    import { ref, computed, reactive, onMounted, watch } from "vue";
+    import { useStore } from "vuex";
+    import { useVuelidate } from "@vuelidate/core";
+    import { required, email, helpers, sameAs, minLength } from "@vuelidate/validators";
+    import api from '@/services/api';
+    import { useRouter } from 'vue-router';
 
 
-const store = useStore();
-const activeIndex = ref(1);
-const message = ref(null);
-const fileInput = ref(null);
-const messageRequis = helpers.withMessage("Ce champ est requis", required);
-const messageCourriel = helpers.withMessage(
-    "Veuillez entrer un courriel valide",
-    email
-);
-const router = useRouter();
+    const store = useStore();
+    const activeIndex = ref(1);
+    const message = ref(null);
+    const fileInput = ref(null);
+    const messageRequis = helpers.withMessage("Ce champ est requis", required);
+    const messageCourriel = helpers.withMessage(
+        "Veuillez entrer un courriel valide",
+        email
+    );
+    const router = useRouter();
 
-const avatarUrl = computed(() => {
-    if (store.state.user && store.state.user.photo) {
-        if (store.state.user.photo.startsWith('http')) {
-            return store.state.user.photo;
-        } else {
-            return `${api.defaults.baseURL.replace('/api', '')}${store.state.user.photo}`;
+    const avatarUrl = computed(() => {
+        if (store.state.user && store.state.user.photo) {
+            if (store.state.user.photo.startsWith('http')) {
+                return store.state.user.photo;
+            } else {
+                return `${api.defaults.baseURL.replace('/api', '')}${store.state.user.photo}`;
+            }
         }
-    }
-    return '/icons/Avatar.png';
-});
+        return '/icons/Avatar.png';
+    });
 
-// objet qui contient tous les champs remplis correctement
-let formData = reactive({
-    generalInfo: {
-        nom: "",
-        prenom: "",
-        courriel: "",
-        telephone: "",
-        pseudo: "",
-        currentPassword: "",
-        newPassword: "",
-        confirmNewPassword: "",
-    },
-    carteCredit: {
-        nomProprio: "",
-        numeroCarte: "",
-        dateExpiration: "",
-    },
-    adresse: {
-        numeroCivique: "",
-        rue: "",
-        appartement: "",
-        ville: "",
-        province: "",
-        pays: "Canada",
-        codePostal: "",
-    }
-});
-
-// objet rules qui contient toutes les validations
-let rules = computed(() => {
-    return {
+    // objet qui contient tous les champs remplis correctement
+    let formData = reactive({
         generalInfo: {
-            nom: { required: messageRequis },
-            prenom: { required: messageRequis },
-            courriel: { required: messageRequis, email: messageCourriel },
-            telephone: { required: messageRequis },
-            pseudo: { required: messageRequis },
-            currentPassword: { 
-                required: helpers.withMessage(
-                    "Le mot de passe actuel est requis si vous souhaitez le changer",
-                    (value) => !formData.generalInfo.newPassword || !!value
-                )
-            },
-            newPassword: { 
-                minLength: helpers.withMessage(
-                    "Le mot de passe doit contenir au moins 8 caractères",
-                    (value) => !value || value.length >= 8
-                )
-            },
-            confirmNewPassword: { 
-                sameAsPassword: helpers.withMessage(
-                    "Les mots de passe ne correspondent pas",
-                    (value) => !formData.generalInfo.newPassword || value === formData.generalInfo.newPassword
-                )
-            },
+            nom: "",
+            prenom: "",
+            courriel: "",
+            telephone: "",
+            pseudo: "",
+            currentPassword: "",
+            newPassword: "",
+            confirmNewPassword: "",
         },
         carteCredit: {
-            nomProprio: { required: messageRequis },
-            numeroCarte: { required: messageRequis },
-            dateExpiration: { required: messageRequis },
+            nomProprio: "",
+            numeroCarte: "",
+            dateExpiration: "",
         },
         adresse: {
-            numeroCivique: { required: messageRequis },
-            rue: { required: messageRequis },
-            appartement: {},
-            ville: { required: messageRequis },
-            province: { required: messageRequis },
-            pays: { required: messageRequis },
-            codePostal: { required: messageRequis },
+            numeroCivique: "",
+            rue: "",
+            appartement: "",
+            ville: "",
+            province: "",
+            pays: "Canada",
+            codePostal: "",
         }
+    });
+
+    // objet rules qui contient toutes les validations
+    let rules = computed(() => {
+        return {
+            generalInfo: {
+                nom: { required: messageRequis },
+                prenom: { required: messageRequis },
+                courriel: { required: messageRequis, email: messageCourriel },
+                telephone: { required: messageRequis },
+                pseudo: { required: messageRequis },
+                currentPassword: {
+                    required: helpers.withMessage(
+                        "Le mot de passe actuel est requis si vous souhaitez le changer",
+                        (value) => !formData.generalInfo.newPassword || !!value
+                    )
+                },
+                newPassword: {
+                    minLength: helpers.withMessage(
+                        "Le mot de passe doit contenir au moins 8 caractères",
+                        (value) => !value || value.length >= 8
+                    )
+                },
+                confirmNewPassword: {
+                    sameAsPassword: helpers.withMessage(
+                        "Les mots de passe ne correspondent pas",
+                        (value) => !formData.generalInfo.newPassword || value === formData.generalInfo.newPassword
+                    )
+                },
+            },
+            carteCredit: {
+                nomProprio: { required: messageRequis },
+                numeroCarte: { required: messageRequis },
+                dateExpiration: { required: messageRequis },
+            },
+            adresse: {
+                numeroCivique: { required: messageRequis },
+                rue: { required: messageRequis },
+                appartement: {},
+                ville: { required: messageRequis },
+                province: { required: messageRequis },
+                pays: { required: messageRequis },
+                codePostal: { required: messageRequis },
+            }
+        };
+    });
+
+    const v = useVuelidate(rules, formData);
+    const info = useVuelidate(rules.value.generalInfo, formData.generalInfo);
+    const carte = useVuelidate(rules.value.carteCredit, formData.carteCredit);
+    const adresse = useVuelidate(rules.value.adresse, formData.adresse);
+
+    const state1 = computed(() => {
+        return info.value.$invalid;
+    });
+
+    const state2 = computed(() => {
+        return carte.value.$invalid;
+    });
+
+    const state3 = computed(() => {
+        return adresse.value.$invalid;
+    });
+
+    const errorMessage = ref("");
+
+    const isLoading = ref(true);
+
+    onMounted(async () => {
+        try {
+            isLoading.value = true;
+            const response = await store.dispatch("fetchClientInfo");
+
+            // Mise à jour des données du formulaire
+            formData.generalInfo = {
+                nom: response.data.name || '',
+                prenom: response.data.firstName || '',
+                courriel: response.data.email || '',
+                telephone: response.data.phoneNumber || '',
+                pseudo: response.data.pseudonym || '',
+            };
+
+            formData.carteCredit = {
+                nomProprio: response.data.cardOwnerName || '',
+                numeroCarte: response.data.cardNumber || '',
+                dateExpiration: response.data.cardExpiryDate || '',
+            };
+
+            formData.adresse = {
+                numeroCivique: response.data.civicNumber || '',
+                rue: response.data.street || '',
+                appartement: response.data.apartment || '',
+                ville: response.data.city || '',
+                province: mapProvince(response.data.province) || '',
+                pays: response.data.country || 'Canada',
+                codePostal: response.data.postalCode || '',
+            };
+
+            // Utiliser l'URL de base de l'API pour construire l'URL de l'avatar
+            avatarUrl.value = response.data.photo ? `${api.defaults.baseURL.replace('/api', '')}${response.data.photo}` : '/icons/Avatar.png';
+            console("objet crée pour test" + response.data);
+        } catch (error) {
+            console.error("Erreur lors de la récupération des données:", error);
+            errorMessage.value = "Erreur lors de la récupération des informations du client.";
+            avatarUrl.value = '/icons/Avatar.png';
+        } finally {
+            isLoading.value = false;
+        }
+    });
+
+
+    const mapProvince = (province) => {
+        const provinceMap = {
+            'Québec': 'QC',
+            'Ontario': 'ON',
+            'Alberta': 'AB',
+            'Colombie-Britannique': 'BC',
+            'Manitoba': 'MB',
+            'Nouveau-Brunswick': 'NB',
+            'Terre-Neuve-et-Labrador': 'NL',
+            'Nouvelle-Écosse': 'NS',
+            'Île-du-Prince-Édouard': 'PE',
+            'Saskatchewan': 'SK',
+            'Territoires du Nord-Ouest': 'NT',
+            'Nunavut': 'NU',
+            'Yukon': 'YT'
+        };
+        return provinceMap[province] || province;
     };
-});
+    // Observateur pour vérifier les changements dans formData
+    watch(formData, (newVal) => {
+        console.log("formData mis à jour:", newVal);
+    }, { deep: true });
 
-const v = useVuelidate(rules, formData);
-const info = useVuelidate(rules.value.generalInfo, formData.generalInfo);
-const carte = useVuelidate(rules.value.carteCredit, formData.carteCredit);
-const adresse = useVuelidate(rules.value.adresse, formData.adresse);
-
-const state1 = computed(() => {
-    return info.value.$invalid;
-});
-
-const state2 = computed(() => {
-    return carte.value.$invalid;
-});
-
-const state3 = computed(() => {
-    return adresse.value.$invalid;
-});
-
-const errorMessage = ref("");
-
-const isLoading = ref(true);
-
-onMounted(async () => {
-  try {
-    isLoading.value = true;
-    const response = await store.dispatch("fetchClientInfo");
-    
-    // Mise à jour des données du formulaire
-    formData.generalInfo = {
-      nom: response.data.name || '',
-      prenom: response.data.firstName || '',
-      courriel: response.data.email || '',
-      telephone: response.data.phoneNumber || '',
-      pseudo: response.data.pseudonym || '',
+    const triggerFileInput = () => {
+        fileInput.value.click();
     };
 
-    formData.carteCredit = {
-      nomProprio: response.data.cardOwnerName || '',
-      numeroCarte: response.data.cardNumber || '',
-      dateExpiration: response.data.cardExpiryDate || '',
+    const handleImageError = () => {
+        console.error("Erreur de chargement de l'image:", avatarUrl.value);
+        setTimeout(() => {
+            if (!avatarUrl.value.includes('Avatar.png')) {
+                avatarUrl.value = '/icons/Avatar.png';
+            }
+        }, 1000); // Attendre 1 seconde avant de remplacer par l'image par défaut
     };
-
-    formData.adresse = {
-      numeroCivique: response.data.civicNumber || '',
-      rue: response.data.street || '',
-      appartement: response.data.apartment || '',
-      ville: response.data.city || '',
-      province: mapProvince(response.data.province) || '',
-      pays: response.data.country || 'Canada',
-      codePostal: response.data.postalCode || '',
-    };
-
-    // Utiliser l'URL de base de l'API pour construire l'URL de l'avatar
-    avatarUrl.value = response.data.photo ? `${api.defaults.baseURL.replace('/api', '')}${response.data.photo}` : '/icons/Avatar.png';
-    console("objet crée pour test" + response.data);
-  } catch (error) {
-    console.error("Erreur lors de la récupération des données:", error);
-    errorMessage.value = "Erreur lors de la récupération des informations du client.";
-    avatarUrl.value = '/icons/Avatar.png';
-  } finally {
-    isLoading.value = false;
-  }
-});
-
-
-const mapProvince = (province) => {
-  const provinceMap = {
-    'Québec': 'QC',
-    'Ontario': 'ON',
-    'Alberta': 'AB',
-    'Colombie-Britannique': 'BC',
-    'Manitoba': 'MB',
-    'Nouveau-Brunswick': 'NB',
-    'Terre-Neuve-et-Labrador': 'NL',
-    'Nouvelle-Écosse': 'NS',
-    'Île-du-Prince-Édouard': 'PE',
-    'Saskatchewan': 'SK',
-    'Territoires du Nord-Ouest': 'NT',
-    'Nunavut': 'NU',
-    'Yukon': 'YT'
-  };
-  return provinceMap[province] || province;
-};
-// Observateur pour vérifier les changements dans formData
-watch(formData, (newVal) => {
-  console.log("formData mis à jour:", newVal);
-}, { deep: true });
-
-const triggerFileInput = () => {
-  fileInput.value.click();
-};
-
-const handleImageError = () => {
-  console.error("Erreur de chargement de l'image:", avatarUrl.value);
-  setTimeout(() => {
-    if (!avatarUrl.value.includes('Avatar.png')) {
-      avatarUrl.value = '/icons/Avatar.png';
-    }
-  }, 1000); // Attendre 1 seconde avant de remplacer par l'image par défaut
-};
 
     const handleFileChange = async (event) => {
-    const file = event.target.files[0];
-    if (file) {
-        try {
-            const formData = new FormData();
-            formData.append('avatar', file);
-            const response = await store.dispatch("updateAvatar", formData);
-            console.log("Réponse du serveur pour l'avatar:", response);
-            
-            // Utiliser l'URL complète retournée par l'action du store
-            avatarUrl.value = response.data.avatarUrl;
-            
-            console.log("Nouvelle URL de l'avatar:", avatarUrl.value);
-            
-        } catch (error) {
-            console.error("Erreur lors de la mise à jour de l'avatar:", error);
-            errorMessage.value = "Erreur lors de la mise à jour de l'avatar: " + (error.response?.data?.message || error.message);
+        const file = event.target.files[0];
+        if (file) {
+            try {
+                const formData = new FormData();
+                formData.append('avatar', file);
+                const response = await store.dispatch("updateAvatar", formData);
+                console.log("Réponse du serveur pour l'avatar:", response);
+
+                // Utiliser l'URL complète retournée par l'action du store
+                avatarUrl.value = response.data.avatarUrl;
+
+                console.log("Nouvelle URL de l'avatar:", avatarUrl.value);
+
+            } catch (error) {
+                console.error("Erreur lors de la mise à jour de l'avatar:", error);
+                errorMessage.value = "Erreur lors de la mise à jour de l'avatar: " + (error.response?.data?.message || error.message);
+            }
         }
-    }
-};
+    };
 
 
     const isFormValid = computed(() => {
-    const passwordFieldsEmpty = !formData.generalInfo.currentPassword && !formData.generalInfo.newPassword && !formData.generalInfo.confirmNewPassword;
-    
-    const otherFieldsValid = !v.value.generalInfo.nom.$invalid &&
-                             !v.value.generalInfo.prenom.$invalid &&
-                             !v.value.generalInfo.courriel.$invalid &&
-                             !v.value.generalInfo.telephone.$invalid &&
-                             !v.value.generalInfo.pseudo.$invalid &&
-                             !v.value.carteCredit.$invalid &&
-                             !v.value.adresse.$invalid;
+        const passwordFieldsEmpty = !formData.generalInfo.currentPassword && !formData.generalInfo.newPassword && !formData.generalInfo.confirmNewPassword;
 
-    const passwordFieldsValid = passwordFieldsEmpty || 
-                                (!v.value.generalInfo.currentPassword.$invalid &&
-                                 !v.value.generalInfo.newPassword.$invalid &&
-                                 !v.value.generalInfo.confirmNewPassword.$invalid);
+        const otherFieldsValid = !v.value.generalInfo.nom.$invalid &&
+            !v.value.generalInfo.prenom.$invalid &&
+            !v.value.generalInfo.courriel.$invalid &&
+            !v.value.generalInfo.telephone.$invalid &&
+            !v.value.generalInfo.pseudo.$invalid &&
+            !v.value.carteCredit.$invalid &&
+            !v.value.adresse.$invalid;
 
-    return otherFieldsValid && passwordFieldsValid && formDataChanged.value;
+        const passwordFieldsValid = passwordFieldsEmpty ||
+            (!v.value.generalInfo.currentPassword.$invalid &&
+                !v.value.generalInfo.newPassword.$invalid &&
+                !v.value.generalInfo.confirmNewPassword.$invalid);
+
+        return otherFieldsValid && passwordFieldsValid && formDataChanged.value;
     });
 
     const formDataChanged = ref(false);
 
     watch(formData, () => {
-    formDataChanged.value = true;
+        formDataChanged.value = true;
     }, { deep: true });
 
     watch(() => store.state.user?.photo, (newPhotoUrl) => {
@@ -538,154 +539,154 @@ const handleImageError = () => {
     });
 
     const submitForm = async () => {
-    const result = await v.value.$validate();
-    if (result) {
-        try {
-            const mappedData = {
-                Name: formData.generalInfo.nom,
-                FirstName: formData.generalInfo.prenom,
-                Email: formData.generalInfo.courriel,
-                PhoneNumber: formData.generalInfo.telephone,
-                Pseudonym: formData.generalInfo.pseudo,
-                CurrentPassword: formData.generalInfo.currentPassword || undefined,
-                NewPassword: formData.generalInfo.newPassword || undefined,
-                ConfirmNewPassword: formData.generalInfo.confirmNewPassword || undefined,
-                CardOwnerName: formData.carteCredit.nomProprio,
-                CardNumber: formData.carteCredit.numeroCarte,
-                CardExpiryDate: formData.carteCredit.dateExpiration,
-                CivicNumber: formData.adresse.numeroCivique,
-                Street: formData.adresse.rue,
-                Apartment: formData.adresse.appartement,
-                City: formData.adresse.ville,
-                Province: formData.adresse.province,
-                Country: formData.adresse.pays,
-                PostalCode: formData.adresse.codePostal,
-                Photo: avatarUrl.value
-            };
+        const result = await v.value.$validate();
+        if (result) {
+            try {
+                const mappedData = {
+                    Name: formData.generalInfo.nom,
+                    FirstName: formData.generalInfo.prenom,
+                    Email: formData.generalInfo.courriel,
+                    PhoneNumber: formData.generalInfo.telephone,
+                    Pseudonym: formData.generalInfo.pseudo,
+                    CurrentPassword: formData.generalInfo.currentPassword || undefined,
+                    NewPassword: formData.generalInfo.newPassword || undefined,
+                    ConfirmNewPassword: formData.generalInfo.confirmNewPassword || undefined,
+                    CardOwnerName: formData.carteCredit.nomProprio,
+                    CardNumber: formData.carteCredit.numeroCarte,
+                    CardExpiryDate: formData.carteCredit.dateExpiration,
+                    CivicNumber: formData.adresse.numeroCivique,
+                    Street: formData.adresse.rue,
+                    Apartment: formData.adresse.appartement,
+                    City: formData.adresse.ville,
+                    Province: formData.adresse.province,
+                    Country: formData.adresse.pays,
+                    PostalCode: formData.adresse.codePostal,
+                    Photo: avatarUrl.value
+                };
 
-            // Ne pas envoyer les champs de mot de passe s'ils sont tous vides
-            if (!mappedData.CurrentPassword && !mappedData.NewPassword && !mappedData.ConfirmNewPassword) {
-                delete mappedData.CurrentPassword;
-                delete mappedData.NewPassword;
-                delete mappedData.ConfirmNewPassword;
+                // Ne pas envoyer les champs de mot de passe s'ils sont tous vides
+                if (!mappedData.CurrentPassword && !mappedData.NewPassword && !mappedData.ConfirmNewPassword) {
+                    delete mappedData.CurrentPassword;
+                    delete mappedData.NewPassword;
+                    delete mappedData.ConfirmNewPassword;
+                }
+
+                await store.dispatch("updateClientInfo", mappedData);
+                message.value = { type: 'success', text: "Informations mises à jour avec succès !" };
+
+                // Réinitialiser les champs de mot de passe
+                formData.generalInfo.currentPassword = "";
+                formData.generalInfo.newPassword = "";
+                formData.generalInfo.confirmNewPassword = "";
+
+                await store.dispatch("fetchClientInfo");
+
+                setTimeout(() => {
+                    router.push('/');
+                }, 2000);
+            } catch (error) {
+                console.error("Erreur lors de la mise à jour des informations:", error);
+                message.value = { type: 'error', text: "Erreur lors de la mise à jour des informations: " + (error.response?.data?.message || error.message) };
             }
-
-            await store.dispatch("updateClientInfo", mappedData);
-            message.value = { type: 'success', text: "Informations mises à jour avec succès !" };
-
-            // Réinitialiser les champs de mot de passe
-            formData.generalInfo.currentPassword = "";
-            formData.generalInfo.newPassword = "";
-            formData.generalInfo.confirmNewPassword = "";
-
-            await store.dispatch("fetchClientInfo");
-
-            setTimeout(() => {
-                router.push('/'); 
-            }, 2000);
-        } catch (error) {
-            console.error("Erreur lors de la mise à jour des informations:", error);
-            message.value = { type: 'error', text: "Erreur lors de la mise à jour des informations: " + (error.response?.data?.message || error.message) };
+        } else {
+            message.value = { type: 'error', text: "Formulaire non valide. Veuillez vérifier les champs." };
         }
-    } else {
-        message.value = { type: 'error', text: "Formulaire non valide. Veuillez vérifier les champs." };
-    }
-};
+    };
 
-watch(() => [formData.generalInfo.currentPassword, formData.generalInfo.newPassword, formData.generalInfo.confirmNewPassword], ([currentPassword, newPassword, confirmNewPassword]) => {
-    if (!currentPassword && !newPassword && !confirmNewPassword) {
-        v.value.generalInfo.currentPassword.$reset();
-        v.value.generalInfo.newPassword.$reset();
-        v.value.generalInfo.confirmNewPassword.$reset();
-    } else {
-        v.value.generalInfo.currentPassword.$touch();
-        v.value.generalInfo.newPassword.$touch();
-        v.value.generalInfo.confirmNewPassword.$touch();
-    }
-}, { deep: true });
+    watch(() => [formData.generalInfo.currentPassword, formData.generalInfo.newPassword, formData.generalInfo.confirmNewPassword], ([currentPassword, newPassword, confirmNewPassword]) => {
+        if (!currentPassword && !newPassword && !confirmNewPassword) {
+            v.value.generalInfo.currentPassword.$reset();
+            v.value.generalInfo.newPassword.$reset();
+            v.value.generalInfo.confirmNewPassword.$reset();
+        } else {
+            v.value.generalInfo.currentPassword.$touch();
+            v.value.generalInfo.newPassword.$touch();
+            v.value.generalInfo.confirmNewPassword.$touch();
+        }
+    }, { deep: true });
 </script>
 
 <style scoped>
-.information .form-group {
-    width: 45%;
-}
-
-label {
-    font-weight: bolder;
-}
-
-.is-invalid,
-span {
-    border-color: red;
-    font-weight: 600;
-}
-
-.cadreBlanc {
-    background-color: white;
-    opacity: 0.4;
-    border-radius: 15px;
-    height: auto;
-}
-
-.bleuNonValide {
-    background-color: #052445;
-    color: white;
-}
-
-.bleuValide {
-    background-color: #5a708a;
-    color: white;
-}
-
-.avatar-section {
-    text-align: center;
-    margin-bottom: 20px;
-    position: relative;
-    z-index: 10;
-}
-
-.avatar-container {
-    width: 100px;
-    height: 100px;
-    overflow: hidden;
-    border-radius: 50%;
-    margin: 0 auto 10px;
-}
-
-.avatar-image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    cursor: pointer;
-}
-
-.imageDeFondEsquise {
-    position: relative;
-}
-
-.imageDeFondEsquise::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-size: cover;
-    background-position: center;
-    opacity: 0.5;
-    z-index: 1;
-}
-
-.container {
-    position: relative;
-    z-index: 2;
-}
-
-@media only screen and (max-width: 1000px) {
-    .i div {
-        display: flex;
-        flex-basis: 100%;
-        flex-direction: column;
+    .information .form-group {
+        width: 45%;
     }
-}
+
+    label {
+        font-weight: bolder;
+    }
+
+    .is-invalid,
+    span {
+        border-color: red;
+        font-weight: 600;
+    }
+
+    .cadreBlanc {
+        background-color: white;
+        opacity: 0.4;
+        border-radius: 15px;
+        height: auto;
+    }
+
+    .bleuNonValide {
+        background-color: #052445;
+        color: white;
+    }
+
+    .bleuValide {
+        background-color: #5a708a;
+        color: white;
+    }
+
+    .avatar-section {
+        text-align: center;
+        margin-bottom: 20px;
+        position: relative;
+        z-index: 10;
+    }
+
+    .avatar-container {
+        width: 100px;
+        height: 100px;
+        overflow: hidden;
+        border-radius: 50%;
+        margin: 0 auto 10px;
+    }
+
+    .avatar-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        cursor: pointer;
+    }
+
+    .imageDeFondEsquise {
+        position: relative;
+    }
+
+        .imageDeFondEsquise::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-size: cover;
+            background-position: center;
+            opacity: 0.5;
+            z-index: 1;
+        }
+
+    .container {
+        position: relative;
+        z-index: 2;
+    }
+
+    @media only screen and (max-width: 1000px) {
+        .i div {
+            display: flex;
+            flex-basis: 100%;
+            flex-direction: column;
+        }
+    }
 </style>

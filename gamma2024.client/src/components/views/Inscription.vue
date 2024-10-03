@@ -65,7 +65,7 @@
                                                 <input type="email"
                                                        placeholder="johndoe@gmail.com"
                                                        v-model="formData.generalInfo.courriel"
-                                                       :class="['form-control', { 'is-invalid': v.generalInfo.courriel.$error || (!emailDisponible && emailVerifie) }]"
+                                                       :class="['form-control', { 'is-invalid': v.generalInfo.courriel.$error || (!emailDisponible && emailVerifie), 'is-valid': emailDisponible && emailVerifie }]"
                                                        id="courriel"
                                                        @blur="v.generalInfo.courriel.$touch(); verifierEmail()"
                                                        @input="emailVerifie = false" />
@@ -106,7 +106,7 @@
                                                 <label for="pseudonyme">Pseudonyme</label>
                                                 <input type="text"
                                                        v-model="formData.generalInfo.pseudo"
-                                                       :class="['form-control', { 'is-invalid': v.generalInfo.pseudo.$error || (!pseudoDisponible && pseudoVerifie) }]"
+                                                       :class="['form-control', { 'is-invalid': v.generalInfo.pseudo.$error || (!pseudoDisponible && pseudoVerifie), 'is-valid': pseudoDisponible && pseudoVerifie }]"
                                                        id="pseudonyme"
                                                        placeholder="johnDoe45"
                                                        @blur="v.generalInfo.pseudo.$touch(); verifierPseudo()"
@@ -200,35 +200,28 @@
                                         <div class="col col-md-6 col-12">
                                             <div class="form-group">
                                                 <label for="numeroCarte">Numéro de la carte</label>
-                                                <div class="input-wrapper">
-                                                    <InputMask type="text"
-                                                               v-model="formData.carteCredit.numeroCarte"
-                                                               mask="9999 9999 9999 9999"
-                                                               placeholder="4444 4444 4444 4444"
-                                                               :class="['form-control', { 'is-invalid': v.carteCredit.numeroCarte.$error }]"
-                                                               id="numeroCarte"
-                                                               @blur="v.carteCredit.numeroCarte.$touch()" />
-                                                    <div class="invalid-feedback" v-if="v.carteCredit.numeroCarte.$error">
-                                                        {{ v.carteCredit.numeroCarte.$errors[0].$message }}
-                                                    </div>
+                                                <input type="text"
+                                                       v-model="formData.carteCredit.numeroCarte"
+                                                       :class="['form-control', { 'is-invalid': v.carteCredit.numeroCarte.$error }]"
+                                                       id="numeroCarte"
+                                                       placeholder="1234 5678 9012 3456"
+                                                       @blur="v.carteCredit.numeroCarte.$touch()" />
+                                                <div class="invalid-feedback" v-if="v.carteCredit.numeroCarte.$error">
+                                                    {{ v.carteCredit.numeroCarte.$errors[0].$message }}
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="col col-md-6 col-12">
                                             <div class="form-group">
                                                 <label for="dateExpiration">Date d'expiration</label>
-
-                                                <div class="input-wrapper">
-                                                    <InputMask type="text"
-                                                               mask="99/99"
-                                                               placeholder="MM/YY"
-                                                               v-model="formData.carteCredit.dateExpiration"
-                                                               :class="['form-control', { 'is-invalid': v.carteCredit.dateExpiration.$error }]"
-                                                               id="dateExpiration"
-                                                               @blur="v.carteCredit.dateExpiration.$touch()" />
-                                                    <div class="invalid-feedback" v-if="v.carteCredit.dateExpiration.$error">
-                                                        {{ v.carteCredit.dateExpiration.$errors[0].$message }}
-                                                    </div>
+                                                <input type="text"
+                                                       v-model="formData.carteCredit.dateExpiration"
+                                                       :class="['form-control', { 'is-invalid': v.carteCredit.dateExpiration.$error }]"
+                                                       id="dateExpiration"
+                                                       placeholder="MM/AA"
+                                                       @blur="v.carteCredit.dateExpiration.$touch()" />
+                                                <div class="invalid-feedback" v-if="v.carteCredit.dateExpiration.$error">
+                                                    {{ v.carteCredit.dateExpiration.$errors[0].$message }}
                                                 </div>
                                             </div>
                                         </div>
@@ -358,13 +351,12 @@
                                             <div class="form-group">
                                                 <label for="postalCode">Code Postal</label>
                                                 <div class="input-wrapper">
-                                                    <inputMask type="text"
-                                                               v-model="formData.adresse.codePostal"
-                                                               :class="['form-control', { 'is-invalid': v.adresse.codePostal.$error }]"
-                                                               id="postalCode"
-                                                               mask="a9a 9a9"
-                                                               placeholder="A1A 2B2"
-                                                               @blur="v.adresse.codePostal.$touch()" />
+                                                    <input type="text"
+                                                           v-model="formData.adresse.codePostal"
+                                                           :class="['form-control', { 'is-invalid': v.adresse.codePostal.$error }]"
+                                                           id="codePostal"
+                                                           placeholder="A1A 1A1"
+                                                           @blur="v.adresse.codePostal.$touch()" />
                                                     <div class="invalid-feedback" v-if="v.adresse.codePostal.$error">
                                                         {{ v.adresse.codePostal.$errors[0].$message }}
                                                     </div>
@@ -413,7 +405,6 @@
     import { toast } from 'vue3-toastify';
     import { useRouter } from 'vue-router';
 
-
     const store = useStore();
     const router = useRouter();
 
@@ -442,7 +433,6 @@
         maxLength(20)
     );
 
-
     const provinces = ref([
         { text: 'Alberta', value: 'AB' },
         { text: 'Colombie-Britannique', value: 'BC' },
@@ -457,9 +447,9 @@
         { text: 'Territoires du Nord-Ouest', value: 'NT' },
         { text: 'Nunavut', value: 'NU' },
         { text: 'Yukon', value: 'YT' }
-    ])
+    ]);
 
-    //objet qui contient tous les champs remplis correctement
+
     let formData = reactive({
         generalInfo: {
             nom: "",
@@ -487,26 +477,37 @@
     });
 
 
-
     const messageSameAsPassword = helpers.withMessage(
         "Les mots de passe ne correspondent pas.",
         sameAs(computed(() => formData.generalInfo.motDePasse))
     );
 
+    const pseudoDisponible = ref(true);
+    const pseudoVerifie = ref(false);
+    const emailDisponible = ref(true);
+    const emailVerifie = ref(false);
 
-    //objet rules qui contient toutes les validations
     let rules = computed(() => {
         return {
             generalInfo: {
                 nom: { required: messageRequis },
                 prenom: { required: messageRequis },
                 courriel: {
-                    required: messageRequis,
-                    email: messageCourriel
-                },
+                required: messageRequis,
+                email: messageCourriel,
+                asyncValidator: async (value) => {
+                    if (value && !v.value.generalInfo.courriel.$error) {
+                        await verifierEmail();
+                        return emailDisponible.value;
+                    }
+                    return true;
+                }
+            },
                 telephone: { required: messageRequis },
                 pseudo: {
                     required: messageRequis,
+                    minLength: messageMinLengthPseudo,
+                    maxLength: messageMaxLengthPseudo,
                     asyncValidator: async (value) => {
                         if (value) {
                             await verifierPseudo();
@@ -515,7 +516,7 @@
                         return true;
                     }
                 },
-                motDePasse: { required: messageRequis },
+                motDePasse: { required: messageRequis, minLength: messageMinLength },
                 confirmMotPasse: {
                     required: messageRequis,
                     sameAsPassword: messageSameAsPassword
@@ -560,14 +561,12 @@
         activeIndex.value = stepIndex;
     }
 
-    const pseudoDisponible = ref(true);
-    const pseudoVerifie = ref(false);
-
     const verifierPseudo = async () => {
         if (formData.generalInfo.pseudo.length > 0) {
             try {
                 pseudoVerifie.value = false;
-                pseudoDisponible.value = await store.dispatch('verifierPseudonyme', formData.generalInfo.pseudo);
+                const pseudoExiste = await store.dispatch('verifierPseudonyme', formData.generalInfo.pseudo);
+                pseudoDisponible.value = pseudoExiste; 
                 pseudoVerifie.value = true;
             } catch (error) {
                 console.error("Erreur lors de la vérification du pseudonyme:", error);
@@ -577,21 +576,19 @@
         }
     };
 
-    const emailDisponible = ref(true);
-    const emailVerifie = ref(false);
-
     const verifierEmail = async () => {
-        if (formData.generalInfo.courriel.length > 0 && v.generalInfo.courriel.$valid) {
-            try {
-                emailVerifie.value = false;
-                emailDisponible.value = await store.dispatch('verifierEmail', formData.generalInfo.courriel);
-                emailVerifie.value = true;
-            } catch (error) {
-                console.error("Erreur lors de la vérification de l'email:", error);
-                emailDisponible.value = false;
-                emailVerifie.value = true;
-            }
+    if (formData.generalInfo.courriel.length > 0 && !v.value.generalInfo.courriel.$error) {
+        try {
+            emailVerifie.value = false;
+            const emailEstDisponible = await store.dispatch('verifierEmail', formData.generalInfo.courriel);
+            emailDisponible.value = emailEstDisponible;
+            emailVerifie.value = true;
+        } catch (error) {
+            console.error("Erreur lors de la vérification de l'email:", error);
+            emailDisponible.value = false;
+            emailVerifie.value = true;
         }
+    }
     };
 
     const submitForm = async () => {
@@ -605,7 +602,7 @@
         try {
             const response = await store.dispatch('creerCompteUtilisateur', formData);
             if (response.success) {
-                successMessage.value = "Compte crée avec succès !"
+                successMessage.value = "Compte créé avec succès !";
                 toast.success(
                     h(ToastContent, {
                         title: 'Compte créé avec succès !',
@@ -706,5 +703,3 @@
         border-color: #28a745;
     }
 </style>
-
-

@@ -206,7 +206,22 @@ namespace Gamma2024.Server.Controllers
         public async Task<IActionResult> VerifierEmail([FromQuery] string email)
         {
             var user = await _userManager.FindByEmailAsync(email);
-            return Ok(new { disponible = user == null });
+            var disponible = user == null;
+            Console.WriteLine($"Vérification de l'email '{email}': disponible = {disponible}");
+            return Ok(new { disponible = disponible });
+        }
+
+        [HttpGet("verifier-pseudonyme")]
+        public async Task<IActionResult> VerifierPseudonyme([FromQuery] string pseudo)
+        {
+            if (string.IsNullOrWhiteSpace(pseudo))
+            {
+                return BadRequest("Le pseudonyme ne peut pas être vide.");
+            }
+
+            var utilisateurExistant = await _userManager.FindByNameAsync(pseudo);
+            var disponible = utilisateurExistant == null;
+            return Ok(new { disponible = disponible });
         }
     }
 
