@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Gamma2024.Server.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class InitialCreateDb : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -34,7 +34,6 @@ namespace Gamma2024.Server.Migrations
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Pseudonym = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Avatar = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     IdAdresse = table.Column<int>(type: "int", nullable: false),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -256,6 +255,7 @@ namespace Gamma2024.Server.Migrations
                     Appartement = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Rue = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Ville = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Province = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Pays = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CodePostal = table.Column<string>(type: "nvarchar(6)", maxLength: 6, nullable: false),
                     EstDomicile = table.Column<bool>(type: "bit", nullable: false),
@@ -298,6 +298,8 @@ namespace Gamma2024.Server.Migrations
                     EstVendu = table.Column<bool>(type: "bit", nullable: false),
                     DateFinVente = table.Column<DateTime>(type: "datetime2", nullable: true),
                     IdVendeur = table.Column<int>(type: "int", nullable: false),
+                    estLivrable = table.Column<bool>(type: "bit", nullable: false),
+                    Dimensions = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     IdMedium = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -443,20 +445,20 @@ namespace Gamma2024.Server.Migrations
 
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
-                columns: new[] { "Id", "AccessFailedCount", "Avatar", "ConcurrencyStamp", "Email", "EmailConfirmed", "FirstName", "IdAdresse", "LockoutEnabled", "LockoutEnd", "Name", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "Pseudonym", "SecurityStamp", "TwoFactorEnabled", "UserName" },
+                columns: new[] { "Id", "AccessFailedCount", "Avatar", "ConcurrencyStamp", "Email", "EmailConfirmed", "FirstName", "IdAdresse", "LockoutEnabled", "LockoutEnd", "Name", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
                 values: new object[,]
                 {
-                    { "1d8ac862-e54d-4f10-b6f8-638808c02967", 0, "Avatars/client.jpg", "941ccaf0-4ec2-4b35-a61b-69a79f1255e7", "client@example.com", true, "Jean", 2, false, null, "Dupont", "CLIENT@EXAMPLE.COM", "CLIENT@EXAMPLE.COM", "AQAAAAIAAYagAAAAEEOAH94bBUHxufSbVtmjLV0rhHXRDX/INGsFqJS/DszIGXMiHfgeeTo8iFKw3NlOLg==", null, false, "JeanDu", "573ee18d-f15f-4bb4-913f-cf176dbe5b09", false, "client@example.com" },
-                    { "8e445865-a24d-4543-a6c6-9443d048cdb9", 0, "Avatars/admin.jpg", "4ef971b7-fbcc-4830-9180-53f7e9209a9e", "admin@example.com", true, "Super", 1, false, null, "Admin", "ADMIN@EXAMPLE.COM", "ADMIN@EXAMPLE.COM", "AQAAAAIAAYagAAAAEFx3xwTrqUPVBmmU0EGDhHrmtmKj7GlKDiaEQr7oVXXL4L1RnEu93gyiC72/29D9nA==", null, false, "SuperAdmin", "45de26ea-9bfb-4acb-95b7-979c9e5f7d70", false, "admin@example.com" }
+                    { "1d8ac862-e54d-4f10-b6f8-638808c02967", 0, "/Gamma2024.Server/Avatars/default.png", "3c6d9adf-c4c3-483f-89e7-86695893fd8a", "client@example.com", true, "Jean", 2, false, null, "Dupont", "CLIENT@EXAMPLE.COM", "CLIENT@EXAMPLE.COM", "AQAAAAIAAYagAAAAEH67rKnjcepKwkDDj5IoNvTArwgBmj8+ufhcNjRY+pjDbMV9QM+50bqnPBxcxIsbLA==", null, false, "1f0f6b4c-dbda-4b79-834b-992e694252d2", false, "client@example.com" },
+                    { "8e445865-a24d-4543-a6c6-9443d048cdb9", 0, "/Gamma2024.Server/Avatars/default.png", "614a067a-c7dd-469b-b952-d159e6cef6d9", "admin@example.com", true, "Super", 1, false, null, "Admin", "ADMIN@EXAMPLE.COM", "ADMIN@EXAMPLE.COM", "AQAAAAIAAYagAAAAEPcbQPeJp/xtL413i0nfeKc4iAdIo5f632TuhnRwIbqUa2k/hP/fDLDMUGjmvXWY0A==", null, false, "6cf99b93-3973-4783-870b-bb1481ffb201", false, "admin@example.com" }
                 });
 
             migrationBuilder.InsertData(
                 table: "Adresses",
-                columns: new[] { "Id", "Appartement", "CodePostal", "EstDomicile", "IdApplicationUser", "IdPersonne", "IdVendeur", "Numero", "Pays", "Rue", "VendeurId", "Ville" },
+                columns: new[] { "Id", "Appartement", "CodePostal", "EstDomicile", "IdApplicationUser", "IdPersonne", "IdVendeur", "Numero", "Pays", "Province", "Rue", "VendeurId", "Ville" },
                 values: new object[,]
                 {
-                    { 1, null, "12345", false, "8e445865-a24d-4543-a6c6-9443d048cdb9", null, null, 123, "Pays Admin", "Rue Admin", null, "Ville Admin" },
-                    { 2, null, "67890", false, "1d8ac862-e54d-4f10-b6f8-638808c02967", null, null, 456, "Pays Client", "Rue Client", null, "Ville Client" }
+                    { 1, null, "12345", false, "8e445865-a24d-4543-a6c6-9443d048cdb9", null, null, 123, "Pays Admin", "Québec", "Rue Admin", null, "Ville Admin" },
+                    { 2, null, "67890", false, "1d8ac862-e54d-4f10-b6f8-638808c02967", null, null, 456, "Pays Client", "Québec", "Rue Client", null, "Ville Client" }
                 });
 
             migrationBuilder.InsertData(
