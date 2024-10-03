@@ -1,8 +1,11 @@
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Identity;
-using System.Threading.Tasks;
 using Gamma2024.Server.Models;
-using Microsoft.EntityFrameworkCore;
+using Gamma2024.Server.ViewModels;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 namespace Gamma2024.Server.Controllers
 {
@@ -12,41 +15,86 @@ namespace Gamma2024.Server.Controllers
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly IConfiguration _configuration;
 
-        public HomeController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
+        public HomeController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IConfiguration configuration)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _configuration = configuration;
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login(LoginModel model)
+        public async Task<IActionResult> Login([FromBody] LoginVM model)
         {
-            var user = await _userManager.FindByEmailAsync(model.EmailOuPseudo) 
-                       ?? await _userManager.Users.FirstOrDefaultAsync(u => u.UserName.ToLower() == model.EmailOuPseudo.ToLower());
-
-            if (user == null)
+            if (!ModelState.IsValid)
             {
-                return Unauthorized(new { message = "Utilisateur non trouvé" });
+                return BadRequest(ModelState);
             }
 
-            var result = await _signInManager.PasswordSignInAsync(user.UserName ?? string.Empty, model.Password, false, false);
+            var user = await _userManager.FindByEmailAsync(model.Email);
+            if (user == null)
+            {
+                // Essayez de trouver l'utilisateur par son nom d'utilisateur si l'email n'a pas fonctionné
+                user = await _userManager.FindByNameAsync(model.Email);
+                if (user == null)
+                {
+                    return BadRequest(new { message = "Utilisateur non trouvé" });
+                }
+            }
 
+            var result = await _signInManager.PasswordSignInAsync(user, model.Password, false, lockoutOnFailure: false);
             if (result.Succeeded)
             {
                 var roles = await _userManager.GetRolesAsync(user);
-                return Ok(new { message = "Connexion réussie", userId = user.Id, roles = roles });
+                await _signInManager.SignInAsync(user, isPersistent: false);
+
+                var token = GenerateJwtToken(user, roles.ToArray());
+                return Ok(new
+                {
+                    message = "Connexion réussie",
+                    userId = user.Id,
+                    roles = roles,
+                    token = token,
+                    username = user.UserName,
+                    name = user.Name,
+                    firstName = user.FirstName,
+                    photo = user.Avatar // Assurez-vous que ce champ est inclus
+                });
             }
             else
             {
-                return Unauthorized(new { message = "Échec de la connexion" });
+                return BadRequest(new { message = "Mot de passe incorrect" });
             }
         }
 
-        public class LoginModel
+        private string GenerateJwtToken(ApplicationUser user, string[] roles)
         {
-            public string EmailOuPseudo { get; set; } = null!;
-            public string Password { get; set; } = null!;
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Name, user.UserName ?? string.Empty),
+                new Claim(ClaimTypes.NameIdentifier, user.Id),
+                new Claim(ClaimTypes.Email, user.Email ?? string.Empty),
+                new Claim("Avatar", user.Avatar ?? string.Empty)
+            };
+
+            foreach (var role in roles)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, role));
+            }
+
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+            var token = new JwtSecurityToken(
+                _configuration["Jwt:Issuer"],
+                _configuration["Jwt:Audience"],
+                claims,
+                expires: DateTime.UtcNow.AddHours(1),
+                signingCredentials: creds
+            );
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
         }
     }
 }

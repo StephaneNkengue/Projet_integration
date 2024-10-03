@@ -6,7 +6,11 @@ import Connexion from '@/components/views/Connexion.vue'
 import Accueil from '@/components/views/Accueil.vue'
 import Contact from '@/components/views/Contact.vue'
 import APropos from '@/components/views/APropos.vue'
-
+import TableauDeBordInventaire from '@/components/views/TableauDeBordInventaire.vue'
+import EncanPresent from '@/components/views/EncanPresent.vue'
+import TousLesEncans from '@/components/views/TousLesEncans.vue'
+import AffichageDetailsLot from '@/components/views/AffichageDetailsLot.vue'
+import Modification from '@/components/views/Modification.vue'
 
 const routes = [
     {
@@ -38,6 +42,32 @@ const routes = [
         path: '/inscription',
         name: 'Inscription',
         component: Inscription
+    },
+    {
+        path: '/encanpresent',
+        name: 'EncanPresent',
+        component: EncanPresent
+    },
+    {
+        path: '/touslesencans',
+        name: "TousLesEncans",
+        component: TousLesEncans
+    },
+    {
+        path: '/affichagedetailslot',
+        name: 'DetailsLot',
+        component: AffichageDetailsLot
+    },
+    {
+        path: '/inventaire',
+        name: 'TableauDeBordInventaire',
+        component: TableauDeBordInventaire
+    },
+    {
+        path: '/modification',
+        name: 'Modification',
+        component: Modification,
+        meta: { requiresAuth: true, requiredRole: 'Client' }
     }
 ]
 
@@ -51,16 +81,12 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
     const isLoggedIn = store.state.isLoggedIn
-    const requiredRole = to.meta.requiredRole
+    const userRoles = store.state.roles
 
-    if (to.matched.some(record => record.meta.requiresAuth)) {
-        if (!isLoggedIn) {
-            next('/login')
-        } else if (requiredRole && !store.state.roles.includes(requiredRole)) {
-            next('/unauthorized')
-        } else {
-            next()
-        }
+    if (to.meta.requiresAuth && !isLoggedIn) {
+        next('/login')
+    } else if (to.meta.requiredRole && !userRoles.includes(to.meta.requiredRole)) {
+        next('/unauthorized')
     } else {
         next()
     }

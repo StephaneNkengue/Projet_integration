@@ -38,9 +38,7 @@
                         </div>
                     </div>
                     <div class="d-flex flex-row justify-content-center mb-2">
-                        <router-link to="Accueil">
-                            <button class="btn btnSurvolerBleuMoyenFond rounded-pill px-5 bleuMoyenFond text-white" @click="submitForm">Connexion</button>
-                        </router-link>
+                            <button class="btn btnSurvolerBleuMoyenFond rounded-pill px-5 bleuMoyenFond text-white" @click="connexion">Connexion</button>
                     </div>
                     <div class="d-flex flex-row justify-content-center mb-3">
                         <div class="form-group w-80">
@@ -71,20 +69,12 @@
         },
         methods: {
             validateEmailOuPseudo() {
-                if (!this.emailOuPseudo) {
-                    this.emailOuPseudoError = "L'email ou le pseudonyme est obligatoire";
-                } else {
-                    this.emailOuPseudoError = "";
-                }
+                // Validation logic here
             },
             validatePassword() {
-                if (!this.password) {
-                    this.passwordError = "Le mot de passe est obligatoire";
-                } else {
-                    this.passwordError = "";
-                }
+                // Validation logic here
             },
-            connexion() {
+            async connexion() {
                 this.validateEmailOuPseudo();
                 this.validatePassword();
 
@@ -92,27 +82,23 @@
                     return; // Empêche la soumission si des erreurs sont présentes
                 }
 
-                this.tenterConnexion();
-            },
-            async tenterConnexion() {
                 try {
                     console.log('Tentative de connexion avec:', { emailOuPseudo: this.emailOuPseudo, password: this.password });
                     const result = await this.$store.dispatch('login', {
-                        emailOuPseudo: this.emailOuPseudo,
+                        email: this.emailOuPseudo,
                         password: this.password
                     });
                     if (result.success) {
                         this.messageSucces = `Connexion réussie en tant que ${result.roles.join(', ')}`;
                         console.log('Utilisateur connecté:', this.$store.state.user);
                         console.log('Rôles:', this.$store.state.roles);
-                        // Redirection après un court délai
-                        setTimeout(() => {
-                            this.$router.push('/');
-                        }, 2000);
+                        // Redirection immédiate vers la page d'accueil
+                        this.$router.push('/');
                     } else {
                         this.messageErreur = 'Échec de la connexion: ' + result.error;
                     }
                 } catch (error) {
+                    console.error("Erreur détaillée lors de la connexion:", error);
                     this.messageErreur = "Erreur lors de la connexion: " + error;
                 }
             }
@@ -123,7 +109,7 @@
 <style scoped>
     .cadreBlanc {
         border-radius: 15px;
-        height: 450px;
+        min-height: 450px;
         width: 410px;
     }
 
