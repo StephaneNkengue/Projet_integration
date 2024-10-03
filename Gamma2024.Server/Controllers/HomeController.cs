@@ -72,9 +72,10 @@ namespace Gamma2024.Server.Controllers
         {
             var claims = new List<Claim>
             {
-                new(ClaimTypes.Name, user.UserName ?? string.Empty),
-                new(ClaimTypes.NameIdentifier, user.Id),
-                new(ClaimTypes.Email, user.Email ?? string.Empty)
+                new Claim(ClaimTypes.Name, user.UserName ?? string.Empty),
+                new Claim(ClaimTypes.NameIdentifier, user.Id),
+                new Claim(ClaimTypes.Email, user.Email ?? string.Empty),
+                new Claim("Avatar", user.Avatar ?? string.Empty)
             };
 
             foreach (var role in roles)
