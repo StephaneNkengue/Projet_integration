@@ -22,27 +22,27 @@
                 <div class="carousel-inner">
                     <div class="carousel-item active">
                         <div class="d-flex justify-content-center">
-                            <img :src="'/images'+lot.photos[0].lien" height="400" alt="...">
+                            <img src="/images/lotsExemple/1a_1.png" height="400" alt="...">
                         </div>
                     </div>
                     <div class="carousel-item">
                         <div class="d-flex justify-content-center">
-                            <img :src="'/images'+lot.photos[1].lien" height="400" alt="...">
+                            <img src="/images/lotsExemple/1_2.png" height="400" alt="...">
                         </div>
                     </div>
                     <div class="carousel-item">
                         <div class="d-flex justify-content-center">
-                            <img :src="'/images'+lot.photos[2].lien" height="400" alt="...">
+                            <img src="/images/lotsExemple/1b_2.png" height="400" alt="...">
                         </div>
                     </div>
                     <div class="carousel-item">
                         <div class="d-flex justify-content-center">
-                            <img :src="'/images/' + lot.photos[3].lien" height="400" alt="...">
+                            <img src="/images/lotsExemple/1b_3.png" height="400" alt="...">
                         </div>
                     </div>
                     <div class="carousel-item">
                         <div class="d-flex justify-content-center">
-                            <img :src="'/images'+lot.photos[4].lien" height="400" alt="...">
+                            <img src="/images/lotsExemple/2_2.png" height="400" alt="...">
                         </div>
                     </div>
                 </div>
@@ -58,19 +58,19 @@
 
                 <div class="gap-1 d-flex">
                     <a data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1">
-                        <img :src="'/images'+lot.photos[0].lien" height="60" alt="...">
+                        <img src="/images/lotsExemple/1a_1.png" height="60" alt="...">
                     </a>
                     <a data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2">
-                        <img :src="'/images'+lot.photos[1].lien" height="60" alt="...">
+                        <img src="/images/lotsExemple/1_2.png" height="60" alt="...">
                     </a>
                     <a data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3">
-                        <img :src="'/images'+lot.photos[2].lien" height="60" alt="...">
+                        <img src="/images/lotsExemple/1b_2.png" height="60" alt="...">
                     </a>
                     <a data-bs-target="#carouselExampleIndicators" data-bs-slide-to="3" aria-label="Slide 4">
-                        <img :src="'/images'+lot.photos[3].lien" height="60" alt="...">
+                        <img src="/images/lotsExemple/1b_3.png" height="60" alt="...">
                     </a>
                     <a data-bs-target="#carouselExampleIndicators" data-bs-slide-to="4" aria-label="Slide 5 ">
-                        <img :src="'/images'+lot.photos[4].lien" height="60" alt="...">
+                        <img src="/images/lotsExemple/2_2.png" height="60" alt="...">
                     </a>
                 </div>
 
