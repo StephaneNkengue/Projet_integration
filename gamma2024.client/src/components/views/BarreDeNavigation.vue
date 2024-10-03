@@ -105,7 +105,7 @@
                         </router-link>-->
                         <router-link to="Modification" v-if="estConnecte" class="text-decoration-none text-white d-flex align-items-center gap-3">
                             <a class="nav-link">{{ username }}</a>
-                            <img :src="avatarUrl" alt="Avatar" height="40" />
+                            <img :src="'/images' + avatarUrl" alt="Avatar" height="40" />
                         </router-link>
                         <!--</div>-->
                     </div>
@@ -154,7 +154,7 @@
                 return store.state.user.photo;
             } else {
                 // Utilisation d'une URL par défaut si l'API n'est pas disponible
-                return `/images/${store.state.user.photo}`;
+                return `/${store.state.user.photo}`;
             }
         }
         return '/icons/Avatar.png';
