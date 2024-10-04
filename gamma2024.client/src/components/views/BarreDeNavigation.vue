@@ -140,17 +140,6 @@
         const user = store.state.user;
         return user && user.pseudonym ? user.pseudonym : 'USERNAME';
     })
-    //const avatarUrl = computed(() => {
-    //    if (store.state.user && store.state.user.photo) {
-    //        if (store.state.user.photo.startsWith('http')) {
-    //            return store.state.user.photo;
-    //        } else {
-    //            // Utilisation d'une URL par défaut si l'API n'est pas disponible
-    //            return `/${store.state.user.photo}`;
-    //        }
-    //    }
-    //    return '/2162067/icons/Avatar.png';
-    //});
 
     const avatarUrl = computed(() => {
         if (store.state.user && store.state.user.photo) {
