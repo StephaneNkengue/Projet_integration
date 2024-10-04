@@ -11,7 +11,7 @@ namespace Gamma2024.Server.Extensions
                 var columns = line.Split(';');
 
                 var adresse = columns[2].Split(",");
-                var numCiviqueRue = adresse[0].Split(" ", 1);
+                var numCiviqueRue = adresse[0].Split(" ", 2);
 
                 yield return new Vendeur
                 {
