@@ -496,7 +496,7 @@
 
             // Utiliser l'URL de base de l'API pour construire l'URL de l'avatar
             avatarUrl.value = response.data.photo ? `${api.defaults.baseURL.replace('/api', '')}${response.data.photo}` : '/icons/Avatar.png';
-            console("objet crée pour test" + response.data);
+            console.log("objet crée pour test" + response.data);
         } catch (error) {
             console.error("Erreur lors de la récupération des données:", error);
             errorMessage.value = "Erreur lors de la récupération des informations du client.";
