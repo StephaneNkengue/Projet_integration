@@ -41,12 +41,11 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("Development", builder =>
     {
-        builder
-            .SetIsOriginAllowed(_ => true)
-            .WithOrigins("https://localhost:5173")
-            .AllowAnyMethod()
-            .AllowAnyHeader()
-            .AllowCredentials();
+        builder.WithOrigins("https://sqlinfocg.cegepgranby.qc.ca/2162067")
+               .SetIsOriginAllowed(_ => true)
+               .AllowAnyMethod()
+               .AllowAnyHeader()
+               .AllowCredentials();
     });
 });
 
