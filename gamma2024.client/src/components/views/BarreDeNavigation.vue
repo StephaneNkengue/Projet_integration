@@ -93,21 +93,14 @@
                                     </li>
                                 </ul>
                             </div>
+
+                            <router-link to="Modification" v-if="estConnecte" class="text-decoration-none text-white d-flex align-items-center gap-3">
+                                <a class="nav-link">{{ username }}</a>
+                                <img :src="'/icons' + avatarUrl" alt="Avatar" height="40" />
+                            </router-link>
                         </div>
 
-                        <!--<div class="d-flex justify-content-center gap-3">-->
-                        <!--<router-link to="Inscription" v-if="estConnecte">-->
-                        <!--<router-link to="Inscription" v-if="!estConnecte">
-                            <button class="btn btn-outline bleuMoyenFond text-white" type="button">Inscription</button>
-                        </router-link>
-                        <router-link to="Connexion" v-if="!estConnecte">
-                            <button class="btn btn-outline bleuMoyenFond text-white" type="button">Connexion</button>
-                        </router-link>-->
-                        <router-link to="Modification" v-if="estConnecte" class="text-decoration-none text-white d-flex align-items-center gap-3">
-                            <a class="nav-link">{{ username }}</a>
-                            <img :src="'/icons' + avatarUrl" alt="Avatar" height="40" />
-                        </router-link>
-                        <!--</div>-->
+
                     </div>
                 </div>
             </nav>
