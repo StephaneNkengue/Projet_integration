@@ -84,7 +84,7 @@ router.beforeEach((to, from, next) => {
     const userRoles = store.state.roles
 
     if (to.meta.requiresAuth && !isLoggedIn) {
-        next('/login')
+        next('/connexion')
     } else if (to.meta.requiredRole && !userRoles.includes(to.meta.requiredRole)) {
         next('/unauthorized')
     } else {
