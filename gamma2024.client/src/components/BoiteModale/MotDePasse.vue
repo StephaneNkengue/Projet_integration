@@ -1,78 +1,68 @@
 <template>
-    <div>
-        <div class="modal fade"
-             :id="props.h.idModal"
-             tabindex="-1"
-             data-bs-backdrop="static"
-             data-bs-keyboard="false"
-             aria-labelledby="changePasswordModalLabel"
-             aria-hidden="true">
-            <div class="modal-dialog">
+
+    <div class="modal fade" :id="props.h.idModal" tabindex="-1" role="dialog" aria-labelledby="passwordModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog" role="document">
+            <form @submit.prevent="handleSubmit">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="changePasswordModalLabel">
+                        <h5 class="modal-title" id="passwordModalLabel">
                             Changer le mot de passe
                         </h5>
-                        <button type="button"
-                                class="btn-close"
-                                data-bs-dismiss="modal"
-                                aria-label="Close"></button>
-                    </div>
 
+                    </div>
                     <div class="modal-body">
-                        <form @submit.prevent="handleSubmit">
-                            <div class="mb-3">
-                                <label for="currentPassword" class="form-label">Mot de passe actuel:</label>
-                                <input type="password"
-                                       class="form-control"
-                                       id="currentPassword"
-                                       v-model="form.currentPassword" />
-                            </div>
-                            <div class="mb-3">
-                                <label for="newPassword" class="form-label">Nouveau mot de passe:</label>
-                                <input type="password"
-                                       :class="[
+                        <div class="mb-3">
+                            <label for="currentPassword" class="form-label">Mot de passe actuel:</label>
+                            <input type="password"
+                                   class="form-control"
+                                   id="currentPassword"
+                                   v-model="form.currentPassword" />
+                        </div>
+                        <div class="mb-3">
+                            <label for="newPassword" class="form-label">Nouveau mot de passe:</label>
+                            <input type="password"
+                                   :class="[
                     'form-control',
                     { 'is-invalid': v.form.newPassword.$error },
                   ]"
-                                       id="newPassword"
-                                       v-model="form.newPassword"
-                                       placeholder="Nouveau mot de passe"
-                                       @blur="v.form.newPassword.$touch()" />
-                                <div class="invalid-feedback" v-if="v.form.newPassword.$error">
-                                    {{ v.form.newPassword.$errors[0].$message }}
-                                </div>
+                                   id="newPassword"
+                                   v-model="form.newPassword"
+                                   placeholder="Nouveau mot de passe"
+                                   @blur="v.form.newPassword.$touch()" />
+                            <div class="invalid-feedback" v-if="v.form.newPassword.$error">
+                                {{ v.form.newPassword.$errors[0].$message }}
                             </div>
-                            <div class="mb-3">
-                                <label for="confirmPassword" class="form-label">Confirmation du mot de passe:</label>
-                                <input type="password"
-                                       id="confirmPassword"
-                                       v-model="form.confirmPassword"
-                                       placeholder="Confirmer le mot de passe"
-                                       :class="[
+                        </div>
+                        <div class="mb-3">
+                            <label for="confirmPassword" class="form-label">Confirmation du mot de passe:</label>
+                            <input type="password"
+                                   id="confirmPassword"
+                                   v-model="form.confirmPassword"
+                                   placeholder="Confirmer le mot de passe"
+                                   :class="[
                     'form-control',
                     { 'is-invalid': v.form.confirmPassword.$error },
                   ]"
-                                       @blur="v.form.confirmPassword.$touch()" />
-                                <div class="invalid-feedback"
-                                     v-if="v.form.confirmPassword.$error">
-                                    {{ v.form.confirmPassword.$errors[0].$message }}
-                                </div>
+                                   @blur="v.form.confirmPassword.$touch()" />
+                            <div class="invalid-feedback"
+                                 v-if="v.form.confirmPassword.$error">
+                                {{ v.form.confirmPassword.$errors[0].$message }}
                             </div>
-                            <div class="d-flex justify-content-between">
-                                <button type="button"
-                                        class="btn btn-secondary"
-                                        data-bs-dismiss="modal">
-                                    Annuler
-                                </button>
-                                <button type="submit" class="btn btn-primary">
-                                    Sauvegarder
-                                </button>
-                            </div>
-                        </form>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button"
+                                class="btn btn-secondary"
+                                data-dismiss="modal">
+                            Annuler
+                        </button>
+                        <button type="submit" class="btn btn-primary">
+                            Sauvegarder
+                        </button>
                     </div>
                 </div>
-            </div>
+            </form>
         </div>
     </div>
 </template>
@@ -82,6 +72,14 @@
     import { required, helpers, minLength, sameAs } from "@vuelidate/validators";
     import { useVuelidate } from "@vuelidate/core";
 
+
+    const props = defineProps({
+        h: {
+            type: Object,
+            default: () => ({}),
+        },
+    });
+
     const messageRequis = helpers.withMessage("Ce champ est requis", required);
     const passwordMinLength = helpers.withMessage(
         "Le mot de passe doit contenir au moins 8 caractères, minimum 1 majuscule, 1 minuscule, 1 chiffre et 1 caractère spécial.",
@@ -89,7 +87,7 @@
     );
 
     let form = reactive({
-        currentPassword: "",
+        currentPassword: props.h.dataCurrentPassword,
         newPassword: "",
         confirmPassword: "",
     });
@@ -124,18 +122,14 @@
             form.newPassword = "";
             form.confirmPassword = "";
 
-            // modal.hide();
+            document.getElementById('saveChangesBtn').addEventListener('click', function () {
+                $('#exampleModal').modal('hide');
+            });
         } else {
             return;
         }
     };
 
-    const props = defineProps({
-        h: {
-            type: Object,
-            default: () => ({}),
-        },
-    });
 </script>
 
 <style scoped>
