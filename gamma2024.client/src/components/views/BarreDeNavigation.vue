@@ -96,11 +96,9 @@
 
                             <router-link to="Modification" v-if="estConnecte" class="text-decoration-none text-white d-flex align-items-center gap-3">
                                 <a class="nav-link">{{ username }}</a>
-                                <img :src="'/icons' + avatarUrl" alt="Avatar" height="40" />
+                                <img :src="avatarUrl" alt="Avatar" height="40" />
                             </router-link>
                         </div>
-
-
                     </div>
                 </div>
             </nav>
@@ -131,6 +129,7 @@
 <script setup>
     import { computed, watch, ref } from 'vue'
     import { useStore } from 'vuex'
+    import api from '@/services/api'
 
     const store = useStore()
 
@@ -141,16 +140,27 @@
         const user = store.state.user;
         return user && user.pseudonym ? user.pseudonym : 'USERNAME';
     })
+    //const avatarUrl = computed(() => {
+    //    if (store.state.user && store.state.user.photo) {
+    //        if (store.state.user.photo.startsWith('http')) {
+    //            return store.state.user.photo;
+    //        } else {
+    //            // Utilisation d'une URL par défaut si l'API n'est pas disponible
+    //            return `/${store.state.user.photo}`;
+    //        }
+    //    }
+    //    return '/2162067/icons/Avatar.png';
+    //});
+
     const avatarUrl = computed(() => {
         if (store.state.user && store.state.user.photo) {
             if (store.state.user.photo.startsWith('http')) {
                 return store.state.user.photo;
             } else {
-                // Utilisation d'une URL par défaut si l'API n'est pas disponible
-                return `/${store.state.user.photo}`;
+                return `${api.defaults.baseURL.replace('/api', '')}${store.state.user.photo}`;
             }
         }
-        return '/2162067/icons/Avatar.png';
+        return '2162067/icons/Avatar.png';
     });
 
     const currentUser = ref(null)
