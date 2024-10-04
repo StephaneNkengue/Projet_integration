@@ -2,13 +2,13 @@
     <div class="d-flex justify-content-between">
         <h2 class="d-flex-1">Liste des lots</h2>
         <div class="d-flex d-flex-1">
-            <button class="btn bleuMoyenFond btnSurvolerBleuMoyenFond text-white d-flex-1"
+            <button class="bleuMoyenFond btnSurvolerBleuMoyenFond text-white d-flex-1"
                     type="button"
                     id="ajouterLotButton">
                 Ajouter un lot
             </button>
             <div class="dropdown d-flex-1">
-                <button class="btn bleuMoyenFond btnSurvolerBleuMoyenFond text-white dropdown-toggle"
+                <button class=" bleuMoyenFond btnSurvolerBleuMoyenFond text-white dropdown-toggle"
                         type="button"
                         id="dropdownMenuButton"
                         data-toggle="dropdown"
@@ -155,6 +155,12 @@
 
     button {
         margin: 5px;
+        padding-left: 15px;
+        padding-right: 15px;
+        border: none;
+        border-radius: 5px;
+        font-size: 16.5px;
+        height: 40px;
     }
 
     table {
