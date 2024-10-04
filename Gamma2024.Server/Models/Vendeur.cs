@@ -9,7 +9,7 @@ namespace Gamma2024.Server.Models
         public string Telephone { get; set; } = null!;
         public int IdAdresse { get; set; }
 
-        public Adresse Adresse { get; set; }
+        public Adresse Adresse { get; set; } = default!;
 
         public ICollection<Lot> Lots { get; set; } = [];
     }
