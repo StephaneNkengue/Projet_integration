@@ -150,7 +150,7 @@
                 return `/${store.state.user.photo}`;
             }
         }
-        return '/icons/Avatar.png';
+        return '/2162067/icons/Avatar.png';
     });
 
     const currentUser = ref(null)
