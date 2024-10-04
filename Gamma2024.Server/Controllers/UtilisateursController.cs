@@ -51,7 +51,7 @@ namespace Gamma2024.Server.Controllers
             if (success)
             {
 
-                var client = _context.Users.FirstOrDefault(x => x.UserName == model.GeneralInfo.Pseudo);
+                var client = await _userManager.FindByEmailAsync(model.GeneralInfo.Courriel);
                 if (client != null)
                 {
                     var token = await _userManager.GenerateEmailConfirmationTokenAsync(client);
@@ -86,7 +86,7 @@ namespace Gamma2024.Server.Controllers
                 return BadRequest("User ID ou Token manquant");
             }
 
-            var client = _context.Users.FirstOrDefault(x => x.Id == idClient);
+            var client = await _userManager.FindByIdAsync(idClient);
             if (client == null)
             {
                 return NotFound("Utilisateur introuvable");
@@ -206,7 +206,22 @@ namespace Gamma2024.Server.Controllers
         public async Task<IActionResult> VerifierEmail([FromQuery] string email)
         {
             var user = await _userManager.FindByEmailAsync(email);
-            return Ok(new { disponible = user == null });
+            var disponible = user == null;
+            Console.WriteLine($"Vérification de l'email '{email}': disponible = {disponible}");
+            return Ok(new { disponible = disponible });
+        }
+
+        [HttpGet("verifier-pseudonyme")]
+        public async Task<IActionResult> VerifierPseudonyme([FromQuery] string pseudo)
+        {
+            if (string.IsNullOrWhiteSpace(pseudo))
+            {
+                return BadRequest("Le pseudonyme ne peut pas être vide.");
+            }
+
+            var utilisateurExistant = await _userManager.FindByNameAsync(pseudo);
+            var disponible = utilisateurExistant == null;
+            return Ok(new { disponible = disponible });
         }
     }
 
