@@ -75,9 +75,9 @@
                                                 <div class="invalid-feedback" v-if="!emailDisponible && emailVerifie">
                                                     Cette adresse email est déjà utilisée.
                                                 </div>
-                                                <div class="valid-feedback" v-if="emailDisponible && emailVerifie">
+                                                <!-- <div class="valid-feedback" v-if="emailDisponible && emailVerifie">
                                                     Cette adresse email est disponible.
-                                                </div>
+                                                </div> -->
                                             </div>
                                         </div>
 
@@ -115,7 +115,7 @@
                                                     {{ v.generalInfo.pseudo.$errors[0].$message }}
                                                 </div>
                                                 <div class="invalid-feedback" v-if="!pseudoDisponible && pseudoVerifie">
-                                                    Ce pseudonyme est déjà utilisé.
+                                                    Le pseudonyme est valide.
                                                 </div>
                                                 <div class="valid-feedback" v-if="pseudoDisponible && pseudoVerifie">
                                                     Ce pseudonyme est disponible.
