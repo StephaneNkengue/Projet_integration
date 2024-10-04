@@ -102,18 +102,39 @@
                                 </div>
 
                                 <div class="d-flex flex-column col-md-6">
-                                    <label class="labels">Mot de passe</label>
-                                    <button type="button"
-                                            class="btn border border-1 btn_change_password"
-                                            data-toggle="modal"
-                                            :data-target="'#' + dataForModalPassword.idModal">
-                                        <img src="/icons/icon_password.png"
-                                             class="img-fluid img_password"
-                                             alt="icon_password" />
-                                        <span class="ms-2">Changer le mot de passe</span>
-                                    </button>
+                                    <label class="labels">Mot de passe actuel</label>
+                                    <input class="form-control"
+                                           v-model="formData.generalInfo.currentPassword" />
+                                    <div class="invalid-feedback"
+                                         v-if="v.generalInfo.currentPassword.$error">
+                                        {{ v.generalInfo.currentPassword.$errors[0].$message }}
+                                    </div>
                                 </div>
                             </div>
+
+                            <div class="row mt-2">
+                                <div class="col-md-6">
+                                    <label class="labels">Nouveau mot de passe</label>
+                                    <input type="text"
+                                           class="form-control"
+                                           v-model="formData.generalInfo.newPassword" />
+                                    <div class="invalid-feedback"
+                                         v-if="v.generalInfo.newPassword.$error">
+                                        {{ v.generalInfo.newPassword.$errors[0].$message }}
+                                    </div>
+                                </div>
+
+                                <div class="d-flex flex-column col-md-6">
+                                    <label class="labels">Confirmation de mot de passe</label>
+                                    <input class="form-control"
+                                           v-model="formData.generalInfo.confirmNewPassword" />
+                                    <div class="invalid-feedback"
+                                         v-if="v.generalInfo.confirmNewPassword.$error">
+                                        {{ v.generalInfo.confirmNewPassword.$errors[0].$message }}
+                                    </div>
+                                </div>
+                            </div>
+
                         </div>
                     </div>
 
@@ -309,9 +330,6 @@
                     </div>
                 </form>
             </div>
-
-            <MotDePasse :h="dataForModalPassword" />
-
         </div>
     </div>
 </template>
@@ -321,7 +339,6 @@
     import { useStore } from "vuex";
     import { useVuelidate } from "@vuelidate/core";
     import InputMask from "primevue/inputmask";
-    import MotDePasse from "../BoiteModale/MotDePasse.vue";
     import { required, email, helpers, minLength, sameAs, maxLength } from "@vuelidate/validators";
     import api from '@/services/api';
     import { useRouter } from 'vue-router';
@@ -374,9 +391,9 @@
             courriel: "",
             telephone: "",
             pseudo: "",
-            //currentPassword: "",
-            //newPassword: "",
-            //confirmNewPassword: "",
+            currentPassword: "",
+            newPassword: "",
+            confirmNewPassword: "",
         },
         carteCredit: {
             nomProprio: "",
@@ -394,6 +411,11 @@
         }
     });
 
+    const dataForModalPassword = {
+        idModal: "boiteModalePassword",
+        dataCurrentPassword: "",
+    };
+
     // objet rules qui contient toutes les validations
 
     let rules = computed(() => {
@@ -401,28 +423,27 @@
             generalInfo: {
                 nom: { required: messageRequis },
                 prenom: { required: messageRequis },
-                courriel: {
-                    required: messageRequis,
-                    email: messageCourriel,
-                },
+                courriel: { required: messageRequis, email: messageCourriel },
                 telephone: { required: messageRequis },
-                pseudo: {
-                    required: messageRequis,
-                    minLengthValue: messageMinLengthPseudo,
-                    maxLengthValue: messageMaxLengthPseudo,
+                pseudo: { required: messageRequis },
+                currentPassword: {
+                    required: helpers.withMessage(
+                        "Le mot de passe actuel est requis si vous souhaitez le changer",
+                        (value) => !formData.generalInfo.newPassword || !!value
+                    )
                 },
-                //currentPassword: {
-                //    required: messageRequis,
-                //    minLength: messageMinLength,
-                //},
-                //newPassword: {
-                //    required: messageRequis,
-                //    minLength: messageMinLength,
-                //},
-                //confirmNewPassword: {
-                //    required: messageRequis,
-                //    minLength: messageMinLength,
-                //},
+                newPassword: {
+                    minLength: helpers.withMessage(
+                        "Le mot de passe doit contenir au moins 8 caractères",
+                        (value) => !value || value.length >= 8
+                    )
+                },
+                confirmNewPassword: {
+                    sameAsPassword: helpers.withMessage(
+                        "Les mots de passe ne correspondent pas",
+                        (value) => !formData.generalInfo.newPassword || value === formData.generalInfo.newPassword
+                    )
+                },
             },
             carteCredit: {
                 nomProprio: { required: messageRequis },
@@ -437,7 +458,7 @@
                 province: { required: messageRequis },
                 pays: { required: messageRequis },
                 codePostal: { required: messageRequis },
-            },
+            }
         };
     });
 
@@ -578,13 +599,13 @@
             !v.value.carteCredit.$invalid &&
             !v.value.adresse.$invalid;
 
-        //const passwordFieldsValid = passwordFieldsEmpty ||
-        //    (!v.value.generalInfo.currentPassword.$invalid &&
-        //        !v.value.generalInfo.newPassword.$invalid &&
-        //        !v.value.generalInfo.confirmNewPassword.$invalid);
-        //&& passwordFieldsValid
+        const passwordFieldsValid = passwordFieldsEmpty ||
+            (!v.value.generalInfo.currentPassword.$invalid &&
+                !v.value.generalInfo.newPassword.$invalid &&
+                !v.value.generalInfo.confirmNewPassword.$invalid);
 
-        return otherFieldsValid && formDataChanged.value;
+
+        return otherFieldsValid && passwordFieldsValid && formDataChanged.value;
     });
 
     const formDataChanged = ref(false);
@@ -609,9 +630,9 @@
                     Email: formData.generalInfo.courriel,
                     PhoneNumber: formData.generalInfo.telephone,
                     Pseudonym: formData.generalInfo.pseudo,
-                    //CurrentPassword: formData.generalInfo.currentPassword || undefined,
-                    //NewPassword: formData.generalInfo.newPassword || undefined,
-                    //ConfirmNewPassword: formData.generalInfo.confirmNewPassword || undefined,
+                    CurrentPassword: formData.generalInfo.currentPassword || undefined,
+                    NewPassword: formData.generalInfo.newPassword || undefined,
+                    ConfirmNewPassword: formData.generalInfo.confirmNewPassword || undefined,
                     CardOwnerName: formData.carteCredit.nomProprio,
                     CardNumber: formData.carteCredit.numeroCarte,
                     CardExpiryDate: formData.carteCredit.dateExpiration,
@@ -625,20 +646,20 @@
                     Photo: avatarUrl.value
                 };
 
-                // Ne pas envoyer les champs de mot de passe s'ils sont tous vides
-                //if (!mappedData.CurrentPassword && !mappedData.NewPassword && !mappedData.ConfirmNewPassword) {
-                //    delete mappedData.CurrentPassword;
-                //    delete mappedData.NewPassword;
-                //    delete mappedData.ConfirmNewPassword;
-                //}
+                //Ne pas envoyer les champs de mot de passe s'ils sont tous vides
+                if (!mappedData.CurrentPassword && !mappedData.NewPassword && !mappedData.ConfirmNewPassword) {
+                    delete mappedData.CurrentPassword;
+                    delete mappedData.NewPassword;
+                    delete mappedData.ConfirmNewPassword;
+                }
 
                 await store.dispatch("updateClientInfo", mappedData);
                 message.value = { type: 'success', text: "Informations mises à jour avec succès !" };
 
                 // Réinitialiser les champs de mot de passe
-                //formData.generalInfo.currentPassword = "";
-                //formData.generalInfo.newPassword = "";
-                //formData.generalInfo.confirmNewPassword = "";
+                formData.generalInfo.currentPassword = "";
+                formData.generalInfo.newPassword = "";
+                formData.generalInfo.confirmNewPassword = "";
 
                 await store.dispatch("fetchClientInfo");
 
@@ -654,22 +675,18 @@
         }
     };
 
-    //watch(() => [formData.generalInfo.currentPassword, formData.generalInfo.newPassword, formData.generalInfo.confirmNewPassword], ([currentPassword, newPassword, confirmNewPassword]) => {
-    //    if (!currentPassword && !newPassword && !confirmNewPassword) {
-    //        v.value.generalInfo.currentPassword.$reset();
-    //        v.value.generalInfo.newPassword.$reset();
-    //        v.value.generalInfo.confirmNewPassword.$reset();
-    //    } else {
-    //        v.value.generalInfo.currentPassword.$touch();
-    //        v.value.generalInfo.newPassword.$touch();
-    //        v.value.generalInfo.confirmNewPassword.$touch();
-    //    }
-    //}, { deep: true });
+    watch(() => [formData.generalInfo.currentPassword, formData.generalInfo.newPassword, formData.generalInfo.confirmNewPassword], ([currentPassword, newPassword, confirmNewPassword]) => {
+        if (!currentPassword && !newPassword && !confirmNewPassword) {
+            v.value.generalInfo.currentPassword.$reset();
+            v.value.generalInfo.newPassword.$reset();
+            v.value.generalInfo.confirmNewPassword.$reset();
+        } else {
+            v.value.generalInfo.currentPassword.$touch();
+            v.value.generalInfo.newPassword.$touch();
+            v.value.generalInfo.confirmNewPassword.$touch();
+        }
+    }, { deep: true });
 
-    const dataForModalPassword = {
-        idModal: "boiteModalePassword",
-        dataCurrentPassword: formData.generalInfo.motDePasse,
-    };
 </script>
 
 <style scoped>

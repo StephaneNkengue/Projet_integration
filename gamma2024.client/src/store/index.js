@@ -39,7 +39,7 @@ const store = createStore({
                         name: response.data.name,
                         firstName: response.data.firstName,
                         roles: response.data.roles,
-                        photo: response.data.photo 
+                        photo: response.data.photo
                     });
                     commit('setRoles', response.data.roles);
                     if (response.data.token) {
@@ -123,16 +123,16 @@ const store = createStore({
                         'Content-Type': 'multipart/form-data'
                     }
                 });
-                
+
                 // Construire l'URL complète de l'avatar
                 const fullAvatarUrl = `${api.defaults.baseURL.replace('/api', '')}${response.data.avatarUrl}`;
-                
+
                 // Mettre à jour l'utilisateur avec la nouvelle URL de l'avatar
                 const updatedUser = { ...state.user, photo: fullAvatarUrl };
                 commit('setUser', updatedUser);
-                
+
                 console.log("Avatar mis à jour dans le store:", fullAvatarUrl);
-                
+
                 return { ...response, data: { ...response.data, avatarUrl: fullAvatarUrl } };
             } catch (error) {
                 console.error("Erreur détaillée lors de la mise à jour de l'avatar:", error.response || error);
@@ -159,11 +159,12 @@ const store = createStore({
                 throw error;
             }
         }
-    },
-    getters: {
-        isAdmin: state => state.roles.includes('ADMINISTRATEUR'),
-        isClient: state => state.roles.includes('CLIENT')
     }
+},
+    getters: {
+    isAdmin: state => state.roles.includes('ADMINISTRATEUR'),
+    isClient: state => state.roles.includes('CLIENT')
+}
 });
 
 // Ajoutez l'intercepteur ici
