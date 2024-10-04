@@ -158,7 +158,52 @@ const store = createStore({
                 console.error("Erreur lors de la vérification de l'email:", error);
                 throw error;
             }
-        }
+        },
+
+        async obtenirTousVendeurs({ commit }) {
+            try {
+                const response = await api.get('/vendeurs/tous');
+                return response.data;
+            } catch (error) {
+                console.error("Erreur lors de la récupération de tous les vendeurs:", error);
+                throw error;
+            }
+        },
+        async creerVendeur({ commit }, vendeurData) {
+            try {
+                const response = await api.post('/vendeurs/creer', vendeurData);
+                if (response.data.success) {
+                    return { success: true, message: response.data.message };
+                } else {
+                    return { success: false, error: response.data.message };
+                }
+            } catch (error) {
+                console.error("Erreur lors de la création du vendeur:", error);
+                return { success: false, error: error.response?.data?.message || "Erreur lors de la création du vendeur" };
+            }
+        },
+        async modifierVendeur({ commit }, vendeurData) {
+            try {
+                const response = await api.put(`/vendeurs/modifier/${vendeurData.id}`, vendeurData);
+                if (response.data.success) {
+                    return { success: true, message: response.data.message };
+                } else {
+                    return { success: false, error: response.data.message };
+                }
+            } catch (error) {
+                console.error("Erreur lors de la modification du vendeur:", error);
+                return { success: false, error: error.response?.data?.message || "Erreur lors de la modification du vendeur" };
+            }
+        },
+        async obtenirVendeur({ commit }, id) {
+            try {
+                const response = await api.get(`/vendeurs/${id}`);
+                return response.data;
+            } catch (error) {
+                console.error("Erreur lors de la récupération du vendeur:", error);
+                throw error;
+            }
+        },
     },
     getters: {
         isAdmin: state => state.roles.includes('ADMINISTRATEUR'),

@@ -4,6 +4,7 @@ using Gamma2024.Server.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Gamma2024.Server.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241004143916_AjoutReferenceAdresseDansVendeur")]
+    partial class AjoutReferenceAdresseDansVendeur
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -186,7 +189,7 @@ namespace Gamma2024.Server.Migrations
                             Id = "8e445865-a24d-4543-a6c6-9443d048cdb9",
                             AccessFailedCount = 0,
                             Avatar = "/Gamma2024.Server/Avatars/default.png",
-                            ConcurrencyStamp = "c3da7f70-20f5-4716-b3e6-44a5c4d9fee8",
+                            ConcurrencyStamp = "d238fccf-4cb3-4ad7-9581-d86e5a802fa6",
                             Email = "admin@example.com",
                             EmailConfirmed = true,
                             FirstName = "Super",
@@ -195,9 +198,9 @@ namespace Gamma2024.Server.Migrations
                             Name = "Admin",
                             NormalizedEmail = "ADMIN@EXAMPLE.COM",
                             NormalizedUserName = "ADMIN@EXAMPLE.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEOx7eFiBtTb7/mmSieAvPXRBSTFVXnE2HAfHFPB8AKNA070nOHGKSbLBABlfgFciHA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEAr9ti5goZ0pyuLwm9TcWl2gnNbN2iLmFqOMtubLDsZkLYy9aHD8m1ZmhRtZBK2ONg==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "76bdafd6-f61e-4e5d-9409-c8b7d2a0fa8c",
+                            SecurityStamp = "8aa48818-bcc1-4b01-84bc-495ecc31650c",
                             TwoFactorEnabled = false,
                             UserName = "admin@example.com"
                         },
@@ -206,7 +209,7 @@ namespace Gamma2024.Server.Migrations
                             Id = "1d8ac862-e54d-4f10-b6f8-638808c02967",
                             AccessFailedCount = 0,
                             Avatar = "/Gamma2024.Server/Avatars/default.png",
-                            ConcurrencyStamp = "f85bd7e0-8daf-4cc6-846b-ee64aea3c87e",
+                            ConcurrencyStamp = "a0c34442-825f-40f2-8a5f-41b18950323e",
                             Email = "client@example.com",
                             EmailConfirmed = true,
                             FirstName = "Jean",
@@ -215,9 +218,9 @@ namespace Gamma2024.Server.Migrations
                             Name = "Dupont",
                             NormalizedEmail = "CLIENT@EXAMPLE.COM",
                             NormalizedUserName = "CLIENT@EXAMPLE.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEGiHWrmmpgGFT9ku7gH6mWEDiFw68kMEBLrWfFzK2us1v8CzlAUD7xHf9aw+nuQuLA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAECcc1UFACbpgxtHqpayXPdodQ2ymx0HefCqyiRPZw+o1lyOICuWAsnaaWYlRAbCGLA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "dd0ce23c-1099-4346-8083-9fd5714edd6e",
+                            SecurityStamp = "e35f6100-aa1b-4474-8504-e8a70bad91a3",
                             TwoFactorEnabled = false,
                             UserName = "client@example.com"
                         });
@@ -844,7 +847,7 @@ namespace Gamma2024.Server.Migrations
                     b.HasOne("Gamma2024.Server.Models.Adresse", "Adresse")
                         .WithOne("Vendeur")
                         .HasForeignKey("Gamma2024.Server.Models.Vendeur", "AdresseId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Adresse");

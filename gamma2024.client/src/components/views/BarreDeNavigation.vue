@@ -82,10 +82,14 @@
                             <router-link to="Connexion" v-if="!estConnecte">
                                 <button class="btn btn-outline bleuMoyenFond text-white" type="button">Connexion</button>
                             </router-link>
-                            <router-link to="Modification" v-if="estConnecte" class="text-decoration-none text-white d-flex align-items-center gap-3">
+                            <router-link v-if="estConnecte && estClient" :to="{ name: 'Modification' }" class="text-decoration-none text-white d-flex align-items-center gap-3">
                                 <a class="nav-link">{{ username }}</a>
                                 <img :src="avatarUrl" alt="Avatar" height="40" />
                             </router-link>
+                            <span v-if="estConnecte && !estClient" class="text-white d-flex align-items-center gap-3">
+                                <span class="nav-link">{{ username }}</span>
+                                <img :src="avatarUrl" alt="Avatar" height="40" />
+                            </span>
                         </div>
                     </div>
                 </div>
@@ -132,8 +136,7 @@ const avatarUrl = computed(() => {
         if (store.state.user.photo.startsWith('http')) {
             return store.state.user.photo;
         } else {
-            // Utilisation d'une URL par défaut si l'API n'est pas disponible
-            return `/images/${store.state.user.photo}`;
+            return '/icons/Avatar.png';
         }
     }
     return '/icons/Avatar.png'; 

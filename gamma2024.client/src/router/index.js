@@ -11,6 +11,9 @@ import EncanPresent from '@/components/views/EncanPresent.vue'
 import TousLesEncans from '@/components/views/TousLesEncans.vue'
 import AffichageDetailsLot from '@/components/views/AffichageDetailsLot.vue'
 import Modification from '@/components/views/Modification.vue'
+import AffichageVendeur from '@/components/views/AffichageVendeur.vue'
+import VendeurCreation from '@/components/views/VendeurCreation.vue'
+import VendeurModification from '@/components/views/VendeurModification.vue'
 
 const routes = [
     {
@@ -68,6 +71,24 @@ const routes = [
         name: 'Modification',
         component: Modification,
         meta: { requiresAuth: true, requiredRole: 'Client' }
+    },
+    {
+        path: '/affichagevendeurs',
+        name: 'AffichageVendeurs',
+        component: AffichageVendeur,
+        meta: { requiresAuth: true, requiredRole: 'Admin' }
+    },
+    {
+        path: '/vendeurcreation',
+        name: 'VendeurCreation',
+        component: VendeurCreation,
+        meta: { requiresAuth: true, requiredRole: 'Admin' }
+    },
+    {
+        path: '/vendeurmodification',
+        name: 'VendeurModification',
+        component: VendeurModification,
+        meta: { requiresAuth: true, requiredRole: 'Admin' }
     }
 ]
 

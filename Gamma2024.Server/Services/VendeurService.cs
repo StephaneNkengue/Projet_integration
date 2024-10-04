@@ -1,0 +1,162 @@
+using Gamma2024.Server.Data;
+using Gamma2024.Server.Models;
+using Gamma2024.Server.Validations;
+using Gamma2024.Server.ViewModels;
+using Microsoft.EntityFrameworkCore;
+
+namespace Gamma2024.Server.Services
+{
+        public class VendeurService
+    {
+        private readonly ApplicationDbContext _context;
+
+        public VendeurService(ApplicationDbContext context)
+        {
+            _context = context;
+        }
+
+        public async Task<(bool Success, string Message)> CreerVendeur(VendeurVM model)
+        {
+            var (isValid, errorMessage) = VendeurValidation.ValidateVendeur(model);
+            if (!isValid)
+            {
+                return (false, errorMessage);
+            }
+
+            using var transaction = await _context.Database.BeginTransactionAsync();
+
+            try
+            {
+                var vendeur = new Vendeur
+                {
+                    Nom = model.Nom,
+                    Prenom = model.Prenom,
+                    Courriel = model.Courriel,
+                    Telephone = model.Telephone
+                };
+
+                _context.Vendeurs.Add(vendeur);
+                await _context.SaveChangesAsync();
+
+                var adresse = new Adresse
+                {
+                    Numero = int.Parse(model.Adresse.NumeroCivique),
+                    Rue = model.Adresse.Rue,
+                    Ville = model.Adresse.Ville,
+                    Province = model.Adresse.Province,
+                    CodePostal = model.Adresse.CodePostal,
+                    IdVendeur = vendeur.Id
+                };
+
+                _context.Adresses.Add(adresse);
+                await _context.SaveChangesAsync();
+
+                await transaction.CommitAsync();
+
+                return (true, "Vendeur créé avec succès");
+            }
+            catch (Exception ex)
+            {
+                await transaction.RollbackAsync();
+                return (false, $"Une erreur est survenue lors de la création du vendeur : {ex.Message}");
+            }
+        }
+
+        public async Task<(bool Success, string Message)> ModifierVendeur(int id, VendeurVM model)
+        {
+            var (isValid, errorMessage) = VendeurValidation.ValidateVendeur(model);
+            if (!isValid)
+            {
+                return (false, errorMessage);
+            }
+
+            var vendeur = await _context.Vendeurs.FindAsync(id);
+            if (vendeur == null)
+            {
+                return (false, "Vendeur non trouvé");
+            }
+
+            using var transaction = await _context.Database.BeginTransactionAsync();
+
+            try
+            {
+                vendeur.Nom = model.Nom;
+                vendeur.Prenom = model.Prenom;
+                vendeur.Courriel = model.Courriel;
+                vendeur.Telephone = model.Telephone;
+
+                var adresse = await _context.Adresses.FirstOrDefaultAsync(a => a.IdVendeur == id);
+                if (adresse != null)
+                {
+                    adresse.Numero = int.Parse(model.Adresse.NumeroCivique);
+                    adresse.Rue = model.Adresse.Rue;
+                    adresse.Ville = model.Adresse.Ville;
+                    adresse.Province = model.Adresse.Province;
+                    adresse.CodePostal = model.Adresse.CodePostal;
+                }
+
+                await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
+
+                return (true, "Vendeur modifié avec succès");
+            }
+            catch (Exception ex)
+            {
+                await transaction.RollbackAsync();
+                return (false, $"Une erreur est survenue lors de la modification du vendeur : {ex.Message}");
+            }
+        }
+
+        public async Task<VendeurVM> ObtenirVendeur(int id)
+        {
+            var vendeur = await _context.Vendeurs
+                .Include(v => v.Adresse)
+                .FirstOrDefaultAsync(v => v.Id == id);
+
+            if (vendeur == null)
+            {
+                return null;
+            }
+
+            return new VendeurVM
+            {
+                Id = vendeur.Id,
+                Nom = vendeur.Nom,
+                Prenom = vendeur.Prenom,
+                Courriel = vendeur.Courriel,
+                Telephone = vendeur.Telephone,
+                Adresse = new AdresseVendeurVM
+                {
+                    NumeroCivique = vendeur.Adresse.Numero.ToString(),
+                    Rue = vendeur.Adresse.Rue,
+                    Ville = vendeur.Adresse.Ville,
+                    Province = vendeur.Adresse.Province,
+                    CodePostal = vendeur.Adresse.CodePostal
+                }
+            };
+        }
+
+        public async Task<List<VendeurVM>> ObtenirTousVendeurs()
+        {
+            return await _context.Vendeurs
+                .Include(v => v.Adresse)
+                .Select(v => new VendeurVM
+                {
+                    Id = v.Id,
+                    Nom = v.Nom,
+                    Prenom = v.Prenom,
+                    Courriel = v.Courriel,
+                    Telephone = v.Telephone,
+                    Adresse = new AdresseVendeurVM
+                    {
+                        NumeroCivique = v.Adresse.Numero.ToString(),
+                        Rue = v.Adresse.Rue,
+                        Ville = v.Adresse.Ville,
+                        Province = v.Adresse.Province,
+                        CodePostal = v.Adresse.CodePostal
+                    }
+                })
+                .ToListAsync();
+        }
+    }
+}
