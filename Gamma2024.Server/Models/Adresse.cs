@@ -10,6 +10,7 @@ namespace Gamma2024.Server.Models
         public string? Appartement { get; set; }
         public string Rue { get; set; } = null!;
         public string Ville { get; set; } = null!;
+        public string Province { get; set; } = null!;   
         public string Pays { get; set; } = null!;
         [StringLength(6)]
         public string CodePostal { get; set; } = null!;

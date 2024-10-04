@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Gamma2024.Server.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240919182528_UniqueUserPseudonym")]
-    partial class UniqueUserPseudonym
+    [Migration("20240926182926_AjoutAuthorisationToken")]
+    partial class AjoutAuthorisationToken
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -60,6 +60,10 @@ namespace Gamma2024.Server.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Province")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Rue")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -88,6 +92,7 @@ namespace Gamma2024.Server.Migrations
                             IdApplicationUser = "8e445865-a24d-4543-a6c6-9443d048cdb9",
                             Numero = 123,
                             Pays = "Pays Admin",
+                            Province = "Québec",
                             Rue = "Rue Admin",
                             Ville = "Ville Admin"
                         },
@@ -99,6 +104,7 @@ namespace Gamma2024.Server.Migrations
                             IdApplicationUser = "1d8ac862-e54d-4f10-b6f8-638808c02967",
                             Numero = 456,
                             Pays = "Pays Client",
+                            Province = "Québec",
                             Rue = "Rue Client",
                             Ville = "Ville Client"
                         });
@@ -160,10 +166,6 @@ namespace Gamma2024.Server.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
 
-                    b.Property<string>("Pseudonym")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
@@ -184,9 +186,6 @@ namespace Gamma2024.Server.Migrations
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
-                    b.HasIndex("Pseudonym")
-                        .IsUnique();
-
                     b.ToTable("AspNetUsers", (string)null);
 
                     b.HasData(
@@ -194,8 +193,8 @@ namespace Gamma2024.Server.Migrations
                         {
                             Id = "8e445865-a24d-4543-a6c6-9443d048cdb9",
                             AccessFailedCount = 0,
-                            Avatar = "Avatars/admin.jpg",
-                            ConcurrencyStamp = "be084a16-de80-460d-81da-8de70dfe2727",
+                            Avatar = "/Gamma2024.Server/Avatars/default.png",
+                            ConcurrencyStamp = "6e1f49b9-492a-43fe-8d49-b933c82cec75",
                             Email = "admin@example.com",
                             EmailConfirmed = true,
                             FirstName = "Super",
@@ -204,10 +203,9 @@ namespace Gamma2024.Server.Migrations
                             Name = "Admin",
                             NormalizedEmail = "ADMIN@EXAMPLE.COM",
                             NormalizedUserName = "ADMIN@EXAMPLE.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEPS9DoDHnFK3ulIs95BZk6SxRlGiH6Q6GokbOqqfqCZRVMXMFvg+QSUehqmIvo+UMQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEMAc6sudrjXReWW3cMoh2dGsr7j3Ln7Sylcuss4uS9Q29MXbd/FSt2cTaY2pMPvMnQ==",
                             PhoneNumberConfirmed = false,
-                            Pseudonym = "SuperAdmin",
-                            SecurityStamp = "f3adb294-061b-43c4-b160-e4f63451ffb1",
+                            SecurityStamp = "81e32f56-3d6f-48be-aeef-665122453be4",
                             TwoFactorEnabled = false,
                             UserName = "admin@example.com"
                         },
@@ -215,8 +213,8 @@ namespace Gamma2024.Server.Migrations
                         {
                             Id = "1d8ac862-e54d-4f10-b6f8-638808c02967",
                             AccessFailedCount = 0,
-                            Avatar = "Avatars/client.jpg",
-                            ConcurrencyStamp = "5f25ab3f-142a-4ffe-88ce-a4f95cdf7519",
+                            Avatar = "/Gamma2024.Server/Avatars/default.png",
+                            ConcurrencyStamp = "31458349-1aae-4952-b80b-1349df7e3464",
                             Email = "client@example.com",
                             EmailConfirmed = true,
                             FirstName = "Jean",
@@ -225,10 +223,9 @@ namespace Gamma2024.Server.Migrations
                             Name = "Dupont",
                             NormalizedEmail = "CLIENT@EXAMPLE.COM",
                             NormalizedUserName = "CLIENT@EXAMPLE.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEBA1XoYBRQSTx1EWbKRWNj2wr9DsnyUOqVRsj67cDu8ONgWgAlR6wY4Cp4i/UAi6cg==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEKGFfBxenw/RV7qPAkgD+LGSufYOJK4o4a7g6m/BZSGkpSCtC7d+4RKCrn/N1/n6WQ==",
                             PhoneNumberConfirmed = false,
-                            Pseudonym = "JeanDu",
-                            SecurityStamp = "c3a2d98f-c7d8-4ac7-83b2-a3015a48a2df",
+                            SecurityStamp = "ddb519eb-460f-40c3-b18c-33dccae56676",
                             TwoFactorEnabled = false,
                             UserName = "client@example.com"
                         });
@@ -433,6 +430,9 @@ namespace Gamma2024.Server.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Dimensions")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<bool>("EstVendu")
                         .HasColumnType("bit");
 
@@ -460,6 +460,9 @@ namespace Gamma2024.Server.Migrations
 
                     b.Property<double>("ValeurEstimeMin")
                         .HasColumnType("float");
+
+                    b.Property<bool>("estLivrable")
+                        .HasColumnType("bit");
 
                     b.HasKey("Id");
 

@@ -65,11 +65,18 @@
                                                 <input type="email"
                                                        placeholder="johndoe@gmail.com"
                                                        v-model="formData.generalInfo.courriel"
-                                                       :class="['form-control', { 'is-invalid': v.generalInfo.courriel.$error }]"
+                                                       :class="['form-control', { 'is-invalid': v.generalInfo.courriel.$error || (!emailDisponible && emailVerifie), 'is-valid': emailDisponible && emailVerifie }]"
                                                        id="courriel"
-                                                       @blur="v.generalInfo.courriel.$touch()" />
+                                                       @blur="v.generalInfo.courriel.$touch(); verifierEmail()"
+                                                       @input="emailVerifie = false" />
                                                 <div class="invalid-feedback" v-if="v.generalInfo.courriel.$error">
                                                     {{ v.generalInfo.courriel.$errors[0].$message }}
+                                                </div>
+                                                <div class="invalid-feedback" v-if="!emailDisponible && emailVerifie">
+                                                    Cette adresse email est déjà utilisée.
+                                                </div>
+                                                <div class="valid-feedback" v-if="emailDisponible && emailVerifie">
+                                                    Cette adresse email est disponible.
                                                 </div>
                                             </div>
                                         </div>
@@ -99,12 +106,19 @@
                                                 <label for="pseudonyme">Pseudonyme</label>
                                                 <input type="text"
                                                        v-model="formData.generalInfo.pseudo"
-                                                       :class="['form-control', { 'is-invalid': v.generalInfo.pseudo.$error }]"
+                                                       :class="['form-control', { 'is-invalid': v.generalInfo.pseudo.$error || (!pseudoDisponible && pseudoVerifie) }]"
                                                        id="pseudonyme"
                                                        placeholder="johnDoe45"
-                                                       @blur="v.generalInfo.pseudo.$touch()" />
+                                                       @blur="v.generalInfo.pseudo.$touch(); verifierPseudo()"
+                                                       @input="pseudoVerifie = false" />
                                                 <div class="invalid-feedback" v-if="v.generalInfo.pseudo.$error">
                                                     {{ v.generalInfo.pseudo.$errors[0].$message }}
+                                                </div>
+                                                <div class="invalid-feedback" v-if="!pseudoDisponible && pseudoVerifie">
+                                                    Ce pseudonyme est déjà utilisé.
+                                                </div>
+                                                <div class="valid-feedback" v-if="pseudoDisponible && pseudoVerifie">
+                                                    Ce pseudonyme est disponible.
                                                 </div>
                                             </div>
                                         </div>
@@ -479,6 +493,10 @@
         sameAs(computed(() => formData.generalInfo.motDePasse))
     );
 
+    const pseudoDisponible = ref(true);
+    const pseudoVerifie = ref(false);
+    const emailDisponible = ref(true);
+    const emailVerifie = ref(false);
 
     //objet rules qui contient toutes les validations
     let rules = computed(() => {
@@ -493,13 +511,15 @@
                 telephone: { required: messageRequis },
                 pseudo: {
                     required: messageRequis,
-                    minLengthValue: messageMinLengthPseudo,
-                    maxLengthValue: messageMaxLengthPseudo
+                    asyncValidator: async (value) => {
+                        if (value) {
+                            await verifierPseudo();
+                            return pseudoDisponible.value;
+                        }
+                        return true;
+                    }
                 },
-                motDePasse: {
-                    required: messageRequis,
-                    minLength: messageMinLength,
-                },
+                motDePasse: { required: messageRequis },
                 confirmMotPasse: {
                     required: messageRequis,
                     sameAsPassword: messageSameAsPassword
@@ -542,11 +562,39 @@
 
     function allerAuSuivantPrecedent(stepIndex) {
         activeIndex.value = stepIndex;
-
-
     }
 
+    
+    const verifierPseudo = async () => {
+        if (formData.generalInfo.pseudo.length > 0) {
+            try {
+                pseudoVerifie.value = false;
+                pseudoDisponible.value = await store.dispatch('verifierPseudonyme', formData.generalInfo.pseudo);
+                pseudoVerifie.value = true;
+            } catch (error) {
+                console.error("Erreur lors de la vérification du pseudonyme:", error);
+                pseudoDisponible.value = false;
+                pseudoVerifie.value = true;
+            }
+        }
+    };
 
+    
+
+    const verifierEmail = async () => {
+    if (formData.generalInfo.courriel.length > 0 && !v.value.generalInfo.courriel.$error) {
+        try {
+            emailVerifie.value = false;
+            const emailEstDisponible = await store.dispatch('verifierEmail', formData.generalInfo.courriel);
+            emailDisponible.value = emailEstDisponible;
+            emailVerifie.value = true;
+        } catch (error) {
+            console.error("Erreur lors de la vérification de l'email:", error);
+            emailDisponible.value = false;
+            emailVerifie.value = true;
+        }
+    }
+    };
 
     const submitForm = async () => {
         const result = await v.value.$validate();
@@ -581,7 +629,7 @@
                     router.push('/connexion');
                 }, 4000);
             } else {
-                errorMessage.value = response.error || "Une erreur est survenue lors de la création du compte.";
+                errorMessage.value = response.message || "Une erreur est survenue lors de la création du compte.";
             }
         } catch (error) {
             errorMessage.value = "Une erreur est survenue lors de la création du compte.";
@@ -638,24 +686,42 @@
         border-color: #c3e6cb;
     }
 
+    .invalid-feedback {
+        color: #dc3545;
+        font-size: 0.875em;
+        margin-top: 0.25rem;
+        display: block;
+    }
 
+    .valid-feedback {
+        color: #28a745;
+        font-size: 0.875em;
+        margin-top: 0.25rem;
+        display: block;
+    }
+
+    .is-invalid {
+        border-color: #dc3545;
+    }
+
+    .is-valid {
+        border-color: #28a745;
+    }
 
     .input-wrapper .p-inputmask {
         width: 100%;
         border-radius: 0.25rem;
         padding: 0.375rem 0.75rem;
         background-color: white;
-        height: calc(1.5em + .75rem + 2px);
-        box-shadow: inset 0 1px 2px rgba(0,0,0,.075);
-        transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+        height: calc(1.5em + 0.75rem + 2px);
+        box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.075);
+        transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
     }
-
 
     input::placeholder {
         color: #6c757d;
         opacity: 1;
     }
-
 
     .p-inputmask input::placeholder {
         color: #6c757d;
@@ -670,7 +736,7 @@
     .input-wrapper .p-inputmask:focus {
         border-color: #80bdff;
         outline: 0;
-        box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
     }
 </style>
 
