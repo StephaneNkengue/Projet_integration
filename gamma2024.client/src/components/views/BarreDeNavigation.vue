@@ -149,7 +149,7 @@
                 return `${api.defaults.baseURL.replace('/api', '')}${store.state.user.photo}`;
             }
         }
-        return '2162067/icons/Avatar.png';
+        return '/icons/Avatar.png';
     });
 
     const currentUser = ref(null)
