@@ -12,115 +12,116 @@
                         type="button"
                         id="dropdownMenuButton"
                         data-toggle="dropdown"
+                        data-bs-toggle="dropdown"
                         aria-haspopup="true"
                         aria-expanded="false">
                     Sélectionner les colonnes
                 </button>
-                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                    <li>
-                        <input class="toggle-vis"
+                <ul class="dropdown-menu">
+                    <li class="d-flex justify-content-start dropdown-item">
+                        <input class="form-check-input toggle-vis  d-flex-1"
                                type="checkbox"
                                id="lotIdCheckbox"
                                checked />
-                        <label class="form-check-label" for="lotIdCheckbox"> Lot Id </label>
+                        <label class="form-check-label d-flex-1" for="lotIdCheckbox"> Lot Id </label>
                     </li>
-                    <li>
-                        <input class="toggle-vis"
+                    <li class="d-flex justify-content-start dropdown-item">
+                        <input class="form-check-input toggle-vis  d-flex-1"
                                type="checkbox"
                                id="lotEncanCheckbox"
                                checked />
-                        <label class="form-check-label" for="lotEncanCheckbox"> Encan </label>
+                        <label class="form-check-label d-flex-1" for="lotEncanCheckbox"> Encan </label>
                     </li>
-                    <li>
-                        <input class="toggle-vis"
+                    <li class="d-flex justify-content-start dropdown-item">
+                        <input class="toggle-vis  d-flex-1"
                                type="checkbox"
                                id="lotNumeroCheckbox"
                                checked />
-                        <label class="form-check-label" for="lotNumeroCheckbox"> Lot # </label>
+                        <label class="form-check-label d-flex-1" for="lotNumeroCheckbox"> Lot # </label>
                     </li>
-                    <li>
-                        <input class="toggle-vis"
+                    <li class="d-flex justify-content-start dropdown-item">
+                        <input class="toggle-vis  d-flex-1"
                                type="checkbox"
                                id="lotPrixOuvertureCheckbox"
                                checked />
-                        <label class="form-check-label" for="lotPrixOuvertureCheckbox"> Prix Ouverture </label>
+                        <label class="form-check-label d-flex-1" for="lotPrixOuvertureCheckbox"> Prix Ouverture </label>
                     </li>
-                    <li>
-                        <input class="toggle-vis"
+                    <li class="d-flex justify-content-start dropdown-item">
+                        <input class="toggle-vis  d-flex-1"
                                type="checkbox"
                                id="lotValeurMinPourVenteCheckbox"
                                checked />
-                        <label class="form-check-label" for="lotValeurMinPourVenteCheckbox"> Valeur Min Pour Vente </label>
+                        <label class="form-check-label d-flex-1" for="lotValeurMinPourVenteCheckbox"> Valeur Min Pour Vente </label>
                     </li>
-                    <li>
-                        <input class="toggle-vis"
+                    <li class="d-flex justify-content-start dropdown-item">
+                        <input class="toggle-vis  d-flex-1"
                                type="checkbox"
                                id="lotEstimationMinCheckbox"
                                checked />
-                        <label class="form-check-label" for="lotEstimationMinCheckbox"> Estimation Min </label>
+                        <label class="form-check-label d-flex-1" for="lotEstimationMinCheckbox"> Estimation Min </label>
                     </li>
-                    <li>
-                        <input class="toggle-vis"
+                    <li class="d-flex justify-content-start dropdown-item">
+                        <input class="toggle-vis  d-flex-1"
                                type="checkbox"
                                id="lotEstimationMaxCheckbox"
                                checked />
-                        <label class="form-check-label" for="lotEstimationMaxCheckbox"> EstimationMax </label>
+                        <label class="form-check-label d-flex-1" for="lotEstimationMaxCheckbox"> EstimationMax </label>
                     </li>
-                    <li>
-                        <input class="toggle-vis"
+                    <li class="d-flex justify-content-start dropdown-item">
+                        <input class="toggle-vis  d-flex-1"
                                type="checkbox"
                                id="lotCategorieCheckbox"
                                checked />
-                        <label class="form-check-label" for="lotCategorieCheckbox"> Catégorie </label>
+                        <label class="form-check-label d-flex-1" for="lotCategorieCheckbox"> Catégorie </label>
                     </li>
-                    <li>
-                        <input class="toggle-vis"
+                    <li class="d-flex justify-content-start dropdown-item">
+                        <input class="toggle-vis  d-flex-1"
                                type="checkbox"
                                id="lotArtisteCheckbox"
                                checked />
-                        <label class="form-check-label" for="lotArtisteCheckbox"> Artiste </label>
+                        <label class="form-check-label d-flex-1" for="lotArtisteCheckbox"> Artiste </label>
                     </li>
-                    <li>
-                        <input class="toggle-vis"
+                    <li class="d-flex justify-content-start dropdown-item">
+                        <input class="toggle-vis  d-flex-1"
                                type="checkbox"
                                id="lotDimensionCheckbox"
                                checked />
-                        <label class="form-check-label" for="lotDimensionCheckbox"> Dimension </label>
+                        <label class="form-check-label d-flex-1" for="lotDimensionCheckbox"> Dimension </label>
                     </li>
-                    <li>
-                        <input class="toggle-vis"
+                    <li class="d-flex justify-content-start dropdown-item">
+                        <input class="toggle-vis  d-flex-1"
                                type="checkbox"
                                id="lotDescriptionCheckbox"
                                checked />
-                        <label class="form-check-label" for="lotDescriptionCheckbox"> Description </label>
+                        <label class="form-check-label d-flex-1" for="lotDescriptionCheckbox"> Description </label>
                     </li>
-                    <li>
-                        <input class="toggle-vis"
+                    <li class="d-flex justify-content-start dropdown-item">
+                        <input class="toggle-vis  d-flex-1"
                                type="checkbox"
                                id="lotMediumCheckbox"
                                checked />
-                        <label class="form-check-label" for="lotMediumCheckbox"> Medium </label>
+                        <label class="form-check-label d-flex-1" for="lotMediumCheckbox"> Medium </label>
                     </li>
-                    <li>
-                        <input class="toggle-vis"
+                    <li class="d-flex justify-content-start dropdown-item">
+                        <input class="toggle-vis  d-flex-1"
                                type="checkbox"
                                id="lotLivraisonCheckbox"
                                checked />
-                        <label class="form-check-label" for="lotLivraisonCheckbox"> Encan </label>
+                        <label class="form-check-label d-flex-1" for="lotLivraisonCheckbox"> Livraison </label>
                     </li>
-                    <li>
-                        <input class="toggle-vis"
+                    <li class="d-flex justify-content-start dropdown-item">
+                        <input class="toggle-vis  d-flex-1"
                                type="checkbox"
                                id="lotModifierCheckbox"
                                checked />
-                        <label class="form-check-label" for="lotModifierCheckbox"> Modifier </label>
+                        <label class="form-check-label d-flex-1" for="lotModifierCheckbox"> Modifier </label>
                     </li>
-                    <li>
-                        <input class="toggle-vis"
+                    <li class="d-flex justify-content-start dropdown-item">
+                        <input class="toggle-vis  d-flex-1"
                                type="checkbox"
                                id="lotSupprimerCheckbox"
                                checked />
-                        <label class="form-check-label" for="lotSupprimerCheckbox"> Supprimer </label>
+                        <label class="form-check-label d-flex-1" for="lotSupprimerCheckbox"> Supprimer </label>
                     </li>
                 </ul>
             </div>
@@ -160,6 +161,15 @@
         border-collapse: collapse;
         font-size: 13px;
         text-align: center;
+    }
+
+        table label {
+            font-size: 13px;
+        }
+
+    li label {
+        font-size: 13px;
+        padding-left: 5px;
     }
 
     th {
