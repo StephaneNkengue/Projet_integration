@@ -10,16 +10,14 @@ namespace Gamma2024.Server.Models
         public string? Appartement { get; set; }
         public string Rue { get; set; } = null!;
         public string Ville { get; set; } = null!;
-        public string Province { get; set; } = null!;   
+        public string Province { get; set; } = null!;
         public string Pays { get; set; } = null!;
         [StringLength(6)]
         public string CodePostal { get; set; } = null!;
         public bool EstDomicile { get; set; }
         public string? IdApplicationUser { get; set; }
-        public int? IdVendeur { get; set; }
 
         public ApplicationUser? ApplicationUser { get; set; }
-        public Vendeur? Vendeur { get; set; }
         public ICollection<Facture> Factures { get; set; } = [];
     }
 }
