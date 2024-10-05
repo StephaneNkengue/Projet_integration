@@ -61,6 +61,8 @@ var lots = File.ReadAllLines("CSV/Encan232et233.csv", System.Text.Encoding.GetEn
                                     break;
                                 }
                             }
+                            //temporairement
+                            l.IdVendeur = 1;
                             return l;
                         })
                         .ToList();
