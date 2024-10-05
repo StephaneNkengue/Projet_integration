@@ -11,4 +11,10 @@
 		<ProjectReference Include="..\Gamma2024.Server\Gamma2024.Server.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <None Update="CSV\Vendeurs.csv">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	</ItemGroup>
+
 </Project>
