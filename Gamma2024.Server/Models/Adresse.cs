@@ -5,7 +5,6 @@ namespace Gamma2024.Server.Models
     public class Adresse
     {
         public int Id { get; set; }
-        public int? IdPersonne { get; set; }
         public int Numero { get; set; }
         public string? Appartement { get; set; }
         public string Rue { get; set; } = null!;
