@@ -47,7 +47,7 @@ namespace Gamma2024.Server.Extensions
                 if (!string.IsNullOrEmpty(columns[1]))
                 {
                     var livrable = false;
-                    if (columns[10] == "oui")
+                    if (columns[11] == "oui")
                     {
                         livrable = true;
                     }
@@ -57,17 +57,18 @@ namespace Gamma2024.Server.Extensions
                         Numero = columns[1],
                         //Prix ouverture
                         //val min pour vente
-                        ValeurEstimeMin = double.Parse(columns[4]),
-                        ValeurEstimeMax = double.Parse(columns[5]),
+                        ValeurEstimeMin = double.Parse(columns[4].Replace("$", "").Trim()),
+                        ValeurEstimeMax = double.Parse(columns[5].Replace("$", "").Trim()),
                         Categorie = new Categorie
                         {
                             Nom = columns[6]
                         },
                         Artiste = columns[7],
                         Dimensions = columns[8],
+                        Description = columns[9],
                         Medium = new Medium
                         {
-                            Type = columns[9]
+                            Type = columns[10]
                         },
                         estLivrable = livrable
                     };
