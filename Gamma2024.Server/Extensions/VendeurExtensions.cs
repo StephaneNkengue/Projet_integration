@@ -10,8 +10,9 @@ namespace Gamma2024.Server.Extensions
             {
                 var columns = line.Split(';');
 
-                var adresse = columns[2].Split(",");
-                var numCiviqueRue = adresse[0].Split(" ", 2);
+                var adresse = columns[2].Split(",").Select(a => a.Trim()).ToList();
+
+                var numCiviqueRue = adresse[0].Split(" ", 2).Select(a => a.Trim()).ToList();
 
                 yield return new Vendeur
                 {
@@ -24,7 +25,7 @@ namespace Gamma2024.Server.Extensions
                         Ville = adresse[1],
                         Province = adresse[2],
                         Pays = "Canada",
-                        CodePostal = adresse[3],
+                        CodePostal = adresse[3].Replace(" ", ""),
                         EstDomicile = false
                     },
                     Telephone = columns[3],
