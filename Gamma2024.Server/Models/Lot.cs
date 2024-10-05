@@ -4,10 +4,12 @@ namespace Gamma2024.Server.Models
     {
         public int Id { get; set; }
         public string Numero { get; set; } = null!;
-        public string Nom { get; set; } = null!;
         public string Description { get; set; } = null!;
         public double ValeurEstimeMin { get; set; }
         public double ValeurEstimeMax { get; set; }
+        public double PrixOuverture { get; set; }
+        public double PrixMinPourVente { get; set; }
+
         public DateTime DateDepot { get; set; } = DateTime.Now;
         public string Artiste { get; set; } = null!;
         public DateTime DateCreation { get; set; } = DateTime.Now;
