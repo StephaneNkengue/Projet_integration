@@ -8,7 +8,7 @@ namespace Gamma2024.Server.Models
         public double ValeurEstimeMin { get; set; }
         public double ValeurEstimeMax { get; set; }
         public double PrixOuverture { get; set; }
-        public double PrixMinPourVente { get; set; }
+        public double? PrixMinPourVente { get; set; } = default!;
 
         public DateTime DateDepot { get; set; } = DateTime.Now;
         public string Artiste { get; set; } = null!;
