@@ -15,4 +15,16 @@ var vendeurs = File.ReadAllLines("CSV/Vendeurs.csv", System.Text.Encoding.GetEnc
 context.Vendeurs.AddRange(vendeurs);
 context.SaveChanges();
 
+var categoriesLotsUniques = File.ReadAllLines("CSV/Encan232et233.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
+                        .Skip(1)
+                        .Where(l => l.Length > 1)
+                        .GetCategories()
+                        .GroupBy(c => c.Nom)
+                        .Select(c => c.First())
+                        .ToList();
+
+context.AddRange(categoriesLotsUniques);
+context.SaveChanges();
+
+
 Console.WriteLine("Fin du seed");
