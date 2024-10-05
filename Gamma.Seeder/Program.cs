@@ -5,8 +5,6 @@ var context = DbContextFactory.CreateDbContext();
 
 Console.WriteLine("Début du seed...");
 
-context.Vendeurs.RemoveRange();
-context.SaveChanges();
 
 var vendeurs = File.ReadAllLines("CSV/Vendeurs.csv")
                 .Skip(1)
