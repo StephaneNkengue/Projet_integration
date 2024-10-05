@@ -55,8 +55,8 @@ namespace Gamma2024.Server.Extensions
                     yield return new Lot
                     {
                         Numero = columns[1],
-                        //Prix ouverture
-                        //val min pour vente
+                        PrixOuverture = double.Parse(columns[2].Replace("$", "").Trim()),
+                        PrixMinPourVente = double.Parse(columns[3].Replace("$", "").Trim()),
                         ValeurEstimeMin = double.Parse(columns[4].Replace("$", "").Trim()),
                         ValeurEstimeMax = double.Parse(columns[5].Replace("$", "").Trim()),
                         Categorie = new Categorie
