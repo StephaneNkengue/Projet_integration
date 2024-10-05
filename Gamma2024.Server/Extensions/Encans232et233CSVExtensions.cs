@@ -1,4 +1,5 @@
 using Gamma2024.Server.Models;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Gamma2024.Server.Extensions
 {
@@ -52,11 +53,17 @@ namespace Gamma2024.Server.Extensions
                         livrable = true;
                     }
 
+                    var prixMinVente = 0.00;
+                    if (!columns[3].IsNullOrEmpty())
+                    {
+                        prixMinVente = double.Parse(columns[3].Replace("$", "").Trim());
+                    }
+
                     yield return new Lot
                     {
                         Numero = columns[1],
                         PrixOuverture = double.Parse(columns[2].Replace("$", "").Trim()),
-                        PrixMinPourVente = double.Parse(columns[3].Replace("$", "").Trim()),
+                        PrixMinPourVente = prixMinVente,
                         ValeurEstimeMin = double.Parse(columns[4].Replace("$", "").Trim()),
                         ValeurEstimeMax = double.Parse(columns[5].Replace("$", "").Trim()),
                         Categorie = new Categorie
