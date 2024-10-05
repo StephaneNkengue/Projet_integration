@@ -21,7 +21,7 @@ namespace Gamma2024.Server.Services
                 .Select(l => new LotAffichageVM()
                 {
                     Id = l.Id,
-                    Code = l.Code,
+                    Code = l.Numero,
                     ValeurEstimeMax = l.ValeurEstimeMax,
                     ValeurEstimeMin = l.ValeurEstimeMin,
                     Artiste = l.Artiste,
