@@ -20,5 +20,22 @@ namespace Gamma2024.Server.Extensions
 
             }
         }
+
+        public static IEnumerable<Medium> GetMediums(this IEnumerable<string> source)
+        {
+            foreach (var line in source)
+            {
+                var columns = line.Split(';');
+
+                if (!string.IsNullOrEmpty(columns[1]))
+                {
+                    yield return new Medium
+                    {
+                        Type = columns[10]
+                    };
+                }
+
+            }
+        }
     }
 }
