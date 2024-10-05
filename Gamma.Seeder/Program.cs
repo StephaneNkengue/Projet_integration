@@ -23,8 +23,18 @@ var categoriesLotsUniques = File.ReadAllLines("CSV/Encan232et233.csv", System.Te
                         .Select(c => c.First())
                         .ToList();
 
-context.AddRange(categoriesLotsUniques);
+context.Categories.AddRange(categoriesLotsUniques);
 context.SaveChanges();
 
+var mediumsLotsUniques = File.ReadAllLines("CSV/Encan232et233.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
+                        .Skip(1)
+                        .Where(l => l.Length > 1)
+                        .GetMediums()
+                        .GroupBy(m => m.Type)
+                        .Select(m => m.First())
+                        .ToList();
+
+context.Mediums.AddRange(mediumsLotsUniques);
+context.SaveChanges();
 
 Console.WriteLine("Fin du seed");
