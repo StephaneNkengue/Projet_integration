@@ -94,10 +94,21 @@
                                 </ul>
                             </div>
 
-                            <router-link to="Modification" v-if="estConnecte" class="text-decoration-none text-white d-flex align-items-center gap-3">
-                                <a class="nav-link">{{ username }}</a>
+                            <div class="d-flex flex-column dropdown-menu mt-5 ms-7 bleuMarinSecondaireFond" v-if="activationDropdownProfil">
+                                <router-link to="Modification" class="text-decoration-none text-white d-flex align-items-center gap-3">
+                                    <a class="dropdown-item text-white btnSurvolerBleuMoyenFond" @click="activationDropdownProfil = false">
+                                        Profil
+                                    </a>
+                                </router-link>
+                                <a class="dropdown-item text-danger btnSurvolerBleuMoyenFond fw-bold">
+                                    Déconnexion
+                                </a>
+                            </div>
+
+                            <a @click="activationDropdownProfil = !activationDropdownProfil" class="d-flex text-decoration-none text-white align-items-center gap-3">
+                                <p class="m-0">{{ username }}</p>
                                 <img :src="avatarUrl" alt="Avatar" height="40" />
-                            </router-link>
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -178,9 +189,13 @@
     })
 
     // Définition de activationRecherche
-    const activationRecherche = ref(false)
+    const activationRecherche = ref(false);
+    const activationDropdownProfil = ref(false);
 
 </script>
 
 <style scoped>
+    .ms-7 {
+        margin-left: 7.9rem;
+    }
 </style>
