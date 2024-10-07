@@ -84,13 +84,13 @@ namespace Gamma2024.Server.Extensions
             }
         }
 
-        public static IEnumerable<IEnumerable<string>> GetImagesParLot(this IEnumerable<string> source)
+        public static IEnumerable<IEnumerable<string>> GetImagesParLotParEncan(this IEnumerable<string> source, int numeroEncan)
         {
             foreach (var line in source)
             {
                 var columns = line.Split(';');
 
-                if (!string.IsNullOrEmpty(columns[1]))
+                if (!string.IsNullOrEmpty(columns[1]) && int.Parse(columns[0]) == numeroEncan)
                 {
                     var images = new List<string>();
 
