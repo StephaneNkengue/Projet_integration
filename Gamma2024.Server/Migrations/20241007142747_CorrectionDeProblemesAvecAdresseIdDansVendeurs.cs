@@ -5,60 +5,53 @@
 namespace Gamma2024.Server.Migrations
 {
     /// <inheritdoc />
-    public partial class RendrePrixMinPourVenteNullable : Migration
+    public partial class CorrectionDeProblemesAvecAdresseIdDansVendeurs : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AlterColumn<double>(
-                name: "PrixMinPourVente",
-                table: "Lots",
-                type: "float",
-                nullable: true,
-                oldClrType: typeof(double),
-                oldType: "float");
+            migrationBuilder.DropColumn(
+                name: "ÏdAdresse",
+                table: "Vendeurs");
 
             migrationBuilder.UpdateData(
                 table: "AspNetUsers",
                 keyColumn: "Id",
                 keyValue: "1d8ac862-e54d-4f10-b6f8-638808c02967",
                 columns: new[] { "ConcurrencyStamp", "PasswordHash", "SecurityStamp" },
-                values: new object[] { "c022510a-fbd1-42e8-b8c2-783478fb5589", "AQAAAAIAAYagAAAAEN85BggpGmuwtg03FBSv05AtFdJh8//HLqhodkT8JISlEnUTVWD9madTF/UFQ5/oCQ==", "099ccd4a-bc9f-4b8c-b93d-18645ee732d2" });
+                values: new object[] { "821778bd-ef4e-4d8d-a76c-7bc5592c8869", "AQAAAAIAAYagAAAAEDQXrwZDB0iRLYfX40HAo20AT6wC6cB5toZ+eqkeMbhnalHo+HXNDM4UcWE3i1ocNQ==", "2d0edd4f-dd5c-471c-aa61-84f8a33b4154" });
 
             migrationBuilder.UpdateData(
                 table: "AspNetUsers",
                 keyColumn: "Id",
                 keyValue: "8e445865-a24d-4543-a6c6-9443d048cdb9",
                 columns: new[] { "ConcurrencyStamp", "PasswordHash", "SecurityStamp" },
-                values: new object[] { "68f20caf-b5ab-4e7f-8408-bb4d2fad3dee", "AQAAAAIAAYagAAAAEA3G9Hm0z17lKkxc598VC0sKIYdC5plFPpht2c/7TAFQRGk4BwUQtiLXildD9aMgbA==", "b1f3ce05-2edc-471e-a012-f329ddd2519a" });
+                values: new object[] { "0365a08a-2eab-44fc-bca9-ac00faef0bee", "AQAAAAIAAYagAAAAEAeOAPrVEzXLa57aJEk9RxI61Agg26eExGGhRoT15iDRNGObqdW7clGXFi4T6gY1fQ==", "cabeadec-91df-40a7-9677-bee5e26d4da0" });
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AlterColumn<double>(
-                name: "PrixMinPourVente",
-                table: "Lots",
-                type: "float",
+            migrationBuilder.AddColumn<int>(
+                name: "ÏdAdresse",
+                table: "Vendeurs",
+                type: "int",
                 nullable: false,
-                defaultValue: 0.0,
-                oldClrType: typeof(double),
-                oldType: "float",
-                oldNullable: true);
+                defaultValue: 0);
 
             migrationBuilder.UpdateData(
                 table: "AspNetUsers",
                 keyColumn: "Id",
                 keyValue: "1d8ac862-e54d-4f10-b6f8-638808c02967",
                 columns: new[] { "ConcurrencyStamp", "PasswordHash", "SecurityStamp" },
-                values: new object[] { "d51a8ed1-851f-47de-84f6-399c9d4eda57", "AQAAAAIAAYagAAAAEJQTuhPOATh0XW7Vl9pspkns/tIxAqAZD4+5h+AOD3bbp9FKT/sdb0AKxBOCkAdh7Q==", "1554c936-6ac6-48de-bcf3-21e26f1d9948" });
+                values: new object[] { "252f5c9e-42c2-4d9f-9623-c7c9c91409e5", "AQAAAAIAAYagAAAAEP5pT2c5xbMJ3QEvYyY4MJ8Wb7DvEpwE8RST9FC2j7xYRkv0FdarCL0J1aLqDj7uRg==", "6b9c6c8b-ab6c-4301-947d-54448ff7244b" });
 
             migrationBuilder.UpdateData(
                 table: "AspNetUsers",
                 keyColumn: "Id",
                 keyValue: "8e445865-a24d-4543-a6c6-9443d048cdb9",
                 columns: new[] { "ConcurrencyStamp", "PasswordHash", "SecurityStamp" },
-                values: new object[] { "a49f9f69-8e6f-4f72-8bcb-a194c5518eb8", "AQAAAAIAAYagAAAAEILMkDGK+ylbPMDLbkwnewZNsHYqncf2/XaDsISSP2pSGkuAVcr5Jnj882nqJzFk3g==", "a5a5a8e4-9828-4b5f-b7f2-71aac53f05f2" });
+                values: new object[] { "001d6fa2-c564-45d9-b0b4-4bce34d27c6c", "AQAAAAIAAYagAAAAEAOs+fjrARsmIjlXbueNnmLaeZt4bURT+P0ceo52xvC2P/tl3Eh7xKjungC3kBazTw==", "97588e6a-eb15-4b1b-a51e-8f7d0adf0915" });
         }
     }
 }
