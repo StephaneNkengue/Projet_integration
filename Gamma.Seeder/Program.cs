@@ -1,5 +1,6 @@
 using Gamma2024.Seeder;
 using Gamma2024.Server.Extensions;
+using Gamma2024.Server.Models;
 
 var context = DbContextFactory.CreateDbContext();
 
@@ -138,6 +139,58 @@ context.Lots.AddRange(lots232);
 context.SaveChanges();
 
 context.Lots.AddRange(lots233);
+context.SaveChanges();
+
+Console.WriteLine("Ajout des encans");
+var encans = new List<Encan>();
+
+encans.Add(new Encan
+{
+    NumeroEncan = 232,
+    DateDebut = new DateTime(2005, 3, 15, 6, 0, 0),
+    DateFin = new DateTime(2005, 3, 18, 6, 0, 0),
+    DateDebutSoireeCloture = new DateTime(2005, 3, 18, 6, 0, 1),
+    DateFinSoireeCloture = new DateTime(2005, 3, 18, 9, 0, 0),
+});
+
+encans.Add(new Encan
+{
+    NumeroEncan = 233,
+    DateDebut = new DateTime(2006, 3, 15, 6, 0, 0),
+    DateFin = new DateTime(2006, 3, 18, 6, 0, 0),
+    DateDebutSoireeCloture = new DateTime(2006, 3, 18, 6, 0, 1),
+    DateFinSoireeCloture = new DateTime(2006, 3, 18, 9, 0, 0),
+});
+
+context.Encans.AddRange(encans);
+context.SaveChanges();
+
+Console.WriteLine("Association des lots au encans respectifs");
+var encanLots = new List<EncanLot>();
+
+foreach (var item in lots232)
+{
+    encanLots.Add(new EncanLot
+    {
+        Lot = item,
+        IdLot = item.Id,
+        Encan = encans[0],
+        NumeroEncan = encans[0].NumeroEncan
+    });
+}
+
+foreach (var item in lots233)
+{
+    encanLots.Add(new EncanLot
+    {
+        Lot = item,
+        IdLot = item.Id,
+        Encan = encans[1],
+        NumeroEncan = encans[1].NumeroEncan
+    });
+}
+
+context.EncanLots.AddRange(encanLots);
 context.SaveChanges();
 
 Console.WriteLine("Fin du seed");
