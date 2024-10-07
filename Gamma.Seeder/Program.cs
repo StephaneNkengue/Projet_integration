@@ -1,6 +1,7 @@
 using Gamma2024.Seeder;
 using Gamma2024.Server.Extensions;
 using Gamma2024.Server.Models;
+using Microsoft.IdentityModel.Tokens;
 
 var context = DbContextFactory.CreateDbContext();
 
@@ -58,6 +59,18 @@ var lotsVendeurs233 = File.ReadAllLines("CSV/Vendeurs.csv", System.Text.Encoding
                 .GetNumeroLotsEncan233()
                 .ToList();
 
+var imagesLots232 = File.ReadAllLines("CSV/Encan232et233.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
+                        .Skip(1)
+                        .Where(l => l.Length > 1)
+                        .GetImagesParLotParEncan(232)
+                        .ToList();
+
+var imagesLots233 = File.ReadAllLines("CSV/Encan232et233.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
+                        .Skip(1)
+                        .Where(l => l.Length > 1)
+                        .GetImagesParLotParEncan(233)
+                        .ToList();
+
 var lots232 = File.ReadAllLines("CSV/Encan232et233.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
                         .Skip(1)
                         .Where(l => l.Length > 1)
@@ -89,12 +102,31 @@ var lots232 = File.ReadAllLines("CSV/Encan232et233.csv", System.Text.Encoding.Ge
                                 {
                                     l.IdVendeur = vendeurs[position].Id;
                                     l.Vendeur = vendeurs[position];
+                                    break;
                                 }
                                 position++;
                             }
                             return l;
                         })
                         .ToList();
+
+for (int i = 0; i < lots232.Count; i++)
+{
+    foreach (var nomImage in imagesLots232[i])
+    {
+        if (nomImage.IsNullOrEmpty())
+        {
+            break;
+        }
+        else
+        {
+            lots232[i].Photos.Add(new Photo
+            {
+
+            });
+        }
+    }
+}
 
 var lots233 = File.ReadAllLines("CSV/Encan232et233.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
                         .Skip(1)
@@ -134,6 +166,10 @@ var lots233 = File.ReadAllLines("CSV/Encan232et233.csv", System.Text.Encoding.Ge
                             return l;
                         })
                         .ToList();
+//for (int i = 0; i < lots233.Count; i++)
+//{
+
+//}
 
 context.Lots.AddRange(lots232);
 context.SaveChanges();
