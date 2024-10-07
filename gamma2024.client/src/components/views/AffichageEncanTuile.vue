@@ -4,10 +4,10 @@
         <div class="d-flex w-100 mt-3 flex-sm-row flex-column">
             <div class="col-7 d-flex align-items-center justify-content-center flex-column text-center">
                 <div class="row justify-content-start w-100">
-                    <p>15 septembre 2024 - 25 septembre 2024</p>
+                    <p>15 septembre - 25 septembre 2024</p>
                 </div>
                 <div class="row justify-content-start w-100">
-                    <p>Soirée de clôture le <br />25 septembre 2024 à 18h</p>
+                    <p>Soirée de clôture le 25 septembre à 18h</p>
                 </div>
             </div>
             <div class="col d-flex justify-content-center align-items-center">
