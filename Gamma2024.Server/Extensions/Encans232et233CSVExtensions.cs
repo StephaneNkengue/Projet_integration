@@ -39,13 +39,13 @@ namespace Gamma2024.Server.Extensions
             }
         }
 
-        public static IEnumerable<Lot> ToLot(this IEnumerable<string> source)
+        public static IEnumerable<Lot> ToLotEncan232(this IEnumerable<string> source)
         {
             foreach (var line in source)
             {
                 var columns = line.Split(';');
 
-                if (!string.IsNullOrEmpty(columns[1]))
+                if (!string.IsNullOrEmpty(columns[1]) && int.Parse(columns[0]) == 232)
                 {
                     var livrable = false;
                     if (columns[11] == "oui")
