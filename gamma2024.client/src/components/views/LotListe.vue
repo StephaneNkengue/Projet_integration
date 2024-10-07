@@ -10,13 +10,21 @@
                     </div>
 
 
-                    <div class="d-flex flex-column justify-content-center align-items-left">
-                        <p class=" pe-2 mt-1 mb-0">{{lot.code}}</p>
-                        <p class=" pe-2 mt-1 mb-0">{{lot.artiste}} </p>
+                    <div class="d-flex align-items-center gap-3 ">
+                        <p class=" pe-2 mt-1 mb-0">Lot {{lot.code}}</p>
+                        <p class=" pe-2 mt-1 mb-0">{{lot.artiste}}</p>
                         <p class=" pe-2 mt-1 mb-0">{{lot.hauteur}} X {{lot.largeur}} po</p>
                     </div>
 
-                    <div class="d-flex flex-column align-self-end pb-3 align-items-left">
+
+
+                    <div class="d-flex align-items-center gap-4">
+                        <p class=" text-center mb-0">Valeur: {{(lot.valeurEstimeMin).toFixed(0)}}$ - {{(lot.valeurEstimeMax).toFixed(0)}}$</p>
+                        <p class=" text-center mb-0">Mise actuelle: {{(lot.mise).toFixed(0)}}$</p>
+                        <button type="button" class="btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond">Miser</button>
+                    </div>
+
+                    <div class="d-flex flex-column align-self-center pe-5">
                         <img src="/icons/IconeLivrable.png"
                              height="50"
                              width="50"
@@ -29,15 +37,6 @@
                              alt="Non livrable"
                              v-else />
                     </div>
-
-                    <div class="d-flex flex-column justify-content-center">
-                        <p class=" text-center mb-0">Valeur: {{(lot.valeurEstimeMin).toFixed(0)}}$ - {{(lot.valeurEstimeMax).toFixed(0)}}$</p>
-                        <p class=" text-center mb-0">Mise actuelle: {{(lot.mise).toFixed(0)}}$</p>
-
-                        <div class="d-flex justify-content-around pt-2">
-                            <button type="button" class="btn bleuMoyenFond text-white">Miser</button>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
@@ -49,7 +48,7 @@
     import { ref } from 'vue'
 
     let lotRecu = {
-        code: "1-a",
+        code: "1a",
         artiste: "Nom de l'artiste",
         hauteur: 12,
         largeur: 13,
