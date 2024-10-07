@@ -94,7 +94,7 @@
                                 </ul>
                             </div>
 
-                            <div class="d-flex flex-column dropdown-menu mt-5 ms-7 bleuMarinSecondaireFond" v-if="activationDropdownProfil">
+                            <div class="d-flex flex-column position-absolute top-100 end-0 dropdown-menu bleuMarinSecondaireFond" v-if="activationDropdownProfil">
                                 <router-link to="Modification" class="text-decoration-none text-white d-flex align-items-center gap-3">
                                     <a class="dropdown-item text-white btnSurvolerBleuMoyenFond" @click="activationDropdownProfil = false">
                                         Profil
@@ -105,7 +105,7 @@
                                 </a>
                             </div>
 
-                            <a @click="activationDropdownProfil = !activationDropdownProfil" class="d-flex text-decoration-none text-white align-items-center gap-3">
+                            <a @click="activationDropdownProfil = !activationDropdownProfil" class="d-flex text-decoration-none text-white align-items-center gap-3" v-if="estConnecte">
                                 <p class="m-0">{{ username }}</p>
                                 <img :src="avatarUrl" alt="Avatar" height="40" />
                             </a>
