@@ -162,6 +162,25 @@ encans.Add(new Encan
     DateFinSoireeCloture = new DateTime(2006, 3, 18, 9, 0, 0),
 });
 
+encans.Add(new Encan
+{
+    NumeroEncan = 234,
+    DateDebut = new DateTime(2007, 3, 15, 6, 0, 0),
+    DateFin = new DateTime(2007, 3, 18, 6, 0, 0),
+    DateDebutSoireeCloture = new DateTime(2007, 3, 18, 6, 0, 1),
+    DateFinSoireeCloture = new DateTime(2007, 3, 18, 9, 0, 0),
+});
+
+encans.Add(new Encan
+{
+    NumeroEncan = 235,
+    DateDebut = new DateTime(2008, 3, 15, 6, 0, 0),
+    DateFin = new DateTime(2008, 3, 18, 6, 0, 0),
+    DateDebutSoireeCloture = new DateTime(2008, 3, 18, 6, 0, 1),
+    DateFinSoireeCloture = new DateTime(2008, 3, 18, 9, 0, 0),
+});
+
+
 context.Encans.AddRange(encans);
 context.SaveChanges();
 
