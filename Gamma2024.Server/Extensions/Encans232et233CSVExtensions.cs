@@ -83,5 +83,25 @@ namespace Gamma2024.Server.Extensions
 
             }
         }
+
+        public static IEnumerable<IEnumerable<string>> GetImagesParLot(this IEnumerable<string> source)
+        {
+            foreach (var line in source)
+            {
+                var columns = line.Split(';');
+
+                if (!string.IsNullOrEmpty(columns[1]))
+                {
+                    var images = new List<string>();
+
+                    images.Add(columns[12]);
+                    images.Add(columns[13]);
+                    images.Add(columns[14]);
+
+                    yield return images;
+                }
+
+            }
+        }
     }
 }
