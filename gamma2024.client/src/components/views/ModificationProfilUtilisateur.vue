@@ -28,18 +28,16 @@
         </div>
 
         <h2 class="fs-1 text-center fw-bold mt-5">Profil d'utilisateur</h2>
-
-        <div
-          v-if="message"
-          :class="[
-            'alert',
-            message.type === 'success' ? 'alert-success' : 'alert-danger',
-          ]"
-        >
-          {{ message.text }}
-        </div>
       </div>
-
+      <div
+        v-if="message"
+        :class="[
+          'alert',
+          message.type === 'success' ? 'alert-success' : 'alert-danger',
+        ]"
+      >
+        {{ message.text }}
+      </div>
       <div class="mt-3 card-body">
         <form @submit.prevent="submitForm">
           <!-- Informations générales -->
@@ -392,11 +390,11 @@
           <div class="d-flex justify-content-end gap-2 py-3 card-footer">
             <button
               class="btn btn-secondary rounded-pill px-4 me-4"
-              :disabled="formDataChanged"
+              :disabled="!formDataChanged"
               type="button"
+              @click="resetForm"
             >
-              {{ formDataChanged }}
-              Annuler
+              Réinitialiser
             </button>
             <button
               type="submit"
@@ -404,7 +402,7 @@
                 isFormValid && formDataChanged ? 'bleuValide' : 'bleuNonValide',
                 'btn rounded-pill px-4 me-4',
               ]"
-              :disabled="!isFormValid || !isFormEdited"
+              :disabled="!isFormValid || !formDataChanged"
             >
               Enregistrer
             </button>
@@ -416,13 +414,16 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, watch } from "vue";
+import { ref, reactive, computed, onMounted, watch } from "vue";
 import { useStore } from "vuex";
 import { useVuelidate } from "@vuelidate/core";
 import InputMask from "primevue/inputmask";
 import { required, email, helpers } from "@vuelidate/validators";
 import api from "@/services/api";
 import { useRouter } from "vue-router";
+import { toast } from "vue3-toastify";
+import ToastContent from "../Toast/toastConfirm.vue";
+import { h } from "vue";
 
 const store = useStore();
 const message = ref(null);
@@ -464,16 +465,13 @@ const provinces = ref([
 ]);
 
 let changeVisible = ref(false);
-let isFormEdited = computed(() => {
-  return formDataChanged.value;
-});
 let changerLaVisibilite = () => {
   changeVisible.value = !changeVisible.value;
 };
 
-let formDataChanged = ref(true);
+let formDataChanged = ref(false);
 // objet qui contient tous les champs remplis correctement
-let formData = ref({
+let formData = reactive({
   generalInfo: {
     nom: "",
     prenom: "",
@@ -500,10 +498,8 @@ let formData = ref({
   },
 });
 
-const initialFormData = ref(null);
-initialFormData.value = JSON.parse(JSON.stringify(formData.value));
+let initialFormData = ref({});
 
-// objet rules qui contient toutes les validations
 let rules = computed(() => {
   return {
     generalInfo: {
@@ -515,7 +511,7 @@ let rules = computed(() => {
       currentPassword: {
         required: helpers.withMessage(
           "Le mot de passe actuel est requis si vous souhaitez le changer",
-          (value) => !formData.value.generalInfo.newPassword || !!value
+          (value) => !formData.generalInfo.newPassword || !!value
         ),
       },
       newPassword: {
@@ -528,8 +524,8 @@ let rules = computed(() => {
         sameAsPassword: helpers.withMessage(
           "Les mots de passe ne correspondent pas",
           (value) =>
-            !formData.value.generalInfo.newPassword ||
-            value === formData.value.generalInfo.newPassword
+            !formData.generalInfo.newPassword ||
+            value === formData.generalInfo.newPassword
         ),
       },
     },
@@ -561,7 +557,7 @@ onMounted(async () => {
     const response = await store.dispatch("fetchClientInfo");
 
     // Mise à jour des données du formulaire
-    formData.value.generalInfo = {
+    formData.generalInfo = {
       nom: response.data.name || "",
       prenom: response.data.firstName || "",
       courriel: response.data.email || "",
@@ -569,13 +565,13 @@ onMounted(async () => {
       pseudo: response.data.pseudonym || "",
     };
 
-    formData.value.carteCredit = {
+    formData.carteCredit = {
       nomProprio: response.data.cardOwnerName || "",
       numeroCarte: response.data.cardNumber || "",
       dateExpiration: response.data.cardExpiryDate || "",
     };
 
-    formData.value.adresse = {
+    formData.adresse = {
       numeroCivique: response.data.civicNumber || "",
       rue: response.data.street || "",
       appartement: response.data.apartment || "",
@@ -585,13 +581,13 @@ onMounted(async () => {
       codePostal: response.data.postalCode || "",
     };
 
+    initialFormData.value = JSON.parse(JSON.stringify(formData));
+
     // Utiliser l'URL de base de l'API pour construire l'URL de l'avatar
     avatarUrl.value = response.data.photo
       ? `${api.defaults.baseURL.replace("/api", "")}${response.data.photo}`
       : "/icons/Avatar.png";
-    console.log("objet crée pour test" + response.data);
   } catch (error) {
-    console.error("Erreur lors de la récupération des données:", error);
     errorMessage.value =
       "Erreur lors de la récupération des informations du client.";
     avatarUrl.value = "/icons/Avatar.png";
@@ -620,20 +616,14 @@ const mapProvince = (province) => {
 };
 
 watch(
-  formData,
-  (newVal) => {
-    // Comparaison avec l'état initial
-    console.log("Initial:", JSON.stringify(initialFormData.value)); // Affiche l'état initial du formulaire
-    console.log("newVal:", JSON.stringify(newVal)); // Affiche la nouvelle valeur
-
+  () => JSON.parse(JSON.stringify(formData)), // Deep clone copy to avoid same ref type.
+  () => {
     // Comparaison entre l'état initial et l'état actuel
-    if (JSON.stringify(initialFormData.value) !== JSON.stringify(newVal)) {
-      formDataChanged.value = true; // Indique que le formulaire a changé
+    if (JSON.stringify(formData) !== JSON.stringify(initialFormData.value)) {
+      formDataChanged.value = true;
     } else {
-      formDataChanged.value = false; // Pas de changement
+      formDataChanged.value = false;
     }
-
-    console.log("Formulaire changé:", formDataChanged.value);
   },
   { deep: true }
 );
@@ -643,29 +633,26 @@ const triggerFileInput = () => {
 };
 
 const handleImageError = () => {
-  console.error("Erreur de chargement de l'image:", avatarUrl.value);
   setTimeout(() => {
     if (!avatarUrl.value.includes("Avatar.png")) {
       avatarUrl.value = "/icons/Avatar.png";
     }
-  }, 1000); // Attendre 1 seconde avant de remplacer par l'image par défaut
+  }, 1000);
 };
 
 const handleFileChange = async (event) => {
   const file = event.target.files[0];
   if (file) {
     try {
-      const formData = new FormData();
-      formData.append("avatar", file);
-      const response = await store.dispatch("updateAvatar", formData);
-      console.log("Réponse du serveur pour l'avatar:", response);
+      const fData = new FormData();
+      fData.append("avatar", file);
+      const response = await store.dispatch("updateAvatar", fData);
 
       // Utiliser l'URL complète retournée par l'action du store
       avatarUrl.value = response.data.avatarUrl;
 
-      console.log("Nouvelle URL de l'avatar:", avatarUrl.value);
+      formDataChanged.value = true;
     } catch (error) {
-      console.error("Erreur lors de la mise à jour de l'avatar:", error);
       errorMessage.value =
         "Erreur lors de la mise à jour de l'avatar: " +
         (error.response?.data?.message || error.message);
@@ -675,9 +662,9 @@ const handleFileChange = async (event) => {
 
 const isFormValid = computed(() => {
   const passwordFieldsEmpty =
-    !formData.value.generalInfo.currentPassword &&
-    !formData.value.generalInfo.newPassword &&
-    !formData.value.generalInfo.confirmNewPassword;
+    !formData.generalInfo.currentPassword &&
+    !formData.generalInfo.newPassword &&
+    !formData.generalInfo.confirmNewPassword;
 
   const otherFieldsValid =
     !v.value.generalInfo.nom.$invalid &&
@@ -697,41 +684,41 @@ const isFormValid = computed(() => {
   return otherFieldsValid && passwordFieldsValid && formDataChanged.value;
 });
 
-// watch(
-//   () => store.state.user?.photo,
-//   (newPhotoUrl) => {
-//     if (newPhotoUrl) {
-//       avatarUrl.value = newPhotoUrl;
-//       formDataChanged.value = false;
-//     }
-//   }
-// );
+watch(
+  () => store.state.user?.photo,
+  (newPhotoUrl) => {
+    if (newPhotoUrl) {
+      avatarUrl.value = newPhotoUrl;
+      formDataChanged.value = false;
+    }
+  },
+  { deep: true }
+);
 
 const submitForm = async () => {
   const result = await v.value.$validate();
   if (result) {
     try {
       const mappedData = {
-        Name: formData.value.generalInfo.nom,
-        FirstName: formData.value.generalInfo.prenom,
-        Email: formData.value.generalInfo.courriel,
-        PhoneNumber: formData.value.generalInfo.telephone,
-        Pseudonym: formData.value.generalInfo.pseudo,
-        CurrentPassword:
-          formData.value.generalInfo.currentPassword || undefined,
-        NewPassword: formData.value.generalInfo.newPassword || undefined,
+        Name: formData.generalInfo.nom,
+        FirstName: formData.generalInfo.prenom,
+        Email: formData.generalInfo.courriel,
+        PhoneNumber: formData.generalInfo.telephone,
+        Pseudonym: formData.generalInfo.pseudo,
+        CurrentPassword: formData.generalInfo.currentPassword || undefined,
+        NewPassword: formData.generalInfo.newPassword || undefined,
         ConfirmNewPassword:
-          formData.value.generalInfo.confirmNewPassword || undefined,
-        CardOwnerName: formData.value.carteCredit.nomProprio,
-        CardNumber: formData.value.carteCredit.numeroCarte,
-        CardExpiryDate: formData.value.carteCredit.dateExpiration,
-        CivicNumber: formData.value.adresse.numeroCivique,
-        Street: formData.value.adresse.rue,
-        Apartment: formData.value.adresse.appartement,
-        City: formData.value.adresse.ville,
-        Province: formData.value.adresse.province,
-        Country: formData.value.adresse.pays,
-        PostalCode: formData.value.adresse.codePostal,
+          formData.generalInfo.confirmNewPassword || undefined,
+        CardOwnerName: formData.carteCredit.nomProprio,
+        CardNumber: formData.carteCredit.numeroCarte,
+        CardExpiryDate: formData.carteCredit.dateExpiration,
+        CivicNumber: formData.adresse.numeroCivique,
+        Street: formData.adresse.rue,
+        Apartment: formData.adresse.appartement,
+        City: formData.adresse.ville,
+        Province: formData.adresse.province,
+        Country: formData.adresse.pays,
+        PostalCode: formData.adresse.codePostal,
         Photo: avatarUrl.value,
       };
 
@@ -747,15 +734,27 @@ const submitForm = async () => {
       }
 
       await store.dispatch("updateClientInfo", mappedData);
-      message.value = {
-        type: "success",
-        text: "Informations mises à jour avec succès !",
-      };
+      toast.success(
+        h(ToastContent, {
+          title: "Informations mises à jour avec succès !",
+          description: "",
+        }),
+        {
+          position: toast.POSITION.TOP_CENTER,
+          autoClose: 3000,
+          pauseOnFocusLoss: false,
+          theme: "dark",
+          toastStyle: {
+            backgroundColor: "#052445",
+            color: "#fff",
+          },
+        }
+      );
 
       // Réinitialiser les champs de mot de passe
-      formData.value.generalInfo.currentPassword = "";
-      formData.value.generalInfo.newPassword = "";
-      formData.value.generalInfo.confirmNewPassword = "";
+      formData.generalInfo.currentPassword = "";
+      formData.generalInfo.newPassword = "";
+      formData.generalInfo.confirmNewPassword = "";
 
       await store.dispatch("fetchClientInfo");
 
@@ -763,7 +762,6 @@ const submitForm = async () => {
         router.push("/");
       }, 2000);
     } catch (error) {
-      console.error("Erreur lors de la mise à jour des informations:", error);
       message.value = {
         type: "error",
         text:
@@ -781,9 +779,9 @@ const submitForm = async () => {
 
 watch(
   () => [
-    formData.value.generalInfo.currentPassword,
-    formData.value.generalInfo.newPassword,
-    formData.value.generalInfo.confirmNewPassword,
+    formData.generalInfo.currentPassword,
+    formData.generalInfo.newPassword,
+    formData.generalInfo.confirmNewPassword,
   ],
   ([currentPassword, newPassword, confirmNewPassword]) => {
     if (!currentPassword && !newPassword && !confirmNewPassword) {
@@ -797,6 +795,12 @@ watch(
     }
   }
 );
+
+const resetForm = () => {
+  Object.assign(formData, JSON.parse(JSON.stringify(initialFormData.value)));
+  v.value.$reset();
+  formDataChanged.value = false;
+};
 </script>
 
 <style scoped>

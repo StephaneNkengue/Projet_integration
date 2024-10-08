@@ -57,7 +57,7 @@
           <div class="d-flex flex-row justify-content-center mb-2">
             <button
               :disabled="isSubmitting"
-              class="btn btnSurvolerBleuMoyenFond rounded-pill px-5 bleuMoyenFond text-white"
+              class="btn bleuNonValide rounded-pill px-5 text-white"
               @click="connexion"
             >
               <span
@@ -167,6 +167,15 @@ export default {
 
 .w-90 {
   width: 90%;
+}
+
+.bleuNonValide {
+  background-color: #052445;
+  color: white;
+}
+
+.bleuNonValide:hover {
+  background-color: #5a708a;
 }
 
 .text-danger {
