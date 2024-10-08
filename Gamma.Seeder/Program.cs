@@ -122,7 +122,7 @@ for (int i = 0; i < lots232.Count; i++)
         {
             lots232[i].Photos.Add(new Photo
             {
-
+                Lien = "AAA"
             });
         }
     }
@@ -166,10 +166,24 @@ var lots233 = File.ReadAllLines("CSV/Encan232et233.csv", System.Text.Encoding.Ge
                             return l;
                         })
                         .ToList();
-//for (int i = 0; i < lots233.Count; i++)
-//{
 
-//}
+for (int i = 0; i < lots233.Count; i++)
+{
+    foreach (var nomImage in imagesLots233[i])
+    {
+        if (nomImage.IsNullOrEmpty())
+        {
+            break;
+        }
+        else
+        {
+            lots233[i].Photos.Add(new Photo
+            {
+                Lien = "AAA"
+            });
+        }
+    }
+}
 
 context.Lots.AddRange(lots232);
 context.SaveChanges();
