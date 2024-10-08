@@ -1,6 +1,7 @@
 using Gamma2024.Seeder;
 using Gamma2024.Server.Extensions;
 using Gamma2024.Server.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 
 var context = DbContextFactory.CreateDbContext();
@@ -260,6 +261,41 @@ foreach (var item in lots233)
 }
 
 context.EncanLots.AddRange(encanLots);
+context.SaveChanges();
+
+Console.WriteLine("Ajout des utilisateurs");
+
+var utilisateurs = File.ReadAllLines("CSV/Acheteurs.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
+                        .Skip(1)
+                        .Where(x => x.Length > 1)
+                        .ToApplicationUser()
+                        .ToList();
+
+var passwordHasher = new PasswordHasher<ApplicationUser>();
+
+foreach (var item in utilisateurs)
+{
+    item.PasswordHash = passwordHasher.HashPassword(item, item.UserName + item.Adresses.First().Numero);
+}
+
+context.Users.AddRange(utilisateurs);
+context.SaveChanges();
+
+Console.WriteLine("Ajout des roles au utilisateurs");
+
+string roleIdClient = "7da4163f-edb4-47b5-86ea-888888888888";
+
+var utilisateursRoles = new List<IdentityUserRole<string>>();
+foreach (var item in utilisateurs)
+{
+    utilisateursRoles.Add(new IdentityUserRole<string>
+    {
+        RoleId = roleIdClient,
+        UserId = item.Id,
+    });
+}
+
+context.UserRoles.AddRange(utilisateursRoles);
 context.SaveChanges();
 
 Console.WriteLine("Fin du seed");
