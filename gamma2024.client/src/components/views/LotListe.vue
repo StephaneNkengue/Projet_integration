@@ -2,7 +2,7 @@
     <router-link class="text-decoration-none" to="DetailsLot">
         <div class="card">
             <div class="card-body">
-                <div class="d-flex flex-row gap-5 flex-wrap justify-content-between">
+                <div class="d-flex flex-md-row flex-column gap-5 flex-wrap justify-content-between">
                     <div class="d-flex flex-column justify-content-center align-items-center">
                         <img v-bind:src="lot.photos[0].lien"
                              height="150"
@@ -10,21 +10,21 @@
                     </div>
 
 
-                    <div class="d-flex align-items-center gap-3 ">
-                        <p class=" pe-2 mt-1 mb-0">Lot {{lot.code}}</p>
-                        <p class=" pe-2 mt-1 mb-0">{{lot.artiste}}</p>
-                        <p class=" pe-2 mt-1 mb-0">{{lot.dimension}} po</p>
+                    <div class="d-flex align-items-center gap-3 justify-content-between">
+                        <p class=" mt-1 mb-0">Lot {{lot.code}}</p>
+                        <p class=" mt-1 mb-0">{{lot.artiste}}</p>
+                        <p class=" mt-1 mb-0">{{lot.dimension}} po</p>
                     </div>
 
 
 
-                    <div class="d-flex align-items-center gap-4">
+                    <div class="d-flex flex-column flex-md-row align-items-center gap-4">
                         <p class=" text-center mb-0">Valeur: {{(lot.valeurEstimeMin).toFixed(0)}}$ - {{(lot.valeurEstimeMax).toFixed(0)}}$</p>
                         <p class=" text-center mb-0">Mise actuelle: {{(lot.mise).toFixed(0)}}$</p>
                         <button type="button" class="btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond">Miser</button>
                     </div>
 
-                    <div class="d-flex flex-column align-self-center pe-5">
+                    <div class="d-flex flex-column align-self-center pe-md-5">
                         <img src="/icons/IconeLivrable.png"
                              height="50"
                              width="50"
