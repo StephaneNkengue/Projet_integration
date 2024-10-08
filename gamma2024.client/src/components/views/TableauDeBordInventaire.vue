@@ -206,7 +206,13 @@
     const options = {
         ordering: false,
         language: {
-            url: 'https://cdn.datatables.net/plug-ins/2.1.8/i18n/fr-FR.json'
+            //url: 'https://cdn.datatables.net/plug-ins/2.1.8/i18n/fr-FR.json'
+            "search": "Rechercher :",
+            "info": "Affichage de _START_ à _END_ sur _TOTAL_ entrées",
+            "infoEmpty": "Affichage de 0 à 0 sur 0 entrées",
+            "infoFiltered": "(filtrées depuis un total de _MAX_ entrées)",
+            "lengthMenu": "Afficher _MENU_ entrées",
+            "zeroRecords": "Aucune entrée correspondante trouvée",
         }
     };
 
