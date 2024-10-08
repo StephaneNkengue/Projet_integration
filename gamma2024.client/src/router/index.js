@@ -11,6 +11,7 @@ import EncanPresent from '@/components/views/EncanPresent.vue'
 import TousLesEncans from '@/components/views/TousLesEncans.vue'
 import DetailsLot from '@/components/views/DetailsLot.vue'
 import Modification from '@/components/views/Modification.vue'
+import TableauDeBordEncans from '@/components/views/TableauDeBordEncans.vue'
 
 const routes = [
     {
@@ -68,6 +69,11 @@ const routes = [
         name: 'Modification',
         component: Modification,
         meta: { requiresAuth: true, requiredRole: 'Client' }
+    },
+    {
+        path: '/tableaudebordencans',
+        name: 'TableauDeBordEncans',
+        component: TableauDeBordEncans,
     }
 ]
 

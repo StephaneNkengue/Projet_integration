@@ -72,7 +72,7 @@
                                         </router-link>
                                     </li>
                                     <li>
-                                        <router-link to="Accueil" class="text-decoration-none">
+                                        <router-link to="TableauDeBordEncans" class="text-decoration-none">
                                             <a class="dropdown-item contenuListeDropdown">Encans</a>
                                         </router-link>
                                     </li>
