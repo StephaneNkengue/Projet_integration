@@ -180,7 +180,7 @@ namespace Gamma2024.Server.Migrations
                             Id = "8e445865-a24d-4543-a6c6-9443d048cdb9",
                             AccessFailedCount = 0,
                             Avatar = "/Gamma2024.Server/Avatars/default.png",
-                            ConcurrencyStamp = "68f20caf-b5ab-4e7f-8408-bb4d2fad3dee",
+                            ConcurrencyStamp = "64daf2b5-e6a8-47cf-9102-8998ea7e0f44",
                             Email = "admin@example.com",
                             EmailConfirmed = true,
                             FirstName = "Super",
@@ -189,9 +189,9 @@ namespace Gamma2024.Server.Migrations
                             Name = "Admin",
                             NormalizedEmail = "ADMIN@EXAMPLE.COM",
                             NormalizedUserName = "ADMIN@EXAMPLE.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEA3G9Hm0z17lKkxc598VC0sKIYdC5plFPpht2c/7TAFQRGk4BwUQtiLXildD9aMgbA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAELJgtlJoHGAjng74uxhYpEE2sG4HidDt79nk8R2X5yDUVmQF4yWWkp/wnzZbW2spMg==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "b1f3ce05-2edc-471e-a012-f329ddd2519a",
+                            SecurityStamp = "9001121d-940b-4d40-a65f-82dff5b94b43",
                             TwoFactorEnabled = false,
                             UserName = "admin@example.com"
                         },
@@ -200,7 +200,7 @@ namespace Gamma2024.Server.Migrations
                             Id = "1d8ac862-e54d-4f10-b6f8-638808c02967",
                             AccessFailedCount = 0,
                             Avatar = "/Gamma2024.Server/Avatars/default.png",
-                            ConcurrencyStamp = "c022510a-fbd1-42e8-b8c2-783478fb5589",
+                            ConcurrencyStamp = "7d3d317e-f262-4244-8e2e-711600ed8a52",
                             Email = "client@example.com",
                             EmailConfirmed = true,
                             FirstName = "Jean",
@@ -209,9 +209,9 @@ namespace Gamma2024.Server.Migrations
                             Name = "Dupont",
                             NormalizedEmail = "CLIENT@EXAMPLE.COM",
                             NormalizedUserName = "CLIENT@EXAMPLE.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEN85BggpGmuwtg03FBSv05AtFdJh8//HLqhodkT8JISlEnUTVWD9madTF/UFQ5/oCQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEDjPcgtNAD8u+kwEvEhtX9FIdBQTx4V528jGLEBU153UWOBTfKWxZOMhuzQ+xonApA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "099ccd4a-bc9f-4b8c-b93d-18645ee732d2",
+                            SecurityStamp = "805ef1d3-6514-4959-9d55-320cfc453e5c",
                             TwoFactorEnabled = false,
                             UserName = "client@example.com"
                         });
@@ -330,16 +330,13 @@ namespace Gamma2024.Server.Migrations
 
             modelBuilder.Entity("Gamma2024.Server.Models.EncanLot", b =>
                 {
-                    b.Property<int>("NumeroEncan")
+                    b.Property<int>("IdEncan")
                         .HasColumnType("int");
 
                     b.Property<int>("IdLot")
                         .HasColumnType("int");
 
-                    b.Property<int>("Id")
-                        .HasColumnType("int");
-
-                    b.HasKey("NumeroEncan", "IdLot");
+                    b.HasKey("IdEncan", "IdLot");
 
                     b.HasIndex("IdLot");
 
@@ -745,16 +742,16 @@ namespace Gamma2024.Server.Migrations
 
             modelBuilder.Entity("Gamma2024.Server.Models.EncanLot", b =>
                 {
+                    b.HasOne("Gamma2024.Server.Models.Encan", "Encan")
+                        .WithMany("EncanLots")
+                        .HasForeignKey("IdEncan")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Gamma2024.Server.Models.Lot", "Lot")
                         .WithMany("EncanLots")
                         .HasForeignKey("IdLot")
                         .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("Gamma2024.Server.Models.Encan", "Encan")
-                        .WithMany("EncanLots")
-                        .HasForeignKey("NumeroEncan")
-                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Encan");

@@ -33,5 +33,36 @@ namespace Gamma2024.Server.Extensions
                 };
             }
         }
+
+        public static IEnumerable<IEnumerable<string>> GetNumeroLotsEncan232(this IEnumerable<string> source)
+        {
+            foreach (var line in source)
+            {
+                var columns = line.Split(';');
+
+                var lots = columns[5]
+                    .Split(",")
+                    .Select(a => a.Trim().Replace("lot #", ""))
+                    .ToList();
+
+                yield return lots;
+            }
+        }
+
+        public static IEnumerable<IEnumerable<string>> GetNumeroLotsEncan233(this IEnumerable<string> source)
+        {
+            foreach (var line in source)
+            {
+                var columns = line.Split(';');
+
+                var lots = columns[6]
+                    .Split(",")
+                    .Select(a => a.Trim().Replace("lot #", ""))
+                    .ToList();
+
+                yield return lots;
+            }
+        }
     }
 }
+
