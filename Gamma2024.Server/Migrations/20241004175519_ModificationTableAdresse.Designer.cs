@@ -4,6 +4,7 @@ using Gamma2024.Server.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Gamma2024.Server.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241004175519_ModificationTableAdresse")]
+    partial class ModificationTableAdresse
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -43,6 +46,9 @@ namespace Gamma2024.Server.Migrations
 
                     b.Property<string>("IdApplicationUser")
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<int?>("IdPersonne")
+                        .HasColumnType("int");
 
                     b.Property<int>("Numero")
                         .HasColumnType("int");
@@ -180,7 +186,7 @@ namespace Gamma2024.Server.Migrations
                             Id = "8e445865-a24d-4543-a6c6-9443d048cdb9",
                             AccessFailedCount = 0,
                             Avatar = "/Gamma2024.Server/Avatars/default.png",
-                            ConcurrencyStamp = "68f20caf-b5ab-4e7f-8408-bb4d2fad3dee",
+                            ConcurrencyStamp = "24b7801e-ab42-4128-8e6f-40e5c31ab0c8",
                             Email = "admin@example.com",
                             EmailConfirmed = true,
                             FirstName = "Super",
@@ -189,9 +195,9 @@ namespace Gamma2024.Server.Migrations
                             Name = "Admin",
                             NormalizedEmail = "ADMIN@EXAMPLE.COM",
                             NormalizedUserName = "ADMIN@EXAMPLE.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEA3G9Hm0z17lKkxc598VC0sKIYdC5plFPpht2c/7TAFQRGk4BwUQtiLXildD9aMgbA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEMrPZD8a/uBhjJp7GDeWn1HPcq/ue6FeRq6pJlLraRPYE7zmNK2tJ0JDW7RUJc25QQ==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "b1f3ce05-2edc-471e-a012-f329ddd2519a",
+                            SecurityStamp = "2f124f39-31c9-4134-ab06-2ea151c0a117",
                             TwoFactorEnabled = false,
                             UserName = "admin@example.com"
                         },
@@ -200,7 +206,7 @@ namespace Gamma2024.Server.Migrations
                             Id = "1d8ac862-e54d-4f10-b6f8-638808c02967",
                             AccessFailedCount = 0,
                             Avatar = "/Gamma2024.Server/Avatars/default.png",
-                            ConcurrencyStamp = "c022510a-fbd1-42e8-b8c2-783478fb5589",
+                            ConcurrencyStamp = "e06504a2-77aa-498d-8bb5-db36da8e4674",
                             Email = "client@example.com",
                             EmailConfirmed = true,
                             FirstName = "Jean",
@@ -209,9 +215,9 @@ namespace Gamma2024.Server.Migrations
                             Name = "Dupont",
                             NormalizedEmail = "CLIENT@EXAMPLE.COM",
                             NormalizedUserName = "CLIENT@EXAMPLE.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEN85BggpGmuwtg03FBSv05AtFdJh8//HLqhodkT8JISlEnUTVWD9madTF/UFQ5/oCQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEBcIpeyhJMrPDbdWSL2d+xncN+4vmhHwRvmtcC53NtX73wMmT+2rWhboaiPg5QnudA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "099ccd4a-bc9f-4b8c-b93d-18645ee732d2",
+                            SecurityStamp = "fc4d46b1-37b5-4f74-b7f4-12e7d6aa016c",
                             TwoFactorEnabled = false,
                             UserName = "client@example.com"
                         });
@@ -399,6 +405,10 @@ namespace Gamma2024.Server.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime>("DateCreation")
                         .HasColumnType("datetime2");
 
@@ -433,15 +443,9 @@ namespace Gamma2024.Server.Migrations
                     b.Property<double?>("Mise")
                         .HasColumnType("float");
 
-                    b.Property<string>("Numero")
+                    b.Property<string>("Nom")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<double?>("PrixMinPourVente")
-                        .HasColumnType("float");
-
-                    b.Property<double>("PrixOuverture")
-                        .HasColumnType("float");
 
                     b.Property<double>("ValeurEstimeMax")
                         .HasColumnType("float");
@@ -518,6 +522,9 @@ namespace Gamma2024.Server.Migrations
                     b.Property<string>("Courriel")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("IdAdresse")
+                        .HasColumnType("int");
 
                     b.Property<string>("Nom")
                         .IsRequired()
