@@ -1,280 +1,226 @@
 <template>
-    <div class="pt-5">
-        <div class="d-flex justify-content-between">
-            <h2 class="d-flex-1">Liste des lots</h2>
+    <div class="d-flex justify-content-between">
+        <h2 class="d-flex-1">Liste des lots</h2>
+        <div class="d-flex d-flex-1">
+            <button class="btn bleuMoyenFond btnSurvolerBleuMoyenFond text-white d-flex-1"
+                    type="button"
+                    id="ajouterLotButton">
+                Ajouter un lot
+            </button>
             <div class="dropdown d-flex-1">
-                <button class="btn bleuMoyenFond btnSurvolerBleuMoyenFond text-white dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <button class="btn bleuMoyenFond btnSurvolerBleuMoyenFond text-white dropdown-toggle"
+                        type="button"
+                        id="dropdownMenuButton"
+                        data-toggle="dropdown"
+                        data-bs-toggle="dropdown"
+                        aria-haspopup="true"
+                        aria-expanded="false">
                     Sélectionner les colonnes
                 </button>
-                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                    <li>
-                        <input type="checkbox" id="lotIdCheckbox" checked>
-                        <label class="form-check-label" for="lotIdCheckbox">
-                            Id
-                        </label>
+                <ul class="dropdown-menu">
+                    <li class="d-flex justify-content-start dropdown-item">
+                        <input class="form-check-input toggle-vis  d-flex-1"
+                               type="checkbox"
+                               id="lotIdCheckbox"
+                               checked />
+                        <label class="form-check-label d-flex-1" for="lotIdCheckbox"> Lot Id </label>
                     </li>
-                    <li>
-                        <input type="checkbox" id="lotEncanCheckbox" checked>
-                        <label class="form-check-label" for="lotEncanCheckbox">
-                            Encan
-                        </label>
+                    <li class="d-flex justify-content-start dropdown-item">
+                        <input class="form-check-input toggle-vis  d-flex-1"
+                               type="checkbox"
+                               id="lotEncanCheckbox"
+                               checked />
+                        <label class="form-check-label d-flex-1" for="lotEncanCheckbox"> Encan </label>
                     </li>
-                    <li>
-                        <input type="checkbox" id="lotNumeroCheckbox" checked>
-                        <label class="form-check-label" for="lotNumeroCheckbox">
-                            Lot #
-                        </label>
+                    <li class="d-flex justify-content-start dropdown-item">
+                        <input class="toggle-vis  d-flex-1"
+                               type="checkbox"
+                               id="lotNumeroCheckbox"
+                               checked />
+                        <label class="form-check-label d-flex-1" for="lotNumeroCheckbox"> Lot # </label>
                     </li>
-                    <li>
-                        <input type="checkbox" id="lotPrixOuvertureCheckbox" checked>
-                        <label class="form-check-label" for="lotPrixOuvertureCheckbox">
-                            Prix Ouverture
-                        </label>
+                    <li class="d-flex justify-content-start dropdown-item">
+                        <input class="toggle-vis  d-flex-1"
+                               type="checkbox"
+                               id="lotPrixOuvertureCheckbox"
+                               checked />
+                        <label class="form-check-label d-flex-1" for="lotPrixOuvertureCheckbox"> Prix Ouverture </label>
                     </li>
-                    <li>
-                        <input type="checkbox" id="lotValeurMinPourVendreCheckbox" checked>
-                        <label class="form-check-label" for="lotValeurMinPourVendreCheckbox">
-                            Valeur Minimum Pour Vendre
-                        </label>
+                    <li class="d-flex justify-content-start dropdown-item">
+                        <input class="toggle-vis  d-flex-1"
+                               type="checkbox"
+                               id="lotValeurMinPourVenteCheckbox"
+                               checked />
+                        <label class="form-check-label d-flex-1" for="lotValeurMinPourVenteCheckbox"> Valeur Min Pour Vente </label>
                     </li>
-                    <li>
-                        <input type="checkbox" id="lotEstimationMinCheckbox" checked>
-                        <label class="form-check-label" for="lotEstimationMinCheckbox">
-                            Estimation Minimale
-                        </label>
+                    <li class="d-flex justify-content-start dropdown-item">
+                        <input class="toggle-vis  d-flex-1"
+                               type="checkbox"
+                               id="lotEstimationMinCheckbox"
+                               checked />
+                        <label class="form-check-label d-flex-1" for="lotEstimationMinCheckbox"> Estimation Min </label>
                     </li>
-                    <li>
-                        <input type="checkbox" id="lotEstimationMaxCheckbox" checked>
-                        <label class="form-check-label" for="lotEstimationMaxCheckbox">
-                            Estimation Maximale
-                        </label>
+                    <li class="d-flex justify-content-start dropdown-item">
+                        <input class="toggle-vis  d-flex-1"
+                               type="checkbox"
+                               id="lotEstimationMaxCheckbox"
+                               checked />
+                        <label class="form-check-label d-flex-1" for="lotEstimationMaxCheckbox"> EstimationMax </label>
                     </li>
-                    <li>
-                        <input type="checkbox" id="lotCategorieCheckbox" checked>
-                        <label class="form-check-label" for="lotCategorieCheckbox">
-                            Catégorie
-                        </label>
+                    <li class="d-flex justify-content-start dropdown-item">
+                        <input class="toggle-vis  d-flex-1"
+                               type="checkbox"
+                               id="lotCategorieCheckbox"
+                               checked />
+                        <label class="form-check-label d-flex-1" for="lotCategorieCheckbox"> Catégorie </label>
                     </li>
-                    <li>
-                        <input type="checkbox" id="lotArtisteCheckbox" checked>
-                        <label class="form-check-label" for="lotArtisteCheckbox">
-                            Artiste
-                        </label>
+                    <li class="d-flex justify-content-start dropdown-item">
+                        <input class="toggle-vis  d-flex-1"
+                               type="checkbox"
+                               id="lotArtisteCheckbox"
+                               checked />
+                        <label class="form-check-label d-flex-1" for="lotArtisteCheckbox"> Artiste </label>
                     </li>
-                    <li>
-                        <input type="checkbox" id="lotDimensionCheckbox" checked>
-                        <label class="form-check-label" for="lotDimensionCheckbox">
-                            Dimension
-                        </label>
+                    <li class="d-flex justify-content-start dropdown-item">
+                        <input class="toggle-vis  d-flex-1"
+                               type="checkbox"
+                               id="lotDimensionCheckbox"
+                               checked />
+                        <label class="form-check-label d-flex-1" for="lotDimensionCheckbox"> Dimension </label>
                     </li>
-                    <li>
-                        <input type="checkbox" id="lotDescriptionCheckbox" checked>
-                        <label class="form-check-label" for="lotDimensionCheckbox">
-                            Description
-                        </label>
+                    <li class="d-flex justify-content-start dropdown-item">
+                        <input class="toggle-vis  d-flex-1"
+                               type="checkbox"
+                               id="lotDescriptionCheckbox"
+                               checked />
+                        <label class="form-check-label d-flex-1" for="lotDescriptionCheckbox"> Description </label>
                     </li>
-                    <li>
-                        <input type="checkbox" id="lotMediumCheckbox" checked>
-                        <label class="form-check-label" for="lotMediumCheckbox">
-                            Medium
-                        </label>
+                    <li class="d-flex justify-content-start dropdown-item">
+                        <input class="toggle-vis  d-flex-1"
+                               type="checkbox"
+                               id="lotMediumCheckbox"
+                               checked />
+                        <label class="form-check-label d-flex-1" for="lotMediumCheckbox"> Medium </label>
                     </li>
-                    <li>
-                        <input type="checkbox" id="lotLivraisonCheckbox" checked>
-                        <label class="form-check-label" for="lotLivraisonCheckbox">
-                            Livraison
-                        </label>
+                    <li class="d-flex justify-content-start dropdown-item">
+                        <input class="toggle-vis  d-flex-1"
+                               type="checkbox"
+                               id="lotLivraisonCheckbox"
+                               checked />
+                        <label class="form-check-label d-flex-1" for="lotLivraisonCheckbox"> Livraison </label>
+                    </li>
+                    <li class="d-flex justify-content-start dropdown-item">
+                        <input class="toggle-vis  d-flex-1"
+                               type="checkbox"
+                               id="lotModifierCheckbox"
+                               checked />
+                        <label class="form-check-label d-flex-1" for="lotModifierCheckbox"> Modifier </label>
+                    </li>
+                    <li class="d-flex justify-content-start dropdown-item">
+                        <input class="toggle-vis  d-flex-1"
+                               type="checkbox"
+                               id="lotSupprimerCheckbox"
+                               checked />
+                        <label class="form-check-label d-flex-1" for="lotSupprimerCheckbox"> Supprimer </label>
                     </li>
                 </ul>
             </div>
         </div>
-        <div class="d-flex">
-            <div class="table-responsive d-flex-1 d-flex flex-column">
-                <table class="table table-striped flex-grow-1 w-100">
-                    <colgroup>
-                        <col span="1" id="lotIdColonne"> <!--style="visibility:collapse;"-->
-                        <col span="1" id="lotEncanColonne">
-                        <col span="1" id="lotNumeroColonne">
-                        <col span="1" id="lotPrixOuvertureColonne">
-                        <col span="1" id="lotValeurMinPourVendreColonne">
-                        <col span="1" id="lotEstimationMinColonne">
-                        <col span="1" id="lotEstimationMaxColonne">
-                        <col span="1" id="lotCategorieColonne">
-                        <col span="1" id="lotArtisteColonne">
-                        <col span="1" id="lotDimensionColonne">
-                        <col span="1" id="lotDescriptionColonne">
-                        <col span="1" id="lotMediumColonne">
-                        <col span="1" id="lotLivraisonColonne">
-                    </colgroup>
-                    <thead>
-                        <tr>
-                            <th class="lotId">Lot Id</th>
-                            <th class="lotEncan">Encan</th>
-                            <th class="lotNumero">Lot #</th>
-                            <th class="lotPrixOuverture">Prix Ouverture</th>
-                            <th class="lotValeurMinPourVendre">Valeur Min Pour Vente</th>
-                            <th class="lotEstimationMin">Estimation Min</th>
-                            <th class="lotEstimationMax">Estimation Max</th>
-                            <th class="lotCategorie">Categorie</th>
-                            <th class="lotArtiste">Artiste</th>
-                            <th class="lotDimension">Dimension (en po)</th>
-                            <th class="lotDescription">Description</th>
-                            <th class="lotMedium">Medium</th>
-                            <th class="lotLivraison">Livraison</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td class="lotId">1</td>
-                            <td class="lotEncan">232</td>
-                            <td class="lotNumero">1</td>
-                            <td class="lotPrixOuverture">200$</td>
-                            <td class="lotValeurMinPourVendre"></td>
-                            <td class="lotEstimationMin">600$</td>
-                            <td class="lotEstimationMax">800$</td>
-                            <td class="lotCategorie">Art-Paintings</td>
-                            <td class="lotArtiste">Guy Paquet</td>
-                            <td class="lotDimension">12 x 16</td>
-                            <td class="lotDescription">1984/La nouvelle pratique</td>
-                            <td class="lotMedium">Huile sur panneau</td>
-                            <td class="lotLivraison">oui</td>
-                        </tr>
-                        <tr>
-                            <td class="lotId">2</td>
-                            <td class="lotEncan">232</td>
-                            <td class="lotNumero">1a</td>
-                            <td class="lotPrixOuverture">2200$</td>
-                            <td class="lotValeurMinPourVendre">3800$</td>
-                            <td class="lotEstimationMin">3500$</td>
-                            <td class="lotEstimationMax">5000$</td>
-                            <td class="lotCategorie">Art-Paintings</td>
-                            <td class="lotArtiste">Vladimir Horik</td>
-                            <td class="lotDimension">20 x 30</td>
-                            <td class="lotDescription">La messe du soir</td>
-                            <td class="lotMedium">Huile sur panneau</td>
-                            <td class="lotLivraison">oui</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <!--<div class="d-flex d-flex-1" style="background-color: red;">
-                <div class="d-flex-1 bleuMoyenFond ongletEncans">
-                    <button class="btn d-flex-1 bleuMoyenFond btnSurvolerBleuMoyenFond text-white boutonOngletEncans" type="button">
-                        Encans
-                    </button>
-                </div>
-            </div>-->
-        </div>
     </div>
+    <DataTable ref="table" :data="data" class="display exemple">
+        <thead>
+            <tr>
+                <th>Lot Id</th>
+                <th>Encan</th>
+                <th>Lot #</th>
+                <th>Prix Ouverture</th>
+                <th>Valeur Min Pour Vente</th>
+                <th>Estimation Min</th>
+                <th>Estimation Max</th>
+                <th>Catégorie</th>
+                <th>Artiste</th>
+                <th>Dimension</th>
+                <th>Description</th>
+                <th>Medium</th>
+                <th>Livraison</th>
+                <th>Modifier</th>
+                <th>Supprimer</th>
+            </tr>
+        </thead>
+    </DataTable>
 </template>
 
 <style>
+    @import "datatables.net-dt";
+
+    button {
+        margin: 5px;
+    }
+
     table {
         border-collapse: collapse;
-        margin-bottom: 50px;
-        font-size: 15px;
+        font-size: 13px;
         text-align: center;
     }
 
-    table, th, td {
-        border: 1px solid black;
-    }
+        table label {
+            font-size: 13px;
+        }
 
-    th, td {
-        padding: 5px;
+    li label {
+        font-size: 13px;
+        padding-left: 5px;
     }
 
     th {
         font-weight: bold;
+        text-align: center;
     }
 
-    col.cacherColonne {
-        visibility: collapse;
+    td {
+        text-align: center;
     }
-
-    /*.ongletEncans {
-        height: 200px;
-        width: 100px;
-    }
-
-    .boutonOngletEncans {
-        position: absolute;
-        left: 10px;
-        top: 50px;
-        border-top-left-radius: 50px;
-        border-top-right-radius: 50px;
-        height: 40px;
-        width: 180px;
-        transform: rotate(-90deg);
-    }*/
 </style>
 
 <script setup>
-    import { onMounted } from 'vue';
+    import { onMounted, ref } from "vue";
+    import DataTable from "datatables.net-vue3";
+    import DataTablesCore from "datatables.net-dt";
+    import "datatables.net-select-dt";
+    import "datatables.net-responsive-dt";
+
+    DataTable.use(DataTablesCore);
+    let dt;
+    const table = ref();
+
+    let data = ref([
+        [1, 232, "1", "200$", "", "600$", "800$", "Paintings", "Guy Paquet", "12po x 16po", "1984/La nouvelle pratique", "Huile sur panneau", "Oui", "Modifier", "Supprimer"],
+        [2, 232, "1a", "2200$", "3800$", "3500$", "5000$", "Paintings", "Vladimir Horik", "20po x 30po", "La messe du soir", "Huile sur panneau", "Oui", "Modifier", "Supprimer"],
+        [3, 232, "1b", "400$", "", "700$", "1200$", "Paintings", "Vladimir Horik", "12po x 16po", "1979/Paysage", "Huile sur panneau", "Oui", "Modifier", "Supprimer"],
+        [4, 232, "2", "150$", "", "250$", "350$", "Paintings", "Marcel Poirier", "16po x 20po", "1979/Début d'automne", "Huile sur toile", "Oui", "Modifier", "Supprimer"],
+        [5, 232, "3", "3000$", "", "5500$", "6500$", "Paintings", "Normand Hudon", "16po x 20po", "1989/Le beau bonhomme", "Huile sur panneau", "Oui", "Modifier", "Supprimer"],
+        [6, 232, "4", "1500$", "", "3000$", "4000$", "Paintings", "Normand Hudon", "16po x 12po", "1988/Coup de vent", "Huile sur panneau", "Oui", "Modifier", "Supprimer"],
+        [7, 232, "5", "800$", "", "1500$", "2000$", "Paintings", "Normand Hudon", "12po x 16po", "1990/Le père, le fils et le saint esprit. Amen", "Huile sur panneau", "Oui", "Modifier", "Supprimer"],
+        [8, 232, "6", "800$", "", "1500$", "2000$", "Paintings", "Claude Langevin", "20po x 24po", "Sous-bois", "Huile sur toile", "Oui", "Modifier", "Supprimer"],
+        [9, 233, "1", "200$", "", "750$", "1250$", "Paintings", "Denis Juneau", "26po x 20po", "1979/Envolée", "Aquarelle", "Oui", "Modifier", "Supprimer"],
+        [10, 233, "2", "600$", "", "1400$", "1800$", "Paintings", "Serge Lemoyne", "12po x 12po", "1996/Hommage à Matis", "Huile sur panneau", "Oui", "Modifier", "Supprimer"],
+        [11, 233, "3", "120$", "", "400$", "600$", "Paintings", "Marc Siméon", "48po x 40po", "Pointe bleue", "Huile sur toile", "Oui", "Modifier", "Supprimer"],
+        [12, 233, "4", "150$", "", "400$", "600$", "Paintings", "Jean Gaudreau", "40po x 28po", "1996/Visage", "Huile sur toile", "Oui", "Modifier", "Supprimer"],
+        [13, 233, "5", "350$", "", "600$", "800$", "Paintings", "Jean-Paul Jérome", "5.5po x 7po", "1996/Abstraction", "Encre", "Oui", "Modifier", "Supprimer"],
+        [14, 233, "6", "3500$", "6500$", "5000$", "7000$", "Lithograph", "Jean-Paul Riopelle", "29po x 41po", "Jazz", "Lithographie", "Oui", "Modifier", "Supprimer"],
+        [15, 233, "7", "1750$", "3000$", "2500$", "3500$", "Lithograph", "Jean-Paul Riopelle", "23po x 28po", "19781/Les oies 1", "Lithographie (signé dans la plaque)", "Oui", "Modifier", "Supprimer"],
+    ]);
 
     onMounted(() => {
-        document.querySelector("#lotIdCheckbox")
-            .addEventListener("change", function () {
-                document.querySelector("#lotIdColonne").classList.toggle("cacherColonne");
-            })
-        document.querySelector("#lotEncanCheckbox")
-            .addEventListener("change", function () {
-                document.querySelector("#lotEncanColonne").classList.toggle("cacherColonne");
-            })
-        document.querySelector("#lotNumeroCheckbox")
-            .addEventListener("change", function () {
-                document.querySelector("#lotNumeroColonne").classList.toggle("cacherColonne");
-            })
-        document.querySelector("#lotPrixOuvertureCheckbox")
-            .addEventListener("change", function () {
-                document.querySelector("#lotPrixOuvertureColonne").classList.toggle("cacherColonne");
-            })
-        document.querySelector("#lotValeurMinPourVendreCheckbox")
-            .addEventListener("change", function () {
-                document.querySelector("#lotValeurMinPourVendreColonne").classList.toggle("cacherColonne");
-            })
-        document.querySelector("#lotEstimationMinCheckbox")
-            .addEventListener("change", function () {
-                document.querySelector("#lotEstimationMinColonne").classList.toggle("cacherColonne");
-            })
-        document.querySelector("#lotEstimationMaxCheckbox")
-            .addEventListener("change", function () {
-                document.querySelector("#lotEstimationMaxColonne").classList.toggle("cacherColonne");
-            })
-        document.querySelector("#lotCategorieCheckbox")
-            .addEventListener("change", function () {
-                document.querySelector("#lotCategorieColonne").classList.toggle("cacherColonne");
-            })
-        document.querySelector("#lotArtisteCheckbox")
-            .addEventListener("change", function () {
-                document.querySelector("#lotArtisteColonne").classList.toggle("cacherColonne");
-            })
-        document.querySelector("#lotDimensionCheckbox")
-            .addEventListener("change", function () {
-                document.querySelector("#lotDimensionColonne").classList.toggle("cacherColonne");
-            })
-        document.querySelector("#lotDescriptionCheckbox")
-            .addEventListener("change", function () {
-                document.querySelector("#lotDescriptionColonne").classList.toggle("cacherColonne");
-            })
-        document.querySelector("#lotMediumCheckbox")
-            .addEventListener("change", function () {
-                document.querySelector("#lotMediumColonne").classList.toggle("cacherColonne");
-            })
-        document.querySelector("#lotLivraisonCheckbox")
-            .addEventListener("change", function () {
-                document.querySelector("#lotLivraisonColonne").classList.toggle("cacherColonne");
-            })
-    })
+        dt = table.value.dt;
+        document.querySelectorAll(".toggle-vis").forEach((el, index) => {
+            el.addEventListener("click", function (e) {
 
-    //const listeDesCheckboxes = document.querySelector("input");
-    //const listeDesColonnes = document.querySelector("col");
+                dt.column(index).visible(
+                    !dt.column(index).visible()
+                );
+            });
 
-    //listeDesCheckboxes.forEach(attribuerLesCheckboxesAuxColonnes);
-    //function attribuerLesCheckboxesAuxColonnes(item, index) {
-    //    item.addEventListener("change", function () { basculerLaPresentationDeLaColonne(index) })
-    //}
-    //function basculerLaPresentationDeLaColonne(index) {
-    //    listeDesColonnes[index].classList.toggle("cacherColonne");
-    //}
+        });
+    });
 </script>

@@ -72,27 +72,24 @@ const routes = [
 ];
 
 const router = createRouter({
-  history: createWebHistory(),
-  routes,
-  scrollBehavior(to, from, savedPosition) {
-    return { top: 0 };
-  },
-});
+    history: createWebHistory(),
+    routes,
+    scrollBehavior(to, from, savedPosition) {
+        return { top: 0 }
+    }
+})
 
 router.beforeEach((to, from, next) => {
   const isLoggedIn = store.state.isLoggedIn;
   const userRoles = store.state.roles;
 
-  if (to.meta.requiresAuth && !isLoggedIn) {
-    next("/connexion");
-  } else if (
-    to.meta.requiredRole &&
-    !userRoles.includes(to.meta.requiredRole)
-  ) {
-    next("/unauthorized");
-  } else {
-    next();
-  }
-});
+    if (to.meta.requiresAuth && !isLoggedIn) {
+        next('/connexion')
+    } else if (to.meta.requiredRole && !userRoles.includes(to.meta.requiredRole)) {
+        next('/unauthorized')
+    } else {
+        next()
+    }
+})
 
 export default router;
