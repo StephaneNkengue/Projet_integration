@@ -1,5 +1,5 @@
 <template>
-    <router-link class="text-decoration-none" to="AffichageDetailsLot">
+    <router-link class="text-decoration-none" to="DetailsLot">
         <div class="card">
             <div class="card-body align-items-middle">
                 <div class="d-flex align-items-middle justify-content-between">

@@ -51,37 +51,49 @@
                                 </router-link>
                             </li>
 
-                            <li class="nav-item">
-                                <router-link to="Accueil" class="text-decoration-none">
-                                    <a class="nav-link">
-                                        Encans passés
-                                    </a>
-                                </router-link>
-                            </li>
-                            <li class="nav-item d-md-none">
-                                <router-link to="Accueil" class="text-decoration-none">
-                                    <a class="nav-link">
-                                        Déroulement d'un encan
-                                    </a>
-                                </router-link>
-                            </li>
-                            <li class="nav-item d-md-none" v-if="estAdmin">
-                                <router-link to="Accueil" class="text-decoration-none">
-                                    <a class="nav-link">
-                                        Tableau de bord
-                                    </a>
-                                </router-link>
-                            </li>
+
                         </ul>
 
                         <div class="d-flex justify-content-center gap-3">
-                            <!--<router-link to="Inscription" v-if="estConnecte">-->
                             <router-link to="Inscription" v-if="!estConnecte">
-                                <button class="btn btn-outline bleuMoyenFond text-white" type="button">Inscription</button>
+                                <button class="btn btn-outline bleuMoyenFond text-white py-0 butttonNavBar btnSurvolerBleuMoyenFond" type="button">Inscription</button>
                             </router-link>
                             <router-link to="Connexion" v-if="!estConnecte">
-                                <button class="btn btn-outline bleuMoyenFond text-white" type="button">Connexion</button>
+                                <button class="btn btn-outline bleuMoyenFond text-white py-0 butttonNavBar btnSurvolerBleuMoyenFond" type="button">Connexion</button>
                             </router-link>
+                            <div class="collapse navbar-collapse dropdown text-white" v-if="estAdmin">
+                                <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Tableau de bord
+                                </a>
+                                <ul class="dropdown-menu bleuMarinFond text-center">
+                                    <li>
+                                        <router-link to="Inventaire" class="text-decoration-none">
+                                            <a class="dropdown-item contenuListeDropdown">Inventaire</a>
+                                        </router-link>
+                                    </li>
+                                    <li>
+                                        <router-link to="Accueil" class="text-decoration-none">
+                                            <a class="dropdown-item contenuListeDropdown">Encans</a>
+                                        </router-link>
+                                    </li>
+                                    <li>
+                                        <router-link to="Accueil" class="text-decoration-none">
+                                            <a class="dropdown-item contenuListeDropdown">Vendeurs</a>
+                                        </router-link>
+                                    </li>
+                                    <li>
+                                        <router-link to="Accueil" class="text-decoration-none">
+                                            <a class="dropdown-item contenuListeDropdown">Ventes</a>
+                                        </router-link>
+                                    </li>
+                                    <li>
+                                        <router-link to="Accueil" class="text-decoration-none">
+                                            <a class="dropdown-item contenuListeDropdown">Profils de membre</a>
+                                        </router-link>
+                                    </li>
+                                </ul>
+                            </div>
+
                             <router-link to="Modification" v-if="estConnecte" class="text-decoration-none text-white d-flex align-items-center gap-3">
                                 <a class="nav-link">{{ username }}</a>
                                 <img :src="avatarUrl" alt="Avatar" height="40" />
@@ -115,57 +127,58 @@
 </template>
 
 <script setup>
-import { computed, watch, ref } from 'vue'
-import { useStore } from 'vuex'
+    import { computed, watch, ref } from 'vue'
+    import { useStore } from 'vuex'
+    import api from '@/services/api'
 
-const store = useStore()
+    const store = useStore()
 
-const estConnecte = computed(() => store.state.isLoggedIn)
-const estAdmin = computed(() => store.state.roles.includes('Administrateur'))
-const estClient = computed(() => store.state.roles.includes('Client'))
-const username = computed(() => {
-    const user = store.state.user;
-    return user && user.pseudonym ? user.pseudonym : 'USERNAME';
-})
-const avatarUrl = computed(() => {
-    if (store.state.user && store.state.user.photo) {
-        if (store.state.user.photo.startsWith('http')) {
-            return store.state.user.photo;
-        } else {
-            // Utilisation d'une URL par défaut si l'API n'est pas disponible
-            return `/images/${store.state.user.photo}`;
+    const estConnecte = computed(() => store.state.isLoggedIn)
+    const estAdmin = computed(() => store.state.roles.includes('Administrateur'))
+    const estClient = computed(() => store.state.roles.includes('Client'))
+    const username = computed(() => {
+        const user = store.state.user;
+        return user && user.pseudonym ? user.pseudonym : 'USERNAME';
+    })
+
+    const avatarUrl = computed(() => {
+        if (store.state.user && store.state.user.photo) {
+            if (store.state.user.photo.startsWith('http')) {
+                return store.state.user.photo;
+            } else {
+                return `${api.defaults.baseURL.replace('/api', '')}${store.state.user.photo}`;
+            }
+        }
+        return '/icons/Avatar.png';
+    });
+
+    const currentUser = ref(null)
+
+    watch(() => store.state.user, (newUser) => {
+        console.log("User mis à jour dans le store:", newUser)
+        currentUser.value = newUser
+    }, { deep: true, immediate: true })
+
+    // Fonction pour rafraîchir les informations de l'utilisateur
+    const refreshUserInfo = async () => {
+        if (estConnecte.value) {
+            try {
+                await store.dispatch('fetchClientInfo')
+            } catch (error) {
+                console.error("Erreur lors de la récupération des informations client:", error)
+            }
         }
     }
-    return '/icons/Avatar.png'; 
-});
 
-const currentUser = ref(null)
-
-watch(() => store.state.user, (newUser) => {
-    console.log("User mis à jour dans le store:", newUser)
-    currentUser.value = newUser
-}, { deep: true, immediate: true })
-
-// Fonction pour rafraîchir les informations de l'utilisateur
-const refreshUserInfo = async () => {
-    if (estConnecte.value) {
-        try {
-            await store.dispatch('fetchClientInfo')
-        } catch (error) {
-            console.error("Erreur lors de la récupération des informations client:", error)
+    // Observer les changements dans l'état de connexion
+    watch(() => store.state.isLoggedIn, (newValue) => {
+        if (newValue) {
+            refreshUserInfo()
         }
-    }
-}
+    })
 
-// Observer les changements dans l'état de connexion
-watch(() => store.state.isLoggedIn, (newValue) => {
-    if (newValue) {
-        refreshUserInfo()
-    }
-})
-
-// Définition de activationRecherche
-const activationRecherche = ref(false)
+    // Définition de activationRecherche
+    const activationRecherche = ref(false)
 
 </script>
 

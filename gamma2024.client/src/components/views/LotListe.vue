@@ -1,5 +1,5 @@
 <template>
-    <router-link class="text-decoration-none" to="AffichageDetailsLot">
+    <router-link class="text-decoration-none" to="DetailsLot">
         <div class="card">
             <div class="card-body">
                 <div class="d-flex flex-row gap-5 flex-wrap justify-content-between">
