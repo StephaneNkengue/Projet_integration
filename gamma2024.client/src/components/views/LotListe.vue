@@ -13,7 +13,7 @@
                     <div class="d-flex align-items-center gap-3 ">
                         <p class=" pe-2 mt-1 mb-0">Lot {{lot.code}}</p>
                         <p class=" pe-2 mt-1 mb-0">{{lot.artiste}}</p>
-                        <p class=" pe-2 mt-1 mb-0">{{lot.hauteur}} X {{lot.largeur}} po</p>
+                        <p class=" pe-2 mt-1 mb-0">{{lot.dimension}} po</p>
                     </div>
 
 
@@ -50,8 +50,7 @@
     let lotRecu = {
         code: "1a",
         artiste: "Nom de l'artiste",
-        hauteur: 12,
-        largeur: 13,
+        dimension: "12 x 13",
         valeurEstimeMin: 1000.00,
         valeurEstimeMax: 2000.00,
         mise: 1100.03,
