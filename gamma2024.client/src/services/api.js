@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const apiUrls = [
-    'https://sqlinfocg.cegepgranby.qc.ca/2135621/api',
+    //'https://sqlinfocg.cegepgranby.qc.ca/2135621/api',
     'https://localhost:7206/api',
     'http://localhost:5121/api',
     'http://localhost:5122/api',
@@ -12,7 +12,7 @@ let workingBaseURL = null;
 async function findWorkingApi() {
     for (const baseURL of apiUrls) {
         try {
-            const response = await axios.get(`${baseURL}/health`, { 
+            const response = await axios.get(`${baseURL}/health`, {
                 timeout: 5000,
                 withCredentials: true
             });
