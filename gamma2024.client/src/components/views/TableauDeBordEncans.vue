@@ -8,7 +8,7 @@
                 Ajouter un lot
             </button>
         </div>
-        <DataTable ref="table" :data="data" :options="options" class="display">
+        <DataTable id="test" ref="table" :options="options" class="display">
             <thead>
                 <tr>
                     <th>Encan</th>
@@ -31,6 +31,7 @@
     import DataTablesCore from "datatables.net-dt";
     import "datatables.net-select-dt";
     import "datatables.net-responsive-dt";
+    import { useStore } from "vuex";
 
     DataTable.use(DataTablesCore);
     let dt;
@@ -41,6 +42,21 @@
             url: 'https://cdn.datatables.net/plug-ins/2.1.8/i18n/fr-FR.json'
         }
     };
+
+    const store = useStore();
+    const response = await store.dispatch("fetchEncanInfo");
+
+    new DataTable('#test', {
+        columns: [
+            { title: 'NumeroEncan' },
+            { title: 'DateDebut' },
+            { title: 'DateFin' },
+            { title: 'DateDebutSoireeCloture' },
+            { title: 'DateFinSoireeCloture' },
+        ],
+        data: response
+    });
+
 </script>
 
 <style scoped>
