@@ -31,6 +31,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<ClientInscriptionService>();
 builder.Services.AddScoped<ClientModificationService>();
+builder.Services.AddScoped<EncanService>();
 
 builder.Services.Configure<EmailConfiguration>(
     builder.Configuration.GetSection("EmailConfiguration"));

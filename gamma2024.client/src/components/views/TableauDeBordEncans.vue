@@ -8,7 +8,7 @@
                 Ajouter un lot
             </button>
         </div>
-        <DataTable id="test" ref="table" :options="options" class="display">
+        <DataTable ref="table" :data="data" :options="options" class="display">
             <thead>
                 <tr>
                     <th>Encan</th>
@@ -21,10 +21,16 @@
                     <th></th>
                 </tr>
             </thead>
+            <tr v-for="(encan, index) in test" :key="encan.id">
+                <td>{{encan.numeroEncan}}</td>
+                <td>{{encan.dateDebut}}</td>
+                <td>{{encan.dateFin}}</td>
+                <td>{{encan.dateDebutSoireeCloture}}</td>
+                <td>{{encan.dateFinSoireeCloture}}</td>
+            </tr>
         </DataTable>
     </div>
 </template>
-
 <script setup>
     import { onMounted, ref } from "vue";
     import DataTable from "datatables.net-vue3";
@@ -33,6 +39,20 @@
     import "datatables.net-responsive-dt";
     import { useStore } from "vuex";
 
+    const store = useStore();
+    const test = ref([]);
+    onMounted(async () => {
+
+        try {
+            test.value = await store.dispatch("fetchEncanInfo");
+        }
+        catch (erreur) {
+            console.log("Erreur encans" + erreur);
+        }
+
+
+    });
+
     DataTable.use(DataTablesCore);
     let dt;
     const table = ref();
@@ -40,24 +60,11 @@
         ordering: false,
         language: {
             url: 'https://cdn.datatables.net/plug-ins/2.1.8/i18n/fr-FR.json'
-        }
+        },
     };
 
-    const store = useStore();
-    const response = await store.dispatch("fetchEncanInfo");
 
-    new DataTable('#test', {
-        columns: [
-            { title: 'NumeroEncan' },
-            { title: 'DateDebut' },
-            { title: 'DateFin' },
-            { title: 'DateDebutSoireeCloture' },
-            { title: 'DateFinSoireeCloture' },
-        ],
-        data: response
-    });
 
 </script>
-
 <style scoped>
 </style>

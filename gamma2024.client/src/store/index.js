@@ -162,7 +162,7 @@ const store = createStore({
 
         async fetchEncanInfo({ commit }) {
             try {
-                const response = await api.get('/encans/cherchertouslesencans');
+                const response = await api.get('/encans/cherchertousencans');
                 console.log("Données reçues de l'API:", response.data); // Pour le débogage
 
                 return response.data;
