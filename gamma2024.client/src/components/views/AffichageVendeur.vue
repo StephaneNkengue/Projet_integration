@@ -1,25 +1,36 @@
 <template>
     <div class="container mt-5">
-      <h2>Gestion des vendeurs</h2>
-      <router-link to="/vendeurcreation" class="btn btn-primary mb-3">Ajouter un vendeur</router-link>
-      <table class="table">
-        <thead>
+      <h1 class="text-center mb-4 fw-bold display-4">Gestion des vendeurs</h1>
+      
+      <router-link to="/vendeurcreation" class="btn btn-lg btn-block mb-4 w-100 bleuMarinSecondaireFond text-white">
+        Ajouter un vendeur
+      </router-link>
+      
+      <table class="table table-striped">
+        <thead class="table-dark">
           <tr>
-            <th>Nom</th>
-            <th>Prénom</th>
-            <th>Courriel</th>
-            <th>Téléphone</th>
-            <th>Actions</th>
+            <th scope="col">#</th>
+            <th scope="col">Nom</th>
+            <th scope="col">Prénom</th>
+            <th scope="col">Courriel</th>
+            <th scope="col">Téléphone</th>
+            <th scope="col">Actions</th>
           </tr>
         </thead>
         <tbody>
-          <tr v-for="vendeur in vendeurs" :key="vendeur.id">
+          <tr v-for="(vendeur, index) in vendeurs" :key="vendeur.id">
+            <th scope="row">{{ index + 1 }}</th>
             <td>{{ vendeur.nom }}</td>
             <td>{{ vendeur.prenom }}</td>
             <td>{{ vendeur.courriel }}</td>
             <td>{{ vendeur.telephone }}</td>
             <td>
-              <router-link :to="`/vendeurmodification/${vendeur.id}`" class="btn btn-sm btn-info">Modifier</router-link>
+              <router-link 
+                :to="{ name: 'vendeurModification', params: { id: vendeur.id } }" 
+                class="btn btn-primary btn-lg bleuMarinSecondaireFond"
+              >
+                Modifier
+              </router-link>            
             </td>
           </tr>
         </tbody>
@@ -42,3 +53,31 @@
     }
   });
   </script>
+  
+  <style scoped>
+  .bleuMarinSecondaireFond {
+    background-color: #1e3a8a; /* Assurez-vous que cette couleur correspond à celle de votre navbar */
+    border-color: #1e3a8a;
+  }
+  .bleuMarinSecondaireFond:hover {
+    background-color: #4d6dc4; /* Une teinte légèrement plus foncée pour l'effet hover */
+    border-color: #1e3a8a;
+  }
+  
+  /* Ajoutez ces styles pour le texte */
+  .container {
+    font-family: Arial, sans-serif; /* Utilisez la même police que votre navbar */
+  }
+  
+  h1, .btn {
+    color: #ffffff; /* Couleur du texte blanc, ajustez si nécessaire */
+  }
+  
+  .table {
+    color: #333333; /* Couleur du texte foncé pour le contenu du tableau */
+  }
+  
+  h1 {
+    color: #1e3a8a; /* Assurez-vous que cette couleur est visible sur votre fond */
+  }
+  </style>

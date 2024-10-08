@@ -27,28 +27,31 @@ namespace Gamma2024.Server.Services
 
             try
             {
-                var vendeur = new Vendeur
-                {
-                    Nom = model.Nom,
-                    Prenom = model.Prenom,
-                    Courriel = model.Courriel,
-                    Telephone = model.Telephone
-                };
-
-                _context.Vendeurs.Add(vendeur);
-                await _context.SaveChangesAsync();
-
+                // Créer l'adresse d'abord
                 var adresse = new Adresse
                 {
                     Numero = int.Parse(model.Adresse.NumeroCivique),
                     Rue = model.Adresse.Rue,
                     Ville = model.Adresse.Ville,
                     Province = model.Adresse.Province,
-                    CodePostal = model.Adresse.CodePostal,
-                    IdVendeur = vendeur.Id
+                    Pays = model.Adresse.Pays,
+                    CodePostal = model.Adresse.CodePostal 
                 };
 
                 _context.Adresses.Add(adresse);
+                await _context.SaveChangesAsync();
+
+                // Ensuite, créer le vendeur avec l'ID de l'adresse
+                var vendeur = new Vendeur
+                {
+                    Nom = model.Nom,
+                    Prenom = model.Prenom,
+                    Courriel = model.Courriel,
+                    Telephone = model.Telephone,
+                    AdresseId = adresse.Id
+                };
+
+                _context.Vendeurs.Add(vendeur);
                 await _context.SaveChangesAsync();
 
                 await transaction.CommitAsync();
@@ -58,6 +61,7 @@ namespace Gamma2024.Server.Services
             catch (Exception ex)
             {
                 await transaction.RollbackAsync();
+                // Log l'exception complète ici
                 return (false, $"Une erreur est survenue lors de la création du vendeur : {ex.Message}");
             }
         }
@@ -92,6 +96,7 @@ namespace Gamma2024.Server.Services
                     adresse.Rue = model.Adresse.Rue;
                     adresse.Ville = model.Adresse.Ville;
                     adresse.Province = model.Adresse.Province;
+                    adresse.Pays = model.Adresse.Pays;
                     adresse.CodePostal = model.Adresse.CodePostal;
                 }
 
@@ -131,6 +136,7 @@ namespace Gamma2024.Server.Services
                     Rue = vendeur.Adresse.Rue,
                     Ville = vendeur.Adresse.Ville,
                     Province = vendeur.Adresse.Province,
+                    Pays = vendeur.Adresse.Pays,
                     CodePostal = vendeur.Adresse.CodePostal
                 }
             };
@@ -153,6 +159,7 @@ namespace Gamma2024.Server.Services
                         Rue = v.Adresse.Rue,
                         Ville = v.Adresse.Ville,
                         Province = v.Adresse.Province,
+                        Pays = v.Adresse.Pays,
                         CodePostal = v.Adresse.CodePostal
                     }
                 })

@@ -72,6 +72,14 @@
                                     </a>
                                 </router-link>
                             </li>
+                            <!-- Ajoutez cet élément de menu pour l'administration -->
+                            <li class="nav-item" v-if="estAdmin">
+                                <router-link to="AffichageVendeurs" class="text-decoration-none">
+                                    <a class="nav-link">
+                                        Administration
+                                    </a>
+                                </router-link>
+                            </li>
                         </ul>
 
                         <div class="d-flex justify-content-center gap-3">
@@ -125,22 +133,10 @@ import { useStore } from 'vuex'
 const store = useStore()
 
 const estConnecte = computed(() => store.state.isLoggedIn)
-const estAdmin = computed(() => store.state.roles.includes('Administrateur'))
-const estClient = computed(() => store.state.roles.includes('Client'))
-const username = computed(() => {
-    const user = store.state.user;
-    return user && user.pseudonym ? user.pseudonym : 'USERNAME';
-})
-const avatarUrl = computed(() => {
-    if (store.state.user && store.state.user.photo) {
-        if (store.state.user.photo.startsWith('http')) {
-            return store.state.user.photo;
-        } else {
-            return '/icons/Avatar.png';
-        }
-    }
-    return '/icons/Avatar.png'; 
-});
+const estAdmin = computed(() => store.getters.isAdmin)
+const estClient = computed(() => store.getters.isClient)
+const username = computed(() => store.getters.username)
+const avatarUrl = computed(() => store.getters.avatarUrl)
 
 const currentUser = ref(null)
 

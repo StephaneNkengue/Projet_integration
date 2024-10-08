@@ -215,7 +215,7 @@ namespace Gamma2024.Server.Data
                 SecurityStamp = Guid.NewGuid().ToString(),
                 Name = "Admin",
                 FirstName = "Super",
-                Avatar = "/Gamma2024.Server/Avatars/default.png",
+                Avatar = "/Avatars/default.png", 
                 IdAdresse = 1
 
             };
@@ -232,7 +232,7 @@ namespace Gamma2024.Server.Data
                 SecurityStamp = Guid.NewGuid().ToString(),
                 Name = "Dupont",
                 FirstName = "Jean",
-                Avatar = "/Gamma2024.Server/Avatars/default.png",
+                Avatar = "/Avatars/default.png", 
                 IdAdresse = 2
 
             };

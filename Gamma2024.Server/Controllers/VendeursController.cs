@@ -23,17 +23,25 @@ namespace Gamma2024.Server.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage);
+                return BadRequest(new { success = false, message = "Validation failed", errors = errors });
             }
 
-            var (success, message) = await _vendeurService.CreerVendeur(model);
-            if (success)
+            try
             {
-                return Ok(new { success = true, message = message });
+                var (success, message) = await _vendeurService.CreerVendeur(model);
+                if (success)
+                {
+                    return Ok(new { success = true, message = message });
+                }
+                else
+                {
+                    return BadRequest(new { success = false, message = message });
+                }
             }
-            else
+            catch (Exception ex)
             {
-                return BadRequest(new { success = false, message = message });
+                return StatusCode(500, new { success = false, message = "Une erreur interne s'est produite", details = ex.Message });
             }
         }
 

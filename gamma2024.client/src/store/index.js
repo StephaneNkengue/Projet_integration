@@ -5,24 +5,28 @@ import { toast } from 'vue3-toastify';
 const store = createStore({
     state() {
         return {
-            isLoggedIn: false,
-            user: null,
-            roles: [],
-            token: null
+            isLoggedIn: localStorage.getItem('isLoggedIn') === 'true',
+            user: JSON.parse(localStorage.getItem('user')) || null,
+            roles: JSON.parse(localStorage.getItem('roles')) || [],
+            token: localStorage.getItem('token') || null
         }
     },
     mutations: {
         setLoggedIn(state, value) {
             state.isLoggedIn = value
+            localStorage.setItem('isLoggedIn', value)
         },
         setUser(state, user) {
             state.user = user
+            localStorage.setItem('user', JSON.stringify(user))
         },
         setRoles(state, roles) {
             state.roles = roles
+            localStorage.setItem('roles', JSON.stringify(roles))
         },
         setToken(state, token) {
             state.token = token
+            localStorage.setItem('token', token)
         }
     },
     actions: {
@@ -87,11 +91,13 @@ const store = createStore({
         async fetchClientInfo({ commit }) {
             try {
                 const response = await api.get('/utilisateurs/ObtentionInfoClient');
-                console.log("Données reçues de l'API:", response.data); // Pour le débogage
+                console.log("Données reçues de l'API:", response.data);
 
-                // Construire l'URL complète de l'avatar si nécessaire
-                if (response.data.photo && !response.data.photo.startsWith('http')) {
-                    response.data.photo = `${api.defaults.baseURL.replace('/api', '')}${response.data.photo}`;
+                // Corriger l'URL de l'avatar
+                if (response.data.photo) {
+                    // Supprimer '/api' de l'URL de base si présent
+                    const baseUrl = api.defaults.baseURL.replace('/api', '');
+                    response.data.photo = `${baseUrl}/Avatars/${response.data.photo.split('/').pop()}`;
                 }
 
                 commit('setUser', response.data);
@@ -171,6 +177,7 @@ const store = createStore({
         },
         async creerVendeur({ commit }, vendeurData) {
             try {
+                console.log("Données envoyées au serveur:", vendeurData); // Ajoutez cette ligne
                 const response = await api.post('/vendeurs/creer', vendeurData);
                 if (response.data.success) {
                     return { success: true, message: response.data.message };
@@ -178,8 +185,12 @@ const store = createStore({
                     return { success: false, error: response.data.message };
                 }
             } catch (error) {
-                console.error("Erreur lors de la création du vendeur:", error);
-                return { success: false, error: error.response?.data?.message || "Erreur lors de la création du vendeur" };
+                console.error("Erreur détaillée lors de la création du vendeur:", error.response || error);
+                return { 
+                    success: false, 
+                    error: error.response?.data?.message || error.message || "Erreur lors de la création du vendeur",
+                    details: error.response?.data // Ajoutez cette ligne pour obtenir plus de détails
+                };
             }
         },
         async modifierVendeur({ commit }, vendeurData) {
@@ -204,14 +215,54 @@ const store = createStore({
                 throw error;
             }
         },
+        async checkAuthStatus({ commit }) {
+            try {
+                const response = await api.get('/utilisateurs/check-auth');
+                if (response.data.isAuthenticated) {
+                    commit('setLoggedIn', true);
+                    commit('setUser', response.data.user);
+                    commit('setRoles', response.data.roles);
+                } else {
+                    // L'utilisateur n'est pas authentifié, réinitialiser l'état
+                    commit('setLoggedIn', false);
+                    commit('setUser', null);
+                    commit('setRoles', []);
+                    commit('setToken', null);
+                }
+            } catch (error) {
+                console.error("Erreur lors de la vérification de l'authentification:", error);
+                // En cas d'erreur, considérer l'utilisateur comme déconnecté
+                commit('setLoggedIn', false);
+                commit('setUser', null);
+                commit('setRoles', []);
+                commit('setToken', null);
+            }
+        }
     },
     getters: {
-        isAdmin: state => state.roles.includes('ADMINISTRATEUR'),
-        isClient: state => state.roles.includes('CLIENT')
+        isAdmin: state => state.roles.includes('Administrateur'),
+        isClient: state => state.roles.includes('Client'),
+        currentUser: state => state.user,
+        username: state => state.user ? state.user.pseudonym || state.user.username : 'USERNAME',
+        avatarUrl: state => {
+            console.log("État de l'utilisateur:", state.user);
+            if (state.user && state.user.photo) {
+                console.log("Photo de l'utilisateur:", state.user.photo);
+                if (state.user.photo.startsWith('http')) {
+                    return state.user.photo;
+                } else {
+                    const fullUrl = `${api.defaults.baseURL.replace('/api', '')}${state.user.photo}`;
+                    console.log("URL complète de l'avatar:", fullUrl);
+                    return fullUrl;
+                }
+            }
+            console.log("Utilisation de l'avatar par défaut");
+            return '/icons/Avatar.png';
+        }
     }
 });
 
-// Ajoutez l'intercepteur ici
+// Ajout de l'intercepteur pour ajouter le token à l'en-tête de la requête
 api.interceptors.request.use(config => {
     const token = store.state.token;
     if (token) {
