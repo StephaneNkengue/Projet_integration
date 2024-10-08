@@ -121,7 +121,7 @@
 
                             <a @click="activationDropdownProfil = !activationDropdownProfil" class="d-flex text-decoration-none text-white align-items-center gap-3" v-if="estConnecte">
                                 <p class="m-0">{{ username }}</p>
-                                <img :src="avatarUrl" alt="Avatar" height="40" />
+                                <img :src="avatarUrl" alt="Avatar" class="imgProfile rounded-circle" />
                             </a>
                         </div>
                     </div>
@@ -216,5 +216,10 @@
 
     .start-79 {
         left: 79%;
+    }
+
+    .imgProfile {
+        width: 40px;
+        height: 40px;
     }
 </style>
