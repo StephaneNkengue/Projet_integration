@@ -8,25 +8,29 @@
                 Ajouter un lot
             </button>
         </div>
-        <table class="table table-striped" data-toggle="table" data-search="true" data-side-pagination="true" data-show-columns="true">
+        <table class="table table-striped">
             <thead>
                 <tr>
-                    <th>Encan</th>
-                    <th>Status</th>
-                    <th>Date de début</th>
-                    <th>Date de fin</th>
-                    <th>Soirée de clôture</th>
-                    <th>Nombre de lots</th>
+                    <th data-field="numeroEncan">Encan</th>
+                    <th data-field="status">Status</th>
+                    <th data-field="dateDebut">Date de début</th>
+                    <th data-field="dateFin">Date de fin</th>
+                    <th data-field="soireeCloture">Soirée de clôture</th>
+                    <th data-field="nbLot">Nombre de lots</th>
                     <th></th>
                     <th></th>
                 </tr>
             </thead>
             <tr v-for="(encan, index) in test" :key="encan.id">
                 <td>{{encan.numeroEncan}}</td>
+                <td></td>
                 <td>{{encan.dateDebut}}</td>
                 <td>{{encan.dateFin}}</td>
-                <td>{{encan.dateDebutSoireeCloture}}</td>
-                <td>{{encan.dateFinSoireeCloture}}</td>
+                <td>{{encan.dateDebutSoireeCloture}} à {{encan.dateFinSoireeCloture}}</td>
+                <td>vfffd</td>
+                <td>modifier</td>
+                <td>supprimer</td>
+
             </tr>
         </table>
     </div>
