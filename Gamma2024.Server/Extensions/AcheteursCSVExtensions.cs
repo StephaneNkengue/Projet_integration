@@ -36,7 +36,7 @@ namespace Gamma2024.Server.Extensions
                     Email = columns[5],
                     NormalizedEmail = columns[5].ToUpper(),
                     EmailConfirmed = true,
-                    Avatar = "/Gamma2024.Server/Avatars/default.png",
+                    Avatar = "default.png",
                     SecurityStamp = Guid.NewGuid().ToString(),
                 };
 
