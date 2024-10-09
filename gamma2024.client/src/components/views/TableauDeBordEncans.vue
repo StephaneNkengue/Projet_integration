@@ -8,7 +8,7 @@
                 Ajouter un lot
             </button>
         </div>
-        <DataTable ref="table" :data="data" :options="options" class="display">
+        <table class="table table-striped" data-toggle="table" data-search="true" data-side-pagination="true" data-show-columns="true">
             <thead>
                 <tr>
                     <th>Encan</th>
@@ -28,15 +28,11 @@
                 <td>{{encan.dateDebutSoireeCloture}}</td>
                 <td>{{encan.dateFinSoireeCloture}}</td>
             </tr>
-        </DataTable>
+        </table>
     </div>
 </template>
 <script setup>
     import { onMounted, ref } from "vue";
-    import DataTable from "datatables.net-vue3";
-    import DataTablesCore from "datatables.net-dt";
-    import "datatables.net-select-dt";
-    import "datatables.net-responsive-dt";
     import { useStore } from "vuex";
 
     const store = useStore();
@@ -53,18 +49,9 @@
 
     });
 
-    DataTable.use(DataTablesCore);
-    let dt;
-    const table = ref();
-    const options = {
-        ordering: false,
-        language: {
-            url: 'https://cdn.datatables.net/plug-ins/2.1.8/i18n/fr-FR.json'
-        },
-    };
-
 
 
 </script>
+
 <style scoped>
 </style>
