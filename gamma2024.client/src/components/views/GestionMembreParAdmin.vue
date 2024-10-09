@@ -20,7 +20,7 @@
             <span class="me-2">
               <button class="btn btn-info">
                 <img
-                  src="/public/images/ice.png"
+                  src="/images/ice.png"
                   class="img-fluid"
                   alt="..."
                 /></button
@@ -28,7 +28,7 @@
             <span
               ><button class="btn btn-warning">
                 <img
-                  src="/public/images/blocked.png"
+                  src="/images/blocked.png"
                   class="img-fluid"
                   alt="..."
                 /></button
