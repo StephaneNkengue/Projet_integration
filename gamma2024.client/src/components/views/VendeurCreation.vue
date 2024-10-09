@@ -14,6 +14,10 @@
                 <div class="card-body p-md-3 text-black">
                   <h1 class="mb-5">Création de vendeur</h1>
 
+                  <div v-if="message" :class="['alert', message.type === 'success' ? 'alert-success' : 'alert-danger']">
+                    {{ message.text }}
+                  </div>
+
                   <form @submit.prevent="submitForm">
                     <div class="row">
                       <div class="col-md-6 mb-">
@@ -133,20 +137,23 @@ const vendeur = ref({
   }
 });
 
+const message = ref(null);
+
 const submitForm = async () => {
   try {
     console.log("Données du vendeur à envoyer:", vendeur.value);
     const result = await store.dispatch('creerVendeur', vendeur.value);
     if (result.success) {
-      alert(result.message);
-      router.push('/affichagevendeurs');
+      message.value = { type: 'success', text: result.message };
+      setTimeout(() => {
+        router.push('/affichagevendeurs');
+      }, 2000);
     } else {
-      console.error("Erreur retournée par l'action:", result.error);
-      alert("Erreur lors de la création du vendeur: " + result.error);
+      message.value = { type: 'danger', text: "Erreur lors de la création du vendeur: " + result.error };
     }
   } catch (error) {
     console.error("Erreur lors de la création du vendeur:", error);
-    alert("Erreur inattendue lors de la création du vendeur");
+    message.value = { type: 'danger', text: "Erreur inattendue lors de la création du vendeur" };
   }
 };
 

@@ -13,6 +13,10 @@
               <div class="col-xl-6">
                 <div class="card-body p-md-3 text-black">
                   <h1 class="mb-5">Modification d'un vendeur</h1>
+                  
+                  <div v-if="message" :class="['alert', message.type === 'success' ? 'alert-success' : 'alert-danger']">
+                    {{ message.text }}
+                  </div>
 
                   <form @submit.prevent="submitForm">
                     <div class="row">
@@ -165,19 +169,22 @@ onMounted(async () => {
   }
 });
 
+const message = ref(null);
 
 const submitForm = async () => {
   try {
     const result = await store.dispatch('modifierVendeur', vendeur.value);
     if (result.success) {
-      alert(result.message);
-      router.push('/affichagevendeurs');
+      message.value = { type: 'success', text: result.message };
+      setTimeout(() => {
+        router.push('/affichagevendeurs');
+      }, 2000);
     } else {
-      alert(result.error);
+      message.value = { type: 'danger', text: result.error };
     }
   } catch (error) {
     console.error("Erreur lors de la modification du vendeur:", error);
-    alert("Une erreur est survenue lors de la modification du vendeur.");
+    message.value = { type: 'danger', text: "Une erreur est survenue lors de la modification du vendeur." };
   }
 };
 
