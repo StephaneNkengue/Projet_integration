@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Gamma2024.Server.Controllers
 {
     [Authorize(Roles = ApplicationRoles.ADMINISTRATEUR)]
+    [Route("api/[controller]")]
     public class AdministrateurController : Controller
     {
 
@@ -28,7 +29,6 @@ namespace Gamma2024.Server.Controllers
         public async Task<IActionResult> GetAllUsers()
         {
             var users = await _context.Users
-                .Include(Adresse => Adresse.Id)
                 .ToListAsync();
 
             if (users == null)
