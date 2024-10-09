@@ -276,6 +276,15 @@ var passwordHasher = new PasswordHasher<ApplicationUser>();
 foreach (var item in utilisateurs)
 {
     item.PasswordHash = passwordHasher.HashPassword(item, item.UserName + item.Adresses.First().Numero);
+    item.CarteCredits = new CarteCredit[]
+    {
+        new() {
+            AnneeExpiration=(DateTime.Now.Year)+2,
+            MoisExpiration=DateTime.Now.Month,
+            Nom = item.FirstName + " " + item.Name,
+            Numero="4242424242424242"
+        }
+    };
 }
 
 context.Users.AddRange(utilisateurs);
