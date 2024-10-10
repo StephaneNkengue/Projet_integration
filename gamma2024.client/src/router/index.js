@@ -21,52 +21,62 @@ const routes = [
     {
         path: '/',
         name: 'Accueil',
-        component: Accueil
+        component: Accueil,
+        meta: { requiresAuth: false}
     },
     {
         path: '/accueil',
         name: 'AccueilPage',
-        component: Accueil
+        component: Accueil,
+        meta: { requiresAuth: false }
     },
     {
         path: '/contact',
         name: 'Contact',
-        component: Contact
+        component: Contact,
+        meta: { requiresAuth: false }
     },
     {
         path: '/apropos',
         name: 'APropos',
-        component: APropos
+        component: APropos,
+        meta: { requiresAuth: false }
     },
     {
         path: '/connexion',
         name: 'Connexion',
-        component: Connexion
+        component: Connexion,
+        meta: { requiresAuth: false }
     },
     {
         path: '/inscription',
         name: 'Inscription',
-        component: Inscription
+        component: Inscription,
+        meta: { requiresAuth: false }
     },
     {
         path: '/encanpresent',
         name: 'EncanPresent',
-        component: EncanPresent
+        component: EncanPresent,
+        meta: { requiresAuth: false }
     },
     {
         path: '/touslesencans',
         name: "TousLesEncans",
-        component: TousLesEncans
+        component: TousLesEncans,
+        meta: { requiresAuth: false }
     },
     {
         path: '/affichagedetailslot',
         name: 'DetailsLot',
-        component: AffichageDetailsLot
+        component: AffichageDetailsLot,
+        meta: { requiresAuth: false }
     },
     {
         path: '/inventaire',
         name: 'TableauDeBordInventaire',
-        component: TableauDeBordInventaire
+        component: TableauDeBordInventaire,
+        meta: { requiresAuth: true, requiredRole: 'Administrateur' }
     },
     {
         path: '/modification',
@@ -96,7 +106,8 @@ const routes = [
     {
         path: '/accesnonautorise',
         name: 'AccesNonAutorise',
-        component: AccesNonAutorise
+        component: AccesNonAutorise,
+        meta: { requiresAuth: false }
     }
 ]
 

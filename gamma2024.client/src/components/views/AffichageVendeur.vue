@@ -6,7 +6,7 @@
         Ajouter un vendeur
       </router-link>
       
-      <table class="table table-striped">
+      <table class="table table-striped table-borderless">
         <thead class="table-dark">
           <tr>
             <th scope="col">#</th>
@@ -27,9 +27,9 @@
             <td>
               <router-link 
                 :to="{ name: 'vendeurModification', params: { id: vendeur.id } }" 
-                class="btn btn-primary btn-lg bleuMarinSecondaireFond"
+                class="text-decoration-none"
               >
-                Modifier
+                <span class="btn-like-field">Modifier</span>
               </router-link>            
             </td>
           </tr>
@@ -79,5 +79,34 @@
   
   h1 {
     color: #1e3a8a; /* Assurez-vous que cette couleur est visible sur votre fond */
+  }
+  
+  .btn-like-field {
+    display: inline-block;
+    padding: 0.375rem 0.75rem;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #1e3a8a;
+    background-color: #ffffff;
+    border: 1px solid #1e3a8a;
+    border-radius: 0.25rem;
+    transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out;
+  }
+  
+  .btn-like-field:hover {
+    color: #ffffff;
+    background-color: #1e3a8a;
+  }
+  
+  /* Ajoutez ces styles pour supprimer les bordures du tableau */
+  .table-borderless th,
+  .table-borderless td {
+    border: none !important;
+  }
+
+  /* Ajustez l'espacement entre les lignes si nécessaire */
+  .table-striped tbody tr {
+    margin-bottom: 5px;
   }
   </style>

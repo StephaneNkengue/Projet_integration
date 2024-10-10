@@ -6,6 +6,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Gamma2024.Server.Controllers
 {
@@ -66,6 +67,32 @@ namespace Gamma2024.Server.Controllers
             {
                 return BadRequest(new { message = "Mot de passe incorrect" });
             }
+        }
+
+        [HttpGet("check-auth")]
+        [Authorize] // Cette annotation assure que seuls les utilisateurs authentifiés peuvent accéder à cette méthode
+        public async Task<IActionResult> CheckAuth()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user != null)
+            {
+                var roles = await _userManager.GetRolesAsync(user);
+                return Ok(new
+                {
+                    isAuthenticated = true,
+                    user = new
+                    {
+                        id = user.Id,
+                        username = user.UserName,
+                        email = user.Email,
+                        name = user.Name,
+                        firstName = user.FirstName,
+                        photo = user.Avatar
+                    },
+                    roles = roles
+                });
+            }
+            return Ok(new { isAuthenticated = false });
         }
 
         private string GenerateJwtToken(ApplicationUser user, string[] roles)

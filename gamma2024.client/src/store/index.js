@@ -1,13 +1,28 @@
 import { createStore } from 'vuex'
 import api from '@/services/api'
-import { toast } from 'vue3-toastify';
 
 const store = createStore({
     state() {
         return {
             isLoggedIn: localStorage.getItem('isLoggedIn') === 'true',
-            user: JSON.parse(localStorage.getItem('user')) || null,
-            roles: JSON.parse(localStorage.getItem('roles')) || [],
+            user: (() => {
+                try {
+                    const userString = localStorage.getItem('user');
+                    return userString ? JSON.parse(userString) : null;
+                } catch (error) {
+                    console.error("Erreur lors du parsing de l'utilisateur:", error);
+                    return null;
+                }
+            })(),
+            roles: (() => {
+                try {
+                    const rolesString = localStorage.getItem('roles');
+                    return rolesString ? JSON.parse(rolesString) : [];
+                } catch (error) {
+                    console.error("Erreur lors du parsing des rôles:", error);
+                    return [];
+                }
+            })(),
             token: localStorage.getItem('token') || null
         }
     },
@@ -18,7 +33,11 @@ const store = createStore({
         },
         setUser(state, user) {
             state.user = user
-            localStorage.setItem('user', JSON.stringify(user))
+            if (user) {
+                localStorage.setItem('user', JSON.stringify(user))
+            } else {
+                localStorage.removeItem('user')
+            }
         },
         setRoles(state, roles) {
             state.roles = roles
@@ -48,6 +67,7 @@ const store = createStore({
                     commit('setRoles', response.data.roles);
                     if (response.data.token) {
                         commit('setToken', response.data.token);
+                        localStorage.setItem('token', response.data.token);
                         api.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`;
                     }
                     return { success: true, roles: response.data.roles };
@@ -215,27 +235,32 @@ const store = createStore({
                 throw error;
             }
         },
-        async checkAuthStatus({ commit }) {
+        async checkAuthStatus({ commit, state }) {
+            const token = state.token || localStorage.getItem('token');
+            if (!token) {
+                commit('setLoggedIn', false);
+                commit('setUser', null);
+                commit('setRoles', []);
+                return;
+            }
+
             try {
-                const response = await api.get('/utilisateurs/check-auth');
+                const response = await api.get('/home/check-auth');
+                console.log("Réponse de check-auth:", response.data);
                 if (response.data.isAuthenticated) {
                     commit('setLoggedIn', true);
                     commit('setUser', response.data.user);
                     commit('setRoles', response.data.roles);
                 } else {
-                    // L'utilisateur n'est pas authentifié, réinitialiser l'état
-                    commit('setLoggedIn', false);
-                    commit('setUser', null);
-                    commit('setRoles', []);
-                    commit('setToken', null);
+                    throw new Error('Non authentifié');
                 }
             } catch (error) {
                 console.error("Erreur lors de la vérification de l'authentification:", error);
-                // En cas d'erreur, considérer l'utilisateur comme déconnecté
                 commit('setLoggedIn', false);
                 commit('setUser', null);
                 commit('setRoles', []);
                 commit('setToken', null);
+                localStorage.removeItem('token');
             }
         }
     },
