@@ -2,13 +2,39 @@
     <div class="d-flex flex-column justify-content-between">
         <div class="d-flex justify-content-between">
             <h2 class="d-flex-1">Liste des encans</h2>
-            <button class="btn bleuMoyenFond btnSurvolerBleuMoyenFond text-white d-flex-1"
+            <button class="btn bleuMarinSecondaireFond btnSurvolerBleuMoyenFond text-white d-flex-1"
                     type="button"
-                    id="ajouterLotButton">
-                Ajouter un lot
+                    id="ajouterEncanButton">
+                Ajouter un encan
             </button>
         </div>
-        <table class="table table-striped">
+
+        <div class="d-flex justify-content-between">
+            <div class="d-flex collapse dropdown dropdown-center">
+                <button class="btn dropdown-toggle bleuMarinSecondaireFond rounded text-white contenuListeDropdown" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    Données par page
+                </button>
+
+                <ul class="dropdown-menu dropdown-menu-dark bleuMarinFond text-center">
+                    <li>
+                        <a class="dropdown-item">10</a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item">25</a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item">Tous</a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="d-flex me-1 gap-1 align-items-center">
+                <label for="Recherche">Rechercher : </label>
+                <input data-bs-theme="light" type="search" aria-label="Recherche" v-model="encanRechercher">
+            </div>
+        </div>
+
+        <table class="table table-striped mt-3">
             <thead>
                 <tr>
                     <th data-field="numeroEncan">Encan</th>
@@ -21,7 +47,7 @@
                     <th></th>
                 </tr>
             </thead>
-            <tr v-for="(encan, index) in test" :key="encan.id">
+            <tr v-for="(encan) in listeEncansFiltree" :key="encan.id">
                 <td>{{encan.numeroEncan}}</td>
                 <td></td>
                 <td>{{encan.dateDebut}}</td>
@@ -30,32 +56,50 @@
                 <td>vfffd</td>
                 <td>modifier</td>
                 <td>supprimer</td>
-
             </tr>
         </table>
     </div>
 </template>
 <script setup>
-    import { onMounted, ref } from "vue";
+    import { onMounted, ref, watch } from "vue";
     import { useStore } from "vuex";
 
     const store = useStore();
-    const test = ref([]);
+    const listeEncans = ref([]);
+    const listeEncansFiltree = ref([]);
+    
     onMounted(async () => {
 
         try {
-            test.value = await store.dispatch("fetchEncanInfo");
+            listeEncans.value = await store.dispatch("fetchEncanInfo");
+            listeEncansFiltree.value = listeEncans.value
         }
         catch (erreur) {
             console.log("Erreur encans" + erreur);
         }
-
-
     });
 
+    const encanRechercher = ref();
+    
+    watch(encanRechercher, () => {
+        listeEncansFiltree.value = listeEncans.value;
 
-
+        listeEncansFiltree.value = listeEncansFiltree.value.filter(({ numeroEncan, dateDebut, dateFin, dateDebutSoireeCloture, dateFinSoireeCloture }) =>
+            numeroEncan.toString().startsWith(encanRechercher.value) ||
+            dateDebut.toString().startsWith(encanRechercher.value) ||
+            dateFin.toString().startsWith(encanRechercher.value) ||
+            dateDebutSoireeCloture.toString().startsWith(encanRechercher) ||
+            dateFinSoireeCloture.toString().startsWith(encanRechercher.value)
+        );
+    })
 </script>
 
 <style scoped>
+    .dropdown-toggle[aria-expanded="true"] {
+        background-color: #5A708A;
+    }
+
+    .dropdown-item:active {
+        background-color: #5A708A;
+    }
 </style>
