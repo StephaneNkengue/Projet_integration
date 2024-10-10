@@ -28,9 +28,32 @@ namespace Gamma2024.Server.Controllers
         [HttpGet("ObtenirTousLesUsers")]
         public async Task<IActionResult> GetAllUsers()
         {
-            var users = await _context.Users.Include(u => u.Adresses).Include(u => u.CarteCredits).ToListAsync();
+            var users = await _context.Users
+                .Select(u => new {
+                    u.Id,
+                    u.UserName,
+                    u.Email,
+                    u.Name,
+                    u.FirstName,
+                    u.Avatar,
+                    Adresses = u.Adresses.Select(a => new { 
+                        a.Id, 
+                        a.Numero, 
+                        a.Rue, 
+                        a.Ville, 
+                        a.CodePostal, 
+                        a.Province, 
+                        a.Pays 
+                    }),
+                    CarteCredits = u.CarteCredits.Select(c => new { 
+                        c.Id, 
+                        c.Numero,  // Changé de Number à Numero
+                        ExpirationDate = $"{c.MoisExpiration:D2}/{c.AnneeExpiration}"  // Combiné MoisExpiration et AnneeExpiration
+                    })
+                })
+                .ToListAsync();
 
-            if (users == null)
+            if (users == null || !users.Any())
             {
                 return NotFound("Liste d'utilisateur vide");
             }

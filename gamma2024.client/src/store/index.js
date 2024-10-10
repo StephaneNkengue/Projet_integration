@@ -295,9 +295,10 @@ const store = createStore({
     async ObtenirTousLesMembres({ commit }) {
       try {
         const response = await api.get(`/administrateur/ObtenirTousLesUsers`);
+        console.log("Données reçues:", response.data); // Pour le débogage
         return response.data;
       } catch (error) {
-        console.error("Erreur lors de la récupération des membres:", error);
+        console.error("Erreur détaillée:", error.response?.data || error.message);
         throw error;
       }
     },

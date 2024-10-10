@@ -63,7 +63,8 @@ onMounted(async () => {
     const response = await store.dispatch("ObtenirTousLesMembres");
     tousLesMembres.value = response;
   } catch (error) {
-    console.error("Erreur lors de la récupération des memebres.");
+    console.error("Erreur lors de la récupération des membres:", error);
+    // Affichez un message d'erreur à l'utilisateur
   }
 });
 
