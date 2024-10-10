@@ -83,7 +83,6 @@
                 }
 
                 try {
-                    console.log('Tentative de connexion avec:', { emailOuPseudo: this.emailOuPseudo, password: this.password });
                     const result = await this.$store.dispatch('login', {
                         email: this.emailOuPseudo,
                         password: this.password

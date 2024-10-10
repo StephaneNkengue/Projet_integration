@@ -234,26 +234,11 @@ import api from "@/services/api";
 
 const store = useStore();
 
-const estConnecte = computed(() => store.state.isLoggedIn);
-const estAdmin = computed(() => store.state.roles.includes("Administrateur"));
-const estClient = computed(() => store.state.roles.includes("Client"));
-const username = computed(() => {
-  const user = store.state.user;
-  return user && user.pseudonym ? user.pseudonym : "USERNAME";
-});
-
-const avatarUrl = computed(() => {
-  if (store.state.user && store.state.user.photo) {
-    if (store.state.user.photo.startsWith("http")) {
-      return store.state.user.photo;
-    } else {
-      return `${api.defaults.baseURL.replace("/api", "")}${
-        store.state.user.photo
-      }`;
-    }
-  }
-  return "/icons/Avatar.png";
-});
+const estConnecte = computed(() => store.state.isLoggedIn)
+const estAdmin = computed(() => store.getters.isAdmin)
+const estClient = computed(() => store.getters.isClient)
+const username = computed(() => store.getters.username)
+const avatarUrl = computed(() => store.getters.avatarUrl)
 
 const currentUser = ref(null);
 

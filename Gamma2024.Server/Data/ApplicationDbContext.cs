@@ -54,6 +54,12 @@ namespace Gamma2024.Server.Data
                 .HasForeignKey(l => l.IdVendeur)
                 .OnDelete(DeleteBehavior.NoAction);
 
+            builder.Entity<Vendeur>()
+                .HasOne(v => v.Adresse)
+                .WithOne(a => a.Vendeur)
+                .HasForeignKey<Vendeur>(v => v.AdresseId)
+                .OnDelete(DeleteBehavior.NoAction);
+
             // Lot
             builder.Entity<Lot>()
                 .HasOne(l => l.Categorie)
@@ -209,7 +215,7 @@ namespace Gamma2024.Server.Data
                 SecurityStamp = Guid.NewGuid().ToString(),
                 Name = "Admin",
                 FirstName = "Super",
-                Avatar = "/Gamma2024.Server/Avatars/default.png",
+                Avatar = "/Avatars/default.png", 
                 IdAdresse = 1
 
             };
@@ -226,7 +232,7 @@ namespace Gamma2024.Server.Data
                 SecurityStamp = Guid.NewGuid().ToString(),
                 Name = "Dupont",
                 FirstName = "Jean",
-                Avatar = "/Gamma2024.Server/Avatars/default.png",
+                Avatar = "/Avatars/default.png", 
                 IdAdresse = 2
 
             };
