@@ -43,8 +43,8 @@ namespace Gamma2024.Server.Data
 
             builder.Entity<ApplicationUser>()
                 .HasMany(au => au.CarteCredits)
-                .WithOne(cc => cc.Client)
-                .HasForeignKey(cc => cc.IdClient)
+                .WithOne(cc => cc.ApplicationUser)
+                .HasForeignKey(cc => cc.IdApplicationUser)
                 .OnDelete(DeleteBehavior.NoAction);
 
             // Vendeur
@@ -137,9 +137,9 @@ namespace Gamma2024.Server.Data
 
             // CarteCredit
             builder.Entity<CarteCredit>()
-                .HasOne(cc => cc.Client)
+                .HasOne(cc => cc.ApplicationUser)
                 .WithMany(c => c.CarteCredits)
-                .HasForeignKey(cc => cc.IdClient)
+                .HasForeignKey(cc => cc.IdApplicationUser)
                 .OnDelete(DeleteBehavior.NoAction);
         }
 
@@ -202,7 +202,7 @@ namespace Gamma2024.Server.Data
                 {
                     Id = 1,
                     AnneeExpiration = (DateTime.Now.Year + 1),
-                    IdClient = adminId,
+                    IdApplicationUser = adminId,
                     Nom = "Admin Admin",
                     MoisExpiration = 12,
                     Numero = "5555555555554444"
@@ -211,7 +211,7 @@ namespace Gamma2024.Server.Data
                 {
                     Id = 2,
                     AnneeExpiration = (DateTime.Now.Year + 2),
-                    IdClient = clientId,
+                    IdApplicationUser = clientId,
                     Nom = "Jean Dupont",
                     MoisExpiration = 12,
                     Numero = "4242424242424242"
