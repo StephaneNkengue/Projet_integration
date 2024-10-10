@@ -2,10 +2,10 @@
 import store from '@/store';
 
 const apiUrls = [
-    'https://sqlinfocg.cegepgranby.qc.ca/2135621/api',
     'https://localhost:7206/api',
     'http://localhost:5121/api',
     'http://localhost:5122/api',
+    'https://sqlinfocg.cegepgranby.qc.ca/2135621/api',
 ];
 
 const api = axios.create({

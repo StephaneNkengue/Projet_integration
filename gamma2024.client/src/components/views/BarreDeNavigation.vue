@@ -101,7 +101,11 @@
                             </a>
 
                             <div class="d-flex flex-column position-absolute top-100 start-79 dropdown-menu bleuMarinSecondaireFond" v-if="notification">
-                                <router-link to="Accueil" class="text-decoration-none text-white d-flex align-items-center gap-3" v-for="index in 5">
+                                <router-link 
+                                    v-for="index in 5" 
+                                    :key="index"
+                                    to="Accueil" 
+                                    class="text-decoration-none text-white d-flex align-items-center gap-3">
                                     <a class="dropdown-item text-white btnSurvolerBleuMoyenFond" @click="notification = false">
                                         test
                                     </a>
