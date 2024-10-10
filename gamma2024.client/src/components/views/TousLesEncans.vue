@@ -4,7 +4,7 @@
             Tous les encans
         </h1>
         <div class="w-100 px-3 row row-cols-lg-2 row-cols-1">
-            <div v-for="index in encanParPage" class="col py-3">
+            <div v-for="index in encans" class="col py-3">
                 <router-link to="EncanPresent" class="text-decoration-none text-black">
                     <AffichageEncanTuile />
                 </router-link>
@@ -15,10 +15,16 @@
 
 <script setup>
     import AffichageEncanTuile from '@/components/views/AffichageEncanTuile.vue'
-    import { ref } from 'vue'
+    import { onMounted, ref } from 'vue'
+    import { useStore } from "vuex";
 
-    const encanParPage = ref(20);
+    const store = useStore();
+    const encans = ref()
 
+    onMounted(async () => {
+        const response = await store.dispatch("chercherTousEncans");
+        encans.value = response.data
+    })
 </script>
 
 <style scoped>
