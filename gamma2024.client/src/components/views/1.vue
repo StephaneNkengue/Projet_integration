@@ -101,24 +101,20 @@
                             </a>
 
                             <div class="d-flex flex-column position-absolute top-100 start-79 dropdown-menu bleuMarinSecondaireFond" v-if="notification">
-                                <router-link 
-                                    v-for="index in 5" 
-                                    :key="index"
-                                    to="Accueil" 
-                                    class="text-decoration-none text-white d-flex align-items-center gap-3">
+                                <router-link to="Accueil" class="text-decoration-none text-white d-flex align-items-center gap-3" v-for="index in 5">
                                     <a class="dropdown-item text-white btnSurvolerBleuMoyenFond" @click="notification = false">
                                         test
                                     </a>
                                 </router-link>
                             </div>
 
-                            <div class="d-flex flex-column position-absolute top-100 end-0 dropdown-menu bleuMarinSecondaireFond" v-if="estConnecte && activationDropdownProfil">
-                                <router-link v-if="estClient" to="Modification" class="text-decoration-none text-white d-flex align-items-center gap-3">
+                            <div class="d-flex flex-column position-absolute top-100 end-0 dropdown-menu bleuMarinSecondaireFond" v-if="activationDropdownProfil">
+                                <router-link to="Modification" class="text-decoration-none text-white d-flex align-items-center gap-3">
                                     <a class="dropdown-item text-white btnSurvolerBleuMoyenFond" @click="activationDropdownProfil = false">
                                         Profil
                                     </a>
                                 </router-link>
-                                <a class="dropdown-item text-danger btnSurvolerBleuMoyenFond fw-bold" href="#" @click.prevent="deconnecter">
+                                <a class="dropdown-item text-danger btnSurvolerBleuMoyenFond fw-bold">
                                     Déconnexion
                                 </a>
                             </div>
@@ -156,20 +152,24 @@
 </template>
 
 <script setup>
-import { computed, watch, ref } from 'vue'
-import { useStore } from 'vuex'
-import { useRouter } from 'vue-router'
-import { onMounted } from 'vue'
-import * as bootstrap from 'bootstrap'
+    import { computed, watch, ref } from 'vue'
+    import { useStore } from 'vuex'
+    import api from '@/services/api'
 
-const store = useStore()
-const router = useRouter()
+    const store = useStore()
 
-const estConnecte = computed(() => store.state.isLoggedIn)
-const estAdmin = computed(() => store.getters.isAdmin)
-const estClient = computed(() => store.getters.isClient)
-const username = computed(() => store.getters.username)
-const avatarUrl = computed(() => store.getters.avatarUrl)
+    const estConnecte = computed(() => store.state.isLoggedIn)
+    const estAdmin = computed(() => store.state.roles.includes('Administrateur'))
+    const estClient = computed(() => store.state.roles.includes('Client'))
+    const username = computed(() => {
+        const user = store.state.user;
+        return user && user.pseudonym ? user.pseudonym : 'USERNAME';
+    })
+
+    const avatarUrl = computed(async () => {
+        const getAvatarUrl = store.getters.avatarUrl;
+        return await getAvatarUrl();
+    });
 
     const currentUser = ref(null)
 
@@ -201,16 +201,6 @@ const avatarUrl = computed(() => store.getters.avatarUrl)
     const activationDropdownProfil = ref(false);
     const notification = ref(false);
 
-const deconnecter = async () => {
-    await store.dispatch('logout')
-    router.push('/') // Redirige vers la page d'accueil après la déconnexion
-}
-
-onMounted(() => {
-    document.querySelectorAll('.dropdown-toggle').forEach(dropdownToggle => {
-        new bootstrap.Dropdown(dropdownToggle)
-    })
-})
 </script>
 
 <style scoped>

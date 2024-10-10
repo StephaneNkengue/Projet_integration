@@ -11,10 +11,13 @@ import api from './services/api';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 
 async function initApp() {
-    await store.dispatch('checkAuthStatus');
+    await store.dispatch('initializeStore');
     
-    createApp(App).use(store).use(router).mount('#app')
+    const app = createApp(App);
+    app.use(store).use(router);
+    await router.isReady();
+    app.mount('#app');
 }
 
-initApp()
+initApp().catch(error => console.error('Erreur lors de l\'initialisation de l\'app:', error));
 

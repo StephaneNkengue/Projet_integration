@@ -120,17 +120,10 @@ const router = createRouter({
     }
 })
 
-// Attendez que l'URL de base de l'API soit d�termin�e avant de permettre la navigation
+// Attendez que l'URL de base de l'API soit dtermine avant de permettre la navigation
 router.beforeEach(async (to, from, next) => {
-    if (!api.defaults.baseURL) {
-        await new Promise(resolve => {
-            const checkBaseURL = setInterval(() => {
-                if (api.defaults.baseURL) {
-                    clearInterval(checkBaseURL)
-                    resolve()
-                }
-            }, 100)
-        })
+    if (!store.state.api) {
+        await store.dispatch('initializeStore');
     }
 
     const isLoggedIn = store.state.isLoggedIn

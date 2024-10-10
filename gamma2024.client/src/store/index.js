@@ -1,30 +1,10 @@
 import { createStore } from 'vuex'
-import api from '@/services/api'
+import { initApi } from '@/services/api'
 
 const store = createStore({
-    state() {
-        return {
-            isLoggedIn: localStorage.getItem('isLoggedIn') === 'true',
-            user: (() => {
-                try {
-                    const userString = localStorage.getItem('user');
-                    return userString ? JSON.parse(userString) : null;
-                } catch (error) {
-                    console.error("Erreur lors du parsing de l'utilisateur:", error);
-                    return null;
-                }
-            })(),
-            roles: (() => {
-                try {
-                    const rolesString = localStorage.getItem('roles');
-                    return rolesString ? JSON.parse(rolesString) : [];
-                } catch (error) {
-                    console.error("Erreur lors du parsing des rôles:", error);
-                    return [];
-                }
-            })(),
-            token: localStorage.getItem('token') || null
-        }
+    state: {
+        api: null,
+        // ... autres états
     },
     mutations: {
         setLoggedIn(state, value) {
@@ -46,13 +26,19 @@ const store = createStore({
         setToken(state, token) {
             state.token = token
             localStorage.setItem('token', token)
+        },
+        SET_API(state, api) {
+            state.api = api;
         }
     },
     actions: {
-        async login({ commit }, userData) {
+        async login({ commit, state }, userData) {
             try {
                 console.log("Tentative de connexion avec:", userData);
-                const response = await api.post('/home/login', userData);
+                if (!state.api) {
+                    throw new Error("API non initialisée");
+                }
+                const response = await state.api.post('/home/login', userData);
                 console.log("Réponse de l'API:", response);
                 if (response.data && response.data.message === "Connexion réussie") {
                     commit('setLoggedIn', true);
@@ -68,7 +54,7 @@ const store = createStore({
                     if (response.data.token) {
                         commit('setToken', response.data.token);
                         localStorage.setItem('token', response.data.token);
-                        api.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`;
+                        state.api.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`;
                     }
                     return { success: true, roles: response.data.roles };
                 } else {
@@ -86,13 +72,13 @@ const store = createStore({
             commit('setUser', null)
             commit('setRoles', [])
             commit('setToken', null)
-            delete api.defaults.headers.common['Authorization'];
+            delete state.api.defaults.headers.common['Authorization'];
         },
 
 
         async creerCompteUtilisateur({ commit }, userData) {
             try {
-                const response = await api.post('/utilisateurs/creer', userData);
+                const response = await state.api.post('/utilisateurs/creer', userData);
                 if (response.data.success) {
 
                     return { success: true };
@@ -110,13 +96,13 @@ const store = createStore({
 
         async fetchClientInfo({ commit }) {
             try {
-                const response = await api.get('/utilisateurs/ObtentionInfoClient');
+                const response = await state.api.get('/utilisateurs/ObtentionInfoClient');
                 console.log("Données reçues de l'API:", response.data);
 
                 // Corriger l'URL de l'avatar
                 if (response.data.photo) {
                     // Supprimer '/api' de l'URL de base si présent
-                    const baseUrl = api.defaults.baseURL.replace('/api', '');
+                    const baseUrl = state.api.defaults.baseURL.replace('/api', '');
                     response.data.photo = `${baseUrl}/Avatars/${response.data.photo.split('/').pop()}`;
                 }
 
@@ -131,7 +117,7 @@ const store = createStore({
 
         async updateClientInfo({ commit }, userData) {
             try {
-                const response = await api.put('/utilisateurs/miseajourinfoclient', userData);
+                const response = await state.api.put('/utilisateurs/miseajourinfoclient', userData);
                 console.log("Réponse de mise à jour:", response.data); // Pour le débogage
                 commit('setUser', response.data);
                 return response;
@@ -144,14 +130,14 @@ const store = createStore({
         async updateAvatar({ commit, state }, formData) {
             try {
                 console.log("FormData reçu dans updateAvatar:", formData);
-                const response = await api.put('/utilisateurs/avatar', formData, {
+                const response = await state.api.put('/utilisateurs/avatar', formData, {
                     headers: {
                         'Content-Type': 'multipart/form-data'
                     }
                 });
                 
                 // Construire l'URL complète de l'avatar
-                const fullAvatarUrl = `${api.defaults.baseURL.replace('/api', '')}${response.data.avatarUrl}`;
+                const fullAvatarUrl = `${state.api.defaults.baseURL.replace('/api', '')}${response.data.avatarUrl}`;
                 
                 // Mettre à jour l'utilisateur avec la nouvelle URL de l'avatar
                 const updatedUser = { ...state.user, photo: fullAvatarUrl };
@@ -168,7 +154,7 @@ const store = createStore({
 
         async verifierPseudonyme({ commit }, pseudo) {
             try {
-                const response = await api.get(`/utilisateurs/verifier-pseudonyme?pseudo=${encodeURIComponent(pseudo)}`);
+                const response = await state.api.get(`/utilisateurs/verifier-pseudonyme?pseudo=${encodeURIComponent(pseudo)}`);
                 return response.data.disponible;
             } catch (error) {
                 console.error("Erreur lors de la vérification du pseudonyme:", error);
@@ -178,7 +164,7 @@ const store = createStore({
 
         async verifierEmail({ commit }, email) {
             try {
-                const response = await api.get(`/utilisateurs/verifier-email?email=${encodeURIComponent(email)}`);
+                const response = await state.api.get(`/utilisateurs/verifier-email?email=${encodeURIComponent(email)}`);
                 return response.data.disponible;
             } catch (error) {
                 console.error("Erreur lors de la vérification de l'email:", error);
@@ -188,7 +174,7 @@ const store = createStore({
 
         async obtenirTousVendeurs({ commit }) {
             try {
-                const response = await api.get('/vendeurs/tous');
+                const response = await state.api.get('/vendeurs/tous');
                 return response.data;
             } catch (error) {
                 console.error("Erreur lors de la récupération de tous les vendeurs:", error);
@@ -198,7 +184,7 @@ const store = createStore({
         async creerVendeur({ commit }, vendeurData) {
             try {
                 console.log("Données envoyées au serveur:", vendeurData); // Ajoutez cette ligne
-                const response = await api.post('/vendeurs/creer', vendeurData);
+                const response = await state.api.post('/vendeurs/creer', vendeurData);
                 if (response.data.success) {
                     return { success: true, message: response.data.message };
                 } else {
@@ -215,7 +201,7 @@ const store = createStore({
         },
         async modifierVendeur({ commit }, vendeurData) {
             try {
-                const response = await api.put(`/vendeurs/modifier/${vendeurData.id}`, vendeurData);
+                const response = await state.api.put(`/vendeurs/modifier/${vendeurData.id}`, vendeurData);
                 if (response.data.success) {
                     return { success: true, message: response.data.message };
                 } else {
@@ -228,7 +214,7 @@ const store = createStore({
         },
         async obtenirVendeur({ commit }, id) {
             try {
-                const response = await api.get(`/vendeurs/${id}`);
+                const response = await state.api.get(`/vendeurs/${id}`);
                 return response.data;
             } catch (error) {
                 console.error("Erreur lors de la récupération du vendeur:", error);
@@ -247,13 +233,13 @@ const store = createStore({
             }
 
             // Attendre que la base URL soit définie
-            while (!api.defaults.baseURL) {
+            while (!state.api.defaults.baseURL) {
                 await new Promise(resolve => setTimeout(resolve, 100));
             }
 
             try {
-                console.log("URL de la requête :", `${api.defaults.baseURL}/home/check-auth`);
-                const response = await api.get('/home/check-auth');
+                console.log("URL de la requête :", `${state.api.defaults.baseURL}/home/check-auth`);
+                const response = await state.api.get('/home/check-auth');
                 console.log("Réponse de check-auth:", response.data);
                 if (response.data.isAuthenticated) {
                     commit('setLoggedIn', true);
@@ -276,7 +262,7 @@ const store = createStore({
         async logout({ commit }) {
             try {
                 // Appel à l'API pour invalider le token côté serveur (optionnel mais recommandé)
-                await api.post('/api/home/logout');
+                await state.api.post('/api/home/logout');
             } catch (error) {
                 console.error("Erreur lors de la déconnexion côté serveur:", error);
             } finally {
@@ -290,6 +276,11 @@ const store = createStore({
                 localStorage.removeItem('roles');
                 localStorage.removeItem('isLoggedIn');
             }
+        },
+        async initializeStore({ commit, dispatch }) {
+            const api = await initApi(() => store.state.token || localStorage.getItem('token'));
+            commit('SET_API', api);
+            await dispatch('checkAuthStatus');
         }
     },
     getters: {
@@ -304,7 +295,7 @@ const store = createStore({
                 if (state.user.photo.startsWith('http')) {
                     return state.user.photo;
                 } else {
-                    const fullUrl = `${api.defaults.baseURL.replace('/api', '')}${state.user.photo}`;
+                    const fullUrl = `${state.api.defaults.baseURL.replace('/api', '')}${state.user.photo}`;
                     console.log("URL complète de l'avatar:", fullUrl);
                     return fullUrl;
                 }
@@ -315,13 +306,7 @@ const store = createStore({
     }
 });
 
-// Ajout de l'intercepteur pour ajouter le token à l'en-tête de la requête
-api.interceptors.request.use(config => {
-    const token = store.state.token;
-    if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
-});
+// Initialiser le store immédiatement
+store.dispatch('initializeStore');
 
 export default store;

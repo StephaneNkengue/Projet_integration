@@ -1,5 +1,4 @@
-    import axios from 'axios';
-import store from '@/store';
+import axios from 'axios';
 
 const apiUrls = [
     'https://localhost:7206/api',
@@ -8,12 +7,7 @@ const apiUrls = [
     'https://sqlinfocg.cegepgranby.qc.ca/2135621/api',
 ];
 
-const api = axios.create({
-    withCredentials: true,
-    headers: {
-        'Accept': 'application/json'
-    }
-});
+let api = null;
 
 async function findWorkingApi() {
     const savedBaseURL = localStorage.getItem('apiBaseURL');
@@ -50,25 +44,27 @@ async function findWorkingApi() {
     throw new Error("Impossible de se connecter à l'API sur toutes les URLs testées");
 }
 
-findWorkingApi()
-    .then(baseURL => {
-        api.defaults.baseURL = baseURL;
-        console.log("Base URL de l'API définie :", api.defaults.baseURL);
-    })
-    .catch(error => {
-        console.error(error);
-        api.defaults.baseURL = 'http://localhost:5121/api';
+export async function initApi(getToken) {
+    if (api) return api;
+
+    const baseURL = await findWorkingApi();
+    api = axios.create({
+        baseURL,
+        withCredentials: true,
+        headers: {
+            'Accept': 'application/json'
+        }
     });
 
-api.interceptors.request.use(config => {
-    const token = store.state.token || localStorage.getItem('token');
-    if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
-        console.log("Token ajouté à la requête:", token);
-    } else {
-        console.log("Aucun token trouvé pour la requête");
-    }
-    return config;
-});
+    api.interceptors.request.use(config => {
+        const token = getToken();
+        if (token) {
+            config.headers.Authorization = `Bearer ${token}`;
+        }
+        return config;
+    });
 
-export default api;
+    return api;
+}
+
+export default { initApi };
