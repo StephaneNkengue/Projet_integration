@@ -9,6 +9,10 @@ var context = DbContextFactory.CreateDbContext();
 Console.WriteLine("Début du seed...");
 
 Console.WriteLine("Ajout des utilisateurs");
+var currentDir = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.Parent.FullName;
+
+var imagePath = Path.Combine(Environment.CurrentDirectory, "image_path.jiff");
+
 
 var passwordHasher = new PasswordHasher<ApplicationUser>();
 
