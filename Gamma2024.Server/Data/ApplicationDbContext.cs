@@ -195,6 +195,27 @@ namespace Gamma2024.Server.Data
                 }
             );
 
+            builder.Entity<CarteCredit>().HasData(
+                new CarteCredit
+                {
+                    Id = 1,
+                    AnneeExpiration = (DateTime.Now.Year + 1),
+                    IdClient = adminId,
+                    Nom = "Admin Admin",
+                    MoisExpiration = 12,
+                    Numero = "5555555555554444"
+                },
+                new CarteCredit
+                {
+                    Id = 2,
+                    AnneeExpiration = (DateTime.Now.Year + 2),
+                    IdClient = clientId,
+                    Nom = "Jean Dupont",
+                    MoisExpiration = 12,
+                    Numero = "4242424242424242"
+                }
+            ); ;
+
             // Création de l'administrateur et du client
             var passwordHasher = new PasswordHasher<ApplicationUser>();
 
@@ -209,7 +230,7 @@ namespace Gamma2024.Server.Data
                 SecurityStamp = Guid.NewGuid().ToString(),
                 Name = "Admin",
                 FirstName = "Super",
-                Avatar = "/Gamma2024.Server/Avatars/default.png"
+                Avatar = "default.png"
 
             };
             adminUser.PasswordHash = passwordHasher.HashPassword(adminUser, "MotDePasseAdmin123!");
@@ -225,7 +246,7 @@ namespace Gamma2024.Server.Data
                 SecurityStamp = Guid.NewGuid().ToString(),
                 Name = "Dupont",
                 FirstName = "Jean",
-                Avatar = "/Gamma2024.Server/Avatars/default.png"
+                Avatar = "default.png"
 
             };
             clientUser.PasswordHash = passwordHasher.HashPassword(clientUser, "MotDePasseClient123!");
