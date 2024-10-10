@@ -10,27 +10,27 @@ Console.WriteLine("Début du seed...");
 
 Console.WriteLine("Ajout des utilisateurs");
 
+var passwordHasher = new PasswordHasher<ApplicationUser>();
+
 var utilisateurs = File.ReadAllLines("CSV/Acheteurs.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
                         .Skip(1)
                         .Where(x => x.Length > 1)
                         .ToApplicationUser()
+                        .Select(u =>
+                        {
+                            u.CarteCredits = new CarteCredit[]
+                            {
+                                new() {
+                                AnneeExpiration=(DateTime.Now.Year)+2,
+                                MoisExpiration=DateTime.Now.Month,
+                                Nom = u.FirstName + " " + u.Name,
+                                Numero="4242424242424242"
+                                }
+                            };
+                            u.PasswordHash = passwordHasher.HashPassword(u, u.UserName + u.Adresses.First().Numero);
+                            return u;
+                        })
                         .ToList();
-
-var passwordHasher = new PasswordHasher<ApplicationUser>();
-
-foreach (var item in utilisateurs)
-{
-    item.PasswordHash = passwordHasher.HashPassword(item, item.UserName + item.Adresses.First().Numero);
-    item.CarteCredits = new CarteCredit[]
-    {
-        new() {
-            AnneeExpiration=(DateTime.Now.Year)+2,
-            MoisExpiration=DateTime.Now.Month,
-            Nom = item.FirstName + " " + item.Name,
-            Numero="4242424242424242"
-        }
-    };
-}
 
 context.Users.AddRange(utilisateurs);
 context.SaveChanges();
@@ -97,22 +97,10 @@ var lotsVendeurs232 = File.ReadAllLines("CSV/Vendeurs.csv", System.Text.Encoding
                 .GetNumeroLotsEncan232()
                 .ToList();
 
-var lotsVendeurs233 = File.ReadAllLines("CSV/Vendeurs.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
-                .Skip(1)
-                .Where(l => l.Length > 1)
-                .GetNumeroLotsEncan233()
-                .ToList();
-
 var imagesLots232 = File.ReadAllLines("CSV/Encan232et233.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
                         .Skip(1)
                         .Where(l => l.Length > 1)
                         .GetImagesParLotParEncan(232)
-                        .ToList();
-
-var imagesLots233 = File.ReadAllLines("CSV/Encan232et233.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
-                        .Skip(1)
-                        .Where(l => l.Length > 1)
-                        .GetImagesParLotParEncan(233)
                         .ToList();
 
 var lots232 = File.ReadAllLines("CSV/Encan232et233.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
@@ -193,6 +181,21 @@ for (int i = 0; i < lots232.Count; i++)
     }
 }
 
+context.Lots.AddRange(lots232);
+context.SaveChanges();
+
+var lotsVendeurs233 = File.ReadAllLines("CSV/Vendeurs.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
+                .Skip(1)
+                .Where(l => l.Length > 1)
+                .GetNumeroLotsEncan233()
+                .ToList();
+
+var imagesLots233 = File.ReadAllLines("CSV/Encan232et233.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
+                        .Skip(1)
+                        .Where(l => l.Length > 1)
+                        .GetImagesParLotParEncan(233)
+                        .ToList();
+
 var lots233 = File.ReadAllLines("CSV/Encan232et233.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
                         .Skip(1)
                         .Where(l => l.Length > 1)
@@ -249,9 +252,6 @@ for (int i = 0; i < lots233.Count; i++)
         }
     }
 }
-
-context.Lots.AddRange(lots232);
-context.SaveChanges();
 
 context.Lots.AddRange(lots233);
 context.SaveChanges();
