@@ -51,56 +51,78 @@
                                 </router-link>
                             </li>
 
-                            <li class="nav-item">
-                                <router-link to="Accueil" class="text-decoration-none">
-                                    <a class="nav-link">
-                                        Encans passés
-                                    </a>
-                                </router-link>
-                            </li>
-                            <li class="nav-item d-md-none">
-                                <router-link to="Accueil" class="text-decoration-none">
-                                    <a class="nav-link">
-                                        Déroulement d'un encan
-                                    </a>
-                                </router-link>
-                            </li>
-                            <li class="nav-item d-md-none" v-if="estAdmin">
-                                <router-link to="Accueil" class="text-decoration-none">
-                                    <a class="nav-link">
-                                        Tableau de bord
-                                    </a>
-                                </router-link>
-                            </li>
-                            <!-- Ajoutez cet élément de menu pour l'administration -->
-                            <li class="nav-item" v-if="estAdmin">
-                                <router-link to="AffichageVendeurs" class="text-decoration-none">
-                                    <a class="nav-link">
-                                        Administration
-                                    </a>
-                                </router-link>
-                            </li>
+
                         </ul>
 
                         <div class="d-flex justify-content-center gap-3">
-                            <!--<router-link to="Inscription" v-if="estConnecte">-->
                             <router-link to="Inscription" v-if="!estConnecte">
-                                <button class="btn btn-outline bleuMoyenFond text-white" type="button">Inscription</button>
+                                <button class="btn btn-outline bleuMoyenFond text-white py-0 butttonNavBar btnSurvolerBleuMoyenFond" type="button">Inscription</button>
                             </router-link>
                             <router-link to="Connexion" v-if="!estConnecte">
-                                <button class="btn btn-outline bleuMoyenFond text-white" type="button">Connexion</button>
+                                <button class="btn btn-outline bleuMoyenFond text-white py-0 butttonNavBar btnSurvolerBleuMoyenFond" type="button">Connexion</button>
                             </router-link>
-                            <div v-if="estConnecte" class="dropdown">
-                                <a class="nav-link dropdown-toggle d-flex align-items-center gap-3" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <span class="text-white">{{ username }}</span>
-                                    <img :src="avatarUrl" alt="Avatar" height="40" class="rounded-circle" />
+                            <div class="collapse navbar-collapse dropdown text-white" v-if="estAdmin">
+                                <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Tableau de bord
                                 </a>
-                                <ul class="dropdown-menu dropdown-menu-end custom-dropdown">
-                                    <li v-if="estClient"><router-link class="dropdown-item" :to="{ name: 'Modification' }">Profil</router-link></li>
-                                    <li v-if="estClient"><hr class="dropdown-divider"></li>
-                                    <li><a class="dropdown-item" href="#" @click.prevent="deconnecter">Déconnexion</a></li>
+                                <ul class="dropdown-menu bleuMarinFond text-center">
+                                    <li>
+                                        <router-link to="Inventaire" class="text-decoration-none">
+                                            <a class="dropdown-item contenuListeDropdown">Inventaire</a>
+                                        </router-link>
+                                    </li>
+                                    <li>
+                                        <router-link to="Accueil" class="text-decoration-none">
+                                            <a class="dropdown-item contenuListeDropdown">Encans</a>
+                                        </router-link>
+                                    </li>
+                                    <li>
+                                        <router-link to="Accueil" class="text-decoration-none">
+                                            <a class="dropdown-item contenuListeDropdown">Vendeurs</a>
+                                        </router-link>
+                                    </li>
+                                    <li>
+                                        <router-link to="Accueil" class="text-decoration-none">
+                                            <a class="dropdown-item contenuListeDropdown">Ventes</a>
+                                        </router-link>
+                                    </li>
+                                    <li>
+                                        <router-link to="Accueil" class="text-decoration-none">
+                                            <a class="dropdown-item contenuListeDropdown">Profils de membre</a>
+                                        </router-link>
+                                    </li>
                                 </ul>
                             </div>
+
+                            <a v-if="estConnecte" @click="notification = !notification" class="d-flex align-items-center">
+                                <img src="/icons/IconeCloche.png"
+                                     alt="Icon cloche"
+                                     height="25" />
+                            </a>
+
+                            <div class="d-flex flex-column position-absolute top-100 start-79 dropdown-menu bleuMarinSecondaireFond" v-if="notification">
+                                <router-link to="Accueil" class="text-decoration-none text-white d-flex align-items-center gap-3" v-for="index in 5">
+                                    <a class="dropdown-item text-white btnSurvolerBleuMoyenFond" @click="notification = false">
+                                        test
+                                    </a>
+                                </router-link>
+                            </div>
+
+                            <div class="d-flex flex-column position-absolute top-100 end-0 dropdown-menu bleuMarinSecondaireFond" v-if="activationDropdownProfil">
+                                <router-link v-if="estClient" to="Modification" class="text-decoration-none text-white d-flex align-items-center gap-3">
+                                    <a class="dropdown-item text-white btnSurvolerBleuMoyenFond" @click="activationDropdownProfil = false">
+                                        Profil
+                                    </a>
+                                </router-link>
+                                <a class="dropdown-item text-danger btnSurvolerBleuMoyenFond fw-bold" href="#" @click.prevent="deconnecter">
+                                    Déconnexion
+                                </a>
+                            </div>
+
+                            <a @click="activationDropdownProfil = !activationDropdownProfil" class="d-flex text-decoration-none text-white align-items-center gap-3" v-if="estConnecte">
+                                <p class="m-0">{{ username }}</p>
+                                <img :src="avatarUrl" alt="Avatar" class="imgProfile rounded-circle" />
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -143,33 +165,35 @@ const estClient = computed(() => store.getters.isClient)
 const username = computed(() => store.getters.username)
 const avatarUrl = computed(() => store.getters.avatarUrl)
 
-const currentUser = ref(null)
+    const currentUser = ref(null)
 
-watch(() => store.state.user, (newUser) => {
-    console.log("User mis à jour dans le store:", newUser)
-    currentUser.value = newUser
-}, { deep: true, immediate: true })
+    watch(() => store.state.user, (newUser) => {
+        console.log("User mis à jour dans le store:", newUser)
+        currentUser.value = newUser
+    }, { deep: true, immediate: true })
 
-// Fonction pour rafraîchir les informations de l'utilisateur
-const refreshUserInfo = async () => {
-    if (estConnecte.value) {
-        try {
-            await store.dispatch('fetchClientInfo')
-        } catch (error) {
-            console.error("Erreur lors de la récupération des informations client:", error)
+    // Fonction pour rafraîchir les informations de l'utilisateur
+    const refreshUserInfo = async () => {
+        if (estConnecte.value) {
+            try {
+                await store.dispatch('fetchClientInfo')
+            } catch (error) {
+                console.error("Erreur lors de la récupération des informations client:", error)
+            }
         }
     }
-}
 
-// Observer les changements dans l'état de connexion
-watch(() => store.state.isLoggedIn, (newValue) => {
-    if (newValue) {
-        refreshUserInfo()
-    }
-})
+    // Observer les changements dans l'état de connexion
+    watch(() => store.state.isLoggedIn, (newValue) => {
+        if (newValue) {
+            refreshUserInfo()
+        }
+    })
 
-// Définition de activationRecherche
-const activationRecherche = ref(false)
+    // Définition de activationRecherche
+    const activationRecherche = ref(false);
+    const activationDropdownProfil = ref(false);
+    const notification = ref(false);
 
 const deconnecter = async () => {
     await store.dispatch('logout')
@@ -178,56 +202,16 @@ const deconnecter = async () => {
 </script>
 
 <style scoped>
-.dropdown-menu {
-    min-width: 200px;
-    padding: 0.5rem 0;
-    margin: 0.125rem 0 0;
-    font-size: 0.875rem;
-    color: #333;
-    text-align: left;
-    background-color: #fff;
-    background-clip: padding-box;
-    border: 1px solid rgba(0,0,0,.15);
-    border-radius: 0.25rem;
-    box-shadow: 0 2px 10px rgba(0,0,0,.1);
-}
+    .ms-7 {
+        margin-left: 7.9rem;
+    }
 
-.custom-dropdown {
-    padding: 0;
-}
+    .start-79 {
+        left: 79%;
+    }
 
-.dropdown-item, .dropdown-item-text {
-    display: block;
-    width: 100%;
-    padding: 0.75rem 1rem;
-    clear: both;
-    font-weight: 400;
-    color: #333;
-    text-align: inherit;
-    white-space: nowrap;
-    background-color: transparent;
-    border: 0;
-}
-
-.dropdown-item:hover, .dropdown-item:focus {
-    color: #16181b;
-    text-decoration: none;
-    background-color: #f8f9fa;
-}
-
-.dropdown-divider {
-    height: 0;
-    margin: 0.5rem 0;
-    overflow: hidden;
-    border-top: 1px solid #e9ecef;
-}
-
-.nav-link {
-    color: #fff;
-    text-decoration: none;
-}
-
-.nav-link:hover {
-    color: #f8f9fa;
-}
+    .imgProfile {
+        width: 40px;
+        height: 40px;
+    }
 </style>

@@ -1,9 +1,9 @@
 <template>
-    <router-link class="text-decoration-none" to="AffichageDetailsLot">
+    <router-link class="text-decoration-none" to="DetailsLot">
         <div class="card">
             <div class="card-body align-items-middle">
                 <div class="d-flex align-items-middle justify-content-between">
-                    <p class="fs-7 pe-2 mt-1 mb-0">{{lot.code}}: {{lot.artiste}} ({{lot.hauteur}} X {{lot.largeur}} po)</p>
+                    <p class="fs-7 pe-2 mt-1 mb-0">Lot {{lot.code}} {{lot.artiste}} {{lot.dimension}} po</p>
 
                     <img src="/icons/IconeLivrable.png"
                          height="30"
@@ -42,10 +42,9 @@
     import { ref } from 'vue'
 
     let lotRecu = {
-        code: "1-a",
+        code: "1a",
         artiste: "Nom de l'artiste",
-        hauteur: 12,
-        largeur: 13,
+        dimension: "12 x 13",
         valeurEstimeMin: 1000.00,
         valeurEstimeMax: 2000.00,
         mise: 1100.03,

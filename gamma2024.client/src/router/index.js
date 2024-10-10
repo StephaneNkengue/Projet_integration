@@ -10,7 +10,7 @@ import APropos from '@/components/views/APropos.vue'
 import TableauDeBordInventaire from '@/components/views/TableauDeBordInventaire.vue'
 import EncanPresent from '@/components/views/EncanPresent.vue'
 import TousLesEncans from '@/components/views/TousLesEncans.vue'
-import AffichageDetailsLot from '@/components/views/AffichageDetailsLot.vue'
+import DetailsLot from '@/components/views/DetailsLot.vue'
 import Modification from '@/components/views/Modification.vue'
 import AffichageVendeur from '@/components/views/AffichageVendeur.vue'
 import VendeurCreation from '@/components/views/VendeurCreation.vue'
@@ -22,7 +22,7 @@ const routes = [
         path: '/',
         name: 'Accueil',
         component: Accueil,
-        meta: { requiresAuth: false}
+        meta: { requiresAuth: false }
     },
     {
         path: '/accueil',
@@ -67,14 +67,15 @@ const routes = [
         meta: { requiresAuth: false }
     },
     {
-        path: '/affichagedetailslot',
+        path: '/detailslot',
         name: 'DetailsLot',
-        component: AffichageDetailsLot,
+        component: DetailsLot,
         meta: { requiresAuth: false }
+
     },
     {
         path: '/inventaire',
-        name: 'TableauDeBordInventaire',
+        name: 'Inventaire',
         component: TableauDeBordInventaire,
         meta: { requiresAuth: true, requiredRole: 'Administrateur' }
     },
@@ -98,7 +99,7 @@ const routes = [
     },
     {
         path: '/vendeurmodification/:id',
-        name: 'vendeurModification', 
+        name: 'vendeurModification',
         component: VendeurModification,
         props: true, // Ceci permet de passer l'ID comme prop au composant
         meta: { requiresAuth: true, requiredRole: 'Administrateur' }
@@ -119,7 +120,7 @@ const router = createRouter({
     }
 })
 
-// Attendez que l'URL de base de l'API soit déterminée avant de permettre la navigation
+// Attendez que l'URL de base de l'API soit d�termin�e avant de permettre la navigation
 router.beforeEach(async (to, from, next) => {
     if (!api.defaults.baseURL) {
         await new Promise(resolve => {
@@ -138,7 +139,7 @@ router.beforeEach(async (to, from, next) => {
     if (to.meta.requiresAuth && !isLoggedIn) {
         next('/connexion') 
     } else if (to.meta.requiredRole && !userRoles.includes(to.meta.requiredRole)) {
-        next({ name: 'AccesNonAutorise' })  
+        next({ name: 'AccesNonAutorise' })
     } else {
         next()
     }
