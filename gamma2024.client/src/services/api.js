@@ -57,7 +57,7 @@ findWorkingApi()
     })
     .catch(error => {
         console.error(error);
-        api.defaults.baseURL = 'http://localhost:7/api';
+        api.defaults.baseURL = 'http://localhost:5121/api';
     });
 
 api.interceptors.request.use(config => {
