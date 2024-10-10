@@ -8,6 +8,49 @@ var context = DbContextFactory.CreateDbContext();
 
 Console.WriteLine("Début du seed...");
 
+Console.WriteLine("Ajout des utilisateurs");
+
+var utilisateurs = File.ReadAllLines("CSV/Acheteurs.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
+                        .Skip(1)
+                        .Where(x => x.Length > 1)
+                        .ToApplicationUser()
+                        .ToList();
+
+var passwordHasher = new PasswordHasher<ApplicationUser>();
+
+foreach (var item in utilisateurs)
+{
+    item.PasswordHash = passwordHasher.HashPassword(item, item.UserName + item.Adresses.First().Numero);
+    item.CarteCredits = new CarteCredit[]
+    {
+        new() {
+            AnneeExpiration=(DateTime.Now.Year)+2,
+            MoisExpiration=DateTime.Now.Month,
+            Nom = item.FirstName + " " + item.Name,
+            Numero="4242424242424242"
+        }
+    };
+}
+
+context.Users.AddRange(utilisateurs);
+context.SaveChanges();
+
+Console.WriteLine("Ajout des roles au utilisateurs");
+
+string roleIdClient = "7da4163f-edb4-47b5-86ea-888888888888";
+
+var utilisateursRoles = new List<IdentityUserRole<string>>();
+foreach (var item in utilisateurs)
+{
+    utilisateursRoles.Add(new IdentityUserRole<string>
+    {
+        RoleId = roleIdClient,
+        UserId = item.Id,
+    });
+}
+
+context.UserRoles.AddRange(utilisateursRoles);
+context.SaveChanges();
 
 Console.WriteLine("Ajout des vendeurs");
 
@@ -111,6 +154,12 @@ var lots232 = File.ReadAllLines("CSV/Encan232et233.csv", System.Text.Encoding.Ge
                         })
                         .ToList();
 
+var acheteurs232 = File.ReadAllLines("CSV/AcheteurEncan232.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
+                        .Skip(1)
+                        .Where(l => l.Length > 1)
+                        .GetAcheteursEncan232()
+                        .ToList();
+
 for (int i = 0; i < lots232.Count; i++)
 {
     foreach (var nomImage in imagesLots232[i])
@@ -126,6 +175,21 @@ for (int i = 0; i < lots232.Count; i++)
                 Lien = "AAA"
             });
         }
+    }
+
+    var vente = acheteurs232.FirstOrDefault(a => a.Lot == lots232[i].Numero);
+    if (vente != null)
+    {
+        var userVente = utilisateurs.FirstOrDefault(u => u.UserName == vente.Pseudonyme);
+        lots232[i].ClientMise = userVente;
+        lots232[i].IdClientMise = userVente.Id;
+        lots232[i].Mise = vente.PrixAchete;
+        lots232[i].EstVendu = true;
+
+        //var facture = new Facture
+        //{
+
+        //};
     }
 }
 
@@ -265,50 +329,6 @@ foreach (var item in lots233)
 }
 
 context.EncanLots.AddRange(encanLots);
-context.SaveChanges();
-
-Console.WriteLine("Ajout des utilisateurs");
-
-var utilisateurs = File.ReadAllLines("CSV/Acheteurs.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
-                        .Skip(1)
-                        .Where(x => x.Length > 1)
-                        .ToApplicationUser()
-                        .ToList();
-
-var passwordHasher = new PasswordHasher<ApplicationUser>();
-
-foreach (var item in utilisateurs)
-{
-    item.PasswordHash = passwordHasher.HashPassword(item, item.UserName + item.Adresses.First().Numero);
-    item.CarteCredits = new CarteCredit[]
-    {
-        new() {
-            AnneeExpiration=(DateTime.Now.Year)+2,
-            MoisExpiration=DateTime.Now.Month,
-            Nom = item.FirstName + " " + item.Name,
-            Numero="4242424242424242"
-        }
-    };
-}
-
-context.Users.AddRange(utilisateurs);
-context.SaveChanges();
-
-Console.WriteLine("Ajout des roles au utilisateurs");
-
-string roleIdClient = "7da4163f-edb4-47b5-86ea-888888888888";
-
-var utilisateursRoles = new List<IdentityUserRole<string>>();
-foreach (var item in utilisateurs)
-{
-    utilisateursRoles.Add(new IdentityUserRole<string>
-    {
-        RoleId = roleIdClient,
-        UserId = item.Id,
-    });
-}
-
-context.UserRoles.AddRange(utilisateursRoles);
 context.SaveChanges();
 
 Console.WriteLine("Fin du seed");
