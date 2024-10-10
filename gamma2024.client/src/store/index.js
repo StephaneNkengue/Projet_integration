@@ -203,6 +203,16 @@ const store = createStore({
         throw error;
       }
     },
+
+    async obtenirUnMembre({ commit }, membreId) {
+      try {
+        const response = await api.get(`/administrateur/${membreId}`);
+        return response.data;
+      } catch (error) {
+        console.error("Erreur lors de la récupération du membre:", error);
+        throw error;
+      }
+    },
   },
   getters: {
     isAdmin: (state) => state.roles.includes("ADMINISTRATEUR"),

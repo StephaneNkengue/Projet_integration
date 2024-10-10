@@ -12,6 +12,7 @@ import TousLesEncans from "@/components/views/TousLesEncans.vue";
 import DetailsLot from "@/components/views/DetailsLot.vue";
 import Modification from "@/components/views/Modification.vue";
 import GestionMembreParAdmin from "@/components/views/GestionMembreParAdmin.vue";
+import DetailsMembreParAdmin from "@/components/views/DetailsMembreParAdmin.vue";
 
 const routes = [
   {
@@ -71,9 +72,16 @@ const routes = [
     meta: { requiresAuth: true, requiredRole: "Client" },
   },
   {
-    path: "/GestionMembre",
+    path: "/gestionMembre",
     name: "GestionMembre",
     component: GestionMembreParAdmin,
+    meta: { requiresAuth: true, requiredRole: "Administrateur" },
+  },
+  {
+    path: "/detailsMembre/:id",
+    name: "detailsMembre",
+    component: DetailsMembreParAdmin,
+    props: true,
     meta: { requiresAuth: true, requiredRole: "Administrateur" },
   },
 ];

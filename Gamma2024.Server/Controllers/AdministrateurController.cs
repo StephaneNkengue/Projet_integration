@@ -23,19 +23,31 @@ namespace Gamma2024.Server.Controllers
         }
 
 
-        //Liaison avec la carte de crédit manquantecarte de credit
+        //Liaison avec la carte de crédit manquante
 
         [HttpGet("ObtenirTousLesUsers")]
         public async Task<IActionResult> GetAllUsers()
         {
-            var users = await _context.Users
-                .ToListAsync();
+            var users = await _context.Users.Include(u => u.Adresses).Include(u => u.CarteCredits).ToListAsync();
 
             if (users == null)
             {
-                return BadRequest("Liste d'utilisateur vide");
+                return NotFound("Liste d'utilisateur vide");
             }
             return Ok(users);
+        }
+
+
+        [HttpGet("{membreId}")]
+        public async Task<IActionResult> GetUserById(string membreId)
+        {
+            var user = await _context.Users.Include(u => u.Adresses).Include(u => u.CarteCredits).FirstOrDefaultAsync(x => x.Id == membreId);
+
+            if (user == null)
+            {
+                return NotFound("Aucun utilisateur trouvé");
+            }
+            return Ok(user);
         }
     }
 }
