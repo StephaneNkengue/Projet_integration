@@ -9,9 +9,6 @@ var context = DbContextFactory.CreateDbContext();
 Console.WriteLine("Début du seed...");
 
 Console.WriteLine("Ajout des utilisateurs");
-var currentDir = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.Parent.FullName;
-
-var imagePath = Path.Combine(Environment.CurrentDirectory, "image_path.jiff");
 
 
 var passwordHasher = new PasswordHasher<ApplicationUser>();
@@ -162,9 +159,10 @@ for (int i = 0; i < lots232.Count; i++)
         }
         else
         {
+            var imagePath = Path.Combine("Images", "ImagesEncan232", nomImage);
             lots232[i].Photos.Add(new Photo
             {
-                Lien = "AAA"
+                Lien = imagePath
             });
         }
     }
@@ -249,9 +247,10 @@ for (int i = 0; i < lots233.Count; i++)
         }
         else
         {
+            var imagePath = Path.Combine("Images", "ImagesEncan233", nomImage);
             lots233[i].Photos.Add(new Photo
             {
-                Lien = "AAA"
+                Lien = imagePath
             });
         }
     }
