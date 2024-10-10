@@ -9,6 +9,7 @@ namespace Gamma2024.Server.Models
         public DateTime DateDebutSoireeCloture { get; set; }
         public DateTime DateFinSoireeCloture { get; set; }
         public ICollection<EncanLot> EncanLots { get; set; } = [];
+        public bool EstPublie { get; set; } = false;
 
     }
 }
