@@ -17,6 +17,7 @@ namespace Gamma2024.Server.Services
             var encans = _context.Encans
                 .Select(e => new EncanAffichageVM()
                 {
+                    Id = e.Id,
                     NumeroEncan = e.NumeroEncan,
                     DateDebut = e.DateDebut,
                     DateFin = e.DateFin,
