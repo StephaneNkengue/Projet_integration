@@ -237,14 +237,22 @@ const store = createStore({
         },
         async checkAuthStatus({ commit, state }) {
             const token = state.token || localStorage.getItem('token');
+            console.log("Token trouvé :", token ? "Oui" : "Non");
             if (!token) {
+                console.log("Aucun token trouvé, déconnexion de l'utilisateur");
                 commit('setLoggedIn', false);
                 commit('setUser', null);
                 commit('setRoles', []);
                 return;
             }
 
+            // Attendre que la base URL soit définie
+            while (!api.defaults.baseURL) {
+                await new Promise(resolve => setTimeout(resolve, 100));
+            }
+
             try {
+                console.log("URL de la requête :", `${api.defaults.baseURL}/home/check-auth`);
                 const response = await api.get('/home/check-auth');
                 console.log("Réponse de check-auth:", response.data);
                 if (response.data.isAuthenticated) {
@@ -255,12 +263,32 @@ const store = createStore({
                     throw new Error('Non authentifié');
                 }
             } catch (error) {
-                console.error("Erreur lors de la vérification de l'authentification:", error);
+                console.error("Erreur détaillée lors de la vérification de l'authentification:", error.response || error);
+                if (error.response && error.response.status === 401) {
+                    commit('setLoggedIn', false);
+                    commit('setUser', null);
+                    commit('setRoles', []);
+                    commit('setToken', null);
+                    localStorage.removeItem('token');
+                }
+            }
+        },
+        async logout({ commit }) {
+            try {
+                // Appel à l'API pour invalider le token côté serveur (optionnel mais recommandé)
+                await api.post('/api/home/logout');
+            } catch (error) {
+                console.error("Erreur lors de la déconnexion côté serveur:", error);
+            } finally {
+                // Nettoyage des données côté client
                 commit('setLoggedIn', false);
                 commit('setUser', null);
                 commit('setRoles', []);
                 commit('setToken', null);
                 localStorage.removeItem('token');
+                localStorage.removeItem('user');
+                localStorage.removeItem('roles');
+                localStorage.removeItem('isLoggedIn');
             }
         }
     },

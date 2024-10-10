@@ -8,6 +8,7 @@ import PrimeVue from 'primevue/config'
 import Toast from 'vue3-toastify'
 import 'vue3-toastify/dist/index.css';
 import api from './services/api';
+import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 
 async function initApp() {
     await store.dispatch('checkAuthStatus');

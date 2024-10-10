@@ -90,14 +90,17 @@
                             <router-link to="Connexion" v-if="!estConnecte">
                                 <button class="btn btn-outline bleuMoyenFond text-white" type="button">Connexion</button>
                             </router-link>
-                            <router-link v-if="estConnecte && estClient" :to="{ name: 'Modification' }" class="text-decoration-none text-white d-flex align-items-center gap-3">
-                                <a class="nav-link">{{ username }}</a>
-                                <img :src="avatarUrl" alt="Avatar" height="40" />
-                            </router-link>
-                            <span v-if="estConnecte && !estClient" class="text-white d-flex align-items-center gap-3">
-                                <span class="nav-link">{{ username }}</span>
-                                <img :src="avatarUrl" alt="Avatar" height="40" />
-                            </span>
+                            <div v-if="estConnecte" class="dropdown">
+                                <a class="nav-link dropdown-toggle d-flex align-items-center gap-3" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <span class="text-white">{{ username }}</span>
+                                    <img :src="avatarUrl" alt="Avatar" height="40" class="rounded-circle" />
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end custom-dropdown">
+                                    <li v-if="estClient"><router-link class="dropdown-item" :to="{ name: 'Modification' }">Profil</router-link></li>
+                                    <li v-if="estClient"><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item" href="#" @click.prevent="deconnecter">Déconnexion</a></li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -129,8 +132,10 @@
 <script setup>
 import { computed, watch, ref } from 'vue'
 import { useStore } from 'vuex'
+import { useRouter } from 'vue-router'
 
 const store = useStore()
+const router = useRouter()
 
 const estConnecte = computed(() => store.state.isLoggedIn)
 const estAdmin = computed(() => store.getters.isAdmin)
@@ -166,7 +171,63 @@ watch(() => store.state.isLoggedIn, (newValue) => {
 // Définition de activationRecherche
 const activationRecherche = ref(false)
 
+const deconnecter = async () => {
+    await store.dispatch('logout')
+    router.push('/') // Redirige vers la page d'accueil après la déconnexion
+}
 </script>
 
 <style scoped>
+.dropdown-menu {
+    min-width: 200px;
+    padding: 0.5rem 0;
+    margin: 0.125rem 0 0;
+    font-size: 0.875rem;
+    color: #333;
+    text-align: left;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid rgba(0,0,0,.15);
+    border-radius: 0.25rem;
+    box-shadow: 0 2px 10px rgba(0,0,0,.1);
+}
+
+.custom-dropdown {
+    padding: 0;
+}
+
+.dropdown-item, .dropdown-item-text {
+    display: block;
+    width: 100%;
+    padding: 0.75rem 1rem;
+    clear: both;
+    font-weight: 400;
+    color: #333;
+    text-align: inherit;
+    white-space: nowrap;
+    background-color: transparent;
+    border: 0;
+}
+
+.dropdown-item:hover, .dropdown-item:focus {
+    color: #16181b;
+    text-decoration: none;
+    background-color: #f8f9fa;
+}
+
+.dropdown-divider {
+    height: 0;
+    margin: 0.5rem 0;
+    overflow: hidden;
+    border-top: 1px solid #e9ecef;
+}
+
+.nav-link {
+    color: #fff;
+    text-decoration: none;
+}
+
+.nav-link:hover {
+    color: #f8f9fa;
+}
 </style>

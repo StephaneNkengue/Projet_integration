@@ -7,6 +7,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Logging; // Added for logging
 
 namespace Gamma2024.Server.Controllers
 {
@@ -17,12 +18,14 @@ namespace Gamma2024.Server.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IConfiguration _configuration;
+        private readonly ILogger<HomeController> _logger; // Added for logging
 
-        public HomeController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IConfiguration configuration)
+        public HomeController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IConfiguration configuration, ILogger<HomeController> logger)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _configuration = configuration;
+            _logger = logger; // Added for logging
         }
 
         [HttpPost("login")]
@@ -73,9 +76,11 @@ namespace Gamma2024.Server.Controllers
         [Authorize] // Cette annotation assure que seuls les utilisateurs authentifiés peuvent accéder à cette méthode
         public async Task<IActionResult> CheckAuth()
         {
+            _logger.LogInformation("CheckAuth appelé");
             var user = await _userManager.GetUserAsync(User);
             if (user != null)
             {
+                _logger.LogInformation($"Utilisateur trouvé : {user.UserName}");
                 var roles = await _userManager.GetRolesAsync(user);
                 return Ok(new
                 {
@@ -92,7 +97,16 @@ namespace Gamma2024.Server.Controllers
                     roles = roles
                 });
             }
+            _logger.LogWarning("Aucun utilisateur trouvé");
             return Ok(new { isAuthenticated = false });
+        }
+
+        [HttpPost("logout")]
+        [Authorize]
+        public async Task<IActionResult> Logout()
+        {
+            await _signInManager.SignOutAsync();
+            return Ok(new { message = "Déconnexion réussie" });
         }
 
         private string GenerateJwtToken(ApplicationUser user, string[] roles)
