@@ -158,7 +158,19 @@ const store = createStore({
                 console.error("Erreur lors de la vérification de l'email:", error);
                 throw error;
             }
-        }
+        },
+
+        async fetchListeDeLotsPourAdministrateur({ commit }) {
+            try {
+                const response = await api.get('/lots/cherchertouslots');
+                console.log("Données reçues de l'API:", response.data); // Pour le débogage
+
+                return response.data;
+            } catch (error) {
+                console.error("Erreur détaillée:", error.response || error);
+                throw error;
+            }
+        },
     },
     getters: {
         isAdmin: state => state.roles.includes('ADMINISTRATEUR'),
