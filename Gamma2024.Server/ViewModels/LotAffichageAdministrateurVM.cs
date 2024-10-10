@@ -1,5 +1,3 @@
-using Gamma2024.Server.Models;
-
 namespace Gamma2024.Server.ViewModels
 {
 	public class LotAffichageAdministrateurVM
@@ -16,7 +14,7 @@ namespace Gamma2024.Server.ViewModels
 		public string Dimension { get; set; } = null!;
 		public string Description { get; set; } = null!;
 		public string Medium { get; set; } = null!;
-		public Vendeur Vendeur { get; set; } = null!;
+		public string Vendeur { get; set; } = null!;
 		public bool EstVendu { get; set; }
 		public bool EstLivrable { get; set; }
 	}

@@ -22,8 +22,7 @@ namespace Gamma2024.Server.Controllers
 			return lots;
 		}
 
-		[HttpGet]
-		[HttpGet("cherchertouslots")]
+		[HttpGet("chercherTousLots")]
 		public ICollection<LotAffichageAdministrateurVM> ChercherTousLots()
 		{
 			ICollection<LotAffichageAdministrateurVM> lots = _lotService.ChercherTousLots();

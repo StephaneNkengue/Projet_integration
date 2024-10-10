@@ -11,19 +11,19 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
-    ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+	?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(connectionString));
+	options.UseSqlServer(connectionString));
 
 builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
 {
-    options.SignIn.RequireConfirmedAccount = true;
-    options.User.RequireUniqueEmail = true;
+	options.SignIn.RequireConfirmedAccount = true;
+	options.User.RequireUniqueEmail = true;
 })
-    .AddRoles<IdentityRole>()
-    .AddEntityFrameworkStores<ApplicationDbContext>()
-    .AddDefaultTokenProviders();
+	.AddRoles<IdentityRole>()
+	.AddEntityFrameworkStores<ApplicationDbContext>()
+	.AddDefaultTokenProviders();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -31,50 +31,51 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<ClientInscriptionService>();
 builder.Services.AddScoped<ClientModificationService>();
+builder.Services.AddScoped<LotService>();
 
 builder.Services.Configure<EmailConfiguration>(
-    builder.Configuration.GetSection("EmailConfiguration"));
+	builder.Configuration.GetSection("EmailConfiguration"));
 
 builder.Services.AddTransient<IEmailSender, EmailService>();
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("Development", builder =>
-    {
-        builder
-            .SetIsOriginAllowed(_ => true)
-            .WithOrigins("https://localhost:5173")
-            .AllowAnyMethod()
-            .AllowAnyHeader()
-            .AllowCredentials();
-    });
+	options.AddPolicy("Development", builder =>
+	{
+		builder
+			.SetIsOriginAllowed(_ => true)
+			.WithOrigins("https://localhost:5173")
+			.AllowAnyMethod()
+			.AllowAnyHeader()
+			.AllowCredentials();
+	});
 });
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options =>
-    {
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])),
-            ValidateIssuer = true,
-            ValidIssuer = builder.Configuration["Jwt:Issuer"],
-            ValidateAudience = true,
-            ValidAudience = builder.Configuration["Jwt:Audience"]
-        };
-    });
+	.AddJwtBearer(options =>
+	{
+		options.TokenValidationParameters = new TokenValidationParameters
+		{
+			ValidateIssuerSigningKey = true,
+			IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])),
+			ValidateIssuer = true,
+			ValidIssuer = builder.Configuration["Jwt:Issuer"],
+			ValidateAudience = true,
+			ValidAudience = builder.Configuration["Jwt:Audience"]
+		};
+	});
 
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+	app.UseSwagger();
+	app.UseSwaggerUI();
 }
 else
 {
-    app.UseExceptionHandler("/Error");
-    app.UseHsts();
+	app.UseExceptionHandler("/Error");
+	app.UseHsts();
 }
 
 app.UseHttpsRedirection();

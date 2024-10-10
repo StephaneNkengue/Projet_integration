@@ -51,7 +51,7 @@ namespace Gamma2024.Server.Services
 					Dimension = l.Dimensions,
 					Description = l.Description,
 					Medium = _context.Mediums.Where(m => m.Id == l.IdMedium).Single().Type,
-					Vendeur = l.Vendeur,
+					Vendeur = l.Vendeur.Nom,
 					EstVendu = l.EstVendu,
 					EstLivrable = l.EstLivrable,
 				}).ToList();
