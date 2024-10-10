@@ -54,9 +54,9 @@ namespace Gamma2024.Server.Services
 					Vendeur = l.Vendeur,
 					EstVendu = l.EstVendu,
 					EstLivrable = l.EstLivrable,
-				});
+				}).ToList();
 
-			return lots.ToList();
+			return lots;
 		}
 	}
 }
