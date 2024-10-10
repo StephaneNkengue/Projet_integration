@@ -50,9 +50,9 @@
             <tr v-for="(encan) in listeEncansFiltree" :key="encan.id">
                 <td>{{encan.numeroEncan}}</td>
                 <td></td>
-                <td>{{encan.dateDebut}}</td>
-                <td>{{encan.dateFin}}</td>
-                <td>{{encan.dateDebutSoireeCloture}} à {{encan.dateFinSoireeCloture}}</td>
+                <td>{{dateDebutJour}}-{{dateDebut[1]}}-{{ dateDebut[0]}}</td>
+                <td>{{dateFinJour}}-{{dateFin[1]}}-{{ dateFin[0]}}</td>
+                <td>{{dateDebutSoireeClotureJour}}-{{dateDebutSoireeCloture[1]}}-{{ dateDebutSoireeCloture[0]}} {{ dateDebutSoireeClotureHeure }} à {{dateFinSoireeClotureJour}}-{{dateFinSoireeCloture[1]}}-{{ dateFinSoireeCloture[0]}} {{ dateFinSoireeClotureHeure }}</td>
                 <td>vfffd</td>
                 <td>modifier</td>
                 <td>supprimer</td>
@@ -67,12 +67,39 @@
     const store = useStore();
     const listeEncans = ref([]);
     const listeEncansFiltree = ref([]);
+    const dateDebut = ref("");
+    const dateDebutJour = ref("");
+    const dateFin = ref("");
+    const dateFinJour = ref("");
+    const dateDebutSoireeCloture = ref("");
+    const dateDebutSoireeClotureJour = ref("");
+    const dateDebutSoireeClotureHeure = ref("");
+    const dateFinSoireeCloture = ref("");
+    const dateFinSoireeClotureJour = ref("");
+    const dateFinSoireeClotureHeure = ref("");
+
     
     onMounted(async () => {
 
         try {
             listeEncans.value = await store.dispatch("fetchEncanInfo");
-            listeEncansFiltree.value = listeEncans.value
+            listeEncansFiltree.value = listeEncans.value;
+            
+            listeEncansFiltree.value.forEach(element => {
+                dateDebut.value = element.dateDebut.toString().split("-");
+                dateFin.value = element.dateFin.toString().split("-");
+                dateDebutSoireeCloture.value = element.dateDebutSoireeCloture.toString().split("-");
+                dateFinSoireeCloture.value = element.dateFinSoireeCloture.toString().split("-");
+
+                dateDebutJour.value = dateDebut.value[2].substring(0,2);
+                dateFinJour.value = dateFin.value[2].substring(0,2);
+                dateDebutSoireeClotureJour.value = dateDebutSoireeCloture.value[2].substring(0,2);
+                dateFinSoireeClotureJour.value = dateFinSoireeCloture.value[2].substring(0,2);
+
+                dateDebutSoireeClotureHeure.value = dateDebutSoireeCloture.value[2].substring(3, 8);
+                dateFinSoireeClotureHeure.value = dateFinSoireeCloture.value[2].substring(3, 8);
+            });
+
         }
         catch (erreur) {
             console.log("Erreur encans" + erreur);
@@ -92,6 +119,10 @@
             dateFinSoireeCloture.toString().startsWith(encanRechercher.value)
         );
     })
+    
+    
+
+    console.log(dateDebut)
 </script>
 
 <style scoped>
