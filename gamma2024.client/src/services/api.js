@@ -28,7 +28,7 @@ async function findWorkingApi() {
 }
 
 const api = axios.create({
-    baseURL: 'https://sqlinfocg.cegepgranby.qc.ca/2135621/api', // URL par défaut
+    baseURL: 'https://localhost:7206/api', // URL par défaut
     withCredentials: true
 });
 
@@ -41,7 +41,7 @@ findWorkingApi()
     .catch(error => {
         console.error(error);
         // Fallback sur une URL par défaut si aucune ne fonctionne
-        api.defaults.baseURL = 'https://sqlinfocg.cegepgranby.qc.ca/2135621/api';
+        api.defaults.baseURL = 'https://localhost:7206/api';
     });
 
 export default api;
