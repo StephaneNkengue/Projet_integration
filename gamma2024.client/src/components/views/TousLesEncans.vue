@@ -6,7 +6,7 @@
         <div class="w-100 px-3 row row-cols-lg-2 row-cols-1">
             <div v-for="index in encans" class="col py-3">
                 <router-link to="EncanPresent" class="text-decoration-none text-black">
-                    <AffichageEncanTuile />
+                    <AffichageEncanTuile :encan="index" />
                 </router-link>
             </div>
         </div>
