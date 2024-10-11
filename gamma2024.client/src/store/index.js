@@ -106,13 +106,13 @@ const store = createStore({
                     response.data.photo = `${baseUrl}/Avatars/${response.data.photo.split('/').pop()}`;
                 }
 
-                commit('setUser', response.data);
-                return response;
-            } catch (error) {
-                console.error("Erreur détaillée:", error.response || error);
-                throw error;
-            }
-        },
+        commit("setUser", response.data);
+        return response;
+      } catch (error) {
+        console.error("Erreur détaillée:", error.response || error);
+        throw error;
+      }
+    },
 
 
         async updateClientInfo({ commit }, userData) {

@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from "axios";
 
 const apiUrls = [
     'https://localhost:7206/api',
