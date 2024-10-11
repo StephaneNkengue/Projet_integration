@@ -116,18 +116,39 @@
                 </ul>
               </div>
 
-              <router-link
-                to="modificationProfil"
-                v-if="estConnecte"
-                class="text-decoration-none text-white d-flex align-items-center gap-3"
-              >
-                <a class="nav-link">{{ username }}</a>
-                <img :src="'/icons' + avatarUrl" alt="Avatar" height="40" />
-              </router-link>
-            </div>
-          </div>
-        </div>
-      </nav>
+                            <a v-if="estConnecte" @click="notification = !notification" class="d-flex align-items-center">
+                                <img src="/icons/IconeCloche.png"
+                                     alt="Icon cloche"
+                                     height="25" />
+                            </a>
+
+                            <div class="d-flex flex-column position-absolute top-100 start-79 dropdown-menu bleuMarinSecondaireFond" v-if="notification">
+                                <router-link to="Accueil" class="text-decoration-none text-white d-flex align-items-center gap-3" v-for="index in 5">
+                                    <a class="dropdown-item text-white btnSurvolerBleuMoyenFond" @click="notification = false">
+                                        test
+                                    </a>
+                                </router-link>
+                            </div>
+
+                            <div class="d-flex flex-column position-absolute top-100 end-0 dropdown-menu bleuMarinSecondaireFond" v-if="activationDropdownProfil">
+                                <router-link to="Modification" class="text-decoration-none text-white d-flex align-items-center gap-3">
+                                    <a class="dropdown-item text-white btnSurvolerBleuMoyenFond" @click="activationDropdownProfil = false">
+                                        Profil
+                                    </a>
+                                </router-link>
+                                <a class="dropdown-item text-danger btnSurvolerBleuMoyenFond fw-bold">
+                                    Déconnexion
+                                </a>
+                            </div>
+
+                            <a @click="activationDropdownProfil = !activationDropdownProfil" class="d-flex text-decoration-none text-white align-items-center gap-3" v-if="estConnecte">
+                                <p class="m-0">{{ username }}</p>
+                                <img :src="avatarUrl" alt="Avatar" class="imgProfile rounded-circle" />
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </nav>
 
       <nav class="navbar bg-white navbar-expand-md py-0" data-bs-theme="dark">
         <div
@@ -228,8 +249,24 @@ watch(
   }
 );
 
-// Définition de activationRecherche
-const activationRecherche = ref(false);
+    // Définition de activationRecherche
+    const activationRecherche = ref(false);
+    const activationDropdownProfil = ref(false);
+    const notification = ref(false);
+
 </script>
 
-<style scoped></style>
+<style scoped>
+    .ms-7 {
+        margin-left: 7.9rem;
+    }
+
+    .start-79 {
+        left: 79%;
+    }
+
+    .imgProfile {
+        width: 40px;
+        height: 40px;
+    }
+</style>
