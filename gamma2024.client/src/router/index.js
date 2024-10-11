@@ -12,6 +12,7 @@ import TousLesEncans from '@/components/views/TousLesEncans.vue'
 import DetailsLot from '@/components/views/DetailsLot.vue'
 import Modification from '@/components/views/Modification.vue'
 import TableauDeBordEncans from '@/components/views/TableauDeBordEncans.vue'
+import TableauDeBordEncansAjout from '@/components/views/TableauDeBordEncansAjout.vue'
 
 const routes = [
     {
@@ -74,6 +75,11 @@ const routes = [
         path: '/tableaudebordencans',
         name: 'TableauDeBordEncans',
         component: TableauDeBordEncans,
+    },
+    {
+        path: '/tableaudebordencansajout',
+        name: 'TableauDeBordEncansAjout',
+        component: TableauDeBordEncansAjout,
     }
 ]
 

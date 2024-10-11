@@ -2,11 +2,13 @@
     <div class="d-flex flex-column justify-content-between">
         <div class="d-flex justify-content-between">
             <h2 class="d-flex-1">Liste des encans</h2>
-            <button class="btn bleuMarinSecondaireFond btnSurvolerBleuMoyenFond text-white d-flex-1"
-                    type="button"
-                    id="ajouterEncanButton">
-                Ajouter un encan
-            </button>
+            <router-link to="TableauDeBordEncansAjout" class="text-decoration-none">
+                <button class="btn bleuMarinSecondaireFond btnSurvolerBleuMoyenFond btnClick text-white d-flex-1"
+                        type="button"
+                        id="ajouterEncanButton">
+                    Ajouter un encan
+                </button>
+            </router-link>
         </div>
 
         <div class="d-flex justify-content-between">
@@ -30,7 +32,7 @@
 
             <div class="d-flex me-1 gap-1 align-items-center">
                 <label for="Recherche">Rechercher : </label>
-                <input data-bs-theme="light" type="search" aria-label="Recherche" v-model="encanRechercher">
+                <input data-bs-theme="light" type="search" aria-label="Recherche" v-model="encanRecherche">
             </div>
         </div>
 
@@ -38,7 +40,7 @@
             <thead>
                 <tr>
                     <th data-field="numeroEncan">Encan</th>
-                    <th data-field="status">Status</th>
+                    <th data-field="statut">Statut</th>
                     <th data-field="dateDebut">Date de début</th>
                     <th data-field="dateFin">Date de fin</th>
                     <th data-field="soireeCloture">Soirée de clôture</th>
@@ -49,10 +51,25 @@
             </thead>
             <tr v-for="(encan) in listeEncansFiltree" :key="encan.id">
                 <td>{{encan.numeroEncan}}</td>
-                <td></td>
+                <td class="d-flex justify-content-center">
+                    <div class="d-flex collapse dropdown dropdown-center">
+                        <button class="btn dropdown-toggle bleuMarinSecondaireFond rounded text-white contenuListeDropdown fs-7" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            {{encanPublie}}
+                        </button>
+
+                        <ul class="dropdown-menu dropdown-menu-dark bleuMarinFond text-center">
+                            <li>
+                                <a class="dropdown-item" @click="encanPublie =  'Publié'">Publié</a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" @click="encanPublie = 'Non publié'">Non publié</a>
+                            </li>
+                        </ul>
+                    </div>
+                </td>
                 <td>{{dateDebutJour}}-{{dateDebut[1]}}-{{ dateDebut[0]}}</td>
                 <td>{{dateFinJour}}-{{dateFin[1]}}-{{ dateFin[0]}}</td>
-                <td>{{dateDebutSoireeClotureJour}}-{{dateDebutSoireeCloture[1]}}-{{ dateDebutSoireeCloture[0]}} {{ dateDebutSoireeClotureHeure }} à {{dateFinSoireeClotureJour}}-{{dateFinSoireeCloture[1]}}-{{ dateFinSoireeCloture[0]}} {{ dateFinSoireeClotureHeure }}</td>
+                <td>{{dateDebutSoireeClotureJour}}-{{dateDebutSoireeCloture[1]}}-{{ dateDebutSoireeCloture[0]}} {{ dateDebutSoireeClotureHeure }} à {{ dateFinSoireeClotureHeure }}</td>
                 <td>vfffd</td>
                 <td>modifier</td>
                 <td>supprimer</td>
@@ -63,6 +80,7 @@
 <script setup>
     import { onMounted, ref, watch } from "vue";
     import { useStore } from "vuex";
+    import TableauDeBordEncansAjout from '@/components/views/TableauDeBordEncansAjout.vue'
 
     const store = useStore();
     const listeEncans = ref([]);
@@ -75,26 +93,34 @@
     const dateDebutSoireeClotureJour = ref("");
     const dateDebutSoireeClotureHeure = ref("");
     const dateFinSoireeCloture = ref("");
-    const dateFinSoireeClotureJour = ref("");
     const dateFinSoireeClotureHeure = ref("");
 
-    
+    const encanPublie = ref("Publié");
+
+
     onMounted(async () => {
 
         try {
             listeEncans.value = await store.dispatch("fetchEncanInfo");
+
+            //if (listeEncans.value.estPublie == true) {
+            //    encanPublie = "Publié";
+            //}
+            //else if (listeEncans.value.estPublie == false) {
+            //    encanPublie = "Non publié";
+            //}
+
             listeEncansFiltree.value = listeEncans.value;
-            
+
             listeEncansFiltree.value.forEach(element => {
                 dateDebut.value = element.dateDebut.toString().split("-");
                 dateFin.value = element.dateFin.toString().split("-");
                 dateDebutSoireeCloture.value = element.dateDebutSoireeCloture.toString().split("-");
                 dateFinSoireeCloture.value = element.dateFinSoireeCloture.toString().split("-");
 
-                dateDebutJour.value = dateDebut.value[2].substring(0,2);
-                dateFinJour.value = dateFin.value[2].substring(0,2);
-                dateDebutSoireeClotureJour.value = dateDebutSoireeCloture.value[2].substring(0,2);
-                dateFinSoireeClotureJour.value = dateFinSoireeCloture.value[2].substring(0,2);
+                dateDebutJour.value = dateDebut.value[2].substring(0, 2);
+                dateFinJour.value = dateFin.value[2].substring(0, 2);
+                dateDebutSoireeClotureJour.value = dateDebutSoireeCloture.value[2].substring(0, 2);
 
                 dateDebutSoireeClotureHeure.value = dateDebutSoireeCloture.value[2].substring(3, 8);
                 dateFinSoireeClotureHeure.value = dateFinSoireeCloture.value[2].substring(3, 8);
@@ -106,21 +132,21 @@
         }
     });
 
-    const encanRechercher = ref();
-    
-    watch(encanRechercher, () => {
+    const encanRecherche = ref();
+
+    watch(encanRecherche, () => {
         listeEncansFiltree.value = listeEncans.value;
 
         listeEncansFiltree.value = listeEncansFiltree.value.filter(({ numeroEncan, dateDebut, dateFin, dateDebutSoireeCloture, dateFinSoireeCloture }) =>
-            numeroEncan.toString().startsWith(encanRechercher.value) ||
-            dateDebut.toString().startsWith(encanRechercher.value) ||
-            dateFin.toString().startsWith(encanRechercher.value) ||
-            dateDebutSoireeCloture.toString().startsWith(encanRechercher) ||
-            dateFinSoireeCloture.toString().startsWith(encanRechercher.value)
+            numeroEncan.toString().startsWith(encanRecherche.value) ||
+            dateDebut.toString().startsWith(encanRecherche.value) ||
+            dateFin.toString().startsWith(encanRecherche.value) ||
+            dateDebutSoireeCloture.toString().startsWith(encanRecherche) ||
+            dateFinSoireeCloture.toString().startsWith(encanRecherche.value)
         );
     })
-    
-    
+
+
 
     console.log(dateDebut)
 </script>
