@@ -3,6 +3,14 @@
         <h1>
             Tous les encans
         </h1>
+
+        <div class="d-flex gap-2" v-if="chargement">
+            <div class="spinner-border" role="status">
+                <span class="visually-hidden">Chargement des encans...</span>
+            </div>
+            <p>Chargement des encans en cours...</p>
+        </div>
+
         <div class="w-100 px-3 row row-cols-lg-2 row-cols-1">
             <div v-for="index in encans" class="col py-3">
                 <router-link to="EncanPresent" class="text-decoration-none text-black">
@@ -20,10 +28,12 @@
 
     const store = useStore();
     const encans = ref()
+    const chargement = ref(true)
 
     onMounted(async () => {
         const response = await store.dispatch("chercherTousEncans");
         encans.value = response.data
+        chargement.value = false
     })
 </script>
 
