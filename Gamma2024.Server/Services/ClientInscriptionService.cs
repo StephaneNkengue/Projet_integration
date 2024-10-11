@@ -64,6 +64,7 @@ namespace Gamma2024.Server.Services
                     FirstName = model.GeneralInfo.Prenom,
                     PhoneNumber = model.GeneralInfo.Telephone,
                     PhoneNumberConfirmed = true,
+                    Avatar = "Avatars/default.png"
                 };
 
                 var result = await _userManager.CreateAsync(client, model.GeneralInfo.MotDePasse);
