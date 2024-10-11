@@ -38,7 +38,7 @@
     </div>
 
     <div v-else
-         class="d-flex flex-column p-5">
+         class="d-flex flex-column p-5 w-100">
 
         <div v-for="index in lotsParPage" class="p-2">
             <LotListe />
