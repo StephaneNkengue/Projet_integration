@@ -18,6 +18,7 @@
                 </router-link>
             </div>
         </div>
+        <h5 class="text-center" v-if="encans.length <1 && !chargement">Il n'y a aucun encan pour le moment</h5>
     </div>
 </template>
 
@@ -27,7 +28,7 @@
     import { useStore } from "vuex";
 
     const store = useStore();
-    const encans = ref()
+    const encans = ref([])
     const chargement = ref(true)
 
     onMounted(async () => {
