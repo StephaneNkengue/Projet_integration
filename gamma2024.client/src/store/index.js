@@ -29,6 +29,13 @@ const store = createStore({
         },
         SET_API(state, api) {
             state.api = api;
+        },
+        SET_CLIENT_INFO(state, clientInfo) {
+            state.clientInfo = clientInfo;
+        },
+        refreshUserData(state) {
+            // Cette mutation ne fait rien, mais force la mise à jour des getters
+            state.userDataVersion = (state.userDataVersion || 0) + 1;
         }
     },
     actions: {
@@ -94,32 +101,30 @@ const store = createStore({
         },
 
 
-        async fetchClientInfo({ commit }) {
+        async fetchClientInfo({ state, commit }) {
             try {
-                const response = await state.api.get('/utilisateurs/ObtentionInfoClient');
-                console.log("Données reçues de l'API:", response.data);
-
-                // Corriger l'URL de l'avatar
-                if (response.data.photo) {
-                    // Supprimer '/api' de l'URL de base si présent
-                    const baseUrl = state.api.defaults.baseURL.replace('/api', '');
-                    response.data.photo = `${baseUrl}/Avatars/${response.data.photo.split('/').pop()}`;
-                }
-
-        commit("setUser", response.data);
-        return response;
-      } catch (error) {
-        console.error("Erreur détaillée:", error.response || error);
-        throw error;
-      }
-    },
+                const response = await state.api.get('/Utilisateurs/ObtentionInfoClient');
+                commit('SET_CLIENT_INFO', response.data);
+                return response.data;
+            } catch (error) {
+                console.error('Erreur lors de la récupération des informations du client:', error);
+                throw error;
+            }
+        },
 
 
-        async updateClientInfo({ commit }, userData) {
+        async updateClientInfo({state, commit }, userData) {
             try {
                 const response = await state.api.put('/utilisateurs/miseajourinfoclient', userData);
-                console.log("Réponse de mise à jour:", response.data); // Pour le débogage
-                commit('setUser', response.data);
+                console.log("Réponse de mise à jour:", response.data);
+                
+                // Mise à jour plus complète de l'utilisateur
+                const updatedUser = { ...state.user, ...response.data };
+                commit('setUser', updatedUser);
+                
+                // Forcer la mise à jour des getters
+                commit('refreshUserData');
+                
                 return response;
             } catch (error) {
                 console.error("Erreur lors de la mise à jour des informations du client:", error.response || error);
@@ -137,10 +142,13 @@ const store = createStore({
                 });
                 
                 // Construire l'URL complète de l'avatar
-                const fullAvatarUrl = `${state.api.defaults.baseURL.replace('/api', '')}${response.data.avatarUrl}`;
+                const avatarPath = response.data.avatarUrl.startsWith('/') 
+                    ? response.data.avatarUrl 
+                    : `/Avatars/${response.data.avatarUrl}`;
+                const fullAvatarUrl = `${state.api.defaults.baseURL.replace('/api', '')}${avatarPath}`;
                 
                 // Mettre à jour l'utilisateur avec la nouvelle URL de l'avatar
-                const updatedUser = { ...state.user, photo: fullAvatarUrl };
+                const updatedUser = { ...state.user, photo: avatarPath };
                 commit('setUser', updatedUser);
                 
                 console.log("Avatar mis à jour dans le store:", fullAvatarUrl);
@@ -295,7 +303,9 @@ const store = createStore({
                 if (state.user.photo.startsWith('http')) {
                     return state.user.photo;
                 } else {
-                    const fullUrl = `${state.api.defaults.baseURL.replace('/api', '')}${state.user.photo}`;
+                    // Correction ici
+                    const baseUrl = state.api.defaults.baseURL.replace('/api', '');
+                    const fullUrl = new URL(state.user.photo, baseUrl).href;
                     console.log("URL complète de l'avatar:", fullUrl);
                     return fullUrl;
                 }

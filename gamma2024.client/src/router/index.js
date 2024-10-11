@@ -11,11 +11,11 @@ import TableauDeBordInventaire from '@/components/views/TableauDeBordInventaire.
 import EncanPresent from '@/components/views/EncanPresent.vue'
 import TousLesEncans from '@/components/views/TousLesEncans.vue'
 import DetailsLot from '@/components/views/DetailsLot.vue'
-import Modification from '@/components/views/Modification.vue'
 import AffichageVendeur from '@/components/views/AffichageVendeur.vue'
 import VendeurCreation from '@/components/views/VendeurCreation.vue'
 import VendeurModification from '@/components/views/VendeurModification.vue'
 import AccesNonAutorise from '@/components/views/AccesNonAutorise.vue'
+import ModificationProfilUtilisateur from '@/components/views/ModificationProfilUtilisateur.vue'
 
 const routes = [
     {
@@ -80,9 +80,9 @@ const routes = [
         meta: { requiresAuth: true, requiredRole: 'Administrateur' }
     },
     {
-        path: '/modification',
-        name: 'Modification',
-        component: Modification,
+        path: '/modificationprofilutilisateur',
+        name: 'ModificationProfilUtilisateur',
+        component: ModificationProfilUtilisateur,
         meta: { requiresAuth: true, requiredRole: 'Client' }
     },
     {

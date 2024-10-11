@@ -36,11 +36,11 @@ namespace Gamma2024.Server.Controllers
                 return BadRequest(ModelState);
             }
 
-            var user = await _userManager.FindByEmailAsync(model.Email);
+            var user = await _userManager.FindByEmailAsync(model.EmailOuPseudo);
             if (user == null)
             {
                 // Essayez de trouver l'utilisateur par son nom d'utilisateur si l'email n'a pas fonctionné
-                user = await _userManager.FindByNameAsync(model.Email);
+                user = await _userManager.FindByNameAsync(model.EmailOuPseudo);
                 if (user == null)
                 {
                     return BadRequest(new { message = "Utilisateur non trouvé" });

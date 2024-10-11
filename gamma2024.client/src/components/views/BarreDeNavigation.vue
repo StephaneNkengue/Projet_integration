@@ -135,7 +135,7 @@
                             </div>
 
                             <div class="d-flex flex-column position-absolute top-100 end-0 dropdown-menu bleuMarinSecondaireFond" v-if="estConnecte && activationDropdownProfil">
-                                <router-link v-if="estClient" to="Modification" class="text-decoration-none text-white d-flex align-items-center gap-3">
+                                <router-link v-if="estClient" to="ModificationProfilUtilisateur" class="text-decoration-none text-white d-flex align-items-center gap-3">
                                     <a class="dropdown-item text-white btnSurvolerBleuMoyenFond" @click="activationDropdownProfil = false">
                                         Profil
                                     </a>

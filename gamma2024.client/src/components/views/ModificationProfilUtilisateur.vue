@@ -378,18 +378,23 @@
         email
     );
     const router = useRouter();
+    const clientInfo = computed(() => store.state.clientInfo);
 
-    const avatarUrl = computed(() => {
-        if (store.state.user && store.state.user.photo) {
-            if (store.state.user.photo.startsWith("http")) {
-                return store.state.user.photo;
-            } else {
-                return `${api.defaults.baseURL.replace("/api", "")}${store.state.user.photo
-                    }`;
-            }
+    const apiBaseUrl = computed(() => {
+        if (store.state.api && store.state.api.defaults) {
+            return store.state.api.defaults.baseURL.replace('/api', '')
         }
-        return "/icons/Avatar.png";
-    });
+        return ''
+        })
+
+        const avatarUrl = computed(() => {
+            if (!store.getters.avatarUrl) return '/icons/Avatar.png'
+            if (store.getters.avatarUrl.startsWith('http')) {
+                return store.getters.avatarUrl
+            }
+            // Le getter avatarUrl du store devrait déjà inclure le chemin complet
+            return store.getters.avatarUrl
+        })
 
     const provinces = ref([
         { text: "Alberta", value: "AB" },
@@ -494,50 +499,62 @@
     const errorMessage = ref("");
     const isLoading = ref(true);
 
-    onMounted(async () => {
-        try {
-            isLoading.value = true;
-            const response = await store.dispatch("fetchClientInfo");
+            // Fonction pour mettre à jour formData avec les données du client
+        const updateFormData = () => {
+        if (clientInfo.value) {
+            // Informations générales
+            formData.generalInfo.nom = clientInfo.value.name || "";
+            formData.generalInfo.prenom = clientInfo.value.firstName || "";
+            formData.generalInfo.courriel = clientInfo.value.email || "";
+            formData.generalInfo.telephone = clientInfo.value.phoneNumber || "";
+            formData.generalInfo.pseudo = clientInfo.value.pseudonym || "";
+            formData.generalInfo.currentPassword = ""; // Généralement laissé vide pour des raisons de sécurité
+            formData.generalInfo.newPassword = ""; // Généralement laissé vide pour des raisons de sécurité
+            formData.generalInfo.confirmNewPassword = ""; // Généralement laissé vide pour des raisons de sécurité
 
-            // Mise à jour des données du formulaire
-            formData.generalInfo = {
-                nom: response.data.name || "",
-                prenom: response.data.firstName || "",
-                courriel: response.data.email || "",
-                telephone: response.data.phoneNumber || "",
-                pseudo: response.data.pseudonym || "",
-            };
+            // Carte de crédit
+            formData.carteCredit.nomProprio = clientInfo.value.cardOwnerName || "";
+            formData.carteCredit.numeroCarte = clientInfo.value.cardNumber || "";
+            formData.carteCredit.dateExpiration = clientInfo.value.cardExpiryDate || "";
 
-            formData.carteCredit = {
-                nomProprio: response.data.cardOwnerName || "",
-                numeroCarte: response.data.cardNumber || "",
-                dateExpiration: response.data.cardExpiryDate || "",
-            };
+            // Adresse
+            formData.adresse.numeroCivique = clientInfo.value.civicNumber || "";
+            formData.adresse.rue = clientInfo.value.street || "";
+            formData.adresse.appartement = clientInfo.value.apartment || "";
+            formData.adresse.ville = clientInfo.value.city || "";
+            formData.adresse.province = mapProvince(clientInfo.value.province) || "";
+            formData.adresse.pays = clientInfo.value.country || "Canada";
+            formData.adresse.codePostal = clientInfo.value.postalCode || "";
 
-            formData.adresse = {
-                numeroCivique: response.data.civicNumber || "",
-                rue: response.data.street || "",
-                appartement: response.data.apartment || "",
-                ville: response.data.city || "",
-                province: mapProvince(response.data.province) || "",
-                pays: response.data.country || "Canada",
-                codePostal: response.data.postalCode || "",
-            };
-
-            initialFormData.value = JSON.parse(JSON.stringify(formData));
-
-            // Utiliser l'URL de base de l'API pour construire l'URL de l'avatar
-            avatarUrl.value = response.data.photo
-                ? `${api.defaults.baseURL.replace("/api", "")}${response.data.photo}`
-                : "/icons/Avatar.png";
-        } catch (error) {
-            errorMessage.value =
-                "Erreur lors de la récupération des informations du client.";
+            // Mise à jour de l'URL de l'avatar
+            if (clientInfo.value.photo) {
+            avatarUrl.value = `${store.state.api.defaults.baseURL.replace("/api", "")}${clientInfo.value.photo}`;
+            } else {
             avatarUrl.value = "/icons/Avatar.png";
-        } finally {
-            isLoading.value = false;
+            }
+
+            // Mise à jour de l'état initial du formulaire pour la comparaison ultérieure
+            initialFormData.value = JSON.parse(JSON.stringify(formData));
+            
+            // Réinitialisation de l'indicateur de changement du formulaire
+            formDataChanged.value = false;
         }
-    });
+        };
+
+        // Assurez-vous d'appeler cette fonction lorsque les données du client sont chargées
+        // Par exemple, dans le hook onMounted ou dans un watcher sur clientInfo
+        onMounted(async () => {
+        if (!store.state.api) {
+            await store.dispatch('initializeStore');
+        }
+        await store.dispatch("fetchClientInfo");
+        updateFormData();
+        });
+
+        // Ou utilisez un watcher pour mettre à jour le formulaire lorsque clientInfo change
+        watch(clientInfo, updateFormData, { immediate: true });
+
+
 
     const mapProvince = (province) => {
         const provinceMap = {
