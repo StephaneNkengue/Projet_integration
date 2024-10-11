@@ -34,6 +34,10 @@ namespace Gamma2024.Server.Data
 
         private void ConfigureRelationships(ModelBuilder builder)
         {
+            builder.Entity<Encan>()
+                .HasIndex(e => e.NumeroEncan)
+                .IsUnique();
+
             // ApplicationUser
             builder.Entity<ApplicationUser>()
                 .HasMany(au => au.Adresses)
