@@ -160,9 +160,9 @@ const store = createStore({
             }
         },
 
-        async chercherTousEncans({ commit }) {
+        async chercherTousEncansVisibles({ commit }) {
             try {
-                const response = await api.get("/encans/cherchertousencans");
+                const response = await api.get("/encans/cherchertousencansvisibles");
                 return response
             }
             catch (error) {

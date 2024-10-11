@@ -32,7 +32,7 @@
     const chargement = ref(true)
 
     onMounted(async () => {
-        const response = await store.dispatch("chercherTousEncans");
+        const response = await store.dispatch("chercherTousEncansVisibles");
         encans.value = response.data
         chargement.value = false
     })
