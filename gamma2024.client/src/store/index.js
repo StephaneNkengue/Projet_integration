@@ -160,6 +160,16 @@ const store = createStore({
             }
         },
 
+        async chercherTousEncansVisibles({ commit }) {
+            try {
+                const response = await api.get("/encans/cherchertousencansvisibles");
+                return response
+            }
+            catch (error) {
+                return "Erreur, veuillez réessayer"
+            }
+        },
+
         async fetchEncanInfo({ commit }) {
             try {
                 const response = await api.get('/encans/cherchertousencans');

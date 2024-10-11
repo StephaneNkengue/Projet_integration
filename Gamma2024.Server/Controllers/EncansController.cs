@@ -21,5 +21,12 @@ namespace Gamma2024.Server.Controllers
             ICollection<EncanAffichageVM> encans = _encanService.ChercherTousEncans();
             return encans;
         }
+
+        [HttpGet("ChercherTousEncansVisibles")]
+        public ICollection<EncanAffichageVM> ChercherTousEncansVisibles()
+        {
+            ICollection<EncanAffichageVM> encans = _encanService.ChercherTousEncansVisibles();
+            return encans;
+        }
     }
 }

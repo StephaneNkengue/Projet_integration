@@ -74,7 +74,7 @@ namespace Gamma2024.Server.Migrations
                         {
                             Id = 1,
                             CodePostal = "12345",
-                            EstDomicile = false,
+                            EstDomicile = true,
                             IdApplicationUser = "8e445865-a24d-4543-a6c6-9443d048cdb9",
                             Numero = 123,
                             Pays = "Pays Admin",
@@ -86,7 +86,7 @@ namespace Gamma2024.Server.Migrations
                         {
                             Id = 2,
                             CodePostal = "67890",
-                            EstDomicile = false,
+                            EstDomicile = true,
                             IdApplicationUser = "1d8ac862-e54d-4f10-b6f8-638808c02967",
                             Numero = 456,
                             Pays = "Pays Client",
@@ -121,9 +121,6 @@ namespace Gamma2024.Server.Migrations
                     b.Property<string>("FirstName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("IdAdresse")
-                        .HasColumnType("int");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
@@ -179,19 +176,18 @@ namespace Gamma2024.Server.Migrations
                         {
                             Id = "8e445865-a24d-4543-a6c6-9443d048cdb9",
                             AccessFailedCount = 0,
-                            Avatar = "/Gamma2024.Server/Avatars/default.png",
-                            ConcurrencyStamp = "64daf2b5-e6a8-47cf-9102-8998ea7e0f44",
+                            Avatar = "default.png",
+                            ConcurrencyStamp = "d281d57b-9e76-41db-bbce-a67b078bbfd4",
                             Email = "admin@example.com",
                             EmailConfirmed = true,
                             FirstName = "Super",
-                            IdAdresse = 1,
                             LockoutEnabled = false,
                             Name = "Admin",
                             NormalizedEmail = "ADMIN@EXAMPLE.COM",
                             NormalizedUserName = "ADMIN@EXAMPLE.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAELJgtlJoHGAjng74uxhYpEE2sG4HidDt79nk8R2X5yDUVmQF4yWWkp/wnzZbW2spMg==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEOScfEZop203AdSlzbbdqIgtiPryfGTyaQjsMBaNxoD+XmVt3ZiC4A6qJmtzRppTbw==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "9001121d-940b-4d40-a65f-82dff5b94b43",
+                            SecurityStamp = "9c3fe615-895d-4416-af4e-60c10da0a3b8",
                             TwoFactorEnabled = false,
                             UserName = "admin@example.com"
                         },
@@ -199,19 +195,18 @@ namespace Gamma2024.Server.Migrations
                         {
                             Id = "1d8ac862-e54d-4f10-b6f8-638808c02967",
                             AccessFailedCount = 0,
-                            Avatar = "/Gamma2024.Server/Avatars/default.png",
-                            ConcurrencyStamp = "7d3d317e-f262-4244-8e2e-711600ed8a52",
+                            Avatar = "default.png",
+                            ConcurrencyStamp = "96d69aaa-baa6-42a4-8bf0-6217c9eae05e",
                             Email = "client@example.com",
                             EmailConfirmed = true,
                             FirstName = "Jean",
-                            IdAdresse = 2,
                             LockoutEnabled = false,
                             Name = "Dupont",
                             NormalizedEmail = "CLIENT@EXAMPLE.COM",
                             NormalizedUserName = "CLIENT@EXAMPLE.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEDjPcgtNAD8u+kwEvEhtX9FIdBQTx4V528jGLEBU153UWOBTfKWxZOMhuzQ+xonApA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEJTCCeDk5xbSM/1Xq9iemGJKhxG+IdWr7CwB16LgU1y5nk0hW8kuuEHH8PHuVOkwGg==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "805ef1d3-6514-4959-9d55-320cfc453e5c",
+                            SecurityStamp = "a9c73a70-4e73-45c5-b998-d7394f1b6a44",
                             TwoFactorEnabled = false,
                             UserName = "client@example.com"
                         });
@@ -228,7 +223,7 @@ namespace Gamma2024.Server.Migrations
                     b.Property<int>("AnneeExpiration")
                         .HasColumnType("int");
 
-                    b.Property<string>("IdClient")
+                    b.Property<string>("IdApplicationUser")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
@@ -245,9 +240,29 @@ namespace Gamma2024.Server.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("IdClient");
+                    b.HasIndex("IdApplicationUser");
 
                     b.ToTable("CartesCredits");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            AnneeExpiration = 2025,
+                            IdApplicationUser = "8e445865-a24d-4543-a6c6-9443d048cdb9",
+                            MoisExpiration = 12,
+                            Nom = "Admin Admin",
+                            Numero = "5555555555554444"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            AnneeExpiration = 2026,
+                            IdApplicationUser = "1d8ac862-e54d-4f10-b6f8-638808c02967",
+                            MoisExpiration = 12,
+                            Nom = "Jean Dupont",
+                            Numero = "4242424242424242"
+                        });
                 });
 
             modelBuilder.Entity("Gamma2024.Server.Models.Categorie", b =>
@@ -320,10 +335,16 @@ namespace Gamma2024.Server.Migrations
                     b.Property<DateTime>("DateFinSoireeCloture")
                         .HasColumnType("datetime2");
 
+                    b.Property<bool>("EstPublie")
+                        .HasColumnType("bit");
+
                     b.Property<int>("NumeroEncan")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("NumeroEncan")
+                        .IsUnique();
 
                     b.ToTable("Encans");
                 });
@@ -712,13 +733,13 @@ namespace Gamma2024.Server.Migrations
 
             modelBuilder.Entity("Gamma2024.Server.Models.CarteCredit", b =>
                 {
-                    b.HasOne("Gamma2024.Server.Models.ApplicationUser", "Client")
+                    b.HasOne("Gamma2024.Server.Models.ApplicationUser", "ApplicationUser")
                         .WithMany("CarteCredits")
-                        .HasForeignKey("IdClient")
+                        .HasForeignKey("IdApplicationUser")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.Navigation("Client");
+                    b.Navigation("ApplicationUser");
                 });
 
             modelBuilder.Entity("Gamma2024.Server.Models.Charite", b =>
