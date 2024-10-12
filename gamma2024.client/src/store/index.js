@@ -298,17 +298,49 @@ const store = createStore({
         console.log("Données reçues:", response.data); // Pour le débogage
         return response.data;
       } catch (error) {
-        console.error("Erreur détaillée:", error.response?.data || error.message);
+        console.error(
+          "Erreur détaillée:",
+          error.response?.data || error.message
+        );
         throw error;
       }
     },
 
     async obtenirUnMembre({ commit }, membreId) {
       try {
-        const response = await api.get(`/administrateur/${membreId}`);
+        const response = await api.get(
+          `/administrateur/obtenirTousLesMembres/${membreId}`
+        );
+        console.log(response.data);
         return response.data;
       } catch (error) {
         console.error("Erreur lors de la récupération du membre:", error);
+        throw error;
+      }
+    },
+
+    async bloquerUnMembre({ commit }, membreId) {
+      try {
+        const response = await api.get(
+          `/administrateur/bloquerMembre/${membreId}`
+        );
+        console.log(response.data);
+        return response.data;
+      } catch (error) {
+        console.error("Erreur lors du blocage du membre:", error);
+        throw error;
+      }
+    },
+
+    async debloquerUnMembre({ commit }, membreId) {
+      try {
+        const response = await api.get(
+          `/administrateur/debloquerMembre/${membreId}`
+        );
+        console.log(response.data);
+        return response.data;
+      } catch (error) {
+        console.error("Erreur lors du déblocage du membre:", error);
         throw error;
       }
     },

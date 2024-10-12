@@ -133,7 +133,7 @@ namespace Gamma2024.Server.Data
                 .HasForeignKey<Charite>(c => c.IdFacture)
                 .OnDelete(DeleteBehavior.Cascade);
 
-             // Medium
+            // Medium
             builder.Entity<Medium>()
                 .HasMany(m => m.Lots)
                 .WithOne(l => l.Medium)
@@ -215,7 +215,7 @@ namespace Gamma2024.Server.Data
                 SecurityStamp = Guid.NewGuid().ToString(),
                 Name = "Admin",
                 FirstName = "Super",
-                Avatar = "/Avatars/default.png", 
+                Avatar = "/Avatars/default.png",
                 IdAdresse = 1
 
             };
@@ -232,7 +232,7 @@ namespace Gamma2024.Server.Data
                 SecurityStamp = Guid.NewGuid().ToString(),
                 Name = "Dupont",
                 FirstName = "Jean",
-                Avatar = "/Avatars/default.png", 
+                Avatar = "/Avatars/default.png",
                 IdAdresse = 2
 
             };

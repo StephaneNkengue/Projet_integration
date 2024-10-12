@@ -1,13 +1,14 @@
 <template lang="">
   <div class="container">
-    <table class="table table-striped">
+    <table class="table table-striped mt-5">
       <thead class="fs-3 fw-bold">
         <tr>
           <th scope="col">Nom</th>
           <th scope="col">Prénom</th>
           <th scope="col">Pseudonyme</th>
           <th scope="col">Courriel</th>
-          <th scope="col">Actions</th>
+          <th scope="col">Voir</th>
+          <th scope="col">État</th>
         </tr>
       </thead>
       <tbody class="fs-6">
@@ -26,20 +27,24 @@
                   @click="detailsDuMembre(membre.id)"
                 /></button
             ></span>
-            <span class="me-3"
+          </td>
+          <td>
+            <span v-if="membre.estBloque"
               ><button class="btn btn-danger">
                 <img
-                  src="/images/blocked.png"
+                  src="/images/Locked.png"
                   class="img-fluid"
                   alt="..."
+                  @click="debloquerUnMembre(membre)"
                 /></button
             ></span>
-            <span
+            <span v-else
               ><button class="btn btn-success">
                 <img
-                  src="/images/blocked.png"
+                  src="/images/Unlocked.png"
                   class="img-fluid"
                   alt="..."
+                  @click="bloquerUnMembre(membre)"
                 /></button
             ></span>
           </td>
@@ -60,22 +65,37 @@ let tousLesMembres = ref([]);
 
 onMounted(async () => {
   try {
-    const response = await store.dispatch("ObtenirTousLesMembres");
-    tousLesMembres.value = response;
+    updateData();
   } catch (error) {
     console.error("Erreur lors de la récupération des membres:", error);
-    // Affichez un message d'erreur à l'utilisateur
   }
 });
 
 function detailsDuMembre(idMembre) {
   router.push({ name: "detailsMembre", params: { id: idMembre } });
 }
+
+const bloquerUnMembre = async (membre) => {
+  const response = await store.dispatch("bloquerUnMembre", membre.id);
+  updateData();
+};
+
+const debloquerUnMembre = async (membre) => {
+  const response = await store.dispatch("debloquerUnMembre", membre.id);
+  updateData();
+};
+
+const updateData = async function () {
+  const response = await store.dispatch("ObtenirTousLesMembres");
+  tousLesMembres.value = response.map((membre) => ({
+    ...membre,
+  }));
+};
 </script>
 
 <style scoped>
 img {
   width: 25px;
-  height: 20px;
+  height: 30px;
 }
 </style>
