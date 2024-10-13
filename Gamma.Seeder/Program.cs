@@ -316,7 +316,7 @@ foreach (var item in lots232)
         Lot = item,
         IdLot = item.Id,
         Encan = encans[0],
-        IdEncan = encans[0].Id
+        NumeroEncan = encans[0].Id
     });
 }
 
@@ -327,7 +327,7 @@ foreach (var item in lots233)
         Lot = item,
         IdLot = item.Id,
         Encan = encans[1],
-        IdEncan = encans[1].Id
+        NumeroEncan = encans[1].Id
     });
 }
 
