@@ -13,10 +13,10 @@ namespace Gamma2024.Server.Services
             _context = context;
         }
 
-        public ICollection<LotAffichageVM> ChercherTousLotsParEncan(int numeroEncan)
+        public ICollection<LotAffichageVM> ChercherTousLotsParEncan(int idEncan)
         {
             var lots = _context.Lots
-                .Include(l => l.EncanLots.Where(el => el.NumeroEncan == numeroEncan))
+                .Include(l => l.EncanLots.Where(el => el.IdEncan == idEncan))
                 .Include(l => l.Photos)
                 .Select(l => new LotAffichageVM()
                 {

@@ -16,9 +16,9 @@ namespace Gamma2024.Server.Controllers
         }
 
         [HttpGet]
-        public ICollection<LotAffichageVM> ChercherTousLotsParEncan(int numeroEncan)
+        public ICollection<LotAffichageVM> ChercherTousLotsParEncan(int idEncan)
         {
-            ICollection<LotAffichageVM> lots = _lotService.ChercherTousLotsParEncan(numeroEncan);
+            ICollection<LotAffichageVM> lots = _lotService.ChercherTousLotsParEncan(idEncan);
             return lots;
         }
     }
