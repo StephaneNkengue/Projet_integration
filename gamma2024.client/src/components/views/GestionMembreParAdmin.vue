@@ -1,7 +1,16 @@
 <template lang="">
-  <div class="container">
-    <table class="table table-striped mt-5">
-      <thead class="fs-3 fw-bold">
+  <div class="container mt-5">
+    <h3 class="text-center">Rechercher un membre</h3>
+    <input
+      v-model="searchQuery"
+      class="form-control row col-10 ms-4"
+      type="search"
+      placeholder="Rechercher un membre"
+      aria-label="Search"
+    />
+    <h1 class="text-center mt-5">Liste des membres</h1>
+    <table class="table table-striped col-md-12">
+      <thead class="fs-4 fw-bold">
         <tr>
           <th scope="col">Nom</th>
           <th scope="col">Prénom</th>
@@ -12,7 +21,7 @@
         </tr>
       </thead>
       <tbody class="fs-6">
-        <tr v-for="membre in tousLesMembres" :key="membre.id">
+        <tr v-for="membre in filteredMembres" :key="membre.id">
           <td>{{ membre.name }}</td>
           <td>{{ membre.firstName }}</td>
           <td>{{ membre.userName }}</td>
@@ -55,13 +64,14 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 
 const store = useStore();
 const router = useRouter();
 let tousLesMembres = ref([]);
+const searchQuery = ref("");
 
 onMounted(async () => {
   try {
@@ -91,11 +101,29 @@ const updateData = async function () {
     ...membre,
   }));
 };
+
+// Propriété calculée pour filtrer les membres en fonction de la recherche
+const filteredMembres = computed(() => {
+  return tousLesMembres.value.filter((membre) => {
+    const searchLower = searchQuery.value.toLowerCase();
+    return (
+      membre.name.toLowerCase().includes(searchLower) ||
+      membre.firstName.toLowerCase().includes(searchLower) ||
+      membre.userName.toLowerCase().includes(searchLower) ||
+      membre.email.toLowerCase().includes(searchLower)
+    );
+  });
+});
 </script>
 
 <style scoped>
 img {
   width: 25px;
   height: 30px;
+}
+
+table,
+input {
+  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.2), 0 3px 5px 0 rgba(0, 0, 0, 0.19);
 }
 </style>

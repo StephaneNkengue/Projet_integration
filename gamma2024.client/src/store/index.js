@@ -104,8 +104,6 @@ const store = createStore({
     async fetchClientInfo({ commit }) {
       try {
         const response = await api.get("/utilisateurs/ObtentionInfoClient");
-        console.log("Données reçues de l'API:", response.data);
-
         // Corriger l'URL de l'avatar
         if (response.data.photo) {
           // Supprimer '/api' de l'URL de base si présent
@@ -129,7 +127,6 @@ const store = createStore({
           "/utilisateurs/miseajourinfoclient",
           userData
         );
-        console.log("Réponse de mise à jour:", response.data); // Pour le débogage
         commit("setUser", response.data);
         return response;
       } catch (error) {
@@ -143,7 +140,6 @@ const store = createStore({
 
     async updateAvatar({ commit, state }, formData) {
       try {
-        console.log("FormData reçu dans updateAvatar:", formData);
         const response = await api.put("/utilisateurs/avatar", formData, {
           headers: {
             "Content-Type": "multipart/form-data",
@@ -158,8 +154,6 @@ const store = createStore({
         // Mettre à jour l'utilisateur avec la nouvelle URL de l'avatar
         const updatedUser = { ...state.user, photo: fullAvatarUrl };
         commit("setUser", updatedUser);
-
-        console.log("Avatar mis à jour dans le store:", fullAvatarUrl);
 
         return {
           ...response,
@@ -295,7 +289,6 @@ const store = createStore({
     async ObtenirTousLesMembres({ commit }) {
       try {
         const response = await api.get(`/administrateur/ObtenirTousLesUsers`);
-        console.log("Données reçues:", response.data); // Pour le débogage
         return response.data;
       } catch (error) {
         console.error(
@@ -311,7 +304,6 @@ const store = createStore({
         const response = await api.get(
           `/administrateur/obtenirTousLesMembres/${membreId}`
         );
-        console.log(response.data);
         return response.data;
       } catch (error) {
         console.error("Erreur lors de la récupération du membre:", error);
@@ -324,7 +316,6 @@ const store = createStore({
         const response = await api.get(
           `/administrateur/bloquerMembre/${membreId}`
         );
-        console.log(response.data);
         return response.data;
       } catch (error) {
         console.error("Erreur lors du blocage du membre:", error);
@@ -337,7 +328,6 @@ const store = createStore({
         const response = await api.get(
           `/administrateur/debloquerMembre/${membreId}`
         );
-        console.log(response.data);
         return response.data;
       } catch (error) {
         console.error("Erreur lors du déblocage du membre:", error);
