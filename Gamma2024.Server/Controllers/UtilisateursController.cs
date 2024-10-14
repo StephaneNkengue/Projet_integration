@@ -141,7 +141,7 @@ namespace Gamma2024.Server.Controllers
                 PostalCode = user.Adresses.FirstOrDefault()?.CodePostal,
                 Photo = string.IsNullOrEmpty(user.Avatar)
                     ? "/Avatars/default.png"
-                    : $"/Avatars/{user.Avatar}"
+                    : $"{user.Avatar}"
             };
 
             return Ok(clientInfo);

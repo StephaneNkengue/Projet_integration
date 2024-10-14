@@ -1,4 +1,7 @@
 <template>
+    <div v-if="isLoading">
+    Chargement...
+  </div>
     <div class="pt-5 container">
         <div class="container d-flex flex-column justify-content-start align-items-stretch card p-5 mb-5">
             <div class="card-header">
@@ -494,6 +497,26 @@
         };
     });
 
+    
+    const mapProvince = (province) => {
+        const provinceMap = {
+            Québec: "QC",
+            Ontario: "ON",
+            Alberta: "AB",
+            "Colombie-Britannique": "BC",
+            Manitoba: "MB",
+            "Nouveau-Brunswick": "NB",
+            "Terre-Neuve-et-Labrador": "NL",
+            "Nouvelle-Écosse": "NS",
+            "Île-du-Prince-Édouard": "PE",
+            Saskatchewan: "SK",
+            "Territoires du Nord-Ouest": "NT",
+            Nunavut: "NU",
+            Yukon: "YT",
+        };
+        return provinceMap[province] || province;
+    };
+
     const v = useVuelidate(rules, formData);
 
     const errorMessage = ref("");
@@ -522,7 +545,9 @@
             formData.adresse.rue = clientInfo.value.street || "";
             formData.adresse.appartement = clientInfo.value.apartment || "";
             formData.adresse.ville = clientInfo.value.city || "";
+            if (mapProvince(clientInfo.value.province)) {
             formData.adresse.province = mapProvince(clientInfo.value.province) || "";
+           }
             formData.adresse.pays = clientInfo.value.country || "Canada";
             formData.adresse.codePostal = clientInfo.value.postalCode || "";
 
@@ -544,36 +569,19 @@
         // Assurez-vous d'appeler cette fonction lorsque les données du client sont chargées
         // Par exemple, dans le hook onMounted ou dans un watcher sur clientInfo
         onMounted(async () => {
-        if (!store.state.api) {
-            await store.dispatch('initializeStore');
-        }
-        await store.dispatch("fetchClientInfo");
-        updateFormData();
-        });
+            try {
+                await store.dispatch('fetchClientInfo');
+                isLoading.value = false;
+            } catch (error) {
+                console.error("Erreur lors du chargement des informations client:", error);
+                isLoading.value = false;
+            }
+            });
 
         // Ou utilisez un watcher pour mettre à jour le formulaire lorsque clientInfo change
         watch(clientInfo, updateFormData, { immediate: true });
 
 
-
-    const mapProvince = (province) => {
-        const provinceMap = {
-            Québec: "QC",
-            Ontario: "ON",
-            Alberta: "AB",
-            "Colombie-Britannique": "BC",
-            Manitoba: "MB",
-            "Nouveau-Brunswick": "NB",
-            "Terre-Neuve-et-Labrador": "NL",
-            "Nouvelle-Écosse": "NS",
-            "Île-du-Prince-Édouard": "PE",
-            Saskatchewan: "SK",
-            "Territoires du Nord-Ouest": "NT",
-            Nunavut: "NU",
-            Yukon: "YT",
-        };
-        return provinceMap[province] || province;
-    };
 
     watch(
         () => JSON.parse(JSON.stringify(formData)), // Deep clone copy to avoid same ref type.

@@ -219,29 +219,22 @@ watch(
   { deep: true, immediate: true }
 );
 
-// Fonction pour rafraîchir les informations de l'utilisateur
 const refreshUserInfo = async () => {
-  if (estConnecte.value) {
+  if (store.state.isLoggedIn) {
     try {
       await store.dispatch("fetchClientInfo");
     } catch (error) {
-      console.error(
-        "Erreur lors de la récupération des informations client:",
-        error
-      );
+      console.error("Erreur lors de la récupération des informations client:", error);
     }
   }
 };
 
-// Observer les changements dans l'état de connexion
-watch(
-  () => store.state.isLoggedIn,
-  (newValue) => {
-    if (newValue) {
-      refreshUserInfo();
-    }
+// Appelez refreshUserInfo lorsque l'utilisateur se connecte
+watch(() => store.state.isLoggedIn, (newValue) => {
+  if (newValue) {
+    refreshUserInfo();
   }
-);
+});
 
     // Définition de activationRecherche
     const activationRecherche = ref(false);

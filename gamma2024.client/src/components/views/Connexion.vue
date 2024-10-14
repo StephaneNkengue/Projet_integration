@@ -120,7 +120,7 @@ export default {
           password: this.password,
         });
         const result = await this.$store.dispatch("login", {
-          email: this.emailOuPseudo,
+          emailOuPseudo: this.emailOuPseudo,
           password: this.password,
         });
         if (result.success) {

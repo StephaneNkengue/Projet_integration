@@ -12,11 +12,11 @@ const store = createStore({
             localStorage.setItem('isLoggedIn', value)
         },
         setUser(state, user) {
-            state.user = user
+            state.user = user;
             if (user) {
-                localStorage.setItem('user', JSON.stringify(user))
+                localStorage.setItem('user', JSON.stringify(user));
             } else {
-                localStorage.removeItem('user')
+                localStorage.removeItem('user');
             }
         },
         setRoles(state, roles) {
@@ -105,6 +105,8 @@ const store = createStore({
             try {
                 const response = await state.api.get('/Utilisateurs/ObtentionInfoClient');
                 commit('SET_CLIENT_INFO', response.data);
+                // Assurez-vous également de mettre à jour l'utilisateur
+                commit('setUser', response.data);
                 return response.data;
             } catch (error) {
                 console.error('Erreur lors de la récupération des informations du client:', error);
@@ -297,21 +299,18 @@ const store = createStore({
         currentUser: state => state.user,
         username: state => state.user ? state.user.pseudonym || state.user.username : 'USERNAME',
         avatarUrl: state => {
-            console.log("État de l'utilisateur:", state.user);
             if (state.user && state.user.photo) {
-                console.log("Photo de l'utilisateur:", state.user.photo);
+                console.log("Photo de l'utilisateur brute:", state.user.photo);
                 if (state.user.photo.startsWith('http')) {
                     return state.user.photo;
                 } else {
-                    // Correction ici
                     const baseUrl = state.api.defaults.baseURL.replace('/api', '');
                     const fullUrl = new URL(state.user.photo, baseUrl).href;
                     console.log("URL complète de l'avatar:", fullUrl);
                     return fullUrl;
                 }
             }
-            console.log("Utilisation de l'avatar par défaut");
-            return '/icons/Avatar.png';
+            return '/gamma2024.client/public/icons/Avatar.png';
         }
     }
 });
