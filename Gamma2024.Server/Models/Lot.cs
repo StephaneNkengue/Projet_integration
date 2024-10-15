@@ -20,8 +20,8 @@ namespace Gamma2024.Server.Models
         public DateTime? DateFinVente { get; set; }
         public int IdVendeur { get; set; }
         public bool estLivrable { get; set; }
-        public int Largeur { get; set; }
-        public int Hauteur { get; set; }
+        public double Largeur { get; set; }
+        public double Hauteur { get; set; }
         public Categorie Categorie { get; set; } = null!;
         public ApplicationUser? ClientMise { get; set; }
         public Vendeur Vendeur { get; set; } = null!;
