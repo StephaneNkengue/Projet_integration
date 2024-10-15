@@ -73,8 +73,8 @@ namespace Gamma2024.Server.Extensions
                             Nom = columns[6]
                         },
                         Artiste = columns[7],
-                        Hauteur = int.Parse(dimensions[0].Trim()),
-                        Largeur = int.Parse(dimensions[1].Trim()),
+                        Hauteur = double.Parse(dimensions[0].Trim()),
+                        Largeur = double.Parse(dimensions[1].Trim()),
                         Description = columns[9],
                         Medium = new Medium
                         {
