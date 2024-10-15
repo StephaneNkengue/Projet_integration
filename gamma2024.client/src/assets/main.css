@@ -28,6 +28,7 @@
     background-color: #617d9a;
 }
 
+
 .lienEnTexteNoir {
     color: #000000;
 }
@@ -37,7 +38,7 @@
     }
 
 .imageDeFondEsquise {
-    background-image: url('/public/images/DessinGris.PNG');
+    background-image: url('/images/DessinGris.PNG');
     background-size: cover;
     background-position: 0px -100px;
     background-attachment: fixed;

@@ -97,7 +97,7 @@
                     </router-link>
                   </li>
                   <li>
-                    <router-link to="Accueil" class="text-decoration-none">
+                    <router-link to="AffichageVendeurs" class="text-decoration-none">
                       <a class="dropdown-item contenuListeDropdown">Vendeurs</a>
                     </router-link>
                   </li>
@@ -107,10 +107,7 @@
                     </router-link>
                   </li>
                   <li>
-                    <router-link
-                      to="GestionMembre"
-                      class="text-decoration-none"
-                    >
+                    <router-link to="Accueil" class="text-decoration-none">
                       <a class="dropdown-item contenuListeDropdown"
                         >Profils de membre</a
                       >
@@ -131,63 +128,37 @@
                 />
               </a>
 
-              <div
-                class="d-flex flex-column position-absolute top-100 start-79 dropdown-menu bleuMarinSecondaireFond"
-                v-if="notification"
-              >
-                <router-link
-                  to="Accueil"
-                  class="text-decoration-none text-white d-flex align-items-center gap-3"
-                  v-for="index in 5"
-                  :key="index"
-                >
-                  <a
-                    class="dropdown-item text-white btnSurvolerBleuMoyenFond"
-                    @click="notification = false"
-                  >
-                    test
-                  </a>
-                </router-link>
-              </div>
+                            <div class="d-flex flex-column position-absolute top-100 start-79 dropdown-menu bleuMarinSecondaireFond" v-if="notification">
+                                <router-link 
+                                    v-for="index in 5" 
+                                    :key="index"
+                                    to="Accueil" 
+                                    class="text-decoration-none text-white d-flex align-items-center gap-3">
+                                    <a class="dropdown-item text-white btnSurvolerBleuMoyenFond" @click="notification = false">
+                                        test
+                                    </a>
+                                </router-link>
+                            </div>
 
-              <div
-                class="d-flex flex-column position-absolute top-100 end-0 dropdown-menu bleuMarinSecondaireFond"
-                v-if="activationDropdownProfil"
-              >
-                <router-link
-                  to="Modification"
-                  class="text-decoration-none text-white d-flex align-items-center gap-3"
-                >
-                  <a
-                    class="dropdown-item text-white btnSurvolerBleuMoyenFond"
-                    @click="activationDropdownProfil = false"
-                  >
-                    Profil
-                  </a>
-                </router-link>
-                <a
-                  class="dropdown-item text-danger btnSurvolerBleuMoyenFond fw-bold"
-                >
-                  Déconnexion
-                </a>
-              </div>
+                            <div class="d-flex flex-column position-absolute top-100 end-0 dropdown-menu bleuMarinSecondaireFond" v-if="estConnecte && activationDropdownProfil">
+                                <router-link v-if="estClient" to="ModificationProfilUtilisateur" class="text-decoration-none text-white d-flex align-items-center gap-3">
+                                    <a class="dropdown-item text-white btnSurvolerBleuMoyenFond" @click="activationDropdownProfil = false">
+                                        Profil
+                                    </a>
+                                </router-link>
+                                <a class="dropdown-item text-danger btnSurvolerBleuMoyenFond fw-bold" href="#" @click.prevent="deconnecter">
+                                    Déconnexion
+                                </a>
+                            </div>
 
-              <a
-                @click="activationDropdownProfil = !activationDropdownProfil"
-                class="d-flex text-decoration-none text-white align-items-center gap-3"
-                v-if="estConnecte"
-              >
-                <p class="m-0">{{ username }}</p>
-                <img
-                  :src="avatarUrl"
-                  alt="Avatar"
-                  class="imgProfile rounded-circle"
-                />
-              </a>
-            </div>
-          </div>
-        </div>
-      </nav>
+                            <a @click="activationDropdownProfil = !activationDropdownProfil" class="d-flex text-decoration-none text-white align-items-center gap-3" v-if="estConnecte">
+                                <p class="m-0">{{ username }}</p>
+                                <img :src="avatarUrl" alt="Avatar" class="imgProfile rounded-circle" />
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </nav>
 
       <nav class="navbar bg-white navbar-expand-md py-0" data-bs-theme="dark">
         <div
@@ -228,11 +199,14 @@
 </template>
 
 <script setup>
-import { computed, watch, ref } from "vue";
-import { useStore } from "vuex";
-import api from "@/services/api";
+import { computed, watch, ref } from 'vue'
+import { useStore } from 'vuex'
+import { useRouter } from 'vue-router'
+import { onMounted } from 'vue'
+import * as bootstrap from 'bootstrap'
 
-const store = useStore();
+const store = useStore()
+const router = useRouter()
 
 const estConnecte = computed(() => store.state.isLoggedIn)
 const estAdmin = computed(() => store.getters.isAdmin)
@@ -251,34 +225,38 @@ watch(
   { deep: true, immediate: true }
 );
 
-// Fonction pour rafraîchir les informations de l'utilisateur
 const refreshUserInfo = async () => {
-  if (estConnecte.value) {
+  if (store.state.isLoggedIn) {
     try {
       await store.dispatch("fetchClientInfo");
     } catch (error) {
-      console.error(
-        "Erreur lors de la récupération des informations client:",
-        error
-      );
+      console.error("Erreur lors de la récupération des informations client:", error);
     }
   }
 };
 
-// Observer les changements dans l'état de connexion
-watch(
-  () => store.state.isLoggedIn,
-  (newValue) => {
-    if (newValue) {
-      refreshUserInfo();
-    }
+// Appelez refreshUserInfo lorsque l'utilisateur se connecte
+watch(() => store.state.isLoggedIn, (newValue) => {
+  if (newValue) {
+    refreshUserInfo();
   }
-);
+});
 
-// Définition de activationRecherche
-const activationRecherche = ref(false);
-const activationDropdownProfil = ref(false);
-const notification = ref(false);
+    // Définition de activationRecherche
+    const activationRecherche = ref(false);
+    const activationDropdownProfil = ref(false);
+    const notification = ref(false);
+
+const deconnecter = async () => {
+    await store.dispatch('logout')
+    router.push('/') // Redirige vers la page d'accueil après la déconnexion
+}
+
+onMounted(() => {
+    document.querySelectorAll('.dropdown-toggle').forEach(dropdownToggle => {
+        new bootstrap.Dropdown(dropdownToggle)
+    })
+})
 </script>
 
 <style scoped>
