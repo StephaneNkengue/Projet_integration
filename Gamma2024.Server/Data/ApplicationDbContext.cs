@@ -92,13 +92,6 @@ namespace Gamma2024.Server.Data
                 .HasForeignKey(el => el.IdLot)
                 .OnDelete(DeleteBehavior.NoAction);
 
-            // Facture
-            builder.Entity<Facture>()
-                .HasOne(f => f.Lot)
-                .WithMany()
-                .HasForeignKey(f => f.IdLot)
-                .OnDelete(DeleteBehavior.NoAction);
-
             builder.Entity<Facture>()
                 .HasOne(f => f.Adresse)
                 .WithMany(a => a.Factures)
@@ -116,19 +109,6 @@ namespace Gamma2024.Server.Data
                 .HasOne(p => p.Lot)
                 .WithMany(l => l.Photos)
                 .HasForeignKey(p => p.IdLot)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            // Charite
-            builder.Entity<Charite>()
-                .HasOne(c => c.Client)
-                .WithOne()
-                .HasForeignKey<Charite>(c => c.IdClient)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            builder.Entity<Charite>()
-                .HasOne(c => c.Facture)
-                .WithOne(f => f.Charite)
-                .HasForeignKey<Charite>(c => c.IdFacture)
                 .OnDelete(DeleteBehavior.Cascade);
 
             // Medium

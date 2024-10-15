@@ -4,6 +4,7 @@ using Gamma2024.Server.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Gamma2024.Server.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241015161602_MiseAJourBdPourChangementsLieesAuFactures")]
+    partial class MiseAJourBdPourChangementsLieesAuFactures
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -177,7 +180,7 @@ namespace Gamma2024.Server.Migrations
                             Id = "8e445865-a24d-4543-a6c6-9443d048cdb9",
                             AccessFailedCount = 0,
                             Avatar = "default.png",
-                            ConcurrencyStamp = "8f3ec4c3-234f-424a-9f58-d3b84fe4de59",
+                            ConcurrencyStamp = "6bc7f1b7-45fc-41b4-a9af-62326f8a6fee",
                             Email = "admin@example.com",
                             EmailConfirmed = true,
                             FirstName = "Super",
@@ -185,9 +188,9 @@ namespace Gamma2024.Server.Migrations
                             Name = "Admin",
                             NormalizedEmail = "ADMIN@EXAMPLE.COM",
                             NormalizedUserName = "ADMIN@EXAMPLE.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEPMhHl/FVXtrKajVzU+URxub+qAdFcWftVqOs3yHu2iW8nqR/NiBbZljO82zotvAOg==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEM24xFCHW5AQp2xTJkwRi5ApVHqEqVZJv9LKXwv7k81YMJYItqLmOPHIHrS6Vf/JGA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "62581ab4-ffa6-4f17-b5c1-64a803c9f420",
+                            SecurityStamp = "d32df31b-8912-4f64-8d4f-22e2f833c2ca",
                             TwoFactorEnabled = false,
                             UserName = "admin@example.com"
                         },
@@ -196,7 +199,7 @@ namespace Gamma2024.Server.Migrations
                             Id = "1d8ac862-e54d-4f10-b6f8-638808c02967",
                             AccessFailedCount = 0,
                             Avatar = "default.png",
-                            ConcurrencyStamp = "e88793c0-3467-4a3f-ac8b-de1ef881aee9",
+                            ConcurrencyStamp = "0440083f-0c26-4ab1-89c5-498d33aa1aec",
                             Email = "client@example.com",
                             EmailConfirmed = true,
                             FirstName = "Jean",
@@ -204,9 +207,9 @@ namespace Gamma2024.Server.Migrations
                             Name = "Dupont",
                             NormalizedEmail = "CLIENT@EXAMPLE.COM",
                             NormalizedUserName = "CLIENT@EXAMPLE.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEB5fAm/WkpZ9zClnYFwxWoU74CrUFxu5dVR1R3ThWfyAFf13uilkFwiRdLVz2fyabQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEMK9xKwPX0o1RdpoHAEBBqxCDP+InIHbc0pf+UDcOS/3GYc1iIA74ey3QKcUVH/qMw==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "6d598259-a6f4-402f-898c-f821d3255dcd",
+                            SecurityStamp = "0641aa98-f7bf-4f80-b1b8-7f8637bba887",
                             TwoFactorEnabled = false,
                             UserName = "client@example.com"
                         });
@@ -432,8 +435,8 @@ namespace Gamma2024.Server.Migrations
                     b.Property<int?>("FactureId")
                         .HasColumnType("int");
 
-                    b.Property<double>("Hauteur")
-                        .HasColumnType("float");
+                    b.Property<int>("Hauteur")
+                        .HasColumnType("int");
 
                     b.Property<int>("IdCategorie")
                         .HasColumnType("int");
@@ -450,8 +453,8 @@ namespace Gamma2024.Server.Migrations
                     b.Property<int>("IdVendeur")
                         .HasColumnType("int");
 
-                    b.Property<double>("Largeur")
-                        .HasColumnType("float");
+                    b.Property<int>("Largeur")
+                        .HasColumnType("int");
 
                     b.Property<double?>("Mise")
                         .HasColumnType("float");
