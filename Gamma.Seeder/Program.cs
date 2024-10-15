@@ -166,21 +166,6 @@ for (int i = 0; i < lots232.Count; i++)
             });
         }
     }
-
-    var vente = acheteurs232.FirstOrDefault(a => a.Lot == lots232[i].Numero);
-    if (vente != null)
-    {
-        var userVente = utilisateurs.FirstOrDefault(u => u.UserName == vente.Pseudonyme);
-        lots232[i].ClientMise = userVente;
-        lots232[i].IdClientMise = userVente.Id;
-        lots232[i].Mise = vente.PrixAchete;
-        lots232[i].EstVendu = true;
-
-        //var facture = new Facture
-        //{
-
-        //};
-    }
 }
 
 context.Lots.AddRange(lots232);
