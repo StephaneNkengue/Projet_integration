@@ -74,7 +74,7 @@ const store = createStore({
         },
 
 
-        logout({ commit }) {
+        logout({ commit, state }) {
             commit('setLoggedIn', false)
             commit('setUser', null)
             commit('setRoles', [])
@@ -83,7 +83,7 @@ const store = createStore({
         },
 
 
-        async creerCompteUtilisateur({ commit }, userData) {
+        async creerCompteUtilisateur({ commit, state }, userData) {
             try {
                 const response = await state.api.post('/utilisateurs/creer', userData);
                 if (response.data.success) {
@@ -162,7 +162,7 @@ const store = createStore({
             }
         },
 
-        async verifierPseudonyme({ commit }, pseudo) {
+        async verifierPseudonyme({ commit, state }, pseudo) {
             try {
                 const response = await state.api.get(`/utilisateurs/verifier-pseudonyme?pseudo=${encodeURIComponent(pseudo)}`);
                 return response.data.disponible;
@@ -172,7 +172,7 @@ const store = createStore({
             }
         },
 
-        async verifierEmail({ commit }, email) {
+        async verifierEmail({ commit, state }, email) {
             try {
                 const response = await state.api.get(`/utilisateurs/verifier-email?email=${encodeURIComponent(email)}`);
                 return response.data.disponible;
@@ -182,7 +182,7 @@ const store = createStore({
             }
         },
 
-        async obtenirTousVendeurs({ commit }) {
+        async obtenirTousVendeurs({ commit, state }) {
             try {
                 const response = await state.api.get('/vendeurs/tous');
                 return response.data;
@@ -191,7 +191,7 @@ const store = createStore({
                 throw error;
             }
         },
-        async creerVendeur({ commit }, vendeurData) {
+        async creerVendeur({ commit, state }, vendeurData) {
             try {
                 console.log("Données envoyées au serveur:", vendeurData); // Ajoutez cette ligne
                 const response = await state.api.post('/vendeurs/creer', vendeurData);
@@ -209,7 +209,7 @@ const store = createStore({
                 };
             }
         },
-        async modifierVendeur({ commit }, vendeurData) {
+        async modifierVendeur({ commit, state }, vendeurData) {
             try {
                 const response = await state.api.put(`/vendeurs/modifier/${vendeurData.id}`, vendeurData);
                 if (response.data.success) {
@@ -222,7 +222,7 @@ const store = createStore({
                 return { success: false, error: error.response?.data?.message || "Erreur lors de la modification du vendeur" };
             }
         },
-        async obtenirVendeur({ commit }, id) {
+        async obtenirVendeur({ commit, state }, id) {
             try {
                 const response = await state.api.get(`/vendeurs/${id}`);
                 return response.data;
@@ -269,7 +269,7 @@ const store = createStore({
                 }
             }
         },
-        async logout({ commit }) {
+        async logout({ commit, state }) {
             try {
                 // Appel à l'API pour invalider le token côté serveur (optionnel mais recommandé)
                 await state.api.post('/api/home/logout');

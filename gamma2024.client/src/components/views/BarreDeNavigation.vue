@@ -97,7 +97,7 @@
                     </router-link>
                   </li>
                   <li>
-                    <router-link to="Accueil" class="text-decoration-none">
+                    <router-link to="AffichageVendeurs" class="text-decoration-none">
                       <a class="dropdown-item contenuListeDropdown">Vendeurs</a>
                     </router-link>
                   </li>

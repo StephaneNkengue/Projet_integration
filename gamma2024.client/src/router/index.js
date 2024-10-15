@@ -82,7 +82,7 @@ const routes = [
     {
         path: '/modificationprofilutilisateur',
         name: 'ModificationProfilUtilisateur',
-        component: () => import('../components/views/ModificationProfilUtilisateur.vue'),
+        component: () => ModificationProfilUtilisateur,
         meta: { requiresAuth: true, requiredRole: 'Client' },
         beforeEnter: async (to, from, next) => {
             if (store.state.isLoggedIn) {
