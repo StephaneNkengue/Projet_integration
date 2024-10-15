@@ -29,5 +29,7 @@ namespace Gamma2024.Server.Models
         public ICollection<EncanLot> EncanLots { get; set; } = [];
         public int IdMedium { get; set; }
         public Medium Medium { get; set; } = null!;
+        public int? IdFacture { get; set; }
+        public Facture? Facture { get; set; } = default!;
     }
 }
