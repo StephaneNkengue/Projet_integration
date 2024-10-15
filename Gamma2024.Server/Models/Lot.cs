@@ -16,12 +16,12 @@ namespace Gamma2024.Server.Models
         public string? IdClientMise { get; set; }
         public double? Mise { get; set; }
         public bool EstVendu { get; set; }
+        public bool? SeraLivree { get; set; }
         public DateTime? DateFinVente { get; set; }
         public int IdVendeur { get; set; }
         public bool estLivrable { get; set; }
         public int Largeur { get; set; }
         public int Hauteur { get; set; }
-
         public Categorie Categorie { get; set; } = null!;
         public ApplicationUser? ClientMise { get; set; }
         public Vendeur Vendeur { get; set; } = null!;
