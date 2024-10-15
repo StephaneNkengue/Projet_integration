@@ -9,7 +9,6 @@ namespace Gamma2024.Server.Models
         public double ValeurEstimeMax { get; set; }
         public double PrixOuverture { get; set; }
         public double? PrixMinPourVente { get; set; } = default!;
-
         public DateTime DateDepot { get; set; } = DateTime.Now;
         public string Artiste { get; set; } = null!;
         public DateTime DateCreation { get; set; } = DateTime.Now;
@@ -20,7 +19,8 @@ namespace Gamma2024.Server.Models
         public DateTime? DateFinVente { get; set; }
         public int IdVendeur { get; set; }
         public bool estLivrable { get; set; }
-        public string? Dimensions { get; set; }
+        public int Largeur { get; set; }
+        public int Hauteur { get; set; }
 
         public Categorie Categorie { get; set; } = null!;
         public ApplicationUser? ClientMise { get; set; }
