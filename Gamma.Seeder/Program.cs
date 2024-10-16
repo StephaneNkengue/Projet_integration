@@ -319,4 +319,53 @@ foreach (var item in lots233)
 context.EncanLots.AddRange(encanLots);
 context.SaveChanges();
 
+var infoFactures = File.ReadAllLines("CSV/AcheteurEncan232.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
+                .Skip(1)
+                .Where(l => l.Length > 1)
+                .GetAcheteursEncan232()
+                .ToList();
+
+var factures = new List<Facture>();
+
+foreach (var item in utilisateurs)
+{
+    var achats = infoFactures.FindAll(i => i.Pseudonyme == item.UserName).ToList();
+
+    if (achats.Any())
+    {
+        var facture = new Facture
+        {
+            IdClient = item.Id,
+            Client = item,
+            IdAdresse = item.Adresses.First().Id,
+            Adresse = item.Adresses.First(),
+            DateAchat = DateTime.Now,
+            PrixLots = 0
+        };
+
+        foreach (var a in achats)
+        {
+            var lot = lots232.FirstOrDefault(l => l.Numero == a.Lot);
+            lot.EstVendu = true;
+            lot.Mise = a.PrixAchete;
+            lot.IdClientMise = item.Id;
+            lot.ClientMise = item;
+            lot.SeraLivree = a.Livraison;
+            lot.DateFinVente = DateTime.Now;
+
+            facture.PrixLots += a.PrixAchete;
+            facture.Lots.Add(lot);
+        }
+
+        infoFactures.RemoveAll(i => i.Pseudonyme == item.UserName);
+        factures.Add(facture);
+    }
+}
+
+context.Factures.AddRange(factures);
+context.SaveChanges();
+
+context.Lots.UpdateRange(lots232);
+context.SaveChanges();
+
 Console.WriteLine("Fin du seed");
