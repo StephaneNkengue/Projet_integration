@@ -35,7 +35,7 @@ namespace Gamma2024.Server.Models
             }
 
             TPS = SousTotal * 0.05;
-            TVQ = SousTotal * 0.9975;
+            TVQ = SousTotal * 0.09975;
 
             PrixFinal = SousTotal + FraisLivraison + TPS + TVQ;
         }
