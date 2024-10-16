@@ -85,12 +85,19 @@
                 </a>
                 <ul class="dropdown-menu bleuMarinFond text-center">
                   <li>
-                    <router-link to="Inventaire" class="text-decoration-none">
+                    <router-link to="AffichageLots" class="text-decoration-none">
                       <a class="dropdown-item contenuListeDropdown"
                         >Inventaire</a
                       >
                     </router-link>
                   </li>
+                  <!-- <li>
+                    <router-link to="Inventaire" class="text-decoration-none">
+                      <a class="dropdown-item contenuListeDropdown"
+                        >Inventaire</a
+                      >
+                    </router-link>
+                  </li> -->
                   <li>
                     <router-link to="Accueil" class="text-decoration-none">
                       <a class="dropdown-item contenuListeDropdown">Encans</a>

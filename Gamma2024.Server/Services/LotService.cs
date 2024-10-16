@@ -103,10 +103,10 @@ namespace Gamma2024.Server.Services
 
         public async Task<(bool Success, string Message)> ModifierLot(int id, LotModificationVM lotVM)
         {
-            var (isValid, errorMessage) = LotValidation.ValidateLot(lotVM);
-            if (!isValid)
+            var validationResult = await LotValidation.ValidateLot(lotVM, _context);
+            if (!validationResult.IsValid)
             {
-                return (false, errorMessage);
+                return (false, validationResult.ErrorMessage);
             }
 
             var lot = await _context.Lots.FindAsync(id);
