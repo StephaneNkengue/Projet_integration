@@ -319,6 +319,26 @@ foreach (var item in lots233)
 context.EncanLots.AddRange(encanLots);
 context.SaveChanges();
 
+Console.WriteLine("Ajout des charités");
+var charites = new List<Charite>();
+
+charites.Add(new Charite
+{
+    NomOrganisme = "Le phare des rives"
+});
+charites.Add(new Charite
+{
+    NomOrganisme = "Un petit pas pour l'avenir"
+});
+charites.Add(new Charite
+{
+    NomOrganisme = "Rendez-vous dans 30 ans"
+});
+
+context.Charites.AddRange(charites);
+context.SaveChanges();
+
+
 Console.WriteLine("Ajout des factures");
 var infoFactures = File.ReadAllLines("CSV/AcheteurEncan232.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
                 .Skip(1)
