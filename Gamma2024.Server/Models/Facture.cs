@@ -8,7 +8,8 @@ namespace Gamma2024.Server.Models
         public double PrixLots { get; set; }
         public double FraisEncanteur { get; set; }
         public double? FraisLivraison { get; set; }
-        public double Taxes { get; set; }
+        public double TPS { get; set; }
+        public double TVQ { get; set; }
         public double? Don { get; set; }
         public int IdAdresse { get; set; }
         public string IdClient { get; set; } = null!;
