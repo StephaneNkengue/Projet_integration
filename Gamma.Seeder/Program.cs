@@ -319,6 +319,7 @@ foreach (var item in lots233)
 context.EncanLots.AddRange(encanLots);
 context.SaveChanges();
 
+Console.WriteLine("Ajout des factures");
 var infoFactures = File.ReadAllLines("CSV/AcheteurEncan232.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
                 .Skip(1)
                 .Where(l => l.Length > 1)
