@@ -6,6 +6,11 @@
       <h2 class="fs-1 text-center fw-bold pt-4">Connexion</h2>
       <p class="text-center">Se connecter pour continuer</p>
 
+      <!-- Ajoutez cette section pour afficher les messages d'erreur -->
+      <div v-if="messageErreur" class="alert alert-danger text-center" role="alert">
+        {{ messageErreur }}
+      </div>
+
       <form
         @submit.prevent="connexion"
         class="d-flex flex-column justify-content-start align-items-stretch"
@@ -108,35 +113,26 @@ export default {
       this.validateEmailOuPseudo();
       this.validatePassword();
       this.isSubmitting = true;
+      this.messageErreur = ""; // Réinitialiser le message d'erreur
 
       if (this.emailOuPseudoError || this.passwordError) {
         this.isSubmitting = false;
-        return; // Empêche la soumission si des erreurs sont présentes
+        return;
       }
 
       try {
-        console.log("Tentative de connexion avec:", {
-          emailOuPseudo: this.emailOuPseudo,
-          password: this.password,
-        });
         const result = await this.$store.dispatch("login", {
           emailOuPseudo: this.emailOuPseudo,
           password: this.password,
         });
         if (result.success) {
-          this.messageSucces = `Connexion réussie en tant que ${result.roles.join(
-            ", "
-          )}`;
-          console.log("Utilisateur connecté:", this.$store.state.user);
-          console.log("Rôles:", this.$store.state.roles);
-          // Redirection immédiate vers la page d'accueil
           this.$router.push("/");
         } else {
-          this.messageErreur = "Échec de la connexion: " + result.error;
+          this.messageErreur = result.error;
         }
       } catch (error) {
         console.error("Erreur détaillée lors de la connexion:", error);
-        this.messageErreur = "Erreur lors de la connexion: " + error;
+        this.messageErreur = error.response?.data?.message || "Erreur lors de la connexion";
       } finally {
         this.isSubmitting = false;
       }
@@ -186,5 +182,10 @@ export default {
   display: block;
   color: #dc3545;
   font-size: 0.875rem;
+}
+
+.alert {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
 }
 </style>
