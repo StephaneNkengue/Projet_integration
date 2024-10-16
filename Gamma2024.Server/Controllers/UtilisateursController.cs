@@ -141,7 +141,7 @@ namespace Gamma2024.Server.Controllers
                 PostalCode = user.Adresses.FirstOrDefault()?.CodePostal,
                 Photo = string.IsNullOrEmpty(user.Avatar)
                     ? "/Avatars/default.png"
-                    : $"/Avatars/{user.Avatar}"
+                    : $"{user.Avatar}"
             };
 
             return Ok(clientInfo);
@@ -193,10 +193,10 @@ namespace Gamma2024.Server.Controllers
                     await avatar.CopyToAsync(fileStream);
                 }
 
-                user.Avatar = uniqueFileName;
+                user.Avatar = $"/Avatars/{uniqueFileName}";
                 await _userManager.UpdateAsync(user);
 
-                return Ok(new { avatarUrl = $"/Avatars/{uniqueFileName}" });
+                return Ok(new { avatarUrl = user.Avatar });
             }
 
             return BadRequest("Aucun fichier n'a été envoyé.");

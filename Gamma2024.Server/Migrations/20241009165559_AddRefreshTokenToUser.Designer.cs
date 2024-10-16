@@ -4,6 +4,7 @@ using Gamma2024.Server.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Gamma2024.Server.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241009165559_AddRefreshTokenToUser")]
+    partial class AddRefreshTokenToUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -158,6 +161,12 @@ namespace Gamma2024.Server.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
 
+                    b.Property<string>("RefreshToken")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("RefreshTokenExpiryTime")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
@@ -186,7 +195,7 @@ namespace Gamma2024.Server.Migrations
                             Id = "8e445865-a24d-4543-a6c6-9443d048cdb9",
                             AccessFailedCount = 0,
                             Avatar = "/Avatars/default.png",
-                            ConcurrencyStamp = "f51adc97-086e-4dc9-b9fb-708773f8af06",
+                            ConcurrencyStamp = "a3343119-f5d9-4659-a154-b7594dc3dd47",
                             Email = "admin@example.com",
                             EmailConfirmed = true,
                             FirstName = "Super",
@@ -195,9 +204,9 @@ namespace Gamma2024.Server.Migrations
                             Name = "Admin",
                             NormalizedEmail = "ADMIN@EXAMPLE.COM",
                             NormalizedUserName = "ADMIN@EXAMPLE.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEHwnfctFRZwvdnZSGH/R0bxoUB9ypTjbrGIre5oqaQOc65dt/LLoGOxX/o9n3n3jhA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEAb4KIskcXNp7U42ZV9aabT6YeSJb4CzjDZZz/PBY8TwcKB6oXvTPr8kA+FZEsMXAQ==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "2c342a40-8273-4d42-9f2a-4b3b0915fe5b",
+                            SecurityStamp = "e16549cb-524e-408d-bfe5-69df677b212c",
                             TwoFactorEnabled = false,
                             UserName = "admin@example.com"
                         },
@@ -206,7 +215,7 @@ namespace Gamma2024.Server.Migrations
                             Id = "1d8ac862-e54d-4f10-b6f8-638808c02967",
                             AccessFailedCount = 0,
                             Avatar = "/Avatars/default.png",
-                            ConcurrencyStamp = "18999dd0-c1ee-4380-9cd0-c559cc031f81",
+                            ConcurrencyStamp = "aaa60d92-16ef-4854-a3a1-d8330fd7118a",
                             Email = "client@example.com",
                             EmailConfirmed = true,
                             FirstName = "Jean",
@@ -215,9 +224,9 @@ namespace Gamma2024.Server.Migrations
                             Name = "Dupont",
                             NormalizedEmail = "CLIENT@EXAMPLE.COM",
                             NormalizedUserName = "CLIENT@EXAMPLE.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEFss2pWTfS7oIdww59XIVdt9gNPijIjaDnh97MF3t75EqL86AmoysILJMiA1tKRTqQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEDRqPBKRWB43YsBvQMltI4RD+uHRlFSk8OSe4i24U2U41XVktRazzctT4ghf1lkzzw==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "3400ad4f-b787-41e6-91eb-fb11e581de15",
+                            SecurityStamp = "c7baef91-ff9e-46d6-84c7-b06b2d30d511",
                             TwoFactorEnabled = false,
                             UserName = "client@example.com"
                         });
