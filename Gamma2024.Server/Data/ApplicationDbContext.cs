@@ -77,6 +77,12 @@ namespace Gamma2024.Server.Data
                 .HasForeignKey(l => l.IdMedium)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            builder.Entity<Lot>()
+                .HasOne(l => l.Facture)
+                .WithMany(f => f.Lots)
+                .HasForeignKey(l => l.IdFacture)
+                .OnDelete(DeleteBehavior.NoAction);
+
             // EncanLot
             builder.Entity<EncanLot>()
                 .HasKey(el => new { el.IdEncan, el.IdLot });
