@@ -8,7 +8,7 @@ namespace Gamma2024.Server.Models
         public double SousTotal { get; set; }
         public double PrixLots { get; set; }
         public double FraisEncanteur { get; set; }
-        public double? FraisLivraison { get; set; }
+        public double FraisLivraison { get; set; } = 0;
         public double TPS { get; set; }
         public double TVQ { get; set; }
         public double? Don { get; set; }
@@ -37,7 +37,7 @@ namespace Gamma2024.Server.Models
             TPS = SousTotal * 0.05;
             TVQ = SousTotal * 0.9975;
 
-            PrixFinal = SousTotal + FraisLivraison.Value + TPS + TVQ;
+            PrixFinal = SousTotal + FraisLivraison + TPS + TVQ;
         }
         public void CalculerFraisLivraison()
         {
