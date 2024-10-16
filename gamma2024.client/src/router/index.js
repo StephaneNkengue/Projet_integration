@@ -16,6 +16,9 @@ import VendeurCreation from '@/components/views/VendeurCreation.vue'
 import VendeurModification from '@/components/views/VendeurModification.vue'
 import AccesNonAutorise from '@/components/views/AccesNonAutorise.vue'
 import ModificationProfilUtilisateur from '@/components/views/ModificationProfilUtilisateur.vue'
+import AffichageLots from '@/components/views/AffichageLots.vue'
+import CreationLot from '@/components/views/CreationLot.vue'
+import ModificationLot from '@/components/views/ModificationLot.vue'
 
 const routes = [
     {
@@ -122,7 +125,26 @@ const routes = [
         name: 'AccesNonAutorise',
         component: AccesNonAutorise,
         meta: { requiresAuth: false }
-    }
+    },
+    {
+        path: '/lots',
+        name: 'AffichageLots',
+        component: AffichageLots,
+        meta: { requiresAuth: true, requiredRole: 'Administrateur' }
+    },
+    {
+        path: '/lots/creation',
+        name: 'CreationLot',
+        component: CreationLot,
+        meta: { requiresAuth: true, requiredRole: 'Administrateur' }
+    },
+    {
+        path: '/lots/modification/:id',
+        name: 'ModificationLot',
+        component: ModificationLot,
+        props: true,
+        meta: { requiresAuth: true, requiredRole: 'Administrateur' }
+    },
 ]
 
 const router = createRouter({
