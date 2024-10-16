@@ -352,13 +352,12 @@ foreach (var item in utilisateurs)
             lot.ClientMise = item;
             lot.SeraLivree = a.Livraison;
             lot.DateFinVente = DateTime.Now;
-
-            facture.PrixLots += a.PrixAchete;
             facture.Lots.Add(lot);
         }
 
-        infoFactures.RemoveAll(i => i.Pseudonyme == item.UserName);
+        facture.CalculerFacture();
         factures.Add(facture);
+        infoFactures.RemoveAll(i => i.Pseudonyme == item.UserName);
     }
 }
 
