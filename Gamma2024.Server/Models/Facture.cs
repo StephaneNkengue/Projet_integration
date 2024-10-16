@@ -20,6 +20,25 @@ namespace Gamma2024.Server.Models
         public Charite? Charite { get; set; }
         public ApplicationUser Client { get; set; } = null!;
 
+        public void CalculerFacture()
+        {
+            PrixLots = Lots.Select(l => l.Mise.Value).Sum();
+            FraisEncanteur = PrixLots * 0.15;
+            SousTotal = PrixLots + FraisEncanteur;
+            CalculerFraisLivraison();
+
+
+            if (IdCharite.HasValue)
+            {
+                Don = SousTotal * 0.02;
+                SousTotal += Don.Value;
+            }
+
+            TPS = SousTotal * 0.05;
+            TVQ = SousTotal * 0.9975;
+
+            PrixFinal = SousTotal + FraisLivraison.Value + TPS + TVQ;
+        }
         public void CalculerFraisLivraison()
         {
             var prix = new List<double>();
