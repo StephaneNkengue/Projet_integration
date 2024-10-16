@@ -5,6 +5,7 @@ namespace Gamma2024.Server.Models
         public int Id { get; set; }
         public DateTime DateAchat { get; set; }
         public double PrixFinal { get; set; }
+        public double SousTotal { get; set; }
         public double PrixLots { get; set; }
         public double FraisEncanteur { get; set; }
         public double? FraisLivraison { get; set; }
