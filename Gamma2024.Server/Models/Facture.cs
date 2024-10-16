@@ -39,7 +39,7 @@ namespace Gamma2024.Server.Models
 
             PrixFinal = SousTotal + FraisLivraison + TPS + TVQ;
         }
-        public void CalculerFraisLivraison()
+        private void CalculerFraisLivraison()
         {
             var prix = new List<double>();
             foreach (var item in Lots)
