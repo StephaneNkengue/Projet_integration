@@ -1,6 +1,6 @@
 namespace Gamma2024.Server.Models
 {
-        public class Vendeur
+    public class Vendeur
     {
         public int Id { get; set; }
         public string Nom { get; set; } = null!;

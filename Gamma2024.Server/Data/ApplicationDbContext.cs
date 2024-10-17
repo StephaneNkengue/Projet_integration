@@ -81,12 +81,12 @@ namespace Gamma2024.Server.Data
 
             // EncanLot
             builder.Entity<EncanLot>()
-                .HasKey(el => new { el.NumeroEncan, el.IdLot });
+                .HasKey(el => new { el.IdEncan, el.IdLot });
 
             builder.Entity<EncanLot>()
                 .HasOne(el => el.Encan)
                 .WithMany(e => e.EncanLots)
-                .HasForeignKey(el => el.NumeroEncan);
+                .HasForeignKey(el => el.IdEncan);
 
             builder.Entity<EncanLot>()
                 .HasOne(el => el.Lot)
