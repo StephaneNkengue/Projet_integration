@@ -55,7 +55,7 @@ const store = createStore({
                         name: response.data.name,
                         firstName: response.data.firstName,
                         roles: response.data.roles,
-                        photo: response.data.photo 
+                        photo: response.data.photo
                     });
                     commit('setRoles', response.data.roles);
                     if (response.data.token) {
@@ -142,7 +142,7 @@ const store = createStore({
                         'Content-Type': 'multipart/form-data'
                     }
                 });
-                
+
                 // Construire l'URL complète de l'avatar
                 const avatarPath = response.data.avatarUrl.startsWith('/') 
                     ? response.data.avatarUrl 
@@ -152,9 +152,9 @@ const store = createStore({
                 // Mettre à jour l'utilisateur avec la nouvelle URL de l'avatar
                 const updatedUser = { ...state.user, photo: avatarPath };
                 commit('setUser', updatedUser);
-                
+
                 console.log("Avatar mis à jour dans le store:", fullAvatarUrl);
-                
+
                 return { ...response, data: { ...response.data, avatarUrl: fullAvatarUrl } };
             } catch (error) {
                 console.error("Erreur détaillée lors de la mise à jour de l'avatar:", error.response || error);

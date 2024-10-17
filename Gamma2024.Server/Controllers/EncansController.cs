@@ -15,10 +15,10 @@ namespace Gamma2024.Server.Controllers
             _encanService = encanService;
         }
 
-        [HttpGet]
-        public ICollection<EncanAffichageVM> ChercherTousEncans()
+        [HttpGet("ChercherTousEncansVisibles")]
+        public ICollection<EncanAffichageVM> ChercherTousEncansVisibles()
         {
-            ICollection<EncanAffichageVM> encans = _encanService.ChercherTousEncans();
+            ICollection<EncanAffichageVM> encans = _encanService.ChercherTousEncansVisibles();
             return encans;
         }
     }

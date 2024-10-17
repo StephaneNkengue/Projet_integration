@@ -98,7 +98,7 @@ namespace Gamma2024.Server.Services
                 Photos = new List<Photo>()
             };
 
-            return (true, "Lot créé avec succès", lotAffichage);
+            return (true, "Lot cr�� avec succ�s", lotAffichage);
         }
 
         public async Task<(bool Success, string Message)> ModifierLot(int id, LotModificationVM lotVM)
@@ -112,7 +112,7 @@ namespace Gamma2024.Server.Services
             var lot = await _context.Lots.FindAsync(id);
             if (lot == null)
             {
-                return (false, "Lot non trouvé");
+                return (false, "Lot non trouv�");
             }
 
             lot.Code = lotVM.Code;
@@ -129,7 +129,7 @@ namespace Gamma2024.Server.Services
 
             await _context.SaveChangesAsync();
 
-            return (true, "Lot modifié avec succès");
+            return (true, "Lot modifi� avec succ�s");
         }
 
         public async Task<(bool Success, string Message)> SupprimerLot(int id)
@@ -137,13 +137,13 @@ namespace Gamma2024.Server.Services
             var lot = await _context.Lots.FindAsync(id);
             if (lot == null)
             {
-                return (false, "Lot non trouvé");
+                return (false, "Lot non trouv�");
             }
 
             _context.Lots.Remove(lot);
             await _context.SaveChangesAsync();
 
-            return (true, "Lot supprimé avec succès");
+            return (true, "Lot supprim� avec succ�s");
         }
     }
 }

@@ -28,7 +28,7 @@ async function findWorkingApi() {
 
     for (const baseURL of apiUrls) {
         try {
-            const response = await axios.get(`${baseURL}/health`, { 
+            const response = await axios.get(`${baseURL}/health`, {
                 timeout: 5000,
                 withCredentials: true
             });

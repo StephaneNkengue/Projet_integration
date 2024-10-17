@@ -1,11 +1,11 @@
 <template>
     <div class="container mt-5">
       <h1 class="text-center mb-4 fw-bold display-4">Gestion des lots</h1>
-      
+
       <router-link to="/lots/creation" class="btn btn-lg btn-block mb-4 w-100 bleuMarinSecondaireFond text-white">
         Ajouter un lot
       </router-link>
-      
+
       <table class="table table-striped table-borderless">
         <thead class="table-dark">
           <tr>
@@ -28,28 +28,29 @@
               <router-link 
                 :to="{ name: 'ModificationLot', params: { id: lot.id } }" 
                 class="btn btn-sm btn-primary me-2"
-              >
+            >
                 Modifier
               </router-link>
               <button @click="supprimerLot(lot.id)" class="btn btn-sm btn-danger">
                 Supprimer
-              </button>
+        </button>
             </td>
           </tr>
         </tbody>
       </table>
     </div>
-  </template>
-  
-  <script setup>
+
+</template>
+
+<script setup>
   import { ref, onMounted } from 'vue';
   import { useStore } from 'vuex';
   import { useRouter } from 'vue-router';
-  
+
   const store = useStore();
   const router = useRouter();
   const lots = ref([]);
-  
+
   onMounted(async () => {
     try {
       lots.value = await store.dispatch('obtenirTousLots');
@@ -57,7 +58,7 @@
       console.error("Erreur lors de la récupération des lots:", error);
     }
   });
-  
+
   const supprimerLot = async (id) => {
     if (confirm('Êtes-vous sûr de vouloir supprimer ce lot ?')) {
       try {
@@ -65,11 +66,11 @@
         lots.value = lots.value.filter(lot => lot.id !== id);
       } catch (error) {
         console.error("Erreur lors de la suppression du lot:", error);
-      }
+        }
     }
   };
-  </script>
-  
-  <style scoped>
-  /* Styles similaires à ceux de AffichageVendeur.vue */
-  </style>
+</script>
+
+<style scoped>
+  /* Styles similaires � ceux de AffichageVendeur.vue */
+</style>
