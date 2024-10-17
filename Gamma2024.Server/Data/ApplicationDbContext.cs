@@ -222,7 +222,7 @@ namespace Gamma2024.Server.Data
                 SecurityStamp = Guid.NewGuid().ToString(),
                 Name = "Admin",
                 FirstName = "Super",
-                Avatar = "default.png"
+                Avatar = "avatars/default.png"
 
             };
             adminUser.PasswordHash = passwordHasher.HashPassword(adminUser, "MotDePasseAdmin123!");
@@ -238,7 +238,7 @@ namespace Gamma2024.Server.Data
                 SecurityStamp = Guid.NewGuid().ToString(),
                 Name = "Dupont",
                 FirstName = "Jean",
-                Avatar = "default.png"
+                Avatar = "avatars/default.png"
 
             };
             clientUser.PasswordHash = passwordHasher.HashPassword(clientUser, "MotDePasseClient123!");
