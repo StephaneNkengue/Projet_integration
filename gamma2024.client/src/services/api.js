@@ -29,24 +29,27 @@ async function findWorkingApi() {
   );
 }
 
-const api = axios.create({
-  baseURL: "https://sqlinfocg.cegepgranby.qc.ca/2135621/api", // URL par défaut
-  withCredentials: true,
-});
+export async function initApi(getToken) {
+  if (api) return api;
 
-// Supprimez l'intercepteur qui utilise store ici
-
-findWorkingApi()
-  .then((baseURL) => {
-    api.defaults.baseURL = baseURL;
-  })
-  .catch((error) => {
-    console.error(error);
-    // Fallback sur une URL par défaut si aucune ne fonctionne
-    api.defaults.baseURL = "https://sqlinfocg.cegepgranby.qc.ca/2135621/api";
+  const baseURL = await findWorkingApi();
+  api = axios.create({
+    baseURL,
+    withCredentials: true,
+    headers: {
+      Accept: "application/json",
+    },
   });
 
-    return api;
+  api.interceptors.request.use((config) => {
+    const token = getToken();
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  });
+
+  return api;
 }
 
 export default { initApi };

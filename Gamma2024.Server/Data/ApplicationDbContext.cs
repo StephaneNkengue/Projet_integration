@@ -54,12 +54,6 @@ namespace Gamma2024.Server.Data
                 .HasForeignKey(l => l.IdVendeur)
                 .OnDelete(DeleteBehavior.NoAction);
 
-            builder.Entity<Vendeur>()
-                .HasOne(v => v.Adresse)
-                .WithOne(a => a.Vendeur)
-                .HasForeignKey<Vendeur>(v => v.AdresseId)
-                .OnDelete(DeleteBehavior.NoAction);
-
             // Lot
             builder.Entity<Lot>()
                 .HasOne(l => l.Categorie)

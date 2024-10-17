@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Gamma2024.Server.Services
 {
-        public class VendeurService
+    public class VendeurService
     {
         private readonly ApplicationDbContext _context;
 
@@ -35,7 +35,7 @@ namespace Gamma2024.Server.Services
                     Ville = model.Adresse.Ville,
                     Province = model.Adresse.Province,
                     Pays = model.Adresse.Pays,
-                    CodePostal = model.Adresse.CodePostal 
+                    CodePostal = model.Adresse.CodePostal
                 };
 
                 _context.Adresses.Add(adresse);
@@ -89,7 +89,7 @@ namespace Gamma2024.Server.Services
                 vendeur.Courriel = model.Courriel;
                 vendeur.Telephone = model.Telephone;
 
-                var adresse = await _context.Adresses.FirstOrDefaultAsync(a => a.IdVendeur == id);
+                var adresse = await _context.Adresses.FirstOrDefaultAsync(a => a.Id == id);
                 if (adresse != null)
                 {
                     adresse.Numero = int.Parse(model.Adresse.NumeroCivique);
