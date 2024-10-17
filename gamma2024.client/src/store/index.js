@@ -115,18 +115,18 @@ const store = createStore({
         },
 
 
-        async updateClientInfo({state, commit }, userData) {
+        async updateClientInfo({ state, commit }, userData) {
             try {
                 const response = await state.api.put('/utilisateurs/miseajourinfoclient', userData);
                 console.log("Réponse de mise à jour:", response.data);
-                
+
                 // Mise à jour plus complète de l'utilisateur
                 const updatedUser = { ...state.user, ...response.data };
                 commit('setUser', updatedUser);
-                
+
                 // Forcer la mise à jour des getters
                 commit('refreshUserData');
-                
+
                 return response;
             } catch (error) {
                 console.error("Erreur lors de la mise à jour des informations du client:", error.response || error);
@@ -144,11 +144,11 @@ const store = createStore({
                 });
 
                 // Construire l'URL complète de l'avatar
-                const avatarPath = response.data.avatarUrl.startsWith('/') 
-                    ? response.data.avatarUrl 
+                const avatarPath = response.data.avatarUrl.startsWith('/')
+                    ? response.data.avatarUrl
                     : `/Avatars/${response.data.avatarUrl}`;
                 const fullAvatarUrl = `${state.api.defaults.baseURL.replace('/api', '')}${avatarPath}`;
-                
+
                 // Mettre à jour l'utilisateur avec la nouvelle URL de l'avatar
                 const updatedUser = { ...state.user, photo: avatarPath };
                 commit('setUser', updatedUser);
@@ -202,8 +202,8 @@ const store = createStore({
                 }
             } catch (error) {
                 console.error("Erreur détaillée lors de la création du vendeur:", error.response || error);
-                return { 
-                    success: false, 
+                return {
+                    success: false,
                     error: error.response?.data?.message || error.message || "Erreur lors de la création du vendeur",
                     details: error.response?.data // Ajoutez cette ligne pour obtenir plus de détails
                 };
@@ -291,13 +291,10 @@ const store = createStore({
             const api = await initApi(() => store.state.token || localStorage.getItem('token'));
             commit('SET_API', api);
             await dispatch('checkAuthStatus');
-        }
-    },
         },
-
-        async chercherTousEncansVisibles({ commit }) {
+        async chercherTousEncansVisibles({ commit, state }) {
             try {
-                const response = await api.get("/encans/cherchertousencansvisibles");
+                const response = await state.api.get("/encans/cherchertousencansvisibles");
                 return response
             }
             catch (error) {
