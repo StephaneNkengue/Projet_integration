@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Gamma2024.Server.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241016193352_AjoutDes2TypesDeTaxesDansFacture")]
-    partial class AjoutDes2TypesDeTaxesDansFacture
+    [Migration("20241017003209_MiseAJourBaseDeDonneesApresUnMerge")]
+    partial class MiseAJourBaseDeDonneesApresUnMerge
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -62,6 +62,9 @@ namespace Gamma2024.Server.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("VendeurId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Ville")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -83,6 +86,7 @@ namespace Gamma2024.Server.Migrations
                             Pays = "Pays Admin",
                             Province = "Québec",
                             Rue = "Rue Admin",
+                            VendeurId = 0,
                             Ville = "Ville Admin"
                         },
                         new
@@ -95,6 +99,7 @@ namespace Gamma2024.Server.Migrations
                             Pays = "Pays Client",
                             Province = "Québec",
                             Rue = "Rue Client",
+                            VendeurId = 0,
                             Ville = "Ville Client"
                         });
                 });
@@ -180,7 +185,7 @@ namespace Gamma2024.Server.Migrations
                             Id = "8e445865-a24d-4543-a6c6-9443d048cdb9",
                             AccessFailedCount = 0,
                             Avatar = "default.png",
-                            ConcurrencyStamp = "6e3f88e2-6532-40dd-bac4-63256cdbce7b",
+                            ConcurrencyStamp = "07b638e7-0f4c-4d31-a35a-4d6368342f0a",
                             Email = "admin@example.com",
                             EmailConfirmed = true,
                             FirstName = "Super",
@@ -188,9 +193,9 @@ namespace Gamma2024.Server.Migrations
                             Name = "Admin",
                             NormalizedEmail = "ADMIN@EXAMPLE.COM",
                             NormalizedUserName = "ADMIN@EXAMPLE.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAECCmi1hIT67a7c5p8JjExJPdauOvFoFmmV1fnGOgtVI+I/VUzngWX4fnn7rdf08i2A==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEN310TMdyw5nRcIT0KqQQfWEuNQlhWx1ldOWVz8RVofMyTQDXB+i35ZLBwOVAMEs/Q==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "d5baab1e-94e3-4079-a0d8-1fca10ead801",
+                            SecurityStamp = "2f990e49-4025-41e6-9ee7-da2d3de1a2e0",
                             TwoFactorEnabled = false,
                             UserName = "admin@example.com"
                         },
@@ -199,7 +204,7 @@ namespace Gamma2024.Server.Migrations
                             Id = "1d8ac862-e54d-4f10-b6f8-638808c02967",
                             AccessFailedCount = 0,
                             Avatar = "default.png",
-                            ConcurrencyStamp = "2de158a6-79a0-43a3-9507-c4c745307bff",
+                            ConcurrencyStamp = "3fb8704b-b359-4179-a835-07c77271dafd",
                             Email = "client@example.com",
                             EmailConfirmed = true,
                             FirstName = "Jean",
@@ -207,9 +212,9 @@ namespace Gamma2024.Server.Migrations
                             Name = "Dupont",
                             NormalizedEmail = "CLIENT@EXAMPLE.COM",
                             NormalizedUserName = "CLIENT@EXAMPLE.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEEu/31Wl60LWVg5ssoxhiz5oBZphj4mEFfcZ7Yd+zcnbrH+axURVGL4DuZplQ9jMgA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEJuIZIMsxnRAlmw3hbRXGQFv1Bwf0l+yrZe7N0YY/34Oi5tb6zc3AckYgFh2X8bXXg==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "d4685b4f-aa7e-4a51-b8a5-3e98afbd9eb5",
+                            SecurityStamp = "82a9df8e-26d0-41dc-9b77-5652614da447",
                             TwoFactorEnabled = false,
                             UserName = "client@example.com"
                         });
@@ -371,7 +376,7 @@ namespace Gamma2024.Server.Migrations
                     b.Property<double>("FraisEncanteur")
                         .HasColumnType("float");
 
-                    b.Property<double?>("FraisLivraison")
+                    b.Property<double>("FraisLivraison")
                         .HasColumnType("float");
 
                     b.Property<int>("IdAdresse")
@@ -388,6 +393,9 @@ namespace Gamma2024.Server.Migrations
                         .HasColumnType("float");
 
                     b.Property<double>("PrixLots")
+                        .HasColumnType("float");
+
+                    b.Property<double>("SousTotal")
                         .HasColumnType("float");
 
                     b.Property<double>("TPS")
@@ -546,6 +554,9 @@ namespace Gamma2024.Server.Migrations
                     b.Property<int>("AdresseId")
                         .HasColumnType("int");
 
+                    b.Property<int>("AdresseId1")
+                        .HasColumnType("int");
+
                     b.Property<string>("Courriel")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -564,7 +575,7 @@ namespace Gamma2024.Server.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AdresseId");
+                    b.HasIndex("AdresseId1");
 
                     b.ToTable("Vendeurs");
                 });
@@ -855,7 +866,7 @@ namespace Gamma2024.Server.Migrations
                 {
                     b.HasOne("Gamma2024.Server.Models.Adresse", "Adresse")
                         .WithMany()
-                        .HasForeignKey("AdresseId")
+                        .HasForeignKey("AdresseId1")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
