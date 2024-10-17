@@ -154,7 +154,7 @@
                     />
                   </div>
                   <div class="col-md-4">
-                    <label for="appartement">Appartement/bureau</label>
+                    <label for="appartement">Appartement</label>
                     <input
                       type="text"
                       class="form-control"

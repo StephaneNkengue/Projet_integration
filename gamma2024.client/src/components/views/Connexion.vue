@@ -1,5 +1,14 @@
 <template>
   <div class="bg-image pt-5 imageDeFondEsquise">
+    <transition name="fade">
+      <div
+        v-if="messageLockout"
+        class="container lockMessage alert alert-warning"
+        role="alert"
+      >
+        {{ messageLockout }}
+      </div>
+    </transition>
     <div
       class="container d-flex flex-column justify-content-start align-items-stretch bg-white bg-opacity-75 cadreBlanc"
     >
@@ -92,33 +101,49 @@ export default {
       password: "",
       emailOuPseudoError: "",
       passwordError: "",
-      messageErreur: "",
-      messageSucces: "",
+      messageLockout: "",
       isSubmitting: false,
+      invalide: false,
     };
   },
+
+  computed: {
+    isValide() {
+      if (this.emailOuPseudo.trim() !== "" && this.password.trim() !== "") {
+        return true;
+      }
+      return false;
+    },
+  },
+
   methods: {
     validateEmailOuPseudo() {
-      // Validation logic here
+      if (this.emailOuPseudo.trim() === "") {
+        this.emailOuPseudoError =
+          "L'email ou le pseudonyme est requis pour la connexion";
+        return;
+      }
+      this.emailOuPseudoError = "";
     },
     validatePassword() {
-      // Validation logic here
+      if (this.password.trim() === "") {
+        this.passwordError = "Le mot de passe est requis pour la connexion";
+        return;
+      }
+      this.passwordError = "";
     },
+
     async connexion() {
+      this.isSubmitting = true;
       this.validateEmailOuPseudo();
       this.validatePassword();
-      this.isSubmitting = true;
 
-      if (this.emailOuPseudoError || this.passwordError) {
+      if (!this.isValide) {
         this.isSubmitting = false;
         return; // Empêche la soumission si des erreurs sont présentes
       }
 
       try {
-        console.log("Tentative de connexion avec:", {
-          emailOuPseudo: this.emailOuPseudo,
-          password: this.password,
-        });
         const result = await this.$store.dispatch("login", {
           emailOuPseudo: this.emailOuPseudo,
           password: this.password,
@@ -127,16 +152,22 @@ export default {
           this.messageSucces = `Connexion réussie en tant que ${result.roles.join(
             ", "
           )}`;
-          console.log("Utilisateur connecté:", this.$store.state.user);
-          console.log("Rôles:", this.$store.state.roles);
           // Redirection immédiate vers la page d'accueil
           this.$router.push("/");
         } else {
-          this.messageErreur = "Échec de la connexion: " + result.error;
+          if (result.error.element == "password") {
+            this.passwordError = result.error.message;
+          } else if (result.error.element === "lock") {
+            this.messageLockout = result.error.message;
+            setTimeout(() => {
+              this.messageLockout = "";
+            }, 5000);
+          } else {
+            this.emailOuPseudoError = result.error.message;
+          }
         }
       } catch (error) {
         console.error("Erreur détaillée lors de la connexion:", error);
-        this.messageErreur = "Erreur lors de la connexion: " + error;
       } finally {
         this.isSubmitting = false;
       }
@@ -186,5 +217,22 @@ export default {
   display: block;
   color: #dc3545;
   font-size: 0.875rem;
+}
+
+.lockMessage {
+  margin: auto;
+  width: 35%;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 1s ease;
+}
+
+.fade-enter,
+.fade-leave-to {
+  opacity: 0;
 }
 </style>
