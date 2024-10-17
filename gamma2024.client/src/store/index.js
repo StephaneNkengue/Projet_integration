@@ -231,6 +231,55 @@ const store = createStore({
                 throw error;
             }
         },
+        async creerLot({ state }, lotData) {
+        try {
+            const response = await state.api.post('/lots/creer', lotData);
+            return response.data;
+        } catch (error) {
+            console.error("Erreur lors de la création du lot:", error);
+            throw error;
+        }
+        },
+    
+        async modifierLot({ state }, { id, lotData }) {
+        try {
+            const response = await state.api.put(`/lots/modifier/${id}`, lotData);
+            return response.data;
+        } catch (error) {
+            console.error("Erreur lors de la modification du lot:", error);
+            throw error;
+        }
+        },
+    
+        async obtenirTousLots({ state }) {
+        try {
+            const response = await state.api.get('/lots/tous');
+            return response.data;
+        } catch (error) {
+            console.error("Erreur lors de la récupération de tous les lots:", error);
+            throw error;
+        }
+        },
+    
+        async obtenirLot({ state }, id) {
+        try {
+            const response = await state.api.get(`/lots/${id}`);
+            return response.data;
+        } catch (error) {
+            console.error("Erreur lors de la récupération du lot:", error);
+            throw error;
+        }
+        },
+    
+        async supprimerLot({ state }, id) {
+        try {
+            const response = await state.api.delete(`/lots/supprimer/${id}`);
+            return response.data;
+        } catch (error) {
+            console.error("Erreur lors de la suppression du lot:", error);
+            throw error;
+        }
+        },
         async checkAuthStatus({ commit, state }) {
             const token = state.token || localStorage.getItem('token');
             console.log("Token trouvé :", token ? "Oui" : "Non");

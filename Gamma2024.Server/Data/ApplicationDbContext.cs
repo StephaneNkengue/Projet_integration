@@ -60,7 +60,7 @@ namespace Gamma2024.Server.Data
 
             builder.Entity<Vendeur>()
                 .HasOne(v => v.Adresse)
-                .WithOne(a => a.Vendeur)
+                .WithOne()
                 .HasForeignKey<Vendeur>(v => v.AdresseId)
                 .OnDelete(DeleteBehavior.NoAction);
 
@@ -176,7 +176,7 @@ namespace Gamma2024.Server.Data
                     CodePostal = "12345",
                     Pays = "Pays Admin",
                     Province = "Québec",
-                    IdApplicationUser = adminId,
+                    IdApplicationUser = adminId,  // Utilisez adminId ici
                     EstDomicile = true,
                 },
                 new Adresse
@@ -188,7 +188,7 @@ namespace Gamma2024.Server.Data
                     CodePostal = "67890",
                     Pays = "Pays Client",
                     Province = "Québec",
-                    IdApplicationUser = clientId,
+                    IdApplicationUser = clientId,  // Utilisez clientId ici
                     EstDomicile = true,
                 }
             );
@@ -228,9 +228,7 @@ namespace Gamma2024.Server.Data
                 SecurityStamp = Guid.NewGuid().ToString(),
                 Name = "Admin",
                 FirstName = "Super",
-                Avatar = "/Avatars/default.png", 
-                IdAdresse = 1
-
+                Avatar = "/Avatars/default.png"
             };
             adminUser.PasswordHash = passwordHasher.HashPassword(adminUser, "MotDePasseAdmin123!");
 
@@ -245,9 +243,7 @@ namespace Gamma2024.Server.Data
                 SecurityStamp = Guid.NewGuid().ToString(),
                 Name = "Dupont",
                 FirstName = "Jean",
-                Avatar = "/Avatars/default.png", 
-                IdAdresse = 2
-
+                Avatar = "/Avatars/default.png"
             };
             clientUser.PasswordHash = passwordHasher.HashPassword(clientUser, "MotDePasseClient123!");
 

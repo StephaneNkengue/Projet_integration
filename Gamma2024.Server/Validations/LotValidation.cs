@@ -12,8 +12,7 @@ namespace Gamma2024.Server.Validations
             if (string.IsNullOrWhiteSpace(lot.Code))
                 return (false, "Le code du lot est obligatoire.");
 
-            if (string.IsNullOrWhiteSpace(lot.Nom))
-                return (false, "Le nom du lot est obligatoire.");
+            // La validation pour Nom a été supprimée
 
             if (string.IsNullOrWhiteSpace(lot.Description))
                 return (false, "La description du lot est obligatoire.");

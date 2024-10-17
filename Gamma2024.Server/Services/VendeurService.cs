@@ -89,7 +89,7 @@ namespace Gamma2024.Server.Services
                 vendeur.Courriel = model.Courriel;
                 vendeur.Telephone = model.Telephone;
 
-                var adresse = await _context.Adresses.FirstOrDefaultAsync(a => a.IdVendeur == id);
+                var adresse = await _context.Adresses.FindAsync(vendeur.AdresseId);
                 if (adresse != null)
                 {
                     adresse.Numero = int.Parse(model.Adresse.NumeroCivique);

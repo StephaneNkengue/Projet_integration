@@ -22,7 +22,7 @@ namespace Gamma2024.Server.Services
                 .Select(l => new LotAffichageVM
                 {
                     Id = l.Id,
-                    Code = l.Code,
+                    Code = l.Numero, // Utiliser Code au lieu de Numero
                     ValeurEstimeMin = l.ValeurEstimeMin,
                     ValeurEstimeMax = l.ValeurEstimeMax,
                     Artiste = l.Artiste,
@@ -30,6 +30,7 @@ namespace Gamma2024.Server.Services
                     EstVendu = l.EstVendu,
                     DateFinVente = l.DateFinVente,
                     Photos = l.Photos
+                    // Supprimer Largeur et Hauteur car ils n'existent pas dans LotAffichageVM
                 })
                 .ToListAsync();
         }
@@ -48,7 +49,7 @@ namespace Gamma2024.Server.Services
             return new LotAffichageVM
             {
                 Id = lot.Id,
-                Code = lot.Code,
+                Code = lot.Numero, // Utiliser Code au lieu de Numero
                 ValeurEstimeMin = lot.ValeurEstimeMin,
                 ValeurEstimeMax = lot.ValeurEstimeMax,
                 Artiste = lot.Artiste,
@@ -56,6 +57,7 @@ namespace Gamma2024.Server.Services
                 EstVendu = lot.EstVendu,
                 DateFinVente = lot.DateFinVente,
                 Photos = lot.Photos
+                // Supprimer Largeur et Hauteur car ils n'existent pas dans LotAffichageVM
             };
         }
 
@@ -69,8 +71,7 @@ namespace Gamma2024.Server.Services
 
             var lot = new Lot
             {
-                Code = lotVM.Code,
-                Nom = lotVM.Nom,
+                Numero = lotVM.Code,
                 Description = lotVM.Description,
                 ValeurEstimeMin = lotVM.ValeurEstimeMin,
                 ValeurEstimeMax = lotVM.ValeurEstimeMax,
@@ -78,7 +79,8 @@ namespace Gamma2024.Server.Services
                 IdCategorie = lotVM.IdCategorie,
                 IdVendeur = lotVM.IdVendeur,
                 estLivrable = lotVM.EstLivrable,
-                Dimensions = lotVM.Dimensions,
+                Largeur = lotVM.Largeur,
+                Hauteur = lotVM.Hauteur,
                 IdMedium = lotVM.IdMedium
             };
 
@@ -88,7 +90,7 @@ namespace Gamma2024.Server.Services
             var lotAffichage = new LotAffichageVM
             {
                 Id = lot.Id,
-                Code = lot.Code,
+                Code = lot.Numero, // Utiliser Code au lieu de Numero
                 ValeurEstimeMin = lot.ValeurEstimeMin,
                 ValeurEstimeMax = lot.ValeurEstimeMax,
                 Artiste = lot.Artiste,
@@ -96,9 +98,10 @@ namespace Gamma2024.Server.Services
                 EstVendu = lot.EstVendu,
                 DateFinVente = lot.DateFinVente,
                 Photos = new List<Photo>()
+                // Supprimer Largeur et Hauteur car ils n'existent pas dans LotAffichageVM
             };
 
-            return (true, "Lot cr�� avec succ�s", lotAffichage);
+            return (true, "Lot créé avec succès", lotAffichage);
         }
 
         public async Task<(bool Success, string Message)> ModifierLot(int id, LotModificationVM lotVM)
@@ -112,11 +115,10 @@ namespace Gamma2024.Server.Services
             var lot = await _context.Lots.FindAsync(id);
             if (lot == null)
             {
-                return (false, "Lot non trouv�");
+                return (false, "Lot non trouvé");
             }
 
-            lot.Code = lotVM.Code;
-            lot.Nom = lotVM.Nom;
+            lot.Numero = lotVM.Code;
             lot.Description = lotVM.Description;
             lot.ValeurEstimeMin = lotVM.ValeurEstimeMin;
             lot.ValeurEstimeMax = lotVM.ValeurEstimeMax;
@@ -124,12 +126,13 @@ namespace Gamma2024.Server.Services
             lot.IdCategorie = lotVM.IdCategorie;
             lot.IdVendeur = lotVM.IdVendeur;
             lot.estLivrable = lotVM.EstLivrable;
-            lot.Dimensions = lotVM.Dimensions;
+            lot.Largeur = lotVM.Largeur;
+            lot.Hauteur = lotVM.Hauteur;
             lot.IdMedium = lotVM.IdMedium;
 
             await _context.SaveChangesAsync();
 
-            return (true, "Lot modifi� avec succ�s");
+            return (true, "Lot modifié avec succès");
         }
 
         public async Task<(bool Success, string Message)> SupprimerLot(int id)
@@ -137,13 +140,13 @@ namespace Gamma2024.Server.Services
             var lot = await _context.Lots.FindAsync(id);
             if (lot == null)
             {
-                return (false, "Lot non trouv�");
+                return (false, "Lot non trouv");
             }
 
             _context.Lots.Remove(lot);
             await _context.SaveChangesAsync();
 
-            return (true, "Lot supprim� avec succ�s");
+            return (true, "Lot supprim avec succs");
         }
     }
 }
