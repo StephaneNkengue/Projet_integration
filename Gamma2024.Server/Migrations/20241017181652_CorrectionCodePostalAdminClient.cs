@@ -5,7 +5,7 @@
 namespace Gamma2024.Server.Migrations
 {
     /// <inheritdoc />
-    public partial class ModifiAdressesDeAdminClient : Migration
+    public partial class CorrectionCodePostalAdminClient : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -14,29 +14,29 @@ namespace Gamma2024.Server.Migrations
                 table: "Adresses",
                 keyColumn: "Id",
                 keyValue: 1,
-                column: "EstDomicile",
-                value: true);
+                column: "CodePostal",
+                value: "A1A1A1");
 
             migrationBuilder.UpdateData(
                 table: "Adresses",
                 keyColumn: "Id",
                 keyValue: 2,
-                column: "EstDomicile",
-                value: true);
+                column: "CodePostal",
+                value: "A1A1A1");
 
             migrationBuilder.UpdateData(
                 table: "AspNetUsers",
                 keyColumn: "Id",
                 keyValue: "1d8ac862-e54d-4f10-b6f8-638808c02967",
                 columns: new[] { "ConcurrencyStamp", "PasswordHash", "SecurityStamp" },
-                values: new object[] { "64eaea67-67c3-4433-972f-2f4db68c251d", "AQAAAAIAAYagAAAAEF6E6hrfWWWfJenHs/b2SqQTSE+evniPh/BSrIXOC59hozDhByWsND9JSS/TP6VTMA==", "94d8ea37-7d0b-46bf-a5bc-d3fbce91d9cb" });
+                values: new object[] { "4dc0fb7c-c865-4987-aedb-28de372c4169", "AQAAAAIAAYagAAAAEFJYKukHbJ436BdwrWE7fdUakwWlNFCTxZJTxXHAPAWlfBdWBQfmdy48XaCf+ITjrQ==", "00e74995-62e6-4754-bc4f-6844f22ab312" });
 
             migrationBuilder.UpdateData(
                 table: "AspNetUsers",
                 keyColumn: "Id",
                 keyValue: "8e445865-a24d-4543-a6c6-9443d048cdb9",
                 columns: new[] { "ConcurrencyStamp", "PasswordHash", "SecurityStamp" },
-                values: new object[] { "5b3b9467-072f-4fcd-8eb7-6b7944a7ecbb", "AQAAAAIAAYagAAAAEHWVGXBi/wrqvWJpIZDASQiWlKclYGJmAxGG9Di+2RQ3gsS7Wlok3s5QPdswG3NiWw==", "7c986f7a-516b-4492-842d-df9605ee52ec" });
+                values: new object[] { "2549fa8c-da55-4c9b-a986-6537de65a0c2", "AQAAAAIAAYagAAAAENGnUB3iPF1BYJ3fmPJ7Ur8K3vj64+QXYHGykVzh3ZuoE5X6Q+rwyG0+47hT0+vpjQ==", "a521e807-337b-4730-b07a-43ad0e6d1e2b" });
         }
 
         /// <inheritdoc />
@@ -46,29 +46,29 @@ namespace Gamma2024.Server.Migrations
                 table: "Adresses",
                 keyColumn: "Id",
                 keyValue: 1,
-                column: "EstDomicile",
-                value: false);
+                column: "CodePostal",
+                value: "12345");
 
             migrationBuilder.UpdateData(
                 table: "Adresses",
                 keyColumn: "Id",
                 keyValue: 2,
-                column: "EstDomicile",
-                value: false);
+                column: "CodePostal",
+                value: "67890");
 
             migrationBuilder.UpdateData(
                 table: "AspNetUsers",
                 keyColumn: "Id",
                 keyValue: "1d8ac862-e54d-4f10-b6f8-638808c02967",
                 columns: new[] { "ConcurrencyStamp", "PasswordHash", "SecurityStamp" },
-                values: new object[] { "7767f9df-4589-4df0-8853-31567e53b0c1", "AQAAAAIAAYagAAAAENqkHeM2FV99gywmAXiceeNYbZUlChLMXtebaW+wyPyh71/eboFuJafIsqsEcdp1cA==", "134dc482-7729-4896-9c99-70a309b4a0c4" });
+                values: new object[] { "45d9a58b-babe-4c51-8b4e-e2f5bd5f85cd", "AQAAAAIAAYagAAAAEERcJ+N3RELa5DB9rkppPGmM7lYhTZwOAp1m+3/hjief13ibisWjDozPKSrGcaNbPg==", "2dec435a-49a5-4fdc-a80f-cba3b7980a02" });
 
             migrationBuilder.UpdateData(
                 table: "AspNetUsers",
                 keyColumn: "Id",
                 keyValue: "8e445865-a24d-4543-a6c6-9443d048cdb9",
                 columns: new[] { "ConcurrencyStamp", "PasswordHash", "SecurityStamp" },
-                values: new object[] { "6008cc6c-eded-4243-be6c-1f9eea2484a7", "AQAAAAIAAYagAAAAEJDDBRgpoHI/lGugNO2Sk90YstR25hyimexSTEO38UMlZVpCgS15HpYLR+Cka/rbWw==", "0b55f761-9e50-4632-a6f7-bfb9a0f200b3" });
+                values: new object[] { "8e75e3ac-79f6-47a9-9e4f-9828d3dcb57c", "AQAAAAIAAYagAAAAEOBhU2N7JbajpRKb7E6sRtRJoSWvHZCvMIK4L4AyzrMKKspIWYBFD8/eNAwUn5AokA==", "10f9f217-5ebe-4861-af82-ab5a5b5e2ef6" });
         }
     }
 }

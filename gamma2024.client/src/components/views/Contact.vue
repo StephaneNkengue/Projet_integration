@@ -13,8 +13,9 @@
                 <div class="d-flex flex-column align-items-center">
                     <p class="mb-1">Adresse:</p>
                     <p class="text-center mb-1">1 rue Church Stanstead, QC J0B 3E2, Canada</p>
-                    <a href="https://maps.app.goo.gl/kS5TjtZ7Q2gfChCG7" target="_blank">
+                    <a href="https://maps.app.goo.gl/kS5TjtZ7Q2gfChCG7" target="_blank" class="text-decoration-none text-black d-flex flex-column align-items-center">
                         <img src="/icons/map.png" alt="carte" height="80" />
+                        <p class="text-decoration-underline">Voir la carte</p>
                     </a>
                 </div>
             </div>
