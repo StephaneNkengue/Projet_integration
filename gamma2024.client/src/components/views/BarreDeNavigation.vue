@@ -98,7 +98,7 @@
                   </li>
                   <li>
                     <router-link
-                      :to="AffichageVendeurs"
+                      to="AffichageVendeurs"
                       class="text-decoration-none"
                     >
                       <a class="dropdown-item contenuListeDropdown">Vendeurs</a>
