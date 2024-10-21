@@ -22,7 +22,9 @@ namespace Gamma2024.Server.Services
                     DateDebut = e.DateDebut,
                     DateFin = e.DateFin,
                     DateFinSoireeCloture = e.DateFinSoireeCloture,
-                    DateDebutSoireeCloture = e.DateDebutSoireeCloture
+                    DateDebutSoireeCloture = e.DateDebutSoireeCloture,
+                    EstPublie = e.EstPublie
+
                 }).ToList();
 
             return encans;

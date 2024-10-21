@@ -53,16 +53,17 @@
                 <td>{{encan.numeroEncan}}</td>
                 <td class="d-flex justify-content-center">
                     <div class="d-flex collapse dropdown dropdown-center">
-                        <button class="btn dropdown-toggle bleuMarinSecondaireFond rounded text-white contenuListeDropdown fs-7" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            {{encanPublie}}
+                        <button :encanId="encan.id" class="btn dropdown-toggle bleuMarinSecondaireFond rounded text-white contenuListeDropdown fs-7" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <span v-if="encan.estPublie==true">Publié</span>
+                            <span v-else>Non publié</span>
                         </button>
 
                         <ul class="dropdown-menu dropdown-menu-dark bleuMarinFond text-center">
                             <li>
-                                <a class="dropdown-item" @click="encanPublie =  'Publié'">Publié</a>
+                                <a class="dropdown-item" @click="encanPublieMAJ(true)" :encanId="encan.id">Publié</a>
                             </li>
                             <li>
-                                <a class="dropdown-item" @click="encanPublie = 'Non publié'">Non publié</a>
+                                <a class="dropdown-item" @click="encanPublieMAJ(false)" :encanId="encan.id">Non publié</a>
                             </li>
                         </ul>
                     </div>
@@ -95,21 +96,14 @@
     const dateFinSoireeCloture = ref("");
     const dateFinSoireeClotureHeure = ref("");
 
-    const encanPublie = ref("Publié");
-
+    const encanPublieMAJ = ref();
+    const encanRecherche = ref();
 
     onMounted(async () => {
 
         try {
             listeEncans.value = await store.dispatch("fetchEncanInfo");
-
-            //if (listeEncans.value.estPublie == true) {
-            //    encanPublie = "Publié";
-            //}
-            //else if (listeEncans.value.estPublie == false) {
-            //    encanPublie = "Non publié";
-            //}
-
+            
             listeEncansFiltree.value = listeEncans.value;
 
             listeEncansFiltree.value.forEach(element => {
@@ -126,13 +120,19 @@
                 dateFinSoireeClotureHeure.value = dateFinSoireeCloture.value[2].substring(3, 8);
             });
 
+            encanPublieMAJ.value = function (statutPublie){
+                let encanId =  event.srcElement.getAttribute("encanId")
+                let encan = listeEncans.value.find(e => e.id == encanId)
+                if(encan.estPublie != statutPublie){
+                        encan.estPublie = !encan.estPublie
+                    }
+            }
+
         }
         catch (erreur) {
             console.log("Erreur encans" + erreur);
         }
     });
-
-    const encanRecherche = ref();
 
     watch(encanRecherche, () => {
         listeEncansFiltree.value = listeEncans.value;
@@ -145,10 +145,6 @@
             dateFinSoireeCloture.toString().startsWith(encanRecherche.value)
         );
     })
-
-
-
-    console.log(dateDebut)
 </script>
 
 <style scoped>
