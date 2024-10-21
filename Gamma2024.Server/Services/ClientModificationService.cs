@@ -42,7 +42,7 @@ namespace Gamma2024.Server.Services
             user.UserName = model.Pseudonym;
 
             // Mettre à jour les informations de carte de crédit
-            var carteCredit = await _context.CartesCredits.FirstOrDefaultAsync(c => c.IdClient == user.Id);
+            var carteCredit = await _context.CartesCredits.FirstOrDefaultAsync(c => c.IdApplicationUser == user.Id);
             if (carteCredit != null)
             {
                 carteCredit.Nom = model.CardOwnerName;

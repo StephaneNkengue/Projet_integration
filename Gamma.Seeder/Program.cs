@@ -1,12 +1,57 @@
 using Gamma2024.Seeder;
 using Gamma2024.Server.Extensions;
 using Gamma2024.Server.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 
 var context = DbContextFactory.CreateDbContext();
 
 Console.WriteLine("Début du seed...");
 
+Console.WriteLine("Ajout des utilisateurs");
+
+
+var passwordHasher = new PasswordHasher<ApplicationUser>();
+
+var utilisateurs = File.ReadAllLines("CSV/Acheteurs.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
+                        .Skip(1)
+                        .Where(x => x.Length > 1)
+                        .ToApplicationUser()
+                        .Select(u =>
+                        {
+                            u.CarteCredits = new CarteCredit[]
+                            {
+                                new() {
+                                AnneeExpiration=(DateTime.Now.Year)+2,
+                                MoisExpiration=DateTime.Now.Month,
+                                Nom = u.FirstName + " " + u.Name,
+                                Numero="4242424242424242"
+                                }
+                            };
+                            u.PasswordHash = passwordHasher.HashPassword(u, u.UserName + u.Adresses.First().Numero);
+                            return u;
+                        })
+                        .ToList();
+
+context.Users.AddRange(utilisateurs);
+context.SaveChanges();
+
+Console.WriteLine("Ajout des roles au utilisateurs");
+
+string roleIdClient = "7da4163f-edb4-47b5-86ea-888888888888";
+
+var utilisateursRoles = new List<IdentityUserRole<string>>();
+foreach (var item in utilisateurs)
+{
+    utilisateursRoles.Add(new IdentityUserRole<string>
+    {
+        RoleId = roleIdClient,
+        UserId = item.Id,
+    });
+}
+
+context.UserRoles.AddRange(utilisateursRoles);
+context.SaveChanges();
 
 Console.WriteLine("Ajout des vendeurs");
 
@@ -53,22 +98,10 @@ var lotsVendeurs232 = File.ReadAllLines("CSV/Vendeurs.csv", System.Text.Encoding
                 .GetNumeroLotsEncan232()
                 .ToList();
 
-var lotsVendeurs233 = File.ReadAllLines("CSV/Vendeurs.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
-                .Skip(1)
-                .Where(l => l.Length > 1)
-                .GetNumeroLotsEncan233()
-                .ToList();
-
 var imagesLots232 = File.ReadAllLines("CSV/Encan232et233.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
                         .Skip(1)
                         .Where(l => l.Length > 1)
                         .GetImagesParLotParEncan(232)
-                        .ToList();
-
-var imagesLots233 = File.ReadAllLines("CSV/Encan232et233.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
-                        .Skip(1)
-                        .Where(l => l.Length > 1)
-                        .GetImagesParLotParEncan(233)
                         .ToList();
 
 var lots232 = File.ReadAllLines("CSV/Encan232et233.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
@@ -110,6 +143,12 @@ var lots232 = File.ReadAllLines("CSV/Encan232et233.csv", System.Text.Encoding.Ge
                         })
                         .ToList();
 
+var acheteurs232 = File.ReadAllLines("CSV/AcheteurEncan232.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
+                        .Skip(1)
+                        .Where(l => l.Length > 1)
+                        .GetAcheteursEncan232()
+                        .ToList();
+
 for (int i = 0; i < lots232.Count; i++)
 {
     foreach (var nomImage in imagesLots232[i])
@@ -120,13 +159,29 @@ for (int i = 0; i < lots232.Count; i++)
         }
         else
         {
+            var imagePath = Path.Combine("Images", "ImagesEncan232", nomImage);
             lots232[i].Photos.Add(new Photo
             {
-                Lien = "AAA"
+                Lien = imagePath
             });
         }
     }
 }
+
+context.Lots.AddRange(lots232);
+context.SaveChanges();
+
+var lotsVendeurs233 = File.ReadAllLines("CSV/Vendeurs.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
+                .Skip(1)
+                .Where(l => l.Length > 1)
+                .GetNumeroLotsEncan233()
+                .ToList();
+
+var imagesLots233 = File.ReadAllLines("CSV/Encan232et233.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
+                        .Skip(1)
+                        .Where(l => l.Length > 1)
+                        .GetImagesParLotParEncan(233)
+                        .ToList();
 
 var lots233 = File.ReadAllLines("CSV/Encan232et233.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
                         .Skip(1)
@@ -177,16 +232,14 @@ for (int i = 0; i < lots233.Count; i++)
         }
         else
         {
+            var imagePath = Path.Combine("Images", "ImagesEncan233", nomImage);
             lots233[i].Photos.Add(new Photo
             {
-                Lien = "AAA"
+                Lien = imagePath
             });
         }
     }
 }
-
-context.Lots.AddRange(lots232);
-context.SaveChanges();
 
 context.Lots.AddRange(lots233);
 context.SaveChanges();
@@ -201,6 +254,7 @@ encans.Add(new Encan
     DateFin = new DateTime(2005, 3, 18, 6, 0, 0),
     DateDebutSoireeCloture = new DateTime(2005, 3, 18, 6, 0, 1),
     DateFinSoireeCloture = new DateTime(2005, 3, 18, 9, 0, 0),
+    EstPublie = true
 });
 
 encans.Add(new Encan
@@ -210,6 +264,7 @@ encans.Add(new Encan
     DateFin = new DateTime(2006, 3, 18, 6, 0, 0),
     DateDebutSoireeCloture = new DateTime(2006, 3, 18, 6, 0, 1),
     DateFinSoireeCloture = new DateTime(2006, 3, 18, 9, 0, 0),
+    EstPublie = true
 });
 
 encans.Add(new Encan
@@ -219,6 +274,7 @@ encans.Add(new Encan
     DateFin = new DateTime(2007, 3, 18, 6, 0, 0),
     DateDebutSoireeCloture = new DateTime(2007, 3, 18, 6, 0, 1),
     DateFinSoireeCloture = new DateTime(2007, 3, 18, 9, 0, 0),
+    EstPublie = true
 });
 
 encans.Add(new Encan
@@ -228,6 +284,7 @@ encans.Add(new Encan
     DateFin = new DateTime(2008, 3, 18, 6, 0, 0),
     DateDebutSoireeCloture = new DateTime(2008, 3, 18, 6, 0, 1),
     DateFinSoireeCloture = new DateTime(2008, 3, 18, 9, 0, 0),
+    EstPublie = true
 });
 
 
@@ -260,6 +317,75 @@ foreach (var item in lots233)
 }
 
 context.EncanLots.AddRange(encanLots);
+context.SaveChanges();
+
+Console.WriteLine("Ajout des charités");
+var charites = new List<Charite>();
+
+charites.Add(new Charite
+{
+    NomOrganisme = "Le phare des rives"
+});
+charites.Add(new Charite
+{
+    NomOrganisme = "Un petit pas pour l'avenir"
+});
+charites.Add(new Charite
+{
+    NomOrganisme = "Rendez-vous dans 30 ans"
+});
+
+context.Charites.AddRange(charites);
+context.SaveChanges();
+
+
+Console.WriteLine("Ajout des factures");
+var infoFactures = File.ReadAllLines("CSV/AcheteurEncan232.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
+                .Skip(1)
+                .Where(l => l.Length > 1)
+                .GetAcheteursEncan232()
+                .ToList();
+
+var factures = new List<Facture>();
+
+foreach (var item in utilisateurs)
+{
+    var achats = infoFactures.FindAll(i => i.Pseudonyme == item.UserName).ToList();
+
+    if (achats.Any())
+    {
+        var facture = new Facture
+        {
+            IdClient = item.Id,
+            Client = item,
+            IdAdresse = item.Adresses.First().Id,
+            Adresse = item.Adresses.First(),
+            DateAchat = DateTime.Now,
+            PrixLots = 0
+        };
+
+        foreach (var a in achats)
+        {
+            var lot = lots232.FirstOrDefault(l => l.Numero == a.Lot);
+            lot.EstVendu = true;
+            lot.Mise = a.PrixAchete;
+            lot.IdClientMise = item.Id;
+            lot.ClientMise = item;
+            lot.SeraLivree = a.Livraison;
+            lot.DateFinVente = DateTime.Now;
+            facture.Lots.Add(lot);
+        }
+
+        facture.CalculerFacture();
+        factures.Add(facture);
+        infoFactures.RemoveAll(i => i.Pseudonyme == item.UserName);
+    }
+}
+
+context.Factures.AddRange(factures);
+context.SaveChanges();
+
+context.Lots.UpdateRange(lots232);
 context.SaveChanges();
 
 Console.WriteLine("Fin du seed");

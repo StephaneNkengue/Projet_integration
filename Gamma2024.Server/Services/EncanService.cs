@@ -12,11 +12,13 @@ namespace Gamma2024.Server.Services
             _context = context;
         }
 
-        public ICollection<EncanAffichageVM> ChercherTousEncans()
+        public ICollection<EncanAffichageVM> ChercherTousEncansVisibles()
         {
             var encans = _context.Encans
+                .Where(e => e.EstPublie == true)
                 .Select(e => new EncanAffichageVM()
                 {
+                    Id = e.Id,
                     NumeroEncan = e.NumeroEncan,
                     DateDebut = e.DateDebut,
                     DateFin = e.DateFin,

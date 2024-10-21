@@ -18,5 +18,6 @@ namespace Gamma2024.Server.Models
 
         public ApplicationUser? ApplicationUser { get; set; }
         public ICollection<Facture> Factures { get; set; } = [];
+        public int VendeurId { get; set; }
     }
 }
