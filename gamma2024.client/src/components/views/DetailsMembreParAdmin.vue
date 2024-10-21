@@ -283,6 +283,8 @@ onMounted(async () => {
       codePostal: response.adresses[0].codePostal || "",
     };
     membre.value.avatar = response.avatar || "";
+
+    console.log("voici le membre", membre.value);
   } catch (error) {
     console.error("Erreur lors de la récupération du membre");
   }

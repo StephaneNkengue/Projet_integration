@@ -36,7 +36,7 @@
           >
             <ul class="navbar-nav text-center">
               <li class="nav-item">
-                <router-link to="Accueil" class="text-decoration-none">
+                <router-link to="/" class="text-decoration-none">
                   <a class="nav-link active"> Accueil </a>
                 </router-link>
               </li>
@@ -92,13 +92,13 @@
                     </router-link>
                   </li>
                   <li>
-                    <router-link to="Accueil" class="text-decoration-none">
+                    <router-link to="/" class="text-decoration-none">
                       <a class="dropdown-item contenuListeDropdown">Encans</a>
                     </router-link>
                   </li>
                   <li>
                     <router-link
-                      to="AffichageVendeurs"
+                      :to="AffichageVendeurs"
                       class="text-decoration-none"
                     >
                       <a class="dropdown-item contenuListeDropdown">Vendeurs</a>
@@ -111,7 +111,7 @@
                   </li>
                   <li>
                     <router-link
-                      to="GestionMembre"
+                      to="/gestionMembre"
                       class="text-decoration-none"
                     >
                       <a class="dropdown-item contenuListeDropdown"
@@ -254,7 +254,6 @@ const currentUser = ref(null);
 watch(
   () => store.state.user,
   (newUser) => {
-    console.log("User mis à jour dans le store:", newUser);
     currentUser.value = newUser;
   },
   { deep: true, immediate: true }

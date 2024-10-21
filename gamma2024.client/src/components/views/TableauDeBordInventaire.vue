@@ -547,7 +547,7 @@ let data = ref([
 ]);
 
 onMounted(() => {
-  dt = table.value.dt;
+  let dt = table.value.dt;
   document.querySelectorAll(".toggle-vis").forEach((el, index) => {
     el.addEventListener("click", function (e) {
       dt.column(index).visible(!dt.column(index).visible());
