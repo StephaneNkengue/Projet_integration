@@ -1,4 +1,6 @@
 using Gamma2024.Server.Data;
+using Gamma2024.Server.Models;
+using Gamma2024.Server.Validations;
 using Gamma2024.Server.ViewModels;
 
 namespace Gamma2024.Server.Services
@@ -45,6 +47,38 @@ namespace Gamma2024.Server.Services
                 }).ToList();
 
             return encans;
+        }
+
+        public async Task<(bool Success, string Message)> CreerEncan(EncanCreerVM vm)
+        {
+            var (isValid, errorMessage) = EncanValidation.ValidateEncan(vm);
+
+            if (!isValid)
+            {
+                return (false, errorMessage);
+            }
+
+            var numeroEncanExist = await _context.Encans.FindAsync(vm.NumeroEncan);
+            if (numeroEncanExist != null)
+            {
+                return (false, "Le numéro d'encan existe déjà.");
+            }
+
+            var encan = new Encan()
+            {
+                Id = 0,
+                NumeroEncan = vm.NumeroEncan,
+                DateDebut = vm.DateDebut,
+                DateFin = vm.DateFin,
+                DateDebutSoireeCloture = vm.DateDebutSoireeCloture,
+                DateFinSoireeCloture = vm.DateFinSoireeCloture,
+                EncanLots = [],
+                EstPublie = vm.EstPublie,
+            };
+
+            _context.Encans.Add(encan);
+            _context.SaveChanges();
+            return (true, encan.Id.ToString());
         }
     }
 }

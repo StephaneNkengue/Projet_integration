@@ -181,6 +181,26 @@ const store = createStore({
                 throw error;
             }
         },
+
+        async creerEncan({ commit }, encanData) {
+            try {
+                console.log("Données envoyées au serveur:", encanData); // Ajoutez cette ligne
+                const response = await api.post('/encans/creerencan', encanData);
+                if (response.data.success) {
+                    console.log("test")
+                    return { success: true, message: response.data.message };
+                } else {
+                    return { success: false, error: response.data.message };
+                }
+            } catch (error) {
+                console.error("Erreur détaillée lors de la création du encan:", error.response || error);
+                return {
+                    success: false,
+                    error: error.response?.data?.message || error.message || "Erreur lors de la création du encan",
+                    details: error.response?.data // Ajoutez cette ligne pour obtenir plus de détails
+                };
+            }
+        },
     },
     getters: {
         isAdmin: state => state.roles.includes('ADMINISTRATEUR'),

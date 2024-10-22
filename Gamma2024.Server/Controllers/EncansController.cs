@@ -28,5 +28,24 @@ namespace Gamma2024.Server.Controllers
             ICollection<EncanAffichageVM> encans = _encanService.ChercherTousEncansVisibles();
             return encans;
         }
+
+        [HttpPost("creerencan")]
+        public async Task<IActionResult> CreerEncan([FromBody] EncanCreerVM vm)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var (sucess, message) = await _encanService.CreerEncan(vm);
+            if (sucess)
+            {
+                return Ok(new { sucess = true, message = message });
+            }
+            else
+            {
+                return BadRequest(new { sucess = false, message = message });
+            }
+        }
     }
 }
