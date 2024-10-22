@@ -6,14 +6,14 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Gamma2024.Server.Services
 {
-    public class LotService
-    {
-        private readonly ApplicationDbContext _context;
+	public class LotService
+	{
+		private readonly ApplicationDbContext _context;
 
-        public LotService(ApplicationDbContext context)
-        {
-            _context = context;
-        }
+		public LotService(ApplicationDbContext context)
+		{
+			_context = context;
+		}
 
         public async Task<IEnumerable<LotAffichageVM>> ObtenirTousLots()
         {
