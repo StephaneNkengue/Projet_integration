@@ -8,42 +8,66 @@ namespace Gamma2024.Server.Validations
         public static (bool IsValid, string ErrorMessage) ValidateVendeur(VendeurVM model)
         {
             if (model == null)
+            {
                 return (false, "Les données du vendeur sont manquantes.");
+            }
 
             if (string.IsNullOrWhiteSpace(model.Nom))
+            {
                 return (false, "Le nom est obligatoire.");
+            }
 
             if (string.IsNullOrWhiteSpace(model.Prenom))
+            {
                 return (false, "Le prénom est obligatoire.");
+            }
 
             if (!IsValidEmail(model.Courriel))
+            {
                 return (false, "L'adresse courriel est invalide ou manquante.");
+            }
 
             if (!IsValidPhoneNumber(model.Telephone))
+            {
                 return (false, "Le numéro de téléphone est invalide ou manquant.");
+            }
 
             if (model.Adresse == null)
+            {
                 return (false, "Les informations d'adresse sont manquantes.");
+            }
 
             if (string.IsNullOrWhiteSpace(model.Adresse.NumeroCivique))
+            {
                 return (false, "Le numéro civique est obligatoire.");
+            }
 
             if (string.IsNullOrWhiteSpace(model.Adresse.Rue))
+            {
                 return (false, "La rue est obligatoire.");
+            }
 
             if (string.IsNullOrWhiteSpace(model.Adresse.Ville))
+            {
                 return (false, "La ville est obligatoire.");
+            }
 
             if (string.IsNullOrWhiteSpace(model.Adresse.Province))
+            {
                 return (false, "La province est obligatoire.");
+            }
 
             if (string.IsNullOrWhiteSpace(model.Adresse.Pays))
+            {
                 return (false, "Le pays est obligatoire.");
+            }
 
             model.Adresse.CodePostal = NormalizePostalCode(model.Adresse.CodePostal);
 
             if (!IsValidPostalCode(model.Adresse.CodePostal))
+            {
                 return (false, "Le code postal est invalide ou manquant.");
+            }
 
             return (true, null);
         }

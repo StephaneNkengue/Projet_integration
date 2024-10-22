@@ -1,10 +1,10 @@
 import axios from "axios";
 
 const apiUrls = [
-    'https://localhost:7206/api',
-    'http://localhost:5121/api',
-    'http://localhost:5122/api',
-    'https://sqlinfocg.cegepgranby.qc.ca/2135621/api',
+  "https://localhost:7206/api",
+  "http://localhost:5121/api",
+  "http://localhost:5122/api",
+  "https://sqlinfocg.cegepgranby.qc.ca/2135621/api",
 ];
 
 let api = null;
@@ -45,26 +45,26 @@ async function findWorkingApi() {
 }
 
 export async function initApi(getToken) {
-    if (api) return api;
+  if (api) return api;
 
-    const baseURL = await findWorkingApi();
-    api = axios.create({
-        baseURL,
-        withCredentials: true,
-        headers: {
-            'Accept': 'application/json'
-        }
-    });
+  const baseURL = await findWorkingApi();
+  api = axios.create({
+    baseURL,
+    withCredentials: true,
+    headers: {
+      Accept: "application/json",
+    },
+  });
 
-    api.interceptors.request.use(config => {
-        const token = getToken();
-        if (token) {
-            config.headers.Authorization = `Bearer ${token}`;
-        }
-        return config;
-    });
+  api.interceptors.request.use((config) => {
+    const token = getToken();
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  });
 
-    return api;
+  return api;
 }
 
 export default { initApi };
