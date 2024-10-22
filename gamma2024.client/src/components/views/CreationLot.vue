@@ -39,10 +39,6 @@
         <label class="form-check-label" for="estLivrable">Est livrable</label>
       </div>
       <div class="mb-3">
-        <label for="dimensions" class="form-label">Dimensions</label>
-        <input v-model="lot.dimensions" type="text" class="form-control" id="dimensions">
-      </div>
-      <div class="mb-3">
         <label for="idMedium" class="form-label">Medium</label>
         <select v-model.number="lot.idMedium" class="form-select" id="idMedium" required>
           <!-- Ajoutez les options des mediums ici -->
@@ -93,3 +89,4 @@ const creerLot = async () => {
   }
 };
 </script>
+

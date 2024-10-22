@@ -29,7 +29,7 @@ namespace Gamma2024.Server.Services
                     Mise = l.Mise,
                     EstVendu = l.EstVendu,
                     DateFinVente = l.DateFinVente,
-                    Photos = l.Photos
+                    Photos = new List<PhotoVM>()
                     // Supprimer Largeur et Hauteur car ils n'existent pas dans LotAffichageVM
                 })
                 .ToListAsync();
@@ -56,7 +56,7 @@ namespace Gamma2024.Server.Services
                 Mise = lot.Mise,
                 EstVendu = lot.EstVendu,
                 DateFinVente = lot.DateFinVente,
-                Photos = lot.Photos
+                Photos = new List<PhotoVM>()
                 // Supprimer Largeur et Hauteur car ils n'existent pas dans LotAffichageVM
             };
         }
@@ -97,7 +97,7 @@ namespace Gamma2024.Server.Services
                 Mise = lot.Mise,
                 EstVendu = lot.EstVendu,
                 DateFinVente = lot.DateFinVente,
-                Photos = new List<Photo>()
+                Photos = new List<PhotoVM>()
                 // Supprimer Largeur et Hauteur car ils n'existent pas dans LotAffichageVM
             };
 
@@ -140,13 +140,13 @@ namespace Gamma2024.Server.Services
             var lot = await _context.Lots.FindAsync(id);
             if (lot == null)
             {
-                return (false, "Lot non trouv");
+                return (false, "Lot non trouvé");
             }
 
             _context.Lots.Remove(lot);
             await _context.SaveChangesAsync();
 
-            return (true, "Lot supprim avec succs");
+            return (true, "Lot supprimé avec succès");
         }
     }
 }

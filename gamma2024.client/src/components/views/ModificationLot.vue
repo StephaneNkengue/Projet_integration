@@ -7,10 +7,6 @@
         <input v-model="lot.code" type="text" class="form-control" id="code" required>
       </div>
       <div class="mb-3">
-        <label for="nom" class="form-label">Nom</label>
-        <input v-model="lot.nom" type="text" class="form-control" id="nom" required>
-      </div>
-      <div class="mb-3">
         <label for="description" class="form-label">Description</label>
         <textarea v-model="lot.description" class="form-control" id="description" required></textarea>
       </div>
@@ -89,3 +85,4 @@ const modifierLot = async () => {
   }
 };
 </script>
+

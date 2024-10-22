@@ -18,7 +18,7 @@ namespace Gamma2024.Server.Controllers
             _lotService = lotService;
         }
 
-        [HttpGet]
+        [HttpGet("tous")]
         public async Task<ActionResult<IEnumerable<LotAffichageVM>>> ObtenirTousLots()
         {
             var lots = await _lotService.ObtenirTousLots();
@@ -36,7 +36,7 @@ namespace Gamma2024.Server.Controllers
             return Ok(lot);
         }
 
-        [HttpPost]
+        [HttpPost("creer")]
         public async Task<ActionResult<LotAffichageVM>> CreerLot(LotCreationVM lotVM)
         {
             var resultat = await _lotService.CreerLot(lotVM);
@@ -47,7 +47,7 @@ namespace Gamma2024.Server.Controllers
             return CreatedAtAction(nameof(ObtenirLot), new { id = resultat.Lot.Id }, resultat.Lot);
         }
 
-        [HttpPut("{id}")]
+        [HttpPut("modifier/{id}")]
         public async Task<IActionResult> ModifierLot(int id, LotModificationVM lotVM)
         {
             var resultat = await _lotService.ModifierLot(id, lotVM);
@@ -58,7 +58,7 @@ namespace Gamma2024.Server.Controllers
             return NoContent();
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("supprimer/{id}")]
         public async Task<IActionResult> SupprimerLot(int id)
         {
             var resultat = await _lotService.SupprimerLot(id);

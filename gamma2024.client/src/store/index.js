@@ -5,6 +5,7 @@ const store = createStore({
     state: {
         api: null,
         // ... autres états
+        roles: [], // Assurez-vous que c'est initialisé comme un tableau vide
     },
     mutations: {
         setLoggedIn(state, value) {
@@ -20,8 +21,16 @@ const store = createStore({
             }
         },
         setRoles(state, roles) {
-            state.roles = roles
-            localStorage.setItem('roles', JSON.stringify(roles))
+            console.log("Roles reçus dans setRoles:", roles);
+            if (roles && roles.$values) {
+                state.roles = roles.$values;
+            } else if (Array.isArray(roles)) {
+                state.roles = roles;
+            } else {
+                state.roles = [roles];
+            }
+            console.log("Roles après traitement:", state.roles);
+            localStorage.setItem('roles', JSON.stringify(state.roles));
         },
         setToken(state, token) {
             state.token = token
@@ -280,7 +289,7 @@ const store = createStore({
             throw error;
         }
         },
-        async checkAuthStatus({ commit, state }) {
+        async checkAuthStatus({ commit, state, dispatch }) {
             const token = state.token || localStorage.getItem('token');
             console.log("Token trouvé :", token ? "Oui" : "Non");
             if (!token) {
@@ -299,11 +308,13 @@ const store = createStore({
             try {
                 console.log("URL de la requête :", `${state.api.defaults.baseURL}/home/check-auth`);
                 const response = await state.api.get('/home/check-auth');
-                console.log("Réponse de check-auth:", response.data);
+                console.log("Réponse complète de check-auth:", response.data);
                 if (response.data.isAuthenticated) {
                     commit('setLoggedIn', true);
                     commit('setUser', response.data.user);
-                    commit('setRoles', response.data.roles);
+                    console.log("Rôles reçus du serveur:", response.data.roles);
+                    commit('setRoles', response.data.roles.$values); // Notez le .$values ici
+                    dispatch('forceUpdate');
                 } else {
                     throw new Error('Non authentifié');
                 }
@@ -340,14 +351,22 @@ const store = createStore({
             const api = await initApi(() => store.state.token || localStorage.getItem('token'));
             commit('SET_API', api);
             await dispatch('checkAuthStatus');
+        },
+        forceUpdate({ commit }) {
+            commit('refreshUserData');
         }
     },
     getters: {
-        isAdmin: state => state.roles.includes('Administrateur'),
-        isClient: state => state.roles.includes('Client'),
-        currentUser: state => state.user,
-        username: state => state.user ? state.user.pseudonym || state.user.username : 'USERNAME',
-        avatarUrl: state => {
+        isAdmin: (state) => {
+            console.log("Rôles dans le getter isAdmin:", state.roles);
+            const result = Array.isArray(state.roles) && state.roles.includes('Administrateur');
+            console.log("L'utilisateur est-il admin ?", result);
+            return result;
+        },
+        isClient: (state) => Array.isArray(state.roles) && state.roles.includes('Client'),
+        currentUser: (state) => state.user,
+        username: (state) => state.user ? state.user.pseudonym || state.user.username : 'USERNAME',
+        avatarUrl: (state) => {
             if (state.user && state.user.photo) {
                 console.log("Photo de l'utilisateur brute:", state.user.photo);
                 if (state.user.photo.startsWith('http')) {

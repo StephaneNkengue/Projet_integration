@@ -127,7 +127,7 @@ const routes = [
         meta: { requiresAuth: false }
     },
     {
-        path: '/lots',
+        path: '/affichagelots',
         name: 'AffichageLots',
         component: AffichageLots,
         meta: { requiresAuth: true, requiredRole: 'Administrateur' }
