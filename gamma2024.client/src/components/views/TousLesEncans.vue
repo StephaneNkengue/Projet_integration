@@ -13,7 +13,7 @@
 
         <div class="w-100 px-3 row row-cols-lg-2 row-cols-1">
             <div v-for="index in encans" class="col py-3">
-                <router-link to="EncanPresent" class="text-decoration-none text-black">
+                <router-link :to="{ name: 'Encan', params: { numeroEncan: index.numeroEncan }}" class="text-decoration-none text-black">
                     <AffichageEncanTuile :encan="index" />
                 </router-link>
             </div>
