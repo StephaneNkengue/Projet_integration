@@ -431,7 +431,12 @@
               ]"
               :disabled="!isFormValid || !formDataChanged"
             >
-              Enregistrer
+              <img
+                src="/images/save_img.png"
+                class="img-fluid img_password"
+                alt="icon_save"
+              />
+              <span class="ms-2">Enregistrer</span>
             </button>
           </div>
         </form>

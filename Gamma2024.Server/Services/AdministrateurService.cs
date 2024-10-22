@@ -48,7 +48,7 @@ namespace Gamma2024.Server.Services
                         Numero = c.Numero,
                         ExpirationDate = $"{c.MoisExpiration:D2}/{(c.AnneeExpiration - 2000)}"
                     }).ToList()
-                })
+                }).Where(x => x.Id != "8e445865-a24d-4543-a6c6-9443d048cdb9")
                 .ToListAsync();
 
             return mesMembres;
