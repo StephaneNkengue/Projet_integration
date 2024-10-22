@@ -235,24 +235,24 @@
                 <td>{{ lot.vendeur }}</td>
                 <td>
                     <div class="bg-transparent">
-                        <img v-if="lot.estVendu == true" src="C:\Users\marca\Desktop\Gamma2024\gamma2024.client\public\icons\IconeLivrable.png" width="50" height="50">
-                        <img v-else src="C:\Users\marca\Desktop\Gamma2024\gamma2024.client\public\icons\IconeNonLivrable.png" width="50" height="50">
+                        <img v-if="lot.estVendu == true" src="/icons/IconeNonLivrable.png" width="50" height="50">
+                        <img v-else src="/icons/IconeNonLivrable.png" width="50" height="50">
                     </div>
                 </td>
                 <td>
                     <div class="bg-transparent">
-                        <img v-if="lot.estLivrable == true" src="C:\Users\marca\Desktop\Gamma2024\gamma2024.client\public\icons\IconeLivrable.png" width="50" height="50">
-                        <img v-else src="C:\Users\marca\Desktop\Gamma2024\gamma2024.client\public\icons\IconeNonLivrable.png" width="50" height="50">
+                        <img v-if="lot.estLivrable == true" src="/icons/IconeLivrable.png" width="50" height="50">
+                        <img v-else src="/icons/IconeNonLivrable.png" width="50" height="50">
                     </div>
                 </td>
                 <td>
                     <div class="bg-transparent">
-                        <img src="C:\Users\marca\Desktop\Gamma2024\gamma2024.client\public\icons\bluepenpaper.png" width="50" height="50">
+                        <img src="/icons/bluepenpaper.png" width="50" height="50">
                     </div>
                 </td>
                 <td>
                     <div class="bg-transparent">
-                        <img src="C:\Users\marca\Desktop\Gamma2024\gamma2024.client\public\icons\redbin.png" width="50" height="50">
+                        <img src="/icons/redbin.png" width="50" height="50">
                     </div>
                 </td>
             </tr>
@@ -355,3 +355,4 @@
         });
     });
 </script>
+
