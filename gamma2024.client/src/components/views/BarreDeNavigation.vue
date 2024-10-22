@@ -6,7 +6,7 @@
         data-bs-theme="dark"
       >
         <div class="container-fluid justify-content-between">
-          <router-link to="Accueil" class="text-decoration-none">
+          <router-link :to="{ name: 'Accueil' }" class="text-decoration-none">
             <a class="navbar-brand d-flex align-items-center fs-6">
               <img
                 src="/images/Logo.png"
@@ -36,26 +36,35 @@
           >
             <ul class="navbar-nav text-center">
               <li class="nav-item">
-                <router-link to="/" class="text-decoration-none">
+                <router-link
+                  :to="{ name: 'Accueil' }"
+                  class="text-decoration-none"
+                >
                   <a class="nav-link active"> Accueil </a>
                 </router-link>
               </li>
 
               <li class="nav-item">
-                <router-link to="EncanPresent" class="text-decoration-none">
+                <router-link
+                  :to="{ name: 'EncanPresent' }"
+                  class="text-decoration-none"
+                >
                   <a class="nav-link"> Encan courant </a>
                 </router-link>
               </li>
 
               <li class="nav-item">
-                <router-link to="TousLesEncans" class="text-decoration-none">
+                <router-link
+                  :to="{ name: 'TousLesEncans' }"
+                  class="text-decoration-none"
+                >
                   <a class="nav-link"> Tous les encans </a>
                 </router-link>
               </li>
             </ul>
 
             <div class="d-flex justify-content-center gap-3">
-              <router-link to="Inscription" v-if="!estConnecte">
+              <router-link :to="{ name: 'Inscription' }" v-if="!estConnecte">
                 <button
                   class="btn btn-outline bleuMoyenFond text-white py-0 butttonNavBar btnSurvolerBleuMoyenFond"
                   type="button"
@@ -63,7 +72,7 @@
                   Inscription
                 </button>
               </router-link>
-              <router-link to="Connexion" v-if="!estConnecte">
+              <router-link :to="{ name: 'Connexion' }" v-if="!estConnecte">
                 <button
                   class="btn btn-outline bleuMoyenFond text-white py-0 butttonNavBar btnSurvolerBleuMoyenFond"
                   type="button"
@@ -85,33 +94,42 @@
                 </a>
                 <ul class="dropdown-menu bleuMarinFond text-center">
                   <li>
-                    <router-link to="Inventaire" class="text-decoration-none">
+                    <router-link
+                      :to="{ name: 'Inventaire' }"
+                      class="text-decoration-none"
+                    >
                       <a class="dropdown-item contenuListeDropdown"
                         >Inventaire</a
                       >
                     </router-link>
                   </li>
                   <li>
-                    <router-link to="/" class="text-decoration-none">
+                    <router-link
+                      :to="{ name: 'Accueil' }"
+                      class="text-decoration-none"
+                    >
                       <a class="dropdown-item contenuListeDropdown">Encans</a>
                     </router-link>
                   </li>
                   <li>
                     <router-link
-                      to="AffichageVendeurs"
+                      :to="{ name: 'AffichageVendeurs' }"
                       class="text-decoration-none"
                     >
                       <a class="dropdown-item contenuListeDropdown">Vendeurs</a>
                     </router-link>
                   </li>
                   <li>
-                    <router-link to="Accueil" class="text-decoration-none">
+                    <router-link
+                      :to="{ name: 'Accueil' }"
+                      class="text-decoration-none"
+                    >
                       <a class="dropdown-item contenuListeDropdown">Ventes</a>
                     </router-link>
                   </li>
                   <li>
                     <router-link
-                      to="/gestionMembre"
+                      :to="{ name: 'GestionMembre' }"
                       class="text-decoration-none"
                     >
                       <a class="dropdown-item contenuListeDropdown"
@@ -141,7 +159,7 @@
                 <router-link
                   v-for="index in 5"
                   :key="index"
-                  to="Accueil"
+                  :to="{ name: 'Accueil' }"
                   class="text-decoration-none text-white d-flex align-items-center gap-3"
                 >
                   <a
@@ -159,7 +177,7 @@
               >
                 <router-link
                   v-if="estClient"
-                  to="ModificationProfilUtilisateur"
+                  :to="{ name: 'ModificationProfilUtilisateur' }"
                   class="text-decoration-none text-white d-flex align-items-center gap-3"
                 >
                   <a
