@@ -9,10 +9,8 @@ namespace Gamma2024.Server.Validations
     {
         public static async Task<(bool IsValid, string ErrorMessage)> ValidateLot(LotCreationVM lot, ApplicationDbContext context)
         {
-            if (string.IsNullOrWhiteSpace(lot.Code))
-                return (false, "Le code du lot est obligatoire.");
-
-            // La validation pour Nom a été supprimée
+            if (string.IsNullOrWhiteSpace(lot.Numero))
+                return (false, "Le numéro du lot est obligatoire.");
 
             if (string.IsNullOrWhiteSpace(lot.Description))
                 return (false, "La description du lot est obligatoire.");
@@ -23,19 +21,38 @@ namespace Gamma2024.Server.Validations
             if (lot.ValeurEstimeMax <= lot.ValeurEstimeMin)
                 return (false, "La valeur estimée maximale doit être supérieure à la valeur minimale.");
 
+            if (lot.PrixOuverture <= 0)
+                return (false, "Le prix d'ouverture doit être supérieur à zéro.");
+
+            if (lot.PrixMinPourVente.HasValue && lot.PrixMinPourVente.Value <= 0)
+                return (false, "Le prix minimum pour vente doit être supérieur à zéro.");
+
             if (string.IsNullOrWhiteSpace(lot.Artiste))
                 return (false, "Le nom de l'artiste est obligatoire.");
 
             if (lot.IdCategorie <= 0)
                 return (false, "L'ID de la catégorie est invalide.");
 
-            // Vérification de l'existence du vendeur
+            var categorieExists = await context.Categories.AnyAsync(c => c.Id == lot.IdCategorie);
+            if (!categorieExists)
+                return (false, "La catégorie spécifiée n'existe pas.");
+
             var vendeurExists = await context.Vendeurs.AnyAsync(v => v.Id == lot.IdVendeur);
             if (!vendeurExists)
                 return (false, "Le vendeur spécifié n'existe pas.");
 
             if (lot.IdMedium <= 0)
                 return (false, "L'ID du medium est invalide.");
+
+            var mediumExists = await context.Mediums.AnyAsync(m => m.Id == lot.IdMedium);
+            if (!mediumExists)
+                return (false, "Le medium spécifié n'existe pas.");
+
+            if (lot.Largeur <= 0 || lot.Hauteur <= 0)
+                return (false, "La largeur et la hauteur doivent être supérieures à zéro.");
+
+            if (lot.Photos != null && lot.Photos.Any(p => p.Length > 10 * 1024 * 1024)) // 10 MB max
+                return (false, "La taille de chaque photo ne doit pas dépasser 10 MB.");
 
             return (true, null);
         }

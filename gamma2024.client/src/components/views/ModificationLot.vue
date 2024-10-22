@@ -52,6 +52,17 @@
         <label for="hauteur" class="form-label">Hauteur</label>
         <input v-model.number="lot.hauteur" type="number" step="0.01" class="form-control" id="hauteur" required>
       </div>
+      <div class="mb-3">
+        <label for="nouvellesPhotos" class="form-label">Ajouter de nouvelles photos</label>
+        <input type="file" id="nouvellesPhotos" ref="photoInput" @change="handleNewPhotoUpload" multiple accept="image/*" class="form-control">
+      </div>
+      <div v-if="lot.photos && lot.photos.length > 0" class="mb-3">
+        <h4>Photos existantes</h4>
+        <div v-for="photo in lot.photos" :key="photo.id" class="mb-2">
+          <img :src="photo.url" alt="Photo du lot" style="width: 100px; height: 100px; object-fit: cover;">
+          <button @click.prevent="marquerPhotoASupprimer(photo.id)" class="btn btn-danger btn-sm ms-2">Supprimer</button>
+        </div>
+      </div>
       <button type="submit" class="btn btn-primary">Modifier le lot</button>
     </form>
   </div>
@@ -67,6 +78,8 @@ const router = useRouter();
 const route = useRoute();
 
 const lot = ref(null);
+const photosASupprimer = ref([]);
+const nouvellesPhotos = ref([]);
 
 onMounted(async () => {
   try {
@@ -76,13 +89,44 @@ onMounted(async () => {
   }
 });
 
+const handleNewPhotoUpload = (event) => {
+  nouvellesPhotos.value = Array.from(event.target.files);
+};
+
+const marquerPhotoASupprimer = (photoId) => {
+  photosASupprimer.value.push(photoId);
+};
+
 const modifierLot = async () => {
   try {
-    await store.dispatch('modifierLot', { id: route.params.id, lotData: lot.value });
+    const formData = new FormData();
+    
+    // Ajouter tous les champs du lot au FormData
+    for (const [key, value] of Object.entries(lot.value)) {
+      if (key === 'photos') continue; // On gère les photos séparément
+      if (value instanceof Date) {
+        formData.append(key, value.toISOString());
+      } else if (typeof value === 'object' && value !== null) {
+        formData.append(key, JSON.stringify(value));
+      } else {
+        formData.append(key, value);
+      }
+    }
+    
+    // Ajouter les nouvelles photos
+    nouvellesPhotos.value.forEach((photo, index) => {
+      formData.append(`NouvellesPhotos`, photo);
+    });
+    
+    // Ajouter les IDs des photos à supprimer
+    photosASupprimer.value.forEach((photoId, index) => {
+      formData.append(`PhotosASupprimer`, photoId);
+    });
+    
+    await store.dispatch('modifierLot', { id: route.params.id, lotData: formData });
     router.push({ name: 'AffichageLots' });
   } catch (error) {
     console.error("Erreur lors de la modification du lot:", error);
   }
 };
 </script>
-

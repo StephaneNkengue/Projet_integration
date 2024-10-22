@@ -92,6 +92,30 @@ context.SaveChanges();
 
 Console.WriteLine("Ajout des lots");
 
+// Fonction helper pour ajouter les photos aux lots
+void AjouterPhotosAuxLots(List<Lot> lots, List<List<string>> imagesLots, int numeroEncan)
+{
+    for (int i = 0; i < lots.Count; i++)
+    {
+        foreach (var nomImage in imagesLots[i])
+        {
+            if (string.IsNullOrEmpty(nomImage))
+            {
+                break;
+            }
+            else
+            {
+                var imagePath = $"/Images/ImagesEncan{numeroEncan}/{nomImage}";
+                lots[i].Photos.Add(new Photo
+                {
+                    Lien = imagePath
+                });
+            }
+        }
+    }
+}
+
+// Utilisation pour l'encan 232
 var lotsVendeurs232 = File.ReadAllLines("CSV/Vendeurs.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
                 .Skip(1)
                 .Where(l => l.Length > 1)
@@ -143,34 +167,12 @@ var lots232 = File.ReadAllLines("CSV/Encan232et233.csv", System.Text.Encoding.Ge
                         })
                         .ToList();
 
-var acheteurs232 = File.ReadAllLines("CSV/AcheteurEncan232.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
-                        .Skip(1)
-                        .Where(l => l.Length > 1)
-                        .GetAcheteursEncan232()
-                        .ToList();
-
-for (int i = 0; i < lots232.Count; i++)
-{
-    foreach (var nomImage in imagesLots232[i])
-    {
-        if (nomImage.IsNullOrEmpty())
-        {
-            break;
-        }
-        else
-        {
-            var imagePath = Path.Combine("Images", "ImagesEncan232", nomImage);
-            lots232[i].Photos.Add(new Photo
-            {
-                Lien = imagePath
-            });
-        }
-    }
-}
+AjouterPhotosAuxLots(lots232, imagesLots232, 232);
 
 context.Lots.AddRange(lots232);
 context.SaveChanges();
 
+// Utilisation pour l'encan 233
 var lotsVendeurs233 = File.ReadAllLines("CSV/Vendeurs.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
                 .Skip(1)
                 .Where(l => l.Length > 1)
@@ -222,24 +224,7 @@ var lots233 = File.ReadAllLines("CSV/Encan232et233.csv", System.Text.Encoding.Ge
                         })
                         .ToList();
 
-for (int i = 0; i < lots233.Count; i++)
-{
-    foreach (var nomImage in imagesLots233[i])
-    {
-        if (nomImage.IsNullOrEmpty())
-        {
-            break;
-        }
-        else
-        {
-            var imagePath = Path.Combine("Images", "ImagesEncan233", nomImage);
-            lots233[i].Photos.Add(new Photo
-            {
-                Lien = imagePath
-            });
-        }
-    }
-}
+AjouterPhotosAuxLots(lots233, imagesLots233, 233);
 
 context.Lots.AddRange(lots233);
 context.SaveChanges();

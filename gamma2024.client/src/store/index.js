@@ -240,19 +240,27 @@ const store = createStore({
                 throw error;
             }
         },
-        async creerLot({ state }, lotData) {
-        try {
-            const response = await state.api.post('/lots/creer', lotData);
-            return response.data;
-        } catch (error) {
-            console.error("Erreur lors de la création du lot:", error);
-            throw error;
-        }
+        async creerLot({ state }, formData) {
+            try {
+                const response = await state.api.post('/api/lots/creer', formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    }
+                });
+                return response.data;
+            } catch (error) {
+                console.error("Erreur lors de la création du lot:", error);
+                throw error;
+            }
         },
     
         async modifierLot({ state }, { id, lotData }) {
         try {
-            const response = await state.api.put(`/lots/modifier/${id}`, lotData);
+            const response = await state.api.put(`/api/lots/modifier/${id}`, lotData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
             return response.data;
         } catch (error) {
             console.error("Erreur lors de la modification du lot:", error);
@@ -263,7 +271,8 @@ const store = createStore({
         async obtenirTousLots({ state }) {
         try {
             const response = await state.api.get('/lots/tous');
-            return response.data;
+            console.log(response.data.$values);
+            return response.data.$values || []; 
         } catch (error) {
             console.error("Erreur lors de la récupération de tous les lots:", error);
             throw error;
@@ -354,7 +363,25 @@ const store = createStore({
         },
         forceUpdate({ commit }) {
             commit('refreshUserData');
-        }
+        },
+        async obtenirMediums({ state }) {
+            try {
+                const response = await state.api.get('/api/mediums');
+                return response.data;
+            } catch (error) {
+                console.error("Erreur lors de la récupération des médiums:", error);
+                throw error;
+            }
+        },
+        async obtenirEncans({ state }) {
+            try {
+                const response = await state.api.get('/api/encans');
+                return response.data;
+            } catch (error) {
+                console.error("Erreur lors de la récupération des encans:", error);
+                throw error;
+            }
+        },
     },
     getters: {
         isAdmin: (state) => {

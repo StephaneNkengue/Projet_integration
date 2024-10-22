@@ -220,42 +220,46 @@
                     <th></th>
                 </tr>
             </thead>
-            <tr v-for="lot in test" :key="lot.id">
-                <td>{{lot.encan}}</td>
-                <td>{{ lot.numero }}</td>
-                <td>{{ lot.prixOuverture }}</td>
-                <td>{{ lot.valeurMinPourVente }}</td>
-                <td>{{ lot.valeurEstimeMin }}</td>
-                <td>{{ lot.valeurEstimeMax }}</td>
-                <td>{{ lot.categorie }}</td>
-                <td>{{ lot.artiste }}</td>
-                <td>{{ lot.dimensions }}</td>
-                <td>{{ lot.description }}</td>
-                <td>{{ lot.medium }}</td>
-                <td>{{ lot.vendeur }}</td>
-                <td>
-                    <div class="bg-transparent">
-                        <img v-if="lot.estVendu == true" src="/icons/IconeNonLivrable.png" width="50" height="50">
-                        <img v-else src="/icons/IconeNonLivrable.png" width="50" height="50">
-                    </div>
-                </td>
-                <td>
-                    <div class="bg-transparent">
-                        <img v-if="lot.estLivrable == true" src="/icons/IconeLivrable.png" width="50" height="50">
-                        <img v-else src="/icons/IconeNonLivrable.png" width="50" height="50">
-                    </div>
-                </td>
-                <td>
-                    <div class="bg-transparent">
-                        <img src="/icons/bluepenpaper.png" width="50" height="50">
-                    </div>
-                </td>
-                <td>
-                    <div class="bg-transparent">
-                        <img src="/icons/redbin.png" width="50" height="50">
-                    </div>
-                </td>
-            </tr>
+            <tbody>
+                <tr v-for="lot in lots" :key="lot.id">
+                    <td>{{ lot.numeroEncan }}</td>
+                    <td>{{ lot.code }}</td>
+                    <td>{{ lot.prixOuverture }}</td>
+                    <td>{{ lot.prixMinPourVente }}</td>
+                    <td>{{ lot.valeurEstimeMin }}</td>
+                    <td>{{ lot.valeurEstimeMax }}</td>
+                    <td>{{ lot.categorie }}</td>
+                    <td>{{ lot.artiste }}</td>
+                    <td>{{ lot.dimension }}</td>
+                    <td>{{ lot.description }}</td>
+                    <td>{{ lot.medium }}</td>
+                    <td>{{ lot.vendeur }}</td>
+                    <td>
+                        <div class="bg-transparent">
+                            <img v-if="lot.estVendu" src="/icons/IconeVendu.png" width="50" height="50" alt="Vendu">
+                            <img v-else src="/icons/IconeNonVendu.png" width="50" height="50" alt="Non vendu">
+                        </div>
+                    </td>
+                    <td>
+                        <div class="bg-transparent">
+                            <img v-if="lot.estLivrable" src="/icons/IconeLivrable.png" width="50" height="50" alt="Livrable">
+                            <img v-else src="/icons/IconeNonLivrable.png" width="50" height="50" alt="Non livrable">
+                        </div>
+                    </td>
+                    <td>
+                        <div class="bg-transparent">
+                            <router-link :to="{ name: 'ModificationLot', params: { id: lot.id } }">
+                                <img src="/icons/bluepenpaper.png" width="50" height="50" alt="Modifier">
+                            </router-link>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="bg-transparent">
+                            <img src="/icons/redbin.png" width="50" height="50" alt="Supprimer" @click="supprimerLot(lot.id)" style="cursor: pointer;">
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
         </table>
     </div>
 </template>
@@ -309,50 +313,29 @@
 <script setup>
     import { onMounted, ref } from "vue";
     import { useStore } from "vuex";
+    import { useRouter } from 'vue-router';
 
     const store = useStore();
-    const test = ref([]);
+    const router = useRouter();
+    const lots = ref([]);
 
     onMounted(async () => {
-        const checkboxQuiSelectionneTout = document.querySelector(".checkboxTous");
-        const listeDesCheckboxes = document.querySelectorAll(".checkboxSeul");
-        const listeDesColonnes = document.querySelectorAll("col");
-
         try {
-            test.value = await store.dispatch("fetchListeDeLotsPourAdministrateur");
-            console.log(test.value);
-        } catch (erreur) {
-            console.log(
-                "Erreur avec la génération de la liste des lots pour l'administrateur." +
-                erreur
-            );
+            lots.value = await store.dispatch('obtenirTousLots');
+        } catch (error) {
+            console.error("Erreur lors de la récupération des lots:", error);
         }
-
-        checkboxQuiSelectionneTout.addEventListener("click", function (e) {
-            if (this.checked) {
-                listeDesCheckboxes.forEach((el, index) => {
-                    el.checked = true;
-                    listeDesColonnes[index].classList.remove("cacher");
-                    el.disabled = true;
-                });
-            }
-            else {
-                listeDesCheckboxes.forEach((el) => {
-                    el.disabled = false;
-                });
-            }
-        });
-
-        listeDesCheckboxes.forEach((el, index) => {
-            el.addEventListener("click", function (e) {
-                if (this.checked) {
-                    listeDesColonnes[index].classList.remove("cacher");
-                }
-                else {
-                    listeDesColonnes[index].classList.add("cacher");
-                }
-            });
-        });
     });
+
+    const supprimerLot = async (id) => {
+        if (confirm('Êtes-vous sûr de vouloir supprimer ce lot ?')) {
+            try {
+                await store.dispatch('supprimerLot', id);
+                lots.value = lots.value.filter(lot => lot.id !== id);
+            } catch (error) {
+                console.error("Erreur lors de la suppression du lot:", error);
+            }
+        }
+    };
 </script>
 

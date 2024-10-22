@@ -1,8 +1,12 @@
+using System;
+using System.Collections.Generic;
+using Microsoft.AspNetCore.Http;
+
 namespace Gamma2024.Server.ViewModels
 {
     public class LotModificationVM : LotCreationVM
     {
-        // Hérite de toutes les propriétés de LotCreationVM
-        // Ajoutez ici des propriétés supplémentaires si nécessaire pour la modification
+        public List<IFormFile> NouvellesPhotos { get; set; }
+        public List<int> PhotosASupprimer { get; set; }
     }
 }

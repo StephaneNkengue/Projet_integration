@@ -3,6 +3,9 @@ using Gamma2024.Server.Models;
 using Gamma2024.Server.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Gamma2024.Server.Controllers
 {
@@ -22,7 +25,7 @@ namespace Gamma2024.Server.Controllers
         public async Task<ActionResult<IEnumerable<LotAffichageVM>>> ObtenirTousLots()
         {
             var lots = await _lotService.ObtenirTousLots();
-            return Ok(lots);
+            return Ok(lots.ToList()); 
         }
 
         [HttpGet("{id}")]
@@ -37,8 +40,13 @@ namespace Gamma2024.Server.Controllers
         }
 
         [HttpPost("creer")]
-        public async Task<ActionResult<LotAffichageVM>> CreerLot(LotCreationVM lotVM)
+        public async Task<ActionResult<LotAffichageVM>> CreerLot([FromForm] LotCreationVM lotVM)
         {
+            if (Request.Form.Files.Count > 0)
+            {
+                lotVM.Photos = Request.Form.Files.ToList();
+            }
+
             var resultat = await _lotService.CreerLot(lotVM);
             if (!resultat.Success)
             {
