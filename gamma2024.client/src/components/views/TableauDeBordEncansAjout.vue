@@ -53,20 +53,6 @@
                         {{v.dateFin.$errors[0].$message}}
                     </div>
                 </div>
-                <div class="mb-3">
-                    <label for="dateSoireeCloture" class="form-label">Soirée de clôture:</label>
-                    <VueDatePicker type="time" v-model="formData.dateDebutSoireeCloture"
-                                   :class="['form-control', { 'is-invalid': v.dateDebutSoireeCloture.$error }]"
-                                   @blur="v.dateDebutSoireeCloture.$touch()"
-                                   select-text="Choisir"
-                                   cancel-text="Annuler"
-                                   :min-time="{ hours: new Date(formData.dateFin).getHours(), minutes: new Date(formData.dateFin).getMinutes() }"
-                                   :start-time="{ hours: new Date(formData.dateFin).getHours(), minutes: new Date(formData.dateFin).getMinutes() }"
-                                   time-picker />
-                    <div class="invalid-feedback" v-if="v.dateDebutSoireeCloture.$error">
-                        {{v.dateDebutSoireeCloture.$errors[0].$message}}
-                    </div>
-                </div>
                 <router-link to="TableauDeBordEncans" class="text-decoration-none">
                     <button type="button" class="btn bleuMarinSecondaireFond btnSurvolerBleuMoyenFond btnClick text-white">Annuler</button>
                 </router-link>
@@ -86,6 +72,9 @@
     import '@vuepic/vue-datepicker/dist/main.css';
     import { fr } from 'date-fns/locale';
 
+    import { useRouter } from 'vue-router';
+    const router = useRouter()
+
     const store = useStore();
     const messageRequis = helpers.withMessage("Ce champ est obligatoire.", required);
     const errorMessage = ref('');
@@ -95,7 +84,6 @@
         numeroEncan: "",
         dateDebut: "",
         dateFin: "",
-        dateDebutSoireeCloture : "",
     });
 
     let rules = computed(() => {
@@ -103,7 +91,6 @@
             numeroEncan: { required: messageRequis },
             dateDebut: { required: messageRequis },
             dateFin: { required: messageRequis },
-            dateDebutSoireeCloture : {required: messageRequis}
         }
     });
 
@@ -121,10 +108,18 @@
             const response = await store.dispatch('creerEncan', formData);
             if (response.success) {
                 successMessage.value = "Encan créé avec succès!";
+                errorMessage.value = "";
+
+                setTimeout(() => {
+                    router.push({ name: 'TableauDeBordEncans' })
+                }, 800);
             }
             else {
-                errorMessage.value = response.message;
+                errorMessage.value = response.error;
+                successMessage.value = "";
             }
+
+
         }
         catch (error) {
             errorMessage.value = "Une erreur est survenue lors de la création d'un encan.";

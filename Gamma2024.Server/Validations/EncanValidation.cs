@@ -39,10 +39,10 @@ namespace Gamma2024.Server.Validations
                 return (false, "La date de fin ne doit pas être avant ou égale à la date de début.");
             }
 
-            if (model.DateDebutSoireeCloture < model.DateFin)
-            {
-                return (false, "Le début de la soirée de clotûre ne peut pas être avant la date de fin.");
-            }
+            //if (model.DateDebutSoireeCloture < model.DateFin)
+            //{
+            //    return (false, "Le début de la soirée de clotûre ne peut pas être avant la date de fin.");
+            //}
 
             return (true, "L'encan a été créé.");
         }

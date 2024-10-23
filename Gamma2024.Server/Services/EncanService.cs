@@ -58,7 +58,7 @@ namespace Gamma2024.Server.Services
                 return (false, errorMessage);
             }
 
-            var numeroEncanExist = await _context.Encans.FindAsync(vm.NumeroEncan);
+            var numeroEncanExist = _context.Encans.FirstOrDefault(e => e.NumeroEncan == vm.NumeroEncan);
             if (numeroEncanExist != null)
             {
                 return (false, "Le numéro d'encan existe déjà.");
@@ -70,10 +70,10 @@ namespace Gamma2024.Server.Services
                 NumeroEncan = vm.NumeroEncan,
                 DateDebut = vm.DateDebut,
                 DateFin = vm.DateFin,
-                DateDebutSoireeCloture = vm.DateDebutSoireeCloture,
-                DateFinSoireeCloture = vm.DateFinSoireeCloture,
+                DateDebutSoireeCloture = vm.DateFin,
+                DateFinSoireeCloture = vm.DateFin.AddDays(1), //à modifier, doit être dynamique
                 EncanLots = [],
-                EstPublie = vm.EstPublie,
+                EstPublie = false,
             };
 
             _context.Encans.Add(encan);
