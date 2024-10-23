@@ -185,7 +185,7 @@ const store = createStore({
         async creerEncan({ commit }, encanData) {
             try {
                 console.log("Données envoyées au serveur:", encanData); // Ajoutez cette ligne
-                const response = await api.post('/encans/creerencan', encanData);
+                const response = await api.post('/encans/creerEncan', encanData);
                 if (response.data.success) {
                     console.log("test")
                     return { success: true, message: response.data.message };
