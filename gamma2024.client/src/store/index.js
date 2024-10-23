@@ -408,6 +408,15 @@ const store = createStore({
             catch (error) {
                 return "Erreur, veuillez réessayer"
             }
+        },
+        async chercherEncanParNumero({ commit, state }, numeroEncan) {
+            try {
+                const response = await state.api.get("/encans/chercherencanparnumero/" + numeroEncan);
+                return response
+            }
+            catch (error) {
+                return "Erreur, veuillez réessayer"
+            }
         }
     },
     getters: {
