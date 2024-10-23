@@ -121,7 +121,8 @@
           <span>
             <button
               class="btn btn-danger"
-              @click="supprimerEncan(encan.numeroEncan)"
+              data-bs-toggle="modal"
+              :data-bs-target="'#' + encan.numeroEncan"
             >
               <img
                 src="/public/icons/delete.png"
@@ -130,6 +131,7 @@
               /></button
           ></span>
         </td>
+        <ConfirmDelete :data="encan" @supprimerEncan="supprimerEncan" />
       </tr>
     </table>
   </div>
@@ -138,6 +140,7 @@
 import { onMounted, ref, watch } from "vue";
 import { useStore } from "vuex";
 import TableauDeBordEncansAjout from "@/components/views/TableauDeBordEncansAjout.vue";
+import ConfirmDelete from "./BoiteModale/ConfirmDelete.vue";
 
 const store = useStore();
 const listeEncans = ref([]);
@@ -178,11 +181,9 @@ watch(encanRecherche, () => {
   );
 });
 
-const editerEncan = async (idEncan) => {
-  const response = await store.dispatch("supprimerUnEncan", idEncan);
-  if (response.success) {
-    initializeData();
-  }
+const supprimerEncan = async (idEncan) => {
+  await store.dispatch("supprimerUnEncan", idEncan);
+  initializeData();
 };
 
 async function initializeData() {

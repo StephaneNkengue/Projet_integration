@@ -51,7 +51,7 @@ namespace Gamma2024.Server.Controllers
             }
         }
 
-        [HttpDelete("SupprimerEncan/${numeroEncan}")]
+        [HttpDelete("SupprimerEncan/{numeroEncan}")]
         public IActionResult SupprimerEncan(int numeroEncan)
         {
             var encan = _encanService.GetEncanByNumber(numeroEncan);

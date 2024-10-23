@@ -219,7 +219,7 @@ const store = createStore({
     async supprimerUnEncan({ commit }, numeroEncan) {
       try {
         const response = await api.delete(
-          "/encans/SupprimerEncan/${numeroEncan}"
+          `/encans/SupprimerEncan/${numeroEncan}`
         );
         return response.data;
       } catch (error) {
