@@ -45,7 +45,7 @@
                                    :class="['form-control', { 'is-invalid': v.dateFin.$error }]"
                                    @blur="v.dateFin.$touch()"
                                    :min-date="desacDateFinEntre"
-                                   :enable-time-picker="false"
+                                   :enable-time-picker="true"
                                    select-text="Choisir"
                                    cancel-text="Annuler"
                                    :format-locale="fr" />
@@ -55,13 +55,17 @@
                 </div>
                 <div class="mb-3">
                     <label for="dateSoireeCloture" class="form-label">Soirée de clôture:</label>
-                    <VueDatePicker type="time" v-model="temps"
-                                   :class="['form-control']"
-                                   @blur="v.dateFin.$touch()"
+                    <VueDatePicker type="time" v-model="formData.dateDebutSoireeCloture"
+                                   :class="['form-control', { 'is-invalid': v.dateDebutSoireeCloture.$error }]"
+                                   @blur="v.dateDebutSoireeCloture.$touch()"
                                    select-text="Choisir"
                                    cancel-text="Annuler"
                                    :min-time="{ hours: new Date(formData.dateFin).getHours(), minutes: new Date(formData.dateFin).getMinutes() }"
+                                   :start-time="{ hours: new Date(formData.dateFin).getHours(), minutes: new Date(formData.dateFin).getMinutes() }"
                                    time-picker />
+                    <div class="invalid-feedback" v-if="v.dateDebutSoireeCloture.$error">
+                        {{v.dateDebutSoireeCloture.$errors[0].$message}}
+                    </div>
                 </div>
                 <router-link to="TableauDeBordEncans" class="text-decoration-none">
                     <button type="button" class="btn bleuMarinSecondaireFond btnSurvolerBleuMoyenFond btnClick text-white">Annuler</button>
@@ -91,6 +95,7 @@
         numeroEncan: "",
         dateDebut: "",
         dateFin: "",
+        dateDebutSoireeCloture : "",
     });
 
     let rules = computed(() => {
@@ -98,6 +103,7 @@
             numeroEncan: { required: messageRequis },
             dateDebut: { required: messageRequis },
             dateFin: { required: messageRequis },
+            dateDebutSoireeCloture : {required: messageRequis}
         }
     });
 
@@ -148,11 +154,6 @@
             return [dateFinDesac]
         }
         return null;
-    });
-
-    const temps = ref({
-        hours: new Date(formData.dateFin).getHours(),
-        minutes: new Date(formData.dateFin).getMinutes()
     });
 </script>
 
