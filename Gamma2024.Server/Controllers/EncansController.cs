@@ -1,3 +1,4 @@
+using Gamma2024.Server.Data;
 using Gamma2024.Server.Services;
 using Gamma2024.Server.ViewModels;
 using Microsoft.AspNetCore.Mvc;
@@ -9,10 +10,12 @@ namespace Gamma2024.Server.Controllers
     public class EncansController : ControllerBase
     {
         private readonly EncanService _encanService;
+        private readonly ApplicationDbContext _context;
 
-        public EncansController(EncanService encanService)
+        public EncansController(EncanService encanService, ApplicationDbContext context)
         {
             _encanService = encanService;
+            _context = context;
         }
 
         [HttpGet("cherchertousencans")]
@@ -46,6 +49,21 @@ namespace Gamma2024.Server.Controllers
             {
                 return BadRequest(new { sucess = false, message = message });
             }
+        }
+
+        [HttpDelete("SupprimerEncan/${numeroEncan}")]
+        public IActionResult SupprimerEncan(int numeroEncan)
+        {
+            var encan = _encanService.GetEncanByNumber(numeroEncan);
+            if (encan == null)
+            {
+                return BadRequest(new { sucess = false, message = "Aucun encan trouvé" });
+            }
+
+            _context.Encans.Remove(encan);
+            _context.SaveChanges();
+
+            return Ok(new { sucess = true, message = "Encan supprimé avec succès" });
         }
     }
 }
