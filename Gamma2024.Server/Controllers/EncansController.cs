@@ -21,5 +21,20 @@ namespace Gamma2024.Server.Controllers
             ICollection<EncanAffichageVM> encans = _encanService.ChercherTousEncansVisibles();
             return encans;
         }
+
+        [HttpGet("ChercherEncanParNumero/{numeroEncan}")]
+        public EncanAffichageVM ChercherEncanParNumero(string numeroEncan)
+        {
+            try
+            {
+                var numeroEncanInt = int.Parse(numeroEncan);
+                var encan = _encanService.ChercherEncanParNumero(numeroEncanInt);
+                return encan;
+            }
+            catch
+            {
+                return null;
+            }
+        }
     }
 }
