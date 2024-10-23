@@ -131,7 +131,7 @@
               /></button
           ></span>
         </td>
-        <ConfirmDelete :data="encan" @supprimerEncan="supprimerEncan" />
+        <ConfirmDelete :h="encan" @supprimerEncan="supprimerMonEncan" />
       </tr>
     </table>
   </div>
@@ -181,7 +181,7 @@ watch(encanRecherche, () => {
   );
 });
 
-const supprimerEncan = async (idEncan) => {
+const supprimerMonEncan = async (idEncan) => {
   await store.dispatch("supprimerUnEncan", idEncan);
   initializeData();
 };
