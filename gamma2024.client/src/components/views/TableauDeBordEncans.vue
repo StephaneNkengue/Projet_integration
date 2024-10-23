@@ -57,8 +57,7 @@
           <th data-field="dateFin">Date de fin</th>
           <th data-field="soireeCloture">Soirée de clôture</th>
           <th data-field="nbLot">Nombre de lots</th>
-          <th></th>
-          <th></th>
+          <th>Actions</th>
         </tr>
       </thead>
       <tr v-for="encan in listeEncansFiltree" :key="encan.id">
@@ -108,16 +107,24 @@
         </td>
         <td>vfffd</td>
         <td>
-          <span class="me-3">
-            <button class="btn btn-info">
-              <img src="/icons/edit.png" class="img-fluid" alt="..." /></button
-          ></span>
-        </td>
-        <td>
-          <span class="me-3">
-            <button class="btn btn-info">
+          <span>
+            <button
+              class="btn btn-info"
+              @click="editerEncan(encan.numeroEncan)"
+            >
               <img
-                src="/icons/delete.png"
+                src="/public/icons/edit.png"
+                class="img-fluid"
+                alt="..."
+              /></button
+          ></span>
+          <span>
+            <button
+              class="btn btn-danger"
+              @click="supprimerEncan(encan.numeroEncan)"
+            >
+              <img
+                src="/public/icons/delete.png"
                 class="img-fluid"
                 alt="..."
               /></button
@@ -149,6 +156,36 @@ const encanPublieMAJ = ref();
 const encanRecherche = ref();
 
 onMounted(async () => {
+  initializeData();
+});
+
+watch(encanRecherche, () => {
+  listeEncansFiltree.value = listeEncans.value;
+
+  listeEncansFiltree.value = listeEncansFiltree.value.filter(
+    ({
+      numeroEncan,
+      dateDebut,
+      dateFin,
+      dateDebutSoireeCloture,
+      dateFinSoireeCloture,
+    }) =>
+      numeroEncan.toString().startsWith(encanRecherche.value) ||
+      dateDebut.toString().startsWith(encanRecherche.value) ||
+      dateFin.toString().startsWith(encanRecherche.value) ||
+      dateDebutSoireeCloture.toString().startsWith(encanRecherche) ||
+      dateFinSoireeCloture.toString().startsWith(encanRecherche.value)
+  );
+});
+
+const editerEncan = async (idEncan) => {
+  const response = await store.dispatch("supprimerUnEncan", idEncan);
+  if (response.success) {
+    initializeData();
+  }
+};
+
+async function initializeData() {
   try {
     listeEncans.value = await store.dispatch("fetchEncanInfo");
 
@@ -187,26 +224,7 @@ onMounted(async () => {
   } catch (erreur) {
     console.log("Erreur encans" + erreur);
   }
-});
-
-watch(encanRecherche, () => {
-  listeEncansFiltree.value = listeEncans.value;
-
-  listeEncansFiltree.value = listeEncansFiltree.value.filter(
-    ({
-      numeroEncan,
-      dateDebut,
-      dateFin,
-      dateDebutSoireeCloture,
-      dateFinSoireeCloture,
-    }) =>
-      numeroEncan.toString().startsWith(encanRecherche.value) ||
-      dateDebut.toString().startsWith(encanRecherche.value) ||
-      dateFin.toString().startsWith(encanRecherche.value) ||
-      dateDebutSoireeCloture.toString().startsWith(encanRecherche) ||
-      dateFinSoireeCloture.toString().startsWith(encanRecherche.value)
-  );
-});
+}
 </script>
 
 <style scoped>
