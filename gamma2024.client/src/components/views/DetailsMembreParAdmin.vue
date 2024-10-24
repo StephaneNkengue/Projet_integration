@@ -5,7 +5,7 @@
       <div class="col-md-4 col-12 mb-5 card card_avatar me-5">
         <div class="avatar-section mb-4 d-flex flex-column align-items-center">
           <div class="avatar-container border border-1 rounded-circle mb-2">
-            <img :src="membre.avatar" alt="Avatar" class="avatar-image mb-2" />
+            <img :src="membre.avatar" alt="Avatar" class="img-fluid" />
           </div>
           <p class="nom_prenom">
             {{ membre.generalInfo.nom }} {{ membre.generalInfo.prenom }}
@@ -282,31 +282,29 @@ onMounted(async () => {
       pays: response.adresses[0].pays || "",
       codePostal: response.adresses[0].codePostal || "",
     };
-    membre.value.avatar = response.avatar || "";
-
-    console.log("voici le membre", membre.value);
+    membre.value.avatar = store.getters.avatarUrl || "";
   } catch (error) {
     console.error("Erreur lors de la récupération du membre");
   }
 });
 
 const mapProvince = (province) => {
-  const provinceMap = {
-    Québec: "QC",
-    Ontario: "ON",
-    Alberta: "AB",
-    "Colombie-Britannique": "BC",
-    Manitoba: "MB",
-    "Nouveau-Brunswick": "NB",
-    "Terre-Neuve-et-Labrador": "NL",
-    "Nouvelle-Écosse": "NS",
-    "Île-du-Prince-Édouard": "PE",
-    Saskatchewan: "SK",
-    "Territoires du Nord-Ouest": "NT",
-    Nunavut: "NU",
-    Yukon: "YT",
-  };
-  return provinceMap[province] || province;
+  const mapProvince = new Map();
+  mapProvince.set("QC", "Québec");
+  mapProvince.set("ON", "Ontario");
+  mapProvince.set("AB", "Alberta");
+  mapProvince.set("BC", "Colombie-Britannique");
+  mapProvince.set("MB", "Manitoba");
+  mapProvince.set("NB", "Nouveau-Brunswick");
+  mapProvince.set("NL", "Terre-Neuve-et-Labrador");
+  mapProvince.set("NS", "Nouvelle-Écosse");
+  mapProvince.set("PE", "Île-du-Prince-Édouard");
+  mapProvince.set("SK", "Saskatchewan");
+  mapProvince.set("NT", "Territoires du Nord-Ouest");
+  mapProvince.set("NU", "Nunavut");
+  mapProvince.set("YT", "Yukon");
+
+  return mapProvince.get(province) || province;
 };
 </script>
 

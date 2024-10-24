@@ -28,32 +28,32 @@
           <td>{{ membre.email }}</td>
           <td>
             <span class="me-3">
-              <button class="btn btn-info">
+              <button class="btn btn-info" @click="detailsDuMembre(membre.id)">
                 <img
                   src="/images/ice.png"
                   class="img-fluid"
                   alt="..."
-                  @click="detailsDuMembre(membre.id)"
                 /></button
             ></span>
           </td>
           <td>
             <span v-if="membre.estBloque"
-              ><button class="btn btn-danger">
+              ><button
+                class="btn btn-danger"
+                @click="debloquerUnMembre(membre)"
+              >
                 <img
                   src="/images/Locked.png"
                   class="img-fluid"
                   alt="..."
-                  @click="debloquerUnMembre(membre)"
                 /></button
             ></span>
             <span v-else
-              ><button class="btn btn-success">
+              ><button class="btn btn-success" @click="bloquerUnMembre(membre)">
                 <img
                   src="/images/Unlocked.png"
                   class="img-fluid"
                   alt="..."
-                  @click="bloquerUnMembre(membre)"
                 /></button
             ></span>
           </td>
