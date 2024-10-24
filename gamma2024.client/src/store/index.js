@@ -462,6 +462,26 @@ const store = createStore({
                 };
             }
         },
+
+        async mettreAJourEncanPublie({ commit, state }, encanData) {
+            try {
+                const response = await state.api.put('/encans/mettreAJourEncanPublie', encanData);
+                if (response.data.sucess) {
+                    return { success: true, message: response.data.message };
+                }
+                else {
+                    return { success: false, error: response.data.message };
+                }
+            }
+            catch (error) {
+                return {
+                    success: false,
+                    error: error.response.data.message,
+                    details: error.response?.data
+                };
+            }
+        },
+
     },
     getters: {
         isAdmin: (state) => state.roles.includes("Administrateur"),

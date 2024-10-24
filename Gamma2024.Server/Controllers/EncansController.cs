@@ -47,5 +47,24 @@ namespace Gamma2024.Server.Controllers
                 return BadRequest(new { sucess = false, message = message });
             }
         }
+
+        [HttpPut("mettreAJourEncanPublie")]
+        public async Task<IActionResult> MettreAJourEncanPublie([FromBody] EncanPublieVM vm)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var (sucess, message) = await _encanService.MettreAJourEncanPublie(vm);
+            if (sucess)
+            {
+                return Ok(new { sucess = true, message = message });
+            }
+            else
+            {
+                return BadRequest(new { sucess = false, message = message });
+            }
+        }
     }
 }

@@ -10,6 +10,16 @@
                 </button>
             </router-link>
         </div>
+        <transition name="fade">
+            <div v-if="errorMessage" class="alert alert-danger">
+                {{ errorMessage }}
+            </div>
+            <div v-else>
+                <div v-if="successMessage" class="alert alert-success">
+                    {{ successMessage }}
+                </div>
+            </div>
+        </transition>
 
         <div class="d-flex justify-content-between">
             <div class="d-flex collapse dropdown dropdown-center">
@@ -79,7 +89,7 @@
     </div>
 </template>
 <script setup>
-    import { onMounted, ref, watch } from "vue";
+    import { onMounted, ref, watch, reactive } from "vue";
     import { useStore } from "vuex";
     import TableauDeBordEncansAjout from '@/components/views/TableauDeBordEncansAjout.vue'
 
@@ -96,14 +106,17 @@
     const dateFinSoireeCloture = ref("");
     const dateFinSoireeClotureHeure = ref("");
 
-    const encanPublieMAJ = ref();
+    let encanPublieMAJ;
     const encanRecherche = ref();
+
+    const errorMessage = ref('');
+    const successMessage = ref('');
 
     onMounted(async () => {
 
         try {
             listeEncans.value = await store.dispatch("fetchEncanInfo");
-            
+
             listeEncansFiltree.value = listeEncans.value;
 
             listeEncansFiltree.value.forEach(element => {
@@ -120,12 +133,33 @@
                 dateFinSoireeClotureHeure.value = dateFinSoireeCloture.value[2].substring(3, 8);
             });
 
-            encanPublieMAJ.value = function (statutPublie){
-                let encanId =  event.srcElement.getAttribute("encanId")
+            encanPublieMAJ = async function (statutPublie) {
+                let encanId = event.srcElement.getAttribute("encanId")
                 let encan = listeEncans.value.find(e => e.id == encanId)
-                if(encan.estPublie != statutPublie){
-                        encan.estPublie = !encan.estPublie
+                if (encan.estPublie != statutPublie) {
+                    encan.estPublie = !encan.estPublie;
+
+                    let formData = reactive({
+                        numeroEncan: encan.numeroEncan,
+                        estPublie: encan.estPublie,
+                    });
+
+                    const response = await store.dispatch('mettreAJourEncanPublie', formData);
+                    if (response.success) {
+                        successMessage.value = "Statut encan modifié!";
+                        errorMessage.value = "";
+                        setTimeout(() => {
+                            successMessage.value = "";
+                        }, 5000);
                     }
+                    else {
+                        errorMessage.value = response.error;
+                        successMessage.value = "";
+                        setTimeout(() => {
+                            errorMessage.value = "";
+                        }, 5000);
+                    }
+                }
             }
 
         }
@@ -154,5 +188,15 @@
 
     .dropdown-item:active {
         background-color: #5A708A;
+    }
+
+    .fade-enter-active,
+    .fade-leave-active {
+        transition: opacity 1s ease;
+    }
+
+    .fade-enter,
+    .fade-leave-to {
+        opacity: 0;
     }
 </style>

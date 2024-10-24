@@ -80,5 +80,20 @@ namespace Gamma2024.Server.Services
             _context.SaveChanges();
             return (true, encan.Id.ToString());
         }
+
+        public async Task<(bool Success, string Message)> MettreAJourEncanPublie(EncanPublieVM vm)
+        {
+            var numeroEncan = _context.Encans.FirstOrDefault(e => e.NumeroEncan.Equals(vm.NumeroEncan));
+            if (numeroEncan != null)
+            {
+                numeroEncan.NumeroEncan = vm.NumeroEncan;
+                numeroEncan.EstPublie = vm.EstPublie;
+                _context.Encans.Update(numeroEncan);
+                _context.SaveChanges();
+                return (true, numeroEncan.Id.ToString());
+            }
+
+            return (false, "Il n'y a aucun encan à ce numéro.");
+        }
     }
 }
