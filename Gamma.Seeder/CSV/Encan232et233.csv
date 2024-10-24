@@ -1,0 +1,181 @@
+ENCAN #;LOT #;PRIX OUVERTURE;VALEUR MIN POUR VENDRE;ESTIMATION MIN;ESTIMATION MAX;GROUPE-CATÉGORIE;ARTISTE;DIMENSION (en po);DESCRIPTION;MÉDIUM;LIVRAISON;PHOTO 1;PHOTO 2;PHOTO 3
+232;1; 200,00  $ ;; 600  $ ; 800  $ ;Art-Paintings;Guy Paquet;12 x 16;1984/La nouvelle pratique;Huile sur panneau;oui;1_1.jfif;1_2.jfif;
+232;1a; 2 200,00  $ ; 3 800,00  $ ; 3 500  $ ; 5 000  $ ;Art-Paintings;Vladimir Horik;20 x 30;La messe du soir;Huile sur panneau;oui;1a_1.jfif;1a_2.jfif;
+232;1b; 400,00  $ ;; 700  $ ; 1 200  $ ;Art-Paintings;Vladimir Horik;12 x 16;1979/Paysage;Huile sur panneau;oui;1b_1.jfif;1b_2.jfif;1b_3.jfif
+232;2; 150,00  $ ;; 250  $ ; 350  $ ;Art-Paintings;Marcel Poirier;16 x 20;1979/Début d'automne;Huile sur toile;oui;2_1.jfif;2_2.jfif;2_3.jfif
+232;3; 3 000,00  $ ;; 5 500  $ ; 6 500  $ ;Art-Paintings;Normand Hudon;16 x 20;1989/Le beau bonhomme;Huile sur panneau;oui;3_1.jfif;3_2.jfif;
+232;4; 1 500,00  $ ;; 3 000  $ ; 4 000  $ ;Art-Paintings;Normand Hudon;16 x 12;1988/Coup d'vent;Huile sur panneau;oui;4_1.jfif;4_2.jfif;
+232;5; 800,00  $ ;; 1 500  $ ; 2 000  $ ;Art-Paintings;Normand Hudon;12 x 16;1990/Le père, le fils et le saint esprit. Amen;Huile sur panneau;oui;5_1.jfif;5_2.jfif;5_3.jfif
+232;6; 800,00  $ ;; 1 500  $ ; 2 000  $ ;Art-Paintings;Claude Langevin;20 x 24;Sous-bois;Huile sur toile;oui;6_1.jfif;6_2.jfif;6_3.jfif
+232;7; 300,00  $ ;; 600  $ ; 1 000  $ ;Art-Paintings;Raymond Girard;30 x 40;Village Charlevoix;Huile sur toile;oui;7_1.jfif;7_2.jfif;
+232;8; 50,00  $ ;; 350  $ ; 550  $ ;Art-Paintings;Marcel Ravary;16 x 20;Jouant dans la ruelle;Huile sur toile;oui;8_1.jfif;8_2.jfif;8_3.jfif
+232;9; 50,00  $ ;; 350  $ ; 550  $ ;Art-Paintings;Marcel Ravary;16 x 20;Transport de billots;Huile sur toile;oui;9_1.jfif;9_2.jfif;
+232;10; 3 000,00  $ ; 4 000,00  $ ; 5 000  $ ; 7 000  $ ;Art-Paintings;Bruno Côté;20 x 24;Vieux chalands St-Paul du Nord;Huile sur panneau;oui;10_1.jfif;10_2.jfif;
+232;11; 3 000,00  $ ; 4 000,00  $ ; 5 000  $ ; 7 000  $ ;Art-Paintings;Bruno Côté;35 x 42;1979/Goélettes;Huile sur panneau;oui;11_1.jfif;11_2.jfif;
+232;12; 950,00  $ ;; 1 500  $ ; 2 000  $ ;Art-Paintings;Bruno Côté;12 x 14;1981/St-Placide;Huile sur panneau;oui;12_1.jfif;12_2.jfif;
+232;13; 200,00  $ ;; 500  $ ; 700  $ ;Art-Paintings;René Gagnon;20 x 24;Paysage;Huile sur panneau;oui;13_1.jfif;13_2.jfif;13_3.jfif
+232;14; 100,00  $ ;; 500  $ ; 700  $ ;Art-Paintings;René Gagnon;20 x 24;Paysage;Huile sur panneau;oui;14_1.jfif;14_2.jfif;
+232;15; 100,00  $ ;; 300  $ ; 500  $ ;Art-Paintings;René Gagnon;12 x 16;1979/Lumières du Nord, saguenay;Huile sur panneau;oui;15_1.jfif;15_2.jfif;15_3.jfif
+232;16; 80,00  $ ;; 200  $ ; 400  $ ;Art-Paintings;René Gagnon;8 x 10;Paysage;Huile sur panneau;oui;16_1.jfif;16_2.jfif;
+232;17; 1 250,00  $ ;; 2 500  $ ; 3 500  $ ;Art-Paintings;Charles Carson;10 x 12;Transparence marine;Huile sur toile;oui;17_1.jfif;17_2.jfif;17_3.jfif
+232;18; 50,00  $ ;; 250  $ ; 400  $ ;Art-Paintings;Viateur Lapierre;9 x 12;1997/St-Patrice;Huile sur toile;oui;18_1.jfif;18_2.jfif;
+232;19; 950,00  $ ;; 1 400  $ ; 1 800  $ ;Art-Paintings;Terry Tomalty;24 x 36;Marché Bonsecours Montréal;Huile sur toile;oui;19_1.jfif;19_2.jfif;
+232;19a; 500,00  $ ;; 1 200  $ ; 1 800  $ ;Art-Paintings;Claude Le Sauteur;12 x 24;1977/Matinée d'automne;Huile sur toile;oui;19a_1.jfif;19a_2.jfif;
+232;19b; 400,00  $ ;; 1 000  $ ; 1 500  $ ;Art-Paintings;Léo Ayotte;12 x 16;1975/Campagne;Huile sur panneau;oui;19b_1.jfif;19b_2.jfif;
+232;19c; 100,00  $ ;; 500  $ ; 800  $ ;Art-Paintings;Albini Leblanc;20 x 16;Blvd Manseau, Joliette;Huile sur toile;oui;19c_1.jfif;19c_2.jfif;
+232;20; 500,00  $ ;; 1 000  $ ; 1 500  $ ;Art-Paintings;Dominik Sokolowski;22 x 22;2009/Abstraction;Huile sur toile;oui;20_1.jfif;20_2.jfif;
+232;21; 20,00  $ ;; 250  $ ; 400  $ ;Art-Paintings;Viateur Lapierre;9 x 12;1994/Ste-Monique;Huile sur toile;oui;21_1.jfif;21_2.jfif;
+232;22; 3 000,00  $ ; 4 500,00  $ ; 7 000  $ ; 9 000  $ ;Art-Paintings;John Little;12 x 16;Mountain street;Huile sur panneau;oui;22_1.jfif;22_2.jfif;22_3.jfif
+232;23; 950,00  $ ;; 2 000  $ ; 3 500  $ ;Art-Paintings;Françoise Sullivan;14 x 18;1985/Cycle cretois #2;Mixte toile;oui;23_1.jfif;23_2.jfif;
+232;24; 1 250,00  $ ;; 2 000  $ ; 3 000  $ ;Art-Paintings;Zilon;59,25 x 47,5;2002/Désir;Huile sur toile;oui;24_1.jfif;24_2.jfif;
+232;25; 250,00  $ ;; 600  $ ; 800  $ ;Art-Paintings;Louis Tremblay;20 x 24;Rg. St-Antoine Nord;Huile sur panneau;oui;25_1.jfif;25_2.jfif;25_3.jfif
+232;26; 125,00  $ ;; 300  $ ; 500  $ ;Art-Paintings;Zilon;24 x 36;2008/Dead neighbours;Sérigraphie sur aluminium;oui;26_1.jfif;26_2.jfif;26_3.jfif
+232;27; 50,00  $ ;; 200  $ ; 300  $ ;Art-Paintings;Louis Tremblay;8 x 10;Campagne;Huile sur panneau;oui;27_1.jfif;27_2.jfif;
+232;28; 50,00  $ ;; 200  $ ; 300  $ ;Art-Paintings;Louis Tremblay;8 x 10;Paysage;Huile sur panneau;oui;28_1.jfif;28_2.jfif;
+232;29; 250,00  $ ;; 400  $ ; 700  $ ;Art-Paintings;André Bertounesque;36 x 36;1975/Carrés;Huile sur toile;oui;29_1.jfif;29_2.jfif;
+232;30; 650,00  $ ;; 1 000  $ ; 1 500  $ ;Art-Paintings;Fleurimont Constantineau;18 x 24;1970/Fort Rupert, Baie James;Huile sur panneau;oui;30_1.jfif;30_2.jfif;30_3.jfif
+232;31; 325,00  $ ;; 650  $ ; 1 000  $ ;Art-Paintings;Fleurimont Constantineau;22 x 19;Forêt;Huile sur panneau;oui;31_1.jfif;31_2.jfif;31_3.jfif
+232;32; 1 000,00  $ ;; 2 500  $ ; 3 500  $ ;Art-Paintings;Paul Tex Lecor;20 x 24;Au jardinage;Huile sur toile;oui;32_1.jfif;32_2.jfif;
+;;;;;;;;;;;;;;_3.jfif
+233;1; 200,00  $ ;; 750  $ ; 1 250  $ ;Art-Paintings;Denis Juneau;26 x 20;1979/Envolée;Aquarelle;oui;1_1.jfif;1_2.jfif;
+233;2; 600,00  $ ;; 1 400  $ ; 1 800  $ ;Art-Paintings;Serge Lemoyne;12 x 12;1996/Hommage à Matis;Huile sur panneau;oui;2_1.jfif;2_2.jfif;2_3.jfif
+233;3; 120,00  $ ;; 400  $ ; 600  $ ;Art-Paintings;Marc Siméon;48 x 40;Pointe bleue;Huile sur toile;oui;3_1.jfif;3_2.jfif;
+233;4; 150,00  $ ;; 400  $ ; 600  $ ;Art-Paintings;Jean Gaudreau;40 x 28;1996/Visage;Huile sur toile;oui;4_1.jfif;4_2.jfif;4_3.jfif
+233;5; 350,00  $ ;; 600  $ ; 800  $ ;Art-Paintings;Jean-Paul Jérome;5,5 x 7;1996/Abstraction;Encre;oui;5_1.jfif;5_2.jfif;
+233;6; 3 500,00  $ ; 6 500,00  $ ; 5 000  $ ; 7 000  $ ;Art-Prints/Lithographs;Jean-Paul Riopelle;29 x 41;Jazz;Lithographie;oui;6_1.jfif;6_2.jfif;
+233;7; 1 750,00  $ ; 3 000,00  $ ; 2 500  $ ; 3 500  $ ;Art-Prints/Lithographs;Jean-Paul Riopelle;23 x 28;1981/Les oies 1;Lithographie (signée dans la plaque);oui;7_1.jfif;7_2.jfif;7_3.jfif
+233;8; 1 250,00  $ ; 2 500,00  $ ; 2 000  $ ; 3 000  $ ;Art-Prints/Lithographs;Jean-Paul Riopelle;25,5 x 18,5;1985-89/où un ours est chassé debout;Lithographie;oui;8_1.jfif;8_2.jfif;8_3.jfif
+233;9; 60,00  $ ;; 200  $ ; 400  $ ;Art-Prints/Lithographs;Jean-Paul Riopelle;15 x 32,75;Série derrière le miroir;Lithographie (non signée);oui;9_1.jfif;9_2.jfif;
+233;9a; 60,00  $ ;; 200  $ ; 400  $ ;Art-Prints/Lithographs;Jean-Paul Riopelle;15 x 32,75;Série derrière le miroir;Lithographie (non signée);oui;9a_1.jfif;9a_2.jfif;
+233;9b; 60,00  $ ;; 150  $ ; 250  $ ;Art-Prints/Lithographs;Jean-Paul Riopelle;15 x 11;Série derrière le miroir;Lithographie (non signée);oui;9b_1.jfif;9b_2.jfif;
+233;9c; 60,00  $ ;; 150  $ ; 250  $ ;Art-Prints/Lithographs;Jean-Paul Riopelle;15 x 11;Série derrière le miroir;Lithographie (non signée);oui;9c_1.jfif;9c_2.jfif;
+233;10; 750,00  $ ;; 1 200  $ ; 1 800  $ ;Art-Paintings;Christian Bergeron;40 x 30;Paysage automne;Huile sur toile;oui;10_1.jfif;10_2.jfif;
+233;11; 900,00  $ ;; 1 800  $ ; 2 800  $ ;Art-Paintings;Armand Tatossian;24 x 30;Vieux Montréal;Huile sur toile;oui;11_1.jfif;11_2.jfif;11_3.jfif
+233;12; 250,00  $ ;; 650  $ ; 1 050  $ ;Art-Paintings;Stefan Horik;18 x 18;Surprise d'automne;Huile sur toile;oui;12_1.jfif;12_2.jfif;
+233;13; 250,00  $ ;; 500  $ ; 800  $ ;Art-Paintings;Léo Ayotte;8 x 10;Paysage;Huile sur panneau;oui;13_1.jfif;13_2.jfif;
+233;14; 250,00  $ ;; 500  $ ; 1 000  $ ;Art-Prints/Lithographs;Pablo Picasso;14 x 11;1969/Contemporary art;Photo-litho signée;oui;14_1.jfif;14_2.jfif;
+233;15; 250,00  $ ;; 500  $ ; 1 000  $ ;Art-Prints/Lithographs;Georges Braque;12 x 9;Femme, lune et étoiles;Lithographie;oui;15_1.jfif;15_2.jfif;15_3.jfif
+233;16; 75,00  $ ;; 200  $ ; 400  $ ;Art-Prints/Lithographs;Anatole Kranyansky;14,75 x 11,5;Paire;Sérigraphie sur aluminium;oui;16_1.jfif;16_2.jfif;
+233;17; 75,00  $ ;; 200  $ ; 350  $ ;Art-Paintings;Rodolphe Duguay;4,5 x 5;1957/Paysage et moutons;Huile sur panneau;oui;17_1.jfif;17_2.jfif;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;

@@ -6,7 +6,7 @@
         data-bs-theme="dark"
       >
         <div class="container-fluid justify-content-between">
-          <router-link to="Accueil" class="text-decoration-none">
+          <router-link :to="{ name: 'Accueil' }" class="text-decoration-none">
             <a class="navbar-brand d-flex align-items-center fs-6">
               <img
                 src="/images/Logo.png"
@@ -36,26 +36,35 @@
           >
             <ul class="navbar-nav text-center">
               <li class="nav-item">
-                <router-link to="Accueil" class="text-decoration-none">
+                <router-link
+                  :to="{ name: 'Accueil' }"
+                  class="text-decoration-none"
+                >
                   <a class="nav-link active"> Accueil </a>
                 </router-link>
               </li>
 
               <li class="nav-item">
-                <router-link to="EncanPresent" class="text-decoration-none">
+                <router-link
+                  :to="{ name: 'EncanPresent' }"
+                  class="text-decoration-none"
+                >
                   <a class="nav-link"> Encan courant </a>
                 </router-link>
               </li>
 
               <li class="nav-item">
-                <router-link to="TousLesEncans" class="text-decoration-none">
+                <router-link
+                  :to="{ name: 'TousLesEncans' }"
+                  class="text-decoration-none"
+                >
                   <a class="nav-link"> Tous les encans </a>
                 </router-link>
               </li>
             </ul>
 
             <div class="d-flex justify-content-center gap-3">
-              <router-link to="Inscription" v-if="!estConnecte">
+              <router-link :to="{ name: 'Inscription' }" v-if="!estConnecte">
                 <button
                   class="btn btn-outline bleuMoyenFond text-white py-0 butttonNavBar btnSurvolerBleuMoyenFond"
                   type="button"
@@ -63,7 +72,7 @@
                   Inscription
                 </button>
               </router-link>
-              <router-link to="Connexion" v-if="!estConnecte">
+              <router-link :to="{ name: 'Connexion' }" v-if="!estConnecte">
                 <button
                   class="btn btn-outline bleuMoyenFond text-white py-0 butttonNavBar btnSurvolerBleuMoyenFond"
                   type="button"
@@ -85,29 +94,44 @@
                 </a>
                 <ul class="dropdown-menu bleuMarinFond text-center">
                   <li>
-                    <router-link to="Inventaire" class="text-decoration-none">
+                    <router-link
+                      :to="{ name: 'Inventaire' }"
+                      class="text-decoration-none"
+                    >
                       <a class="dropdown-item contenuListeDropdown"
                         >Inventaire</a
                       >
                     </router-link>
                   </li>
                   <li>
-                    <router-link to="Accueil" class="text-decoration-none">
+                    <router-link
+                      :to="{ name: 'Accueil' }"
+                      class="text-decoration-none"
+                    >
                       <a class="dropdown-item contenuListeDropdown">Encans</a>
                     </router-link>
                   </li>
                   <li>
-                    <router-link to="AffichageVendeurs" class="text-decoration-none">
+                    <router-link
+                      :to="{ name: 'AffichageVendeurs' }"
+                      class="text-decoration-none"
+                    >
                       <a class="dropdown-item contenuListeDropdown">Vendeurs</a>
                     </router-link>
                   </li>
                   <li>
-                    <router-link to="Accueil" class="text-decoration-none">
+                    <router-link
+                      :to="{ name: 'Accueil' }"
+                      class="text-decoration-none"
+                    >
                       <a class="dropdown-item contenuListeDropdown">Ventes</a>
                     </router-link>
                   </li>
                   <li>
-                    <router-link to="Accueil" class="text-decoration-none">
+                    <router-link
+                      :to="{ name: 'GestionMembre' }"
+                      class="text-decoration-none"
+                    >
                       <a class="dropdown-item contenuListeDropdown"
                         >Profils de membre</a
                       >
@@ -116,43 +140,78 @@
                 </ul>
               </div>
 
-                            <a v-if="estConnecte" @click="notification = !notification" class="d-flex align-items-center">
-                                <img src="/icons/IconeCloche.png"
-                                     alt="Icon cloche"
-                                     height="25" />
-                            </a>
+              <a
+                v-if="estConnecte"
+                @click="notification = !notification"
+                class="d-flex align-items-center"
+              >
+                <img
+                  src="/icons/IconeCloche.png"
+                  alt="Icon cloche"
+                  height="25"
+                />
+              </a>
 
-                            <div class="d-flex flex-column position-absolute top-100 start-79 dropdown-menu bleuMarinSecondaireFond" v-if="notification">
-                                <router-link 
-                                    v-for="index in 5" 
-                                    :key="index"
-                                    to="Accueil" 
-                                    class="text-decoration-none text-white d-flex align-items-center gap-3">
-                                    <a class="dropdown-item text-white btnSurvolerBleuMoyenFond" @click="notification = false">
-                                        test
-                                    </a>
-                                </router-link>
-                            </div>
+              <div
+                class="d-flex flex-column position-absolute top-100 start-79 dropdown-menu bleuMarinSecondaireFond"
+                v-if="notification"
+              >
+                <router-link
+                  v-for="index in 5"
+                  :key="index"
+                  :to="{ name: 'Accueil' }"
+                  class="text-decoration-none text-white d-flex align-items-center gap-3"
+                >
+                  <a
+                    class="dropdown-item text-white btnSurvolerBleuMoyenFond"
+                    @click="notification = false"
+                  >
+                    test
+                  </a>
+                </router-link>
+              </div>
 
-                            <div class="d-flex flex-column position-absolute top-100 end-0 dropdown-menu bleuMarinSecondaireFond" v-if="estConnecte && activationDropdownProfil">
-                                <router-link v-if="estClient" to="ModificationProfilUtilisateur" class="text-decoration-none text-white d-flex align-items-center gap-3">
-                                    <a class="dropdown-item text-white btnSurvolerBleuMoyenFond" @click="activationDropdownProfil = false">
-                                        Profil
-                                    </a>
-                                </router-link>
-                                <a class="dropdown-item text-danger btnSurvolerBleuMoyenFond fw-bold" href="#" @click.prevent="deconnecter">
-                                    Déconnexion
-                                </a>
-                            </div>
+              <div
+                class="d-flex flex-column position-absolute top-100 end-0 dropdown-menu bleuMarinSecondaireFond"
+                v-if="estConnecte && activationDropdownProfil"
+              >
+                <router-link
+                  v-if="estClient"
+                  :to="{ name: 'ModificationProfilUtilisateur' }"
+                  class="text-decoration-none text-white d-flex align-items-center gap-3"
+                >
+                  <a
+                    class="dropdown-item text-white btnSurvolerBleuMoyenFond"
+                    @click="activationDropdownProfil = false"
+                  >
+                    Profil
+                  </a>
+                </router-link>
+                <a
+                  class="dropdown-item text-danger btnSurvolerBleuMoyenFond fw-bold"
+                  href="#"
+                  @click.prevent="deconnecter"
+                >
+                  Déconnexion
+                </a>
+              </div>
 
-                            <a @click="activationDropdownProfil = !activationDropdownProfil" class="d-flex text-decoration-none text-white align-items-center gap-3" v-if="estConnecte">
-                                <p class="m-0">{{ username }}</p>
-                                <img :src="avatarUrl" alt="Avatar" class="imgProfile rounded-circle" />
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </nav>
+              <a
+                @click="activationDropdownProfil = !activationDropdownProfil"
+                class="d-flex text-decoration-none text-white align-items-center gap-3"
+                v-if="estConnecte"
+              >
+                <p class="m-0">{{ username }}</p>
+                <img
+                  :src="avatarUrl"
+                  alt="Avatar"
+                  class="imgProfile rounded-circle"
+                />
+              </a>
+            </div>
+          </div>
+        </div>
+      </nav>
 
       <nav class="navbar bg-white navbar-expand-md py-0" data-bs-theme="dark">
         <div
@@ -193,27 +252,26 @@
 </template>
 
 <script setup>
-import { computed, watch, ref } from 'vue'
-import { useStore } from 'vuex'
-import { useRouter } from 'vue-router'
-import { onMounted } from 'vue'
-import * as bootstrap from 'bootstrap'
+import { computed, watch, ref } from "vue";
+import { useStore } from "vuex";
+import { useRouter } from "vue-router";
+import { onMounted } from "vue";
+import * as bootstrap from "bootstrap";
 
-const store = useStore()
-const router = useRouter()
+const store = useStore();
+const router = useRouter();
 
-const estConnecte = computed(() => store.state.isLoggedIn)
-const estAdmin = computed(() => store.getters.isAdmin)
-const estClient = computed(() => store.getters.isClient)
-const username = computed(() => store.getters.username)
-const avatarUrl = computed(() => store.getters.avatarUrl)
+const estConnecte = computed(() => store.state.isLoggedIn);
+const estAdmin = computed(() => store.getters.isAdmin);
+const estClient = computed(() => store.getters.isClient);
+const username = computed(() => store.getters.username);
+const avatarUrl = computed(() => store.getters.avatarUrl);
 
 const currentUser = ref(null);
 
 watch(
   () => store.state.user,
   (newUser) => {
-    console.log("User mis à jour dans le store:", newUser);
     currentUser.value = newUser;
   },
   { deep: true, immediate: true }
@@ -224,46 +282,52 @@ const refreshUserInfo = async () => {
     try {
       await store.dispatch("fetchClientInfo");
     } catch (error) {
-      console.error("Erreur lors de la récupération des informations client:", error);
+      console.error(
+        "Erreur lors de la récupération des informations client:",
+        error
+      );
     }
   }
 };
 
 // Appelez refreshUserInfo lorsque l'utilisateur se connecte
-watch(() => store.state.isLoggedIn, (newValue) => {
-  if (newValue) {
-    refreshUserInfo();
+watch(
+  () => store.state.isLoggedIn,
+  (newValue) => {
+    if (newValue) {
+      refreshUserInfo();
+    }
   }
-});
+);
 
-    // Définition de activationRecherche
-    const activationRecherche = ref(false);
-    const activationDropdownProfil = ref(false);
-    const notification = ref(false);
+// Définition de activationRecherche
+const activationRecherche = ref(false);
+const activationDropdownProfil = ref(false);
+const notification = ref(false);
 
 const deconnecter = async () => {
-    await store.dispatch('logout')
-    router.push('/') // Redirige vers la page d'accueil après la déconnexion
-}
+  await store.dispatch("logout");
+  router.push("/"); // Redirige vers la page d'accueil après la déconnexion
+};
 
 onMounted(() => {
-    document.querySelectorAll('.dropdown-toggle').forEach(dropdownToggle => {
-        new bootstrap.Dropdown(dropdownToggle)
-    })
-})
+  document.querySelectorAll(".dropdown-toggle").forEach((dropdownToggle) => {
+    new bootstrap.Dropdown(dropdownToggle);
+  });
+});
 </script>
 
 <style scoped>
-    .ms-7 {
-        margin-left: 7.9rem;
-    }
+.ms-7 {
+  margin-left: 7.9rem;
+}
 
-    .start-79 {
-        left: 79%;
-    }
+.start-79 {
+  left: 79%;
+}
 
-    .imgProfile {
-        width: 40px;
-        height: 40px;
-    }
+.imgProfile {
+  width: 40px;
+  height: 40px;
+}
 </style>

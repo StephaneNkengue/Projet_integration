@@ -4,9 +4,7 @@
 </script>
 
 <template>
-    <header>
-        <BarreDeNavigation />
-    </header>
+    <BarreDeNavigation />
 
     <main class="mh-100 flex-grow-1">
         <router-view></router-view>

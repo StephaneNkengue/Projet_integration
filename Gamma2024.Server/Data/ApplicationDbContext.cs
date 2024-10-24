@@ -34,6 +34,10 @@ namespace Gamma2024.Server.Data
 
         private void ConfigureRelationships(ModelBuilder builder)
         {
+            builder.Entity<Encan>()
+                .HasIndex(e => e.NumeroEncan)
+                .IsUnique();
+
             // ApplicationUser
             builder.Entity<ApplicationUser>()
                 .HasMany(au => au.Adresses)
@@ -43,8 +47,8 @@ namespace Gamma2024.Server.Data
 
             builder.Entity<ApplicationUser>()
                 .HasMany(au => au.CarteCredits)
-                .WithOne(cc => cc.Client)
-                .HasForeignKey(cc => cc.IdClient)
+                .WithOne(cc => cc.ApplicationUser)
+                .HasForeignKey(cc => cc.IdApplicationUser)
                 .OnDelete(DeleteBehavior.NoAction);
 
             // Vendeur
@@ -52,12 +56,6 @@ namespace Gamma2024.Server.Data
                 .HasMany(v => v.Lots)
                 .WithOne(l => l.Vendeur)
                 .HasForeignKey(l => l.IdVendeur)
-                .OnDelete(DeleteBehavior.NoAction);
-
-            builder.Entity<Vendeur>()
-                .HasOne(v => v.Adresse)
-                .WithOne(a => a.Vendeur)
-                .HasForeignKey<Vendeur>(v => v.AdresseId)
                 .OnDelete(DeleteBehavior.NoAction);
 
             // Lot
@@ -79,26 +77,25 @@ namespace Gamma2024.Server.Data
                 .HasForeignKey(l => l.IdMedium)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            builder.Entity<Lot>()
+                .HasOne(l => l.Facture)
+                .WithMany(f => f.Lots)
+                .HasForeignKey(l => l.IdFacture)
+                .OnDelete(DeleteBehavior.NoAction);
+
             // EncanLot
             builder.Entity<EncanLot>()
-                .HasKey(el => new { el.NumeroEncan, el.IdLot });
+                .HasKey(el => new { el.IdEncan, el.IdLot });
 
             builder.Entity<EncanLot>()
                 .HasOne(el => el.Encan)
                 .WithMany(e => e.EncanLots)
-                .HasForeignKey(el => el.NumeroEncan);
+                .HasForeignKey(el => el.IdEncan);
 
             builder.Entity<EncanLot>()
                 .HasOne(el => el.Lot)
                 .WithMany(l => l.EncanLots)
                 .HasForeignKey(el => el.IdLot)
-                .OnDelete(DeleteBehavior.NoAction);
-
-            // Facture
-            builder.Entity<Facture>()
-                .HasOne(f => f.Lot)
-                .WithMany()
-                .HasForeignKey(f => f.IdLot)
                 .OnDelete(DeleteBehavior.NoAction);
 
             builder.Entity<Facture>()
@@ -120,20 +117,7 @@ namespace Gamma2024.Server.Data
                 .HasForeignKey(p => p.IdLot)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            // Charite
-            builder.Entity<Charite>()
-                .HasOne(c => c.Client)
-                .WithOne()
-                .HasForeignKey<Charite>(c => c.IdClient)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            builder.Entity<Charite>()
-                .HasOne(c => c.Facture)
-                .WithOne(f => f.Charite)
-                .HasForeignKey<Charite>(c => c.IdFacture)
-                .OnDelete(DeleteBehavior.Cascade);
-
-             // Medium
+            // Medium
             builder.Entity<Medium>()
                 .HasMany(m => m.Lots)
                 .WithOne(l => l.Medium)
@@ -143,9 +127,9 @@ namespace Gamma2024.Server.Data
 
             // CarteCredit
             builder.Entity<CarteCredit>()
-                .HasOne(cc => cc.Client)
+                .HasOne(cc => cc.ApplicationUser)
                 .WithMany(c => c.CarteCredits)
-                .HasForeignKey(cc => cc.IdClient)
+                .HasForeignKey(cc => cc.IdApplicationUser)
                 .OnDelete(DeleteBehavior.NoAction);
         }
 
@@ -183,10 +167,11 @@ namespace Gamma2024.Server.Data
                     Numero = 123,
                     Rue = "Rue Admin",
                     Ville = "Ville Admin",
-                    CodePostal = "12345",
+                    CodePostal = "A1A1A1",
                     Pays = "Pays Admin",
                     Province = "Québec",
-                    IdApplicationUser = adminId
+                    IdApplicationUser = adminId,
+                    EstDomicile = true,
                 },
                 new Adresse
                 {
@@ -194,12 +179,34 @@ namespace Gamma2024.Server.Data
                     Numero = 456,
                     Rue = "Rue Client",
                     Ville = "Ville Client",
-                    CodePostal = "67890",
+                    CodePostal = "A1A1A1",
                     Pays = "Pays Client",
                     Province = "Québec",
-                    IdApplicationUser = clientId
+                    IdApplicationUser = clientId,
+                    EstDomicile = true,
                 }
             );
+
+            builder.Entity<CarteCredit>().HasData(
+                new CarteCredit
+                {
+                    Id = 1,
+                    AnneeExpiration = (DateTime.Now.Year + 1),
+                    IdApplicationUser = adminId,
+                    Nom = "Admin Admin",
+                    MoisExpiration = 12,
+                    Numero = "5555555555554444"
+                },
+                new CarteCredit
+                {
+                    Id = 2,
+                    AnneeExpiration = (DateTime.Now.Year + 2),
+                    IdApplicationUser = clientId,
+                    Nom = "Jean Dupont",
+                    MoisExpiration = 12,
+                    Numero = "4242424242424242"
+                }
+            ); ;
 
             // Création de l'administrateur et du client
             var passwordHasher = new PasswordHasher<ApplicationUser>();
@@ -215,9 +222,8 @@ namespace Gamma2024.Server.Data
                 SecurityStamp = Guid.NewGuid().ToString(),
                 Name = "Admin",
                 FirstName = "Super",
-                Avatar = "/Avatars/default.png", 
-                IdAdresse = 1
-
+                Avatar = "avatars/default.png",
+                PhoneNumber = "466-666-6666"
             };
             adminUser.PasswordHash = passwordHasher.HashPassword(adminUser, "MotDePasseAdmin123!");
 
@@ -232,9 +238,8 @@ namespace Gamma2024.Server.Data
                 SecurityStamp = Guid.NewGuid().ToString(),
                 Name = "Dupont",
                 FirstName = "Jean",
-                Avatar = "/Avatars/default.png", 
-                IdAdresse = 2
-
+                Avatar = "avatars/default.png",
+                PhoneNumber = "455-555-5555"
             };
             clientUser.PasswordHash = passwordHasher.HashPassword(clientUser, "MotDePasseClient123!");
 
