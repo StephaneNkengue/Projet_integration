@@ -58,6 +58,14 @@ const emit = defineEmits(["supprimerEncan"]);
 
 const ConfirmationDelete = function (encanNumero) {
   emit("supprimerEncan", encanNumero);
+  closeModal();
+};
+
+const closeModal = function () {
+  const myModal = document.querySelector(".modal");
+  const modalInstance = bootstrap.Modal.getOrCreateInstance(myModal);
+  modalInstance.dispose();
+  myModal.parentNode.removeChild(myModal);
 };
 </script>
 <style scoped></style>

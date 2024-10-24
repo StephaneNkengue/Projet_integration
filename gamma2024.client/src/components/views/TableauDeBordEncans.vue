@@ -109,11 +109,11 @@
         <td>
           <span>
             <button
-              class="btn btn-info"
+              class="btn btn_delete"
               @click="editerEncan(encan.numeroEncan)"
             >
               <img
-                src="/public/icons/edit.png"
+                src="/public/icons/Edit_icon.png"
                 class="img-fluid"
                 alt="..."
               /></button
@@ -125,7 +125,7 @@
               :data-bs-target="'#' + encan.numeroEncan"
             >
               <img
-                src="/public/icons/delete.png"
+                src="/public/icons/Delete_icon.png"
                 class="img-fluid"
                 alt="..."
               /></button
@@ -140,7 +140,7 @@
 import { onMounted, ref, watch } from "vue";
 import { useStore } from "vuex";
 import TableauDeBordEncansAjout from "@/components/views/TableauDeBordEncansAjout.vue";
-import ConfirmDelete from "./BoiteModale/ConfirmDelete.vue";
+import ConfirmDelete from "./BoiteModale/ConfirmDeleteEncan.vue";
 
 const store = useStore();
 const listeEncans = ref([]);
@@ -231,6 +231,14 @@ async function initializeData() {
 <style scoped>
 .dropdown-toggle[aria-expanded="true"] {
   background-color: #5a708a;
+}
+
+.btn_delete {
+  background-color: #243e5f;
+}
+
+.btn_delete:hover {
+  background-color: #142336;
 }
 
 .dropdown-item:active {
