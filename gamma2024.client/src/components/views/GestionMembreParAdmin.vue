@@ -39,21 +39,22 @@
           </td>
           <td>
             <span v-if="membre.estBloque"
-              ><button class="btn btn-danger">
+              ><button
+                class="btn btn-danger"
+                @click="debloquerUnMembre(membre)"
+              >
                 <img
                   src="/images/Locked.png"
                   class="img-fluid"
                   alt="..."
-                  @click="debloquerUnMembre(membre)"
                 /></button
             ></span>
             <span v-else
-              ><button class="btn btn-success">
+              ><button class="btn btn-success" @click="bloquerUnMembre(membre)">
                 <img
                   src="/images/Unlocked.png"
                   class="img-fluid"
                   alt="..."
-                  @click="bloquerUnMembre(membre)"
                 /></button
             ></span>
           </td>

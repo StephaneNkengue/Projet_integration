@@ -87,12 +87,14 @@ namespace Gamma2024.Server.Validations
 
         private static bool IsValidPhoneNumber(string phoneNumber)
         {
-            return Regex.IsMatch(phoneNumber, @"^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$");
+            return Regex.IsMatch(phoneNumber, @"^\d{3}-\d{3}-\d{4}$");
         }
 
         private static bool IsValidPostalCode(string postalCode)
         {
-            return Regex.IsMatch(postalCode, @"^[ABCEGHJ-NPRSTVXY]\d[ABCEGHJ-NPRSTV-Z]\d[ABCEGHJ-NPRSTV-Z]\d$");
+            return Regex.IsMatch(postalCode,
+                @"^[ABCEGHJKLMNPRSTVXYabceghjklmnprstvwxyz]\d[ABCEGHJKLMNPRSTVWXYZabceghjklmnprstvwxyz][ -]?\d[ABCEGHJKLMNPRSTVWXYZabceghjklmnprstvwxyz]\d$",
+                RegexOptions.IgnoreCase);
         }
 
         private static string NormalizePostalCode(string postalCode)

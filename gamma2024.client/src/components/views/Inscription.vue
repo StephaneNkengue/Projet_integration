@@ -111,9 +111,6 @@
                         >
                           Cette adresse email est déjà utilisée.
                         </div>
-                        <!-- <div class="valid-feedback" v-if="emailDisponible && emailVerifie">
-                                                    Cette adresse email est disponible.
-                                                </div> -->
                       </div>
                     </div>
 
