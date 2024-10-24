@@ -43,8 +43,8 @@
     </div>
 
     <div v-else class="d-flex flex-column p-5 w-100">
-        <div v-for="index in lotsAffiche" class="p-2">
-            <!--<LotListe :lotRecu="index" />-->
+        <div v-for="index in lotsAffiche" :key="index.id" class="p-2">
+            <LotListe :lotRecu="index" />
         </div>
     </div>
 
