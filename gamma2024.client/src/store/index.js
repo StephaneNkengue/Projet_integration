@@ -232,60 +232,60 @@ const store = createStore({
         };
       }
     },
-  },
 
-  async supprimerUnEncan({ commit }, numeroEncan) {
-    try {
-      const response = await api.delete(
-        `/encans/supprimerEncan/${numeroEncan}`
-      );
-      return response.data;
-    } catch (error) {
-      console.error(
-        "Erreur détaillée lors de la suppression de l'encan",
-        error.response || error
-      );
-      throw error;
-    }
-  },
-
-  async getEncanById({ commit }, idEncan) {
-    try {
-      const response = await api.get(`/encans/obtenirUnEncan/${idEncan}`);
-      return response.data;
-    } catch (error) {
-      console.error(
-        "Erreur détaillée lors de la suppression de l'encan",
-        error.response || error
-      );
-      throw error;
-    }
-  },
-
-  async creerEncan({ commit }, encanData) {
-    try {
-      console.log("Données envoyées au serveur:", encanData); // Ajoutez cette ligne
-      const response = await api.post("/encans/creerencan", encanData);
-      if (response.data.success) {
-        console.log("test");
-        return { success: true, message: response.data.message };
-      } else {
-        return { success: false, error: response.data.message };
+    async supprimerUnEncan({ commit }, numeroEncan) {
+      try {
+        const response = await api.delete(
+          `/encans/supprimerEncan/${numeroEncan}`
+        );
+        return response.data;
+      } catch (error) {
+        console.error(
+          "Erreur détaillée lors de la suppression de l'encan",
+          error.response || error
+        );
+        throw error;
       }
-    } catch (error) {
-      console.error(
-        "Erreur détaillée lors de la création du encan:",
-        error.response || error
-      );
-      return {
-        success: false,
-        error:
-          error.response?.data?.message ||
-          error.message ||
-          "Erreur lors de la création du encan",
-        details: error.response?.data, // Ajoutez cette ligne pour obtenir plus de détails
-      };
-    }
+    },
+
+    async obtenirUnEncanParId({ commit }, idEncan) {
+      try {
+        const response = await api.get(`/encans/obtenirUnEncan/${idEncan}`);
+        return response.data;
+      } catch (error) {
+        console.error(
+          "Erreur détaillée lors de la suppression de l'encan",
+          error.response || error
+        );
+        throw error;
+      }
+    },
+
+    async creerEncan({ commit }, encanData) {
+      try {
+        console.log("Données envoyées au serveur:", encanData); // Ajoutez cette ligne
+        const response = await api.post("/encans/creerencan", encanData);
+        if (response.data.success) {
+          console.log("test");
+          return { success: true, message: response.data.message };
+        } else {
+          return { success: false, error: response.data.message };
+        }
+      } catch (error) {
+        console.error(
+          "Erreur détaillée lors de la création du encan:",
+          error.response || error
+        );
+        return {
+          success: false,
+          error:
+            error.response?.data?.message ||
+            error.message ||
+            "Erreur lors de la création du encan",
+          details: error.response?.data, // Ajoutez cette ligne pour obtenir plus de détails
+        };
+      }
+    },
   },
 
   getters: {

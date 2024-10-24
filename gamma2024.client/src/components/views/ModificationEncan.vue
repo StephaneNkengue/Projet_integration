@@ -86,14 +86,12 @@ import { ref, reactive, computed, onMounted } from "vue";
 import useVuelidate from "@vuelidate/core";
 import { required, helpers } from "@vuelidate/validators";
 import { useStore } from "vuex";
-
+import { useRoute } from "vue-router";
 import VueDatePicker from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
 import { fr } from "date-fns/locale";
 
-import { useRouter } from "vue-router";
-
-const router = useRouter();
+const route = useRoute();
 const store = useStore();
 
 const messageRequis = helpers.withMessage(
@@ -110,7 +108,7 @@ let formData = reactive({
 });
 
 onMounted(async () => {
-  const response = await store.dispatch("getEncanById", router.params.id);
+  const response = await store.dispatch("obtenirUnEncanParId", route.params.id);
   if (response) {
     formData.numeroEncan = response.numeroEncan;
     formData.dateDebut = response.dateDebut;

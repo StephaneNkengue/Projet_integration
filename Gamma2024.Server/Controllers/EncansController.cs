@@ -68,7 +68,7 @@ namespace Gamma2024.Server.Controllers
 
 
 
-        [HttpDelete("obtenirUnEncan/{idEncan}")]
+        [HttpGet("obtenirUnEncan/{idEncan}")]
         public IActionResult ObtenirEncan(int idEncan)
         {
             var encan = _encanService.GetEncanById(idEncan);
@@ -77,10 +77,7 @@ namespace Gamma2024.Server.Controllers
                 return BadRequest(new { sucess = false, message = "Aucun encan trouvé" });
             }
 
-            _context.Encans.Remove(encan);
-            _context.SaveChanges();
-
-            return Ok(new { sucess = true, message = "Encan supprimé avec succès" });
+            return Ok(encan);
         }
     }
 }
