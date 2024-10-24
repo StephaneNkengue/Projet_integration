@@ -48,7 +48,7 @@
         </div>
     </div>
 
-    <div class="d-flex flex-row justify-content-around gap-1 flex-wrap p-3">
+    <div class="d-flex flex-row justify-content-center gap-1 flex-wrap p-3">
         <button type="button"
                 class="btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
                 @click="reculerPage"
