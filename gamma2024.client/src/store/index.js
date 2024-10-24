@@ -162,18 +162,24 @@ const store = createStore({
                 });
 
                 // Construire l'URL complète de l'avatar
-                const avatarPath = response.data.avatarUrl.startsWith('/')
+                const avatarPath = response.data.avatarUrl.startsWith("/")
                     ? response.data.avatarUrl
                     : `/Avatars/${response.data.avatarUrl}`;
-                const fullAvatarUrl = `${state.api.defaults.baseURL.replace('/api', '')}${avatarPath}`;
+                const fullAvatarUrl = `${state.api.defaults.baseURL.replace(
+                    "/api",
+                    ""
+                )}${avatarPath}`;
 
                 // Mettre à jour l'utilisateur avec la nouvelle URL de l'avatar
                 const updatedUser = { ...state.user, photo: avatarPath };
-                commit('setUser', updatedUser);
+                commit("setUser", updatedUser);
 
                 console.log("Avatar mis à jour dans le store:", fullAvatarUrl);
 
-                return { ...response, data: { ...response.data, avatarUrl: fullAvatarUrl } };
+                return {
+                    ...response,
+                    data: { ...response.data, avatarUrl: fullAvatarUrl },
+                };
             } catch (error) {
                 console.error(
                     "Erreur détaillée lors de la mise à jour de l'avatar:",
@@ -231,11 +237,17 @@ const store = createStore({
                     return { success: false, error: response.data.message };
                 }
             } catch (error) {
-                console.error("Erreur détaillée lors de la création du vendeur:", error.response || error);
+                console.error(
+                    "Erreur détaillée lors de la création du vendeur:",
+                    error.response || error
+                );
                 return {
                     success: false,
-                    error: error.response?.data?.message || error.message || "Erreur lors de la création du vendeur",
-                    details: error.response?.data // Ajoutez cette ligne pour obtenir plus de détails
+                    error:
+                        error.response?.data?.message ||
+                        error.message ||
+                        "Erreur lors de la création du vendeur",
+                    details: error.response?.data, // Ajoutez cette ligne pour obtenir plus de détails
                 };
             }
         },
@@ -417,7 +429,17 @@ const store = createStore({
             catch (error) {
                 return "Erreur, veuillez réessayer"
             }
-        }
+        },
+        async chercherTousLotsParEncan({ commit, state }, idEncan) {
+            try {
+                const response = await state.api.get(
+                    "/lots/cherchertouslotsparencan/" + idEncan
+                );
+                return response;
+            } catch (error) {
+                return "Erreur, veuillez réessayer";
+            }
+        },
     },
     getters: {
         isAdmin: (state) => state.roles.includes("Administrateur"),
