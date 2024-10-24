@@ -190,7 +190,6 @@
         for (let i = positionDebut; i < positionFin && i < listeLots.value.length; i++) {
             lotsAffiche.value.push(listeLots.value[i]);
         }
-        console.log(lotsAffiche.value)
     }
 </script>
 
