@@ -51,10 +51,27 @@ namespace Gamma2024.Server.Controllers
             }
         }
 
-        [HttpDelete("SupprimerEncan/{numeroEncan}")]
+        [HttpDelete("supprimerEncan/{numeroEncan}")]
         public IActionResult SupprimerEncan(int numeroEncan)
         {
             var encan = _encanService.GetEncanByNumber(numeroEncan);
+            if (encan == null)
+            {
+                return BadRequest(new { sucess = false, message = "Aucun encan trouvé" });
+            }
+
+            _context.Encans.Remove(encan);
+            _context.SaveChanges();
+
+            return Ok(new { sucess = true, message = "Encan supprimé avec succès" });
+        }
+
+
+
+        [HttpDelete("obtenirUnEncan/{idEncan}")]
+        public IActionResult ObtenirEncan(int idEncan)
+        {
+            var encan = _encanService.GetEncanById(idEncan);
             if (encan == null)
             {
                 return BadRequest(new { sucess = false, message = "Aucun encan trouvé" });

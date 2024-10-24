@@ -85,5 +85,11 @@ namespace Gamma2024.Server.Services
         {
             return _context.Encans.FirstOrDefault(e => e.NumeroEncan == numero);
         }
+
+        public Encan GetEncanById(int idEncan)
+        {
+            return _context.Encans.FirstOrDefault(e => e.Id == idEncan);
+        }
+
     }
 }

@@ -139,10 +139,12 @@
 <script setup>
 import { onMounted, ref, watch } from "vue";
 import { useStore } from "vuex";
+import { useRoute } from "vue-router";
 import TableauDeBordEncansAjout from "@/components/views/TableauDeBordEncansAjout.vue";
 import ConfirmDelete from "./BoiteModale/ConfirmDeleteEncan.vue";
 
 const store = useStore();
+const router = useRoute();
 const listeEncans = ref([]);
 const listeEncansFiltree = ref([]);
 const dateDebut = ref("");
@@ -184,6 +186,10 @@ watch(encanRecherche, () => {
 const supprimerMonEncan = async (idEncan) => {
   await store.dispatch("supprimerUnEncan", idEncan);
   initializeData();
+};
+
+const editerEncan = async (idEncan) => {
+  router.push({ name: "ModificationEncan", params: { id: idEncan } });
 };
 
 async function initializeData() {
