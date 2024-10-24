@@ -17,7 +17,7 @@
                 </div>
 
                 <div class="row justify-content-around align-items-middle">
-                    <img v-bind:src="lot.photos[0].lien"
+                    <img v-bind:src="urlApi + lot.photos[0].lien"
                          class="img-fluid my-2 col-8 col-sm-10 col-md-12 "
                          alt="Image du lot" />
 
@@ -40,11 +40,15 @@
 
 <script setup>
     import { onMounted, ref } from 'vue'
+    import { useStore } from "vuex";
+
+    const store = useStore();
 
     const props = defineProps({
         lotRecu: Object
     })
 
+    const urlApi = ref("/api")
     const lot = ref({
         "id": 0,
         "numero": "",
@@ -70,6 +74,7 @@
 
     onMounted(async () => {
         lot.value = props.lotRecu
+        urlApi.value = await store.state.api.defaults.baseURL.replace("\api", "")
     })
 
 </script>
