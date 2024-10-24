@@ -24,36 +24,33 @@
                 </div>
                 <div class="mb-3">
                     <label for="dateDebut" class="form-label">Date de début:</label>
-                    <VueDatePicker  type="date" v-model="formData.dateDebut"
-                           :class="['form-control', { 'is-invalid': v.dateDebut.$error }]"
-                           @blur="v.dateDebut.$touch()"
-                           :min-date="new Date()"
-                           :enable-time-picker="false"
-                           select-text="Choisir"
-                           cancel-text="Annuler"
-                           now-button-label="Aujourd'hui"
-                           :action-row="{ showNow: true }"
-                           :format-locale="fr"/>
+                    <VueDatePicker type="date" v-model="formData.dateDebut"
+                                   :class="['form-control', { 'is-invalid': v.dateDebut.$error }]"
+                                   @blur="v.dateDebut.$touch()"
+                                   :min-date="new Date()"
+                                   :max-date="desacDateDebutEntre"
+                                   :enable-time-picker="false"
+                                   select-text="Choisir"
+                                   cancel-text="Annuler"
+                                   now-button-label="Aujourd'hui"
+                                   :action-row="{ showNow: true }"
+                                   :format-locale="fr" />
                     <div class="invalid-feedback" v-if="v.dateDebut.$error">
                         {{v.dateDebut.$errors[0].$message}}
                     </div>
                 </div>
                 <div class="mb-3">
                     <label for="dateFin" class="form-label">Date de fin:</label>
-                    <input type="date" v-model="formData.dateFin"
-                           :class="['form-control', { 'is-invalid': v.dateFin.$error }]"
-                           @blur="v.dateFin.$touch()">
+                    <VueDatePicker type="date" v-model="formData.dateFin"
+                                   :class="['form-control', { 'is-invalid': v.dateFin.$error }]"
+                                   @blur="v.dateFin.$touch()"
+                                   :min-date="desacDateFinEntre"
+                                   :enable-time-picker="true"
+                                   select-text="Choisir"
+                                   cancel-text="Annuler"
+                                   :format-locale="fr" />
                     <div class="invalid-feedback" v-if="v.dateFin.$error">
                         {{v.dateFin.$errors[0].$message}}
-                    </div>
-                </div>
-                <div class="mb-3">
-                    <label for="dateSoireeCloture" class="form-label">Soirée de clôture:</label>
-                    <input type="datetime-local" v-model="formData.dateSoireeCloture"
-                           :class="['form-control', { 'is-invalid': v.dateSoireeCloture.$error }]"
-                           @blur="v.dateSoireeCloture.$touch()">
-                    <div class="invalid-feedback" v-if="v.dateSoireeCloture.$error">
-                        {{v.dateSoireeCloture.$errors[0].$message}}
                     </div>
                 </div>
                 <router-link to="TableauDeBordEncans" class="text-decoration-none">
@@ -75,6 +72,9 @@
     import '@vuepic/vue-datepicker/dist/main.css';
     import { fr } from 'date-fns/locale';
 
+    import { useRouter } from 'vue-router';
+    const router = useRouter()
+
     const store = useStore();
     const messageRequis = helpers.withMessage("Ce champ est obligatoire.", required);
     const errorMessage = ref('');
@@ -84,7 +84,6 @@
         numeroEncan: "",
         dateDebut: "",
         dateFin: "",
-        dateSoireeCloture: "",
     });
 
     let rules = computed(() => {
@@ -92,7 +91,6 @@
             numeroEncan: { required: messageRequis },
             dateDebut: { required: messageRequis },
             dateFin: { required: messageRequis },
-            dateSoireeCloture: { required: messageRequis },
         }
     });
 
@@ -110,15 +108,48 @@
             const response = await store.dispatch('creerEncan', formData);
             if (response.success) {
                 successMessage.value = "Encan créé avec succès!";
+                errorMessage.value = "";
+
+                setTimeout(() => {
+                    router.push({ name: 'TableauDeBordEncans' })
+                }, 800);
             }
             else {
-                errorMessage.value = response.message;
+                errorMessage.value = response.error;
+                successMessage.value = "";
             }
+
+
         }
         catch (error) {
             errorMessage.value = "Une erreur est survenue lors de la création d'un encan.";
         }
     };
+
+    const desacDateFinEntre = computed(() => {
+        const debutDate = formData.dateDebut;
+
+        if (debutDate != "") {
+            const dateDebutDesac = new Date(debutDate)
+            dateDebutDesac.setDate(dateDebutDesac.getDate() + 1)
+
+            return [dateDebutDesac]
+        }
+        return null;
+    });
+
+    const desacDateDebutEntre = computed(() => {
+        const finDate = formData.dateFin;
+
+        if (finDate != "") {
+
+            const dateFinDesac = new Date(finDate)
+            dateFinDesac.setDate(dateFinDesac.getDate() - 1)
+
+            return [dateFinDesac]
+        }
+        return null;
+    });
 </script>
 
 <style scoped>

@@ -32,7 +32,7 @@ namespace Gamma2024.Server.Controllers
             return encans;
         }
 
-        [HttpPost("creerencan")]
+        [HttpPost("creerEncan")]
         public async Task<IActionResult> CreerEncan([FromBody] EncanCreerVM vm)
         {
             if (!ModelState.IsValid)
