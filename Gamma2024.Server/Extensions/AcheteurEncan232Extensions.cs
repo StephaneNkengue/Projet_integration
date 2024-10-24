@@ -13,7 +13,7 @@ namespace Gamma2024.Server.Extensions
 
                 if (!columns[1].IsNullOrEmpty())
                 {
-                    var livraison = columns[3] == "oui";
+                    var livraison = columns[3].ToLower() == "oui";
                     yield return new AcheteurEncanInfo
                     {
                         Pseudonyme = columns[0],

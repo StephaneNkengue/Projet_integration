@@ -166,21 +166,6 @@ for (int i = 0; i < lots232.Count; i++)
             });
         }
     }
-
-    var vente = acheteurs232.FirstOrDefault(a => a.Lot == lots232[i].Numero);
-    if (vente != null)
-    {
-        var userVente = utilisateurs.FirstOrDefault(u => u.UserName == vente.Pseudonyme);
-        lots232[i].ClientMise = userVente;
-        lots232[i].IdClientMise = userVente.Id;
-        lots232[i].Mise = vente.PrixAchete;
-        lots232[i].EstVendu = true;
-
-        //var facture = new Facture
-        //{
-
-        //};
-    }
 }
 
 context.Lots.AddRange(lots232);
@@ -332,6 +317,75 @@ foreach (var item in lots233)
 }
 
 context.EncanLots.AddRange(encanLots);
+context.SaveChanges();
+
+Console.WriteLine("Ajout des charités");
+var charites = new List<Charite>();
+
+charites.Add(new Charite
+{
+    NomOrganisme = "Le phare des rives"
+});
+charites.Add(new Charite
+{
+    NomOrganisme = "Un petit pas pour l'avenir"
+});
+charites.Add(new Charite
+{
+    NomOrganisme = "Rendez-vous dans 30 ans"
+});
+
+context.Charites.AddRange(charites);
+context.SaveChanges();
+
+
+Console.WriteLine("Ajout des factures");
+var infoFactures = File.ReadAllLines("CSV/AcheteurEncan232.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
+                .Skip(1)
+                .Where(l => l.Length > 1)
+                .GetAcheteursEncan232()
+                .ToList();
+
+var factures = new List<Facture>();
+
+foreach (var item in utilisateurs)
+{
+    var achats = infoFactures.FindAll(i => i.Pseudonyme == item.UserName).ToList();
+
+    if (achats.Any())
+    {
+        var facture = new Facture
+        {
+            IdClient = item.Id,
+            Client = item,
+            IdAdresse = item.Adresses.First().Id,
+            Adresse = item.Adresses.First(),
+            DateAchat = DateTime.Now,
+            PrixLots = 0
+        };
+
+        foreach (var a in achats)
+        {
+            var lot = lots232.FirstOrDefault(l => l.Numero == a.Lot);
+            lot.EstVendu = true;
+            lot.Mise = a.PrixAchete;
+            lot.IdClientMise = item.Id;
+            lot.ClientMise = item;
+            lot.SeraLivree = a.Livraison;
+            lot.DateFinVente = DateTime.Now;
+            facture.Lots.Add(lot);
+        }
+
+        facture.CalculerFacture();
+        factures.Add(facture);
+        infoFactures.RemoveAll(i => i.Pseudonyme == item.UserName);
+    }
+}
+
+context.Factures.AddRange(factures);
+context.SaveChanges();
+
+context.Lots.UpdateRange(lots232);
 context.SaveChanges();
 
 Console.WriteLine("Fin du seed");

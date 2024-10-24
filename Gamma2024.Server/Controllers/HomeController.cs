@@ -1,5 +1,6 @@
 using Gamma2024.Server.Models;
 using Gamma2024.Server.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -16,12 +17,14 @@ namespace Gamma2024.Server.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IConfiguration _configuration;
+        private readonly ILogger<HomeController> _logger; // Added for logging
 
-        public HomeController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IConfiguration configuration)
+        public HomeController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IConfiguration configuration, ILogger<HomeController> logger)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _configuration = configuration;
+            _logger = logger; // Added for logging
         }
 
         [HttpPost("login")]
@@ -32,24 +35,35 @@ namespace Gamma2024.Server.Controllers
                 return BadRequest(ModelState);
             }
 
-            var user = await _userManager.FindByEmailAsync(model.Email);
+            var user = await _userManager.FindByEmailAsync(model.EmailOuPseudo);
             if (user == null)
             {
                 // Essayez de trouver l'utilisateur par son nom d'utilisateur si l'email n'a pas fonctionné
-                user = await _userManager.FindByNameAsync(model.Email);
+                user = await _userManager.FindByNameAsync(model.EmailOuPseudo);
                 if (user == null)
                 {
-                    return BadRequest(new { message = "Utilisateur non trouvé" });
+                    return BadRequest(new { element = "user_pseudo", message = "Aucun utilisateur trouvé" });
                 }
             }
 
             var result = await _signInManager.PasswordSignInAsync(user, model.Password, false, lockoutOnFailure: false);
-            if (result.Succeeded)
+            if (result.IsLockedOut)
+            {
+                return BadRequest(new
+                {
+                    element = "lock",
+                    message = "Votre compte est actuellement bloqué, " +
+                    "                           veuillez contacter l'administrateur."
+                });
+            }
+            else if (result.Succeeded)
             {
                 var roles = await _userManager.GetRolesAsync(user);
-                await _signInManager.SignInAsync(user, isPersistent: false);
 
                 var token = GenerateJwtToken(user, roles.ToArray());
+
+                await _signInManager.SignInAsync(user, isPersistent: false);
+
                 return Ok(new
                 {
                     message = "Connexion réussie",
@@ -64,18 +78,55 @@ namespace Gamma2024.Server.Controllers
             }
             else
             {
-                return BadRequest(new { message = "Mot de passe incorrect" });
+                return BadRequest(new { element = "password", message = "Le mot de passe associé au compte est incorrect" });
             }
+        }
+
+        [HttpGet("check-auth")]
+        [Authorize] // Cette annotation assure que seuls les utilisateurs authentifiés peuvent accéder à cette méthode
+        public async Task<IActionResult> CheckAuth()
+        {
+            _logger.LogInformation("CheckAuth appelé");
+            var user = await _userManager.GetUserAsync(User);
+            if (user != null)
+            {
+                _logger.LogInformation($"Utilisateur trouvé : {user.UserName}");
+                var roles = await _userManager.GetRolesAsync(user);
+                return Ok(new
+                {
+                    isAuthenticated = true,
+                    user = new
+                    {
+                        id = user.Id,
+                        username = user.UserName,
+                        email = user.Email,
+                        name = user.Name,
+                        firstName = user.FirstName,
+                        photo = user.Avatar
+                    },
+                    roles = roles
+                });
+            }
+            _logger.LogWarning("Aucun utilisateur trouvé");
+            return Ok(new { isAuthenticated = false });
+        }
+
+        [HttpPost("logout")]
+        [Authorize]
+        public async Task<IActionResult> Logout()
+        {
+            await _signInManager.SignOutAsync();
+            return Ok(new { message = "Déconnexion réussie" });
         }
 
         private string GenerateJwtToken(ApplicationUser user, string[] roles)
         {
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Name, user.UserName ?? string.Empty),
-                new Claim(ClaimTypes.NameIdentifier, user.Id),
-                new Claim(ClaimTypes.Email, user.Email ?? string.Empty),
-                new Claim("Avatar", user.Avatar ?? string.Empty)
+                new(ClaimTypes.Name, user.UserName ?? string.Empty),
+                new(ClaimTypes.NameIdentifier, user.Id),
+                new(ClaimTypes.Email, user.Email ?? string.Empty),
+                new("Avatar", user.Avatar ?? string.Empty)
             };
 
             foreach (var role in roles)

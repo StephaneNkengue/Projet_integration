@@ -232,14 +232,27 @@
 <style>
 @import "datatables.net-dt";
 
-button {
+.boutonPersonnalise {
   margin: 5px;
+  padding-left: 15px;
+  padding-right: 15px;
+  border: none;
+  border-radius: 5px;
+  font-size: 15px;
+  height: 25px;
+}
+
+.margesPourLaTable {
+  padding-left: 15px;
+  padding-right: 15px;
 }
 
 table {
   border-collapse: collapse;
   font-size: 13px;
   text-align: center;
+  margin-left: 15px;
+  margin-right: 15px;
 }
 
 table label {
@@ -251,13 +264,13 @@ li label {
   padding-left: 5px;
 }
 
-th {
+.dt-column-title {
   font-weight: bold;
-  text-align: center;
 }
 
+th,
 td {
-  text-align: center;
+  text-align: center !important;
 }
 </style>
 
@@ -267,8 +280,13 @@ import DataTable from "datatables.net-vue3";
 import DataTablesCore from "datatables.net-dt";
 
 DataTable.use(DataTablesCore);
-let dt;
 const table = ref();
+const options = {
+  ordering: false,
+  language: {
+    url: "https://cdn.datatables.net/plug-ins/2.1.8/i18n/fr-FR.json",
+  },
+};
 
 let data = ref([
   [
@@ -529,11 +547,15 @@ let data = ref([
 ]);
 
 onMounted(() => {
-  dt = table.value.dt;
+  let dt = table.value.dt;
   document.querySelectorAll(".toggle-vis").forEach((el, index) => {
     el.addEventListener("click", function (e) {
       dt.column(index).visible(!dt.column(index).visible());
     });
   });
 });
+            });
+
+        });
+    });
 </script>

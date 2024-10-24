@@ -26,8 +26,4 @@
 		</None>
 	</ItemGroup>
 
-	<!--<Target Name="PostBuild" AfterTargets="PostBuildEvent">
-	  <Exec Command="xcopy /y $(ProjectDir)Images  $(ProjectDir)$(OutDir)Images" />
-	</Target>-->
-
 </Project>
