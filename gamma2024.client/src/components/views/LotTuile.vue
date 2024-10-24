@@ -3,12 +3,12 @@
         <div class="card">
             <div class="card-body align-items-middle">
                 <div class="d-flex align-items-middle justify-content-between">
-                    <p class="fs-7 pe-2 mt-1 mb-0">Lot {{lot.code}} {{lot.artiste}} {{lot.dimension}} po</p>
+                    <p class="fs-7 pe-2 mt-1 mb-0">Lot {{lot.numero}} {{lot.artiste}} {{lot.hauteur}} x {{lot.largeur}} po</p>
 
                     <img src="/icons/IconeLivrable.png"
                          height="30"
                          alt="Livrable"
-                         v-if="lot.livrable" />
+                         v-if="lot.estLivrable" />
 
                     <img src="/icons/IconeNonLivrable.png"
                          height="30"
@@ -24,7 +24,7 @@
                 </div>
 
                 <p class="text-center mb-0">Valeur: {{(lot.valeurEstimeMin).toFixed(0)}}$ - {{(lot.valeurEstimeMax).toFixed(0)}}$</p>
-                <p class="text-center mb-0">Mise actuelle: {{(lot.mise).toFixed(0)}}$</p>
+                <p v-if="lot.mise != null" class="text-center mb-0">Mise actuelle: {{(lot.mise).toFixed(0)}}$</p>
 
                 <div class="d-flex justify-content-around pt-2">
                     <button type="button" class="btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond">Miser</button>
@@ -39,27 +39,38 @@
 </template>
 
 <script setup>
-    import { ref } from 'vue'
+    import { onMounted, ref } from 'vue'
 
-    let lotRecu = {
-        code: "1a",
-        artiste: "Nom de l'artiste",
-        dimension: "12 x 13",
-        valeurEstimeMin: 1000.00,
-        valeurEstimeMax: 2000.00,
-        mise: 1100.03,
-        livrable: false,
-        photos: [
+    const props = defineProps({
+        lotRecu: Object
+    })
+
+    const lot = ref({
+        "id": 0,
+        "numero": "",
+        "description": "",
+        "valeurEstimeMin": 0,
+        "valeurEstimeMax": 0,
+        "artiste": " ",
+        "mise": 0,
+        "estVendu": true,
+        "dateFinVente": "",
+        "estLivrable": true,
+        "largeur": 0,
+        "hauteur": 0,
+        "photos": [
             {
-                lien: "https://placehold.co/9000",
-            },
-            {
-                lien: "https://placehold.co/6000",
-            },
+                "id": 0,
+                "lien": "",
+                "idLot": 0,
+                "lot": null
+            }
         ]
-    };
+    })
 
-    const lot = ref(lotRecu)
+    onMounted(async () => {
+        lot.value = props.lotRecu
+    })
 
 </script>
 
