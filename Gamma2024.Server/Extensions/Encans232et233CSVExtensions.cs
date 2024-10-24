@@ -59,6 +59,8 @@ namespace Gamma2024.Server.Extensions
                         prixMinVente = double.Parse(columns[3].Replace("$", "").Trim());
                     }
 
+                    var dimensions = columns[8].Split("x");
+
                     yield return new Lot
                     {
                         Numero = columns[1],
@@ -71,13 +73,14 @@ namespace Gamma2024.Server.Extensions
                             Nom = columns[6]
                         },
                         Artiste = columns[7],
-                        Dimensions = columns[8],
+                        Hauteur = double.Parse(dimensions[0].Trim()),
+                        Largeur = double.Parse(dimensions[1].Trim()),
                         Description = columns[9],
                         Medium = new Medium
                         {
                             Type = columns[10]
                         },
-                        estLivrable = livrable
+                        EstLivrable = livrable
                     };
                 }
 

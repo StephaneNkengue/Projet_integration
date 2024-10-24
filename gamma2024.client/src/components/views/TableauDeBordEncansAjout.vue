@@ -53,7 +53,7 @@
                         {{v.dateFin.$errors[0].$message}}
                     </div>
                 </div>
-                <router-link to="TableauDeBordEncans" class="text-decoration-none">
+                <router-link to="TableauDeBordEncans" class="text-decoration-none me-2">
                     <button type="button" class="btn bleuMarinSecondaireFond btnSurvolerBleuMoyenFond btnClick text-white">Annuler</button>
                 </router-link>
                 <button type="submit" class="btn bleuMarinSecondaireFond btnSurvolerBleuMoyenFond btnClick text-white">Ajouter</button>
