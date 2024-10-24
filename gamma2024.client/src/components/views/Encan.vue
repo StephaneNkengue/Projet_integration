@@ -9,26 +9,28 @@
             <p>Chargement de l'encan en cours...</p>
         </div>
 
-        <h5 class="text-center" v-if="encan == '' && !chargement">Il n'y a présentement aucun encan ayant ce numéro</h5>
+        <div v-if="!chargement">
+            <h5 class="text-center" v-if="encan == ''">
+                Il n'y a présentement aucun encan ayant ce numéro
+            </h5>
+            <div v-else>
+                <p class="text-center">Date de debut de la soirée de cloture:</p>
 
-        <div v-else>
-            <p class="text-center">Date de debut de la soirée de cloture:</p>
-            <AffichageLots />
+                <AffichageLots :idEncan="encan.id" />
+            </div>
         </div>
-
-
     </div>
 </template>
 
 <script setup>
     import AffichageLots from "@/components/views/AffichageLots.vue";
-    import { onMounted, ref } from "vue";
+    import { onMounted, ref, reactive } from "vue";
     import { useStore } from "vuex";
 
     const store = useStore();
 
-    const chargement = ref(true)
-    const encan = ref('')
+    const chargement = ref(true);
+    const encan = ref('');
 
     const props = defineProps({
         numeroEncan: String,
@@ -37,8 +39,9 @@
     onMounted(async () => {
         const numero = props.numeroEncan;
         const response = await store.dispatch("chercherEncanParNumero", numero);
-        chargement.value = false
         encan.value = response.data
+
+        chargement.value = false;
     });
 </script>
 
