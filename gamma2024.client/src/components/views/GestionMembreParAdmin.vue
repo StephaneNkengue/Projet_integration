@@ -28,12 +28,11 @@
           <td>{{ membre.email }}</td>
           <td>
             <span class="me-3">
-              <button class="btn btn-info">
+              <button class="btn btn-info" @click="detailsDuMembre(membre.id)">
                 <img
                   src="/images/ice.png"
                   class="img-fluid"
                   alt="..."
-                  @click="detailsDuMembre(membre.id)"
                 /></button
             ></span>
           </td>
