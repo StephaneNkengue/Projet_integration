@@ -10,15 +10,19 @@
             </div>
             <p>Chargement des encans en cours...</p>
         </div>
+        <div v-else>
 
-        <div class="w-100 px-3 row row-cols-lg-2 row-cols-1">
-            <div v-for="index in encans" class="col py-3">
-                <router-link to="EncanPresent" class="text-decoration-none text-black">
-                    <AffichageEncanTuile :encan="index" />
-                </router-link>
+            <h5 class="text-center" v-if="encans.length <1">Il n'y a aucun encan pour le moment</h5>
+
+            <div v-else class="w-100 px-3 row row-cols-lg-2 row-cols-1">
+                <div v-for="index in encans" class="col py-3">
+                    <router-link :to="{ name: 'Encan', params: { numeroEncan: index.numeroEncan }}" class="text-decoration-none text-black">
+                        <AffichageEncanTuile :encan="index" />
+                    </router-link>
+                </div>
             </div>
+
         </div>
-        <h5 class="text-center" v-if="encans.length <1 && !chargement">Il n'y a aucun encan pour le moment</h5>
     </div>
 </template>
 

@@ -406,45 +406,61 @@ const store = createStore({
       }
     },
 
-    async initializeStore({ commit, dispatch }) {
-      const api = await initApi(
-        () => store.state.token || localStorage.getItem("token")
-      );
-      commit("SET_API", api);
-      await dispatch("checkAuthStatus");
+        async initializeStore({ commit, dispatch }) {
+            const api = await initApi(() => store.state.token || localStorage.getItem('token'));
+            commit('SET_API', api);
+            await dispatch('checkAuthStatus');
+        },
+        async chercherTousEncansVisibles({ commit, state }) {
+            try {
+                const response = await state.api.get("/encans/cherchertousencansvisibles");
+                return response
+            }
+            catch (error) {
+                return "Erreur, veuillez réessayer"
+            }
+        },
+        async chercherEncanParNumero({ commit, state }, numeroEncan) {
+            try {
+                const response = await state.api.get("/encans/chercherencanparnumero/" + numeroEncan);
+                return response
+            }
+            catch (error) {
+                return "Erreur, veuillez réessayer"
+            }
+        },
+        async chercherTousLotsParEncan({ commit, state }, idEncan) {
+            try {
+                const response = await state.api.get(
+                    "/lots/cherchertouslotsparencan/" + idEncan
+                );
+                return response;
+            } catch (error) {
+                return "Erreur, veuillez réessayer";
+            }
+        },
     },
-    async chercherTousEncansVisibles({ commit, state }) {
-      try {
-        const response = await state.api.get(
-          "/encans/cherchertousencansvisibles"
-        );
-        return response;
-      } catch (error) {
-        return "Erreur, veuillez réessayer";
-      }
+    getters: {
+        isAdmin: (state) => state.roles.includes("Administrateur"),
+        isClient: (state) => state.roles.includes("Client"),
+        currentUser: (state) => state.user,
+        username: (state) =>
+            state.user ? state.user.pseudonym || state.user.username : "USERNAME",
+        avatarUrl: (state) => {
+            if (state.user && state.user.photo) {
+                console.log("Photo de l'utilisateur brute:", state.user.photo);
+                if (state.user.photo.startsWith("http")) {
+                    return state.user.photo;
+                } else {
+                    const baseUrl = state.api.defaults.baseURL.replace("/api", "");
+                    const fullUrl = new URL(state.user.photo, baseUrl).href;
+                    console.log("URL complète de l'avatar:", fullUrl);
+                    return fullUrl;
+                }
+            }
+            return "/gamma2024.client/public/icons/Avatar.png";
+        },
     },
-  },
-  getters: {
-    isAdmin: (state) => state.roles.includes("Administrateur"),
-    isClient: (state) => state.roles.includes("Client"),
-    currentUser: (state) => state.user,
-    username: (state) =>
-      state.user ? state.user.pseudonym || state.user.username : "USERNAME",
-    avatarUrl: (state) => {
-      if (state.user && state.user.photo) {
-        console.log("Photo de l'utilisateur brute:", state.user.photo);
-        if (state.user.photo.startsWith("http")) {
-          return state.user.photo;
-        } else {
-          const baseUrl = state.api.defaults.baseURL.replace("/api", "");
-          const fullUrl = new URL(state.user.photo, baseUrl).href;
-          console.log("URL complète de l'avatar:", fullUrl);
-          return fullUrl;
-        }
-      }
-      return "/gamma2024.client/public/icons/Avatar.png";
-    },
-  },
 });
 
 // Initialiser le store immédiatement

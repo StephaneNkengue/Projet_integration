@@ -80,7 +80,8 @@ namespace Gamma2024.Server.Extensions
                         {
                             Type = columns[10]
                         },
-                        EstLivrable = livrable
+                        EstLivrable = livrable,
+                        Mise = 0
                     };
                 }
 

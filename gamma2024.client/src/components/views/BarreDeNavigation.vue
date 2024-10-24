@@ -17,18 +17,16 @@
             </a>
           </router-link>
 
-          <button
-            class="navbar-toggler"
-            data-bs-theme="dark"
-            type="button"
-            data-bs-toggle="collapse"
-            data-bs-target="#navbarSupportedContent"
-            aria-controls="navbarSupportedContent"
-            aria-expanded="false"
-            aria-label="Toggle navigation"
-          >
-            <span class="navbar-toggler-icon"></span>
-          </button>
+                    <button class="navbar-toggler"
+                            data-bs-theme="dark"
+                            type="button"
+                            data-bs-toggle="collapse"
+                            data-bs-target="#navbarSupportedContent"
+                            aria-controls="navbarSupportedContent"
+                            aria-expanded="false"
+                            aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
 
           <div
             class="collapse navbar-collapse justify-content-between"
@@ -140,17 +138,13 @@
                 </ul>
               </div>
 
-              <a
-                v-if="estConnecte"
-                @click="notification = !notification"
-                class="d-flex align-items-center"
-              >
-                <img
-                  src="/icons/IconeCloche.png"
-                  alt="Icon cloche"
-                  height="25"
-                />
-              </a>
+                            <a v-if="estConnecte"
+                               @click="notification = !notification"
+                               class="d-flex align-items-center">
+                                <img src="/icons/IconeCloche.png"
+                                     alt="Icon cloche"
+                                     height="25" />
+                            </a>
 
               <div
                 class="d-flex flex-column position-absolute top-100 start-79 dropdown-menu bleuMarinSecondaireFond"
@@ -196,138 +190,126 @@
                 </a>
               </div>
 
-              <a
-                @click="activationDropdownProfil = !activationDropdownProfil"
-                class="d-flex text-decoration-none text-white align-items-center gap-3"
-                v-if="estConnecte"
-              >
-                <p class="m-0">{{ username }}</p>
-                <img
-                  :src="avatarUrl"
-                  alt="Avatar"
-                  class="imgProfile rounded-circle"
-                />
-              </a>
-            </div>
-          </div>
-        </div>
-      </nav>
+                            <a @click="activationDropdownProfil = !activationDropdownProfil"
+                               class="d-flex text-decoration-none text-white align-items-center gap-3"
+                               v-if="estConnecte">
+                                <p class="m-0">{{ username }}</p>
+                                <img :src="avatarUrl"
+                                     alt="Avatar"
+                                     class="imgProfile rounded-circle" />
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </nav>
 
-      <nav class="navbar bg-white navbar-expand-md py-0" data-bs-theme="dark">
-        <div
-          class="container-fluid justify-content-center justify-content-md-between d-flex flex-row-reverse"
-        >
-          <form class="d-flex align-items-center">
-            <div class="d-flex" v-if="activationRecherche">
-              <input
-                class="form-control me-3 butttonNavBar"
-                data-bs-theme="light"
-                type="search"
-                placeholder="Faire une recherche"
-                aria-label="Search"
-              />
+            <nav class="navbar bg-white navbar-expand-md py-0" data-bs-theme="dark">
+                <div class="container-fluid justify-content-center justify-content-md-between d-flex flex-row-reverse">
+                    <form class="d-flex align-items-center">
+                        <div class="d-flex" v-if="activationRecherche">
+                            <input class="form-control me-3 butttonNavBar"
+                                   data-bs-theme="light"
+                                   type="search"
+                                   placeholder="Faire une recherche"
+                                   aria-label="Search" />
 
-              <router-link to="Accueil">
-                <button
-                  class="btn btn-outline bleuMoyenFond me-3 text-white butttonNavBar py-0 btnSurvolerBleuMoyenFond"
-                  type="submit"
-                >
-                  Rechercher
-                </button>
-              </router-link>
-            </div>
-            <a @click="activationRecherche = !activationRecherche">
-              <img
-                src="/icons/IconeRechercheAvanceeBleu.png"
-                alt="Icon recherche avancée"
-                height="30"
-                class="my-1"
-              />
-            </a>
-          </form>
+                            <router-link :to="{name:'Accueil'}">
+                                <button class="btn btn-outline bleuMoyenFond me-3 text-white butttonNavBar py-0 btnSurvolerBleuMoyenFond"
+                                        type="submit">
+                                    Rechercher
+                                </button>
+                            </router-link>
+                        </div>
+                        <a @click="activationRecherche = !activationRecherche">
+                            <img src="/icons/IconeRechercheAvanceeBleu.png"
+                                 alt="Icon recherche avancée"
+                                 height="30"
+                                 class="my-1" />
+                        </a>
+                    </form>
+                </div>
+            </nav>
         </div>
-      </nav>
-    </div>
-  </header>
+    </header>
 </template>
 
 <script setup>
-import { computed, watch, ref } from "vue";
-import { useStore } from "vuex";
-import { useRouter } from "vue-router";
-import { onMounted } from "vue";
-import * as bootstrap from "bootstrap";
+    import { computed, watch, ref } from "vue";
+    import { useStore } from "vuex";
+    import { useRouter } from "vue-router";
+    import { onMounted } from "vue";
+    import * as bootstrap from "bootstrap";
 
-const store = useStore();
-const router = useRouter();
+    const store = useStore();
+    const router = useRouter();
 
-const estConnecte = computed(() => store.state.isLoggedIn);
-const estAdmin = computed(() => store.getters.isAdmin);
-const estClient = computed(() => store.getters.isClient);
-const username = computed(() => store.getters.username);
-const avatarUrl = computed(() => store.getters.avatarUrl);
+    const estConnecte = computed(() => store.state.isLoggedIn);
+    const estAdmin = computed(() => store.getters.isAdmin);
+    const estClient = computed(() => store.getters.isClient);
+    const username = computed(() => store.getters.username);
+    const avatarUrl = computed(() => store.getters.avatarUrl);
 
-const currentUser = ref(null);
+    const currentUser = ref(null);
 
-watch(
-  () => store.state.user,
-  (newUser) => {
-    currentUser.value = newUser;
-  },
-  { deep: true, immediate: true }
-);
+    watch(
+        () => store.state.user,
+        (newUser) => {
+            currentUser.value = newUser;
+        },
+        { deep: true, immediate: true }
+    );
 
-const refreshUserInfo = async () => {
-  if (store.state.isLoggedIn) {
-    try {
-      await store.dispatch("fetchClientInfo");
-    } catch (error) {
-      console.error(
-        "Erreur lors de la récupération des informations client:",
-        error
-      );
-    }
-  }
-};
+    const refreshUserInfo = async () => {
+        if (store.state.isLoggedIn) {
+            try {
+                await store.dispatch("fetchClientInfo");
+            } catch (error) {
+                console.error(
+                    "Erreur lors de la récupération des informations client:",
+                    error
+                );
+            }
+        }
+    };
 
-// Appelez refreshUserInfo lorsque l'utilisateur se connecte
-watch(
-  () => store.state.isLoggedIn,
-  (newValue) => {
-    if (newValue) {
-      refreshUserInfo();
-    }
-  }
-);
+    // Appelez refreshUserInfo lorsque l'utilisateur se connecte
+    watch(
+        () => store.state.isLoggedIn,
+        (newValue) => {
+            if (newValue) {
+                refreshUserInfo();
+            }
+        }
+    );
 
-// Définition de activationRecherche
-const activationRecherche = ref(false);
-const activationDropdownProfil = ref(false);
-const notification = ref(false);
+    // Définition de activationRecherche
+    const activationRecherche = ref(false);
+    const activationDropdownProfil = ref(false);
+    const notification = ref(false);
 
-const deconnecter = async () => {
-  await store.dispatch("logout");
-  router.push("/"); // Redirige vers la page d'accueil après la déconnexion
-};
+    const deconnecter = async () => {
+        await store.dispatch("logout");
+        router.push("/"); // Redirige vers la page d'accueil après la déconnexion
+    };
 
-onMounted(() => {
-  document.querySelectorAll(".dropdown-toggle").forEach((dropdownToggle) => {
-    new bootstrap.Dropdown(dropdownToggle);
-  });
-});
+    onMounted(() => {
+        document.querySelectorAll(".dropdown-toggle").forEach((dropdownToggle) => {
+            new bootstrap.Dropdown(dropdownToggle);
+        });
+    });
 </script>
 
 <style scoped>
-.ms-7 {
-  margin-left: 7.9rem;
-}
+    .ms-7 {
+        margin-left: 7.9rem;
+    }
 
-.start-79 {
-  left: 79%;
-}
+    .start-79 {
+        left: 79%;
+    }
 
-.imgProfile {
-  width: 40px;
-  height: 40px;
-}
+    .imgProfile {
+        width: 40px;
+        height: 40px;
+    }
 </style>
