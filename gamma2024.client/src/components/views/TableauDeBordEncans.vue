@@ -81,7 +81,7 @@
                 <td>{{dateDebutJour}}-{{dateDebut[1]}}-{{ dateDebut[0]}}</td>
                 <td>{{dateFinJour}}-{{dateFin[1]}}-{{ dateFin[0]}}</td>
                 <td>{{dateDebutSoireeClotureJour}}-{{dateDebutSoireeCloture[1]}}-{{ dateDebutSoireeCloture[0]}} {{ dateDebutSoireeClotureHeure }} à {{ dateFinSoireeClotureHeure }}</td>
-                <td>vfffd</td>
+                <td>{{ encan.nbLots }}</td>
                 <td>modifier</td>
                 <td>supprimer</td>
             </tr>
@@ -106,11 +106,14 @@
     const dateFinSoireeCloture = ref("");
     const dateFinSoireeClotureHeure = ref("");
 
+
     let encanPublieMAJ;
     const encanRecherche = ref();
 
     const errorMessage = ref('');
     const successMessage = ref('');
+
+    const encan = ref("");
 
     onMounted(async () => {
 
@@ -135,7 +138,8 @@
 
             encanPublieMAJ = async function (statutPublie) {
                 let encanId = event.srcElement.getAttribute("encanId")
-                let encan = listeEncans.value.find(e => e.id == encanId)
+                encan = listeEncans.value.find(e => e.id == encanId);
+
                 if (encan.estPublie != statutPublie) {
                     encan.estPublie = !encan.estPublie;
 
@@ -162,6 +166,8 @@
                 }
             }
 
+
+
         }
         catch (erreur) {
             console.log("Erreur encans" + erreur);
@@ -178,7 +184,7 @@
             dateDebutSoireeCloture.toString().startsWith(encanRecherche) ||
             dateFinSoireeCloture.toString().startsWith(encanRecherche.value)
         );
-    })
+    });
 </script>
 
 <style scoped>

@@ -14,10 +14,10 @@ namespace Gamma2024.Server.Services
             _context = context;
         }
 
-        public ICollection<EncanAffichageVM> ChercherTousEncans()
+        public ICollection<EncanAffichageAdminVM> ChercherTousEncans()
         {
             var encans = _context.Encans
-                .Select(e => new EncanAffichageVM()
+                .Select(e => new EncanAffichageAdminVM()
                 {
                     Id = e.Id,
                     NumeroEncan = e.NumeroEncan,
@@ -25,18 +25,18 @@ namespace Gamma2024.Server.Services
                     DateFin = e.DateFin,
                     DateFinSoireeCloture = e.DateFinSoireeCloture,
                     DateDebutSoireeCloture = e.DateDebutSoireeCloture,
-                    EstPublie = e.EstPublie
-
+                    EstPublie = e.EstPublie,
+                    NbLots = _context.EncanLots.Count(el => el.IdEncan == e.Id)
                 }).ToList();
 
             return encans;
         }
 
-        public ICollection<EncanAffichageVM> ChercherTousEncansVisibles()
+        public ICollection<EncanAffichageAdminVM> ChercherTousEncansVisibles()
         {
             var encans = _context.Encans
                 .Where(e => e.EstPublie == true)
-                .Select(e => new EncanAffichageVM()
+                .Select(e => new EncanAffichageAdminVM()
                 {
                     Id = e.Id,
                     NumeroEncan = e.NumeroEncan,

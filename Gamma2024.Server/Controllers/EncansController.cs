@@ -16,16 +16,16 @@ namespace Gamma2024.Server.Controllers
         }
 
         [HttpGet("cherchertousencans")]
-        public ICollection<EncanAffichageVM> ChercherTousEncans()
+        public ICollection<EncanAffichageAdminVM> ChercherTousEncans()
         {
-            ICollection<EncanAffichageVM> encans = _encanService.ChercherTousEncans();
+            ICollection<EncanAffichageAdminVM> encans = _encanService.ChercherTousEncans();
             return encans;
         }
 
         [HttpGet("ChercherTousEncansVisibles")]
-        public ICollection<EncanAffichageVM> ChercherTousEncansVisibles()
+        public ICollection<EncanAffichageAdminVM> ChercherTousEncansVisibles()
         {
-            ICollection<EncanAffichageVM> encans = _encanService.ChercherTousEncansVisibles();
+            ICollection<EncanAffichageAdminVM> encans = _encanService.ChercherTousEncansVisibles();
             return encans;
         }
 
