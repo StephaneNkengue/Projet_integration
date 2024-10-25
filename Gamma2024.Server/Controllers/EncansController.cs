@@ -64,5 +64,19 @@ namespace Gamma2024.Server.Controllers
                 return null;
             }
         }
+
+        [HttpGet("ChercherEncansPasses")]
+        public ICollection<EncanAffichageVM> ChercherEncansPasses()
+        {
+            try
+            {
+                var encans = _encanService.ChercherEncansPasses();
+                return encans;
+            }
+            catch
+            {
+                return null;
+            }
+        }
     }
 }
