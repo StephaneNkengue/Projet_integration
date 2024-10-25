@@ -2,6 +2,7 @@ using Gamma2024.Seeder;
 using Gamma2024.Server.Extensions;
 using Gamma2024.Server.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.Tokens;
 
 var context = DbContextFactory.CreateDbContext();
 
@@ -9,10 +10,8 @@ Console.WriteLine("Début du seed...");
 
 Console.WriteLine("Ajout des utilisateurs");
 
-var passwordHasher = new PasswordHasher<ApplicationUser>();
 
-// Récupérer tous les noms d'utilisateurs existants
-var existingUsernames = context.Users.Select(u => u.UserName).ToList();
+var passwordHasher = new PasswordHasher<ApplicationUser>();
 
 var utilisateurs = File.ReadAllLines("CSV/Acheteurs.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
                         .Skip(1)
@@ -32,21 +31,14 @@ var utilisateurs = File.ReadAllLines("CSV/Acheteurs.csv", System.Text.Encoding.G
                             u.PasswordHash = passwordHasher.HashPassword(u, u.UserName + u.Adresses.First().Numero);
                             return u;
                         })
-                        .GroupBy(u => u.UserName) // Regrouper par nom d'utilisateur
-                        .Select(g => g.First())   // Prendre le premier de chaque groupe
                         .ToList();
 
-// Vérifier si les utilisateurs existent déjà avant de les ajouter
-foreach (var user in utilisateurs)
+// Vérifier et ajouter uniquement les nouveaux utilisateurs
+foreach (var utilisateur in utilisateurs)
 {
-    if (!existingUsernames.Contains(user.UserName))
+    if (!context.Users.Any(u => u.UserName == utilisateur.UserName))
     {
-        context.Users.Add(user);
-        Console.WriteLine($"L'utilisateur {user.UserName} a été ajouté.");
-    }
-    else
-    {
-        Console.WriteLine($"L'utilisateur {user.UserName} existe déjà et sera ignoré.");
+        context.Users.Add(utilisateur);
     }
 }
 
@@ -71,7 +63,7 @@ foreach (var item in utilisateurs)
     }
     else
     {
-        Console.WriteLine($"L'utilisateur avec l'ID {item.Id} n'existe pas dans la base de données et sera ignoré pour l'attribution du rôle.");
+        Console.WriteLine($"L'utilisateur avec l'ID {item.Id} n'existe pas dans la base de données et sera ignoré pour l'attribution de rôle.");
     }
 }
 
@@ -86,16 +78,22 @@ var vendeurs = File.ReadAllLines("CSV/Vendeurs.csv", System.Text.Encoding.GetEnc
                 .ToVendeur()
                 .ToList();
 
-// Ajoutez d'abord les adresses
-var adresses = vendeurs.Select(v => v.Adresse).ToList();
-context.Adresses.AddRange(adresses);
-context.SaveChanges();
-
-// Ensuite, mettez à jour les vendeurs avec les IDs d'adresse générés
+// Ajoutez cette vérification
 foreach (var vendeur in vendeurs)
 {
-    vendeur.AdresseId = vendeur.Adresse.Id;
-    vendeur.Adresse = null; // Détachez l'objet Adresse pour éviter une double insertionx   
+    if (vendeur.Adresse != null)
+    {
+        var adresseExistante = context.Adresses.FirstOrDefault(a => a.Id == vendeur.Adresse.Id);
+        if (adresseExistante == null)
+        {
+            context.Adresses.Add(vendeur.Adresse);
+        }
+        else
+        {
+            vendeur.Adresse = adresseExistante;
+        }
+        vendeur.AdresseId = vendeur.Adresse.Id;
+    }
 }
 
 context.Vendeurs.AddRange(vendeurs);
@@ -129,30 +127,6 @@ context.SaveChanges();
 
 Console.WriteLine("Ajout des lots");
 
-// Fonction helper pour ajouter les photos aux lots
-void AjouterPhotosAuxLots(List<Lot> lots, IEnumerable<IEnumerable<string>> imagesLots, int numeroEncan)
-{
-    for (int i = 0; i < lots.Count; i++)
-    {
-        foreach (var nomImage in imagesLots.ElementAt(i))
-        {
-            if (string.IsNullOrEmpty(nomImage))
-            {
-                break;
-            }
-            else
-            {
-                var imagePath = $"/Images/ImagesEncan{numeroEncan}/{nomImage}";
-                lots[i].Photos.Add(new Photo
-                {
-                    Lien = imagePath
-                });
-            }
-        }
-    }
-}
-
-// Utilisation pour l'encan 232
 var lotsVendeurs232 = File.ReadAllLines("CSV/Vendeurs.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
                 .Skip(1)
                 .Where(l => l.Length > 1)
@@ -162,7 +136,8 @@ var lotsVendeurs232 = File.ReadAllLines("CSV/Vendeurs.csv", System.Text.Encoding
 var imagesLots232 = File.ReadAllLines("CSV/Encan232et233.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
                         .Skip(1)
                         .Where(l => l.Length > 1)
-                        .GetImagesParLotParEncan(232).Select(x => x.ToList()).ToList();
+                        .GetImagesParLotParEncan(232)
+                        .ToList();
 
 var lots232 = File.ReadAllLines("CSV/Encan232et233.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
                         .Skip(1)
@@ -203,12 +178,34 @@ var lots232 = File.ReadAllLines("CSV/Encan232et233.csv", System.Text.Encoding.Ge
                         })
                         .ToList();
 
-AjouterPhotosAuxLots(lots232, imagesLots232, 232);
+var acheteurs232 = File.ReadAllLines("CSV/AcheteurEncan232.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
+                        .Skip(1)
+                        .Where(l => l.Length > 1)
+                        .GetAcheteursEncan232()
+                        .ToList();
+
+for (int i = 0; i < lots232.Count; i++)
+{
+    foreach (var nomImage in imagesLots232[i])
+    {
+        if (nomImage.IsNullOrEmpty())
+        {
+            break;
+        }
+        else
+        {
+            var imagePath = Path.Combine("Images", "ImagesEncan232", nomImage);
+            lots232[i].Photos.Add(new Photo
+            {
+                Lien = imagePath
+            });
+        }
+    }
+}
 
 context.Lots.AddRange(lots232);
 context.SaveChanges();
 
-// Utilisation pour l'encan 233
 var lotsVendeurs233 = File.ReadAllLines("CSV/Vendeurs.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
                 .Skip(1)
                 .Where(l => l.Length > 1)
@@ -260,7 +257,24 @@ var lots233 = File.ReadAllLines("CSV/Encan232et233.csv", System.Text.Encoding.Ge
                         })
                         .ToList();
 
-AjouterPhotosAuxLots(lots233, imagesLots233.Select(x => x.ToList()).ToList(), 233);
+for (int i = 0; i < lots233.Count; i++)
+{
+    foreach (var nomImage in imagesLots233[i])
+    {
+        if (nomImage.IsNullOrEmpty())
+        {
+            break;
+        }
+        else
+        {
+            var imagePath = Path.Combine("Images", "ImagesEncan233", nomImage);
+            lots233[i].Photos.Add(new Photo
+            {
+                Lien = imagePath
+            });
+        }
+    }
+}
 
 context.Lots.AddRange(lots233);
 context.SaveChanges();
@@ -382,7 +396,7 @@ foreach (var item in utilisateurs)
             IdAdresse = item.Adresses.First().Id,
             Adresse = item.Adresses.First(),
             DateAchat = DateTime.Now,
-            PrixLots = 0    
+            PrixLots = 0
         };
 
         foreach (var a in achats)
@@ -410,3 +424,4 @@ context.Lots.UpdateRange(lots232);
 context.SaveChanges();
 
 Console.WriteLine("Fin du seed");
+

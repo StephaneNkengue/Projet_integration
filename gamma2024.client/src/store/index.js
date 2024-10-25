@@ -4,6 +4,7 @@ import { initApi } from '@/services/api'
 const store = createStore({
     state: {
         api: null,
+        token: null,
         // ... autres états
         roles: [], // Assurez-vous que c'est initialisé comme un tableau vide
     },
@@ -33,8 +34,12 @@ const store = createStore({
             localStorage.setItem('roles', JSON.stringify(state.roles));
         },
         setToken(state, token) {
-            state.token = token
-            localStorage.setItem('token', token)
+            state.token = token;
+            if (token) {
+                localStorage.setItem('token', token);
+            } else {
+                localStorage.removeItem('token');
+            }
         },
         SET_API(state, api) {
             state.api = api;
@@ -380,6 +385,7 @@ const store = createStore({
             }
         },
         async checkAuthStatus({ commit, state, dispatch }) {
+            const token = state.token || localStorage.getItem('token');
             console.log("Token trouvé :", token ? "Oui" : "Non");
             if (!token) {
                 console.log("Aucun token trouvé, déconnexion de l'utilisateur");
@@ -396,18 +402,17 @@ const store = createStore({
 
             try {
                 console.log("URL de la requête :", `${state.api.defaults.baseURL}/home/check-auth`);
-                console.log("URL de la requête :", `${state.api.defaults.baseURL}/home/check-auth`);
                 const response = await state.api.get('/home/check-auth');
                 console.log("Réponse complète de check-auth:", response.data);
-                    commit('setLoggedIn', true);
+                if (response.data.isAuthenticated) {
                     commit('setLoggedIn', true);
                     commit('setUser', response.data.user);
-                    console.log("Rôles reçus du serveur:", response.data.roles);
-                    commit('setRoles', response.data.roles.$values); // Notez le .$values ici
+                    commit('setRoles', response.data.roles.$values);
                     dispatch('forceUpdate');
+                } else {
                     throw new Error("Non authentifié");
                 }
-             catch (error) {
+            } catch (error) {
                 console.error(
                     "Erreur détaillée lors de la vérification de l'authentification:",
                     error.response || error
@@ -424,7 +429,9 @@ const store = createStore({
         async logout({ commit, state }) {
             try {
                 // Appel à l'API pour invalider le token côté serveur (optionnel mais recommandé)
-                await state.api.post('/home/logout');
+                const response = await state.api.post('/home/logout');
+                console.log("Réponse de la déconnexion:", response);
+            } catch (error) {
                 console.error("Erreur lors de la déconnexion côté serveur:", error);
             } finally {
                 // Nettoyage des données côté client
@@ -452,6 +459,10 @@ const store = createStore({
         },
 
     async initializeStore({ commit, dispatch }) {
+        const token = localStorage.getItem('token');
+        if (token) {
+            commit('setToken', token);
+        }
         const api = await initApi(() => store.state.token || localStorage.getItem('token'));
         commit('SET_API', api);
         await dispatch('checkAuthStatus');

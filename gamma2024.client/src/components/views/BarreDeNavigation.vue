@@ -93,7 +93,7 @@
                 <ul class="dropdown-menu bleuMarinFond text-center">
                   <li>
                     <router-link
-                      :to="{ name: 'Inventaire' }"
+                      :to="{ name: 'TableauDeBordInventaire' }"
                       class="text-decoration-none"
                     >
                       <a class="dropdown-item contenuListeDropdown"
@@ -110,7 +110,7 @@
                   </li> -->
                   <li>
                     <router-link
-                      :to="{ name: 'Accueil' }"
+                      :to="{ name: 'TousLesEncans' }"
                       class="text-decoration-none"
                     >
                       <a class="dropdown-item contenuListeDropdown">Encans</a>

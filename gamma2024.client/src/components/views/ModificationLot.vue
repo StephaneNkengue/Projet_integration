@@ -7,7 +7,8 @@
         <h4>Photos existantes</h4>
         <div class="d-flex flex-wrap">
           <div v-for="photo in lot.photos.$values" :key="photo.id" class="me-2 mb-2 position-relative">
-            <img :src="getImageUrl(photo.url)" alt="Photo du lot" style="width: 100px; height: 100px; object-fit: cover;">
+            <img :src="getImageUrl(photo.url)" alt="Photo du lot" 
+                 style="width: 100px; height: 100px; object-fit: cover; border: 1px solid #ddd;">
             <button @click.prevent="marquerPhotoASupprimer(photo.id)" class="btn btn-danger btn-sm position-absolute top-0 end-0">X</button>
           </div>
         </div>
@@ -136,6 +137,7 @@ const erreur = ref('');
 onMounted(async () => {
   try {
     lot.value = await store.dispatch('obtenirLot', route.params.id);
+    console.log('Photos du lot:', lot.value.photos.$values);
     categories.value = await store.dispatch('obtenirCategories');
     vendeurs.value = await store.dispatch('obtenirVendeurs');
     mediums.value = await store.dispatch('obtenirMediums');
@@ -214,6 +216,7 @@ const getImageUrl = computed(() => (url) => {
   if (!url) return '';
   const baseUrl = store.state.api.defaults.baseURL.replace('/api', '');
   const fullUrl = new URL(url, baseUrl).href;
+  console.log('URL de l\'image:', fullUrl); // Ajoutez cette ligne
   return fullUrl;
 });
 
@@ -228,3 +231,4 @@ const ajouterNouvellesPhotos = (event) => {
   }
 };
 </script>
+

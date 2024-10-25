@@ -17,6 +17,9 @@ import AccesNonAutorise from "@/components/views/AccesNonAutorise.vue";
 import ModificationProfilUtilisateur from "@/components/views/ModificationProfilUtilisateur.vue";
 import GestionMembreParAdmin from "@/components/views/GestionMembreParAdmin.vue";
 import DetailsMembreParAdmin from "@/components/views/DetailsMembreParAdmin.vue";
+import AffichageLots from "@/components/views/AffichageLots.vue";
+import CreationLot from "@/components/views/CreationLot.vue";
+import ModificationLot from "@/components/views/ModificationLot.vue";
 
 const routes = [
     {

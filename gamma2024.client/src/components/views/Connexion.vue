@@ -154,9 +154,14 @@ export default {
           password: this.password,
         });
         if (result.success) {
-          this.messageSucces = `Connexion réussie en tant que ${result.roles.join(
-            ", "
-          )}`;
+          // Vérifiez la structure de result.roles
+          const rolesString = Array.isArray(result.roles) 
+            ? result.roles.join(", ")
+            : (result.roles && result.roles.$values 
+                ? result.roles.$values.join(", ") 
+                : "Rôles non disponibles");
+          
+          this.messageSucces = `Connexion réussie en tant que ${rolesString}`;
           // Redirection immédiate vers la page d'accueil
           this.$router.push("/");
         } else {
@@ -173,6 +178,7 @@ export default {
         }
       } catch (error) {
         console.error("Erreur détaillée lors de la connexion:", error);
+        this.messageErreur = "Une erreur est survenue lors de la connexion.";
       } finally {
         this.isSubmitting = false;
       }
