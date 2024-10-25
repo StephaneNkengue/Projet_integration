@@ -8,6 +8,13 @@ namespace Gamma2024.Server.Validations
     {
         public static async Task<(bool IsValid, string ErrorMessage)> ValidateLot<T>(T lot, ApplicationDbContext context) where T : LotCreationVM
         {
+            // Vérification du numéro de lot unique
+            var lotExistant = await context.Lots.AnyAsync(l => l.Numero == lot.Numero);
+            if (lotExistant)
+            {
+                return (false, "Un lot avec ce numéro existe déjà.");
+            }
+
             if (string.IsNullOrWhiteSpace(lot.Numero))
             {
                 return (false, "Le numéro du lot est obligatoire.");
