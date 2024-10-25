@@ -504,7 +504,6 @@ const store = createStore({
             return "/gamma2024.client/public/icons/Avatar.png";
         },
     },
-
 });
 
 // Initialiser le store immédiatement

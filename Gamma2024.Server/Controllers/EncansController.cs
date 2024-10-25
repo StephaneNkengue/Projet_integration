@@ -66,5 +66,20 @@ namespace Gamma2024.Server.Controllers
                 return BadRequest(new { sucess = false, message = message });
             }
         }
+
+        [HttpGet("ChercherEncanParNumero/{numeroEncan}")]
+        public EncanAffichageVM ChercherEncanParNumero(string numeroEncan)
+        {
+            try
+            {
+                var numeroEncanInt = int.Parse(numeroEncan);
+                var encan = _encanService.ChercherEncanParNumero(numeroEncanInt);
+                return encan;
+            }
+            catch
+            {
+                return null;
+            }
+        }
     }
 }
