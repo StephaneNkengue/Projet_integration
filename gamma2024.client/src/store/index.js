@@ -433,6 +433,15 @@ const store = createStore({
                 return "Erreur, veuillez réessayer"
             }
         },
+        async chercherEncanParNumero({ commit, state }, numeroEncan) {
+            try {
+                const response = await state.api.get("/encans/chercherencanparnumero/" + numeroEncan);
+                return response
+            }
+            catch (error) {
+                return "Erreur, veuillez réessayer"
+            }
+        },
 
         async fetchEncanInfo({ commit, state }) {
             try {
@@ -481,7 +490,34 @@ const store = createStore({
                 };
             }
         },
-
+        async chercherEncanEnCours({ commit, state }) {
+            try {
+                const response = await state.api.get("/encans/chercherencanencours");
+                return response
+            }
+            catch (error) {
+                return "Erreur, veuillez réessayer"
+            }
+        },
+        async chercherTousLotsParEncan({ commit, state }, idEncan) {
+            try {
+                const response = await state.api.get(
+                    "/lots/cherchertouslotsparencan/" + idEncan
+                );
+                return response;
+            } catch (error) {
+                return "Erreur, veuillez réessayer";
+            }
+        },
+        async chercherDetailsLotParId({ commit, state }, idLot) {
+            try {
+                const response = await state.api.get("/lots/chercherDetailsLotParId/" + idLot);
+                return response
+            }
+            catch (error) {
+                return "Erreur, veuillez réessayer";
+            }
+        }
     },
     getters: {
         isAdmin: (state) => state.roles.includes("Administrateur"),

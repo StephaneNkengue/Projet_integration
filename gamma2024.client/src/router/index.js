@@ -69,9 +69,10 @@ const routes = [
         meta: { requiresAuth: false },
     },
     {
-        path: "/detailslot",
+        path: "/detailslot/:idLot",
         name: "DetailsLot",
         component: DetailsLot,
+        props: true,
         meta: { requiresAuth: false },
     },
     {

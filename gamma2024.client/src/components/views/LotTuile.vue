@@ -1,5 +1,5 @@
 <template>
-    <router-link class="text-decoration-none" to="DetailsLot">
+    <router-link class="text-decoration-none" :to="{name: 'DetailsLot', params: {idLot: lot.id}}">
         <div class="card">
             <div class="card-body align-items-middle">
                 <div class="d-flex align-items-middle justify-content-between">
