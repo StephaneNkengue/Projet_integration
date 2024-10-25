@@ -41,8 +41,10 @@
             </div>
 
             <div class="d-flex me-1 gap-1 align-items-center">
-                <label for="Recherche">Rechercher : </label>
-                <input data-bs-theme="light" type="search" aria-label="Recherche" v-model="encanRecherche">
+                <label for="Recherche">Rechercher: </label>
+                <input data-bs-theme="light" type="search" aria-label="RechercheNum" v-model="encanRechercheNumEncan" placeholder="par numéro encan">
+
+                <input data-bs-theme="light" type="search" aria-label="RechercheDate" v-model="encanRechercheDate" placeholder="par date">
             </div>
         </div>
 
@@ -78,9 +80,9 @@
                         </ul>
                     </div>
                 </td>
-                <td>{{dateDebutJour}}-{{dateDebut[1]}}-{{ dateDebut[0]}}</td>
-                <td>{{dateFinJour}}-{{dateFin[1]}}-{{ dateFin[0]}}</td>
-                <td>{{dateDebutSoireeClotureJour}}-{{dateDebutSoireeCloture[1]}}-{{ dateDebutSoireeCloture[0]}} {{ dateDebutSoireeClotureHeure }} à {{ dateFinSoireeClotureHeure }}</td>
+                <td>{{ dateDebut[0]}}-{{dateDebut[1]}}-{{dateDebutJour}}</td>
+                <td>{{ dateFin[0]}}-{{dateFin[1]}}-{{dateFinJour}}</td>
+                <td>{{ dateDebutSoireeCloture[0]}}-{{dateDebutSoireeCloture[1]}}-{{dateDebutSoireeClotureJour}} {{ dateDebutSoireeClotureHeure }} à {{ dateFinSoireeClotureHeure }}</td>
                 <td>{{ encan.nbLots }}</td>
                 <td>modifier</td>
                 <td>supprimer</td>
@@ -106,9 +108,9 @@
     const dateFinSoireeCloture = ref("");
     const dateFinSoireeClotureHeure = ref("");
 
-
     let encanPublieMAJ;
-    const encanRecherche = ref();
+    const encanRechercheNumEncan = ref();
+    const encanRechercheDate = ref();
 
     const errorMessage = ref('');
     const successMessage = ref('');
@@ -138,14 +140,14 @@
 
             encanPublieMAJ = async function (statutPublie) {
                 let encanId = event.srcElement.getAttribute("encanId")
-                encan = listeEncans.value.find(e => e.id == encanId);
+                encan.value = listeEncans.value.find(e => e.id == encanId);
 
-                if (encan.estPublie != statutPublie) {
-                    encan.estPublie = !encan.estPublie;
+                if (encan.value.estPublie != statutPublie) {
+                    encan.value.estPublie = !encan.value.estPublie;
 
                     let formData = reactive({
-                        numeroEncan: encan.numeroEncan,
-                        estPublie: encan.estPublie,
+                        numeroEncan: encan.value.numeroEncan,
+                        estPublie: encan.value.estPublie,
                     });
 
                     const response = await store.dispatch('mettreAJourEncanPublie', formData);
@@ -174,15 +176,22 @@
         }
     });
 
-    watch(encanRecherche, () => {
+    watch(encanRechercheNumEncan, () => {
         listeEncansFiltree.value = listeEncans.value;
 
-        listeEncansFiltree.value = listeEncansFiltree.value.filter(({ numeroEncan, dateDebut, dateFin, dateDebutSoireeCloture, dateFinSoireeCloture }) =>
-            numeroEncan.toString().startsWith(encanRecherche.value) ||
-            dateDebut.toString().startsWith(encanRecherche.value) ||
-            dateFin.toString().startsWith(encanRecherche.value) ||
-            dateDebutSoireeCloture.toString().startsWith(encanRecherche) ||
-            dateFinSoireeCloture.toString().startsWith(encanRecherche.value)
+        listeEncansFiltree.value = listeEncansFiltree.value.filter(({ numeroEncan }) =>
+            numeroEncan.toString().startsWith(encanRechercheNumEncan.value)
+        );
+    });
+
+    watch(encanRechercheDate, () => {
+        listeEncansFiltree.value = listeEncans.value;
+
+        listeEncansFiltree.value = listeEncansFiltree.value.filter(({ dateDebut, dateFin, dateDebutSoireeCloture, dateFinSoireeCloture }) =>
+            dateDebut.toString().startsWith(encanRechercheDate.value) ||
+            dateFin.toString().startsWith(encanRechercheDate.value) ||
+            dateDebutSoireeCloture.toString().startsWith(encanRechercheDate.value) ||
+            dateFinSoireeCloture.toString().startsWith(encanRechercheDate.value)
         );
     });
 </script>
