@@ -197,11 +197,15 @@ const modifierLot = async () => {
         router.push({ name: 'TableauDeBordInventaire' });
       }, 2000); 
     } else {
-      erreur.value = "Erreur lors de la modification du lot: " + response.message;
+      erreur.value = "Erreur lors de la modification du lot: " + response.data;
       message.value = '';
     }
   } catch (error) {
-    erreur.value = "Erreur lors de la modification du lot: " + error;
+    if (error.response && error.response.data) {
+      erreur.value = "Erreur lors de la modification du lot: " + error.response.data;
+    } else {
+      erreur.value = "Erreur lors de la modification du lot: " + error.message;
+    }
     message.value = '';
   }
 };

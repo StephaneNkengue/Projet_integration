@@ -185,11 +185,15 @@ const creerLot = async () => {
         router.push({ name: 'TableauDeBordInventaire' });
       }, 2000);
     } else {
-      erreur.value = "Erreur lors de la création du lot: " + response.message;
+      erreur.value = "Erreur lors de la création du lot: " + response.data;
       message.value = '';
     }
   } catch (error) {
-    erreur.value = "Erreur lors de la création du lot: " + error;
+    if (error.response && error.response.data) {
+      erreur.value = "Erreur lors de la création du lot: " + error.response.data;
+    } else {
+      erreur.value = "Erreur lors de la création du lot: " + error.message;
+    }
     message.value = '';
   }
 };
