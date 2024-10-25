@@ -7,6 +7,7 @@ import Contact from "@/components/views/Contact.vue";
 import APropos from "@/components/views/APropos.vue";
 import TableauDeBordInventaire from "@/components/views/TableauDeBordInventaire.vue";
 import EncanPresent from "@/components/views/EncanPresent.vue";
+import EncansFuturs from "@/components/views/EncansFuturs.vue";
 import Encan from "@/components/views/Encan.vue";
 import TousLesEncans from "@/components/views/TousLesEncans.vue";
 import DetailsLot from "@/components/views/DetailsLot.vue";
@@ -65,6 +66,12 @@ const routes = [
         path: "/touslesencans",
         name: "TousLesEncans",
         component: TousLesEncans,
+        meta: { requiresAuth: false },
+    },
+    {
+        path: "/encansfuturs",
+        name: "EncansFuturs",
+        component: EncansFuturs,
         meta: { requiresAuth: false },
     },
     {
