@@ -49,7 +49,7 @@ namespace Gamma2024.Server.Services
             return encans;
         }
 
-        public async Task<(bool Success, string Message)> CreerEncan(EncanCreerVM vm)
+        public async Task<(bool Success, string Message)> CreerEncan(EncanVM vm)
         {
             var (isValid, errorMessage) = EncanValidation.ValidateEncan(vm);
 
@@ -91,5 +91,39 @@ namespace Gamma2024.Server.Services
             return _context.Encans.FirstOrDefault(e => e.Id == idEncan);
         }
 
+        public async Task<(bool success, object message)> ModifierEncan(int id, EncanVM model)
+        {
+            var (isValid, errorMessage) = EncanValidation.ValidateEncan(model);
+            if (!isValid)
+            {
+                return (false, errorMessage);
+            }
+
+            var encan = await _context.Encans.FindAsync(id);
+            if (encan == null)
+            {
+                return (false, "Encan non trouvé");
+            }
+
+            using var transaction = await _context.Database.BeginTransactionAsync();
+
+            try
+            {
+                encan.NumeroEncan = model.NumeroEncan;
+                encan.DateDebut = model.DateDebut;
+                encan.DateFin = model.DateFin;
+
+
+                await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
+
+                return (true, "Encan modifié avec succès");
+            }
+            catch (Exception ex)
+            {
+                await transaction.RollbackAsync();
+                return (false, $"Une erreur est survenue lors de la modification de l'encan : {ex.Message}");
+            }
+        }
     }
 }

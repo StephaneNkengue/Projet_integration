@@ -21,8 +21,6 @@
     "datatables.net-select-dt": "^2.1.0",
     "datatables.net-vue3": "^3.0.2",
     "bootstrap-table": "^1.23.5",
-    "datatables.net-dt": "^2.1.8",
-    "datatables.net-vue3": "^3.0.2",
     "primeicons": "^7.0.0",
     "primevue": "^4.0.7",
     "vue": "^3.4.29",

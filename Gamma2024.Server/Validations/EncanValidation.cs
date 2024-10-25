@@ -6,7 +6,7 @@ namespace Gamma2024.Server.Validations
     public class EncanValidation
     {
 
-        public static (bool IsValid, string ErrorMessage) ValidateEncan(EncanCreerVM model)
+        public static (bool IsValid, string ErrorMessage) ValidateEncan(EncanVM model)
         {
             if (model == null)
             {
@@ -44,7 +44,7 @@ namespace Gamma2024.Server.Validations
             //    return (false, "Le début de la soirée de clotûre ne peut pas être avant la date de fin.");
             //}
 
-            return (true, "L'encan a été créé.");
+            return (true, "L'encan est valide.");
         }
     }
 }

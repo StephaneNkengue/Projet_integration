@@ -1,6 +1,6 @@
 <template>
   <div class="d-flex flex-column justify-content-between">
-    <h2 class="d-flex justify-content-center">Ajout d'un encan</h2>
+    <h2 class="d-flex justify-content-center">Modification de l'encan</h2>
 
     <div v-if="errorMessage" class="alert alert-danger">
       {{ errorMessage }}
@@ -12,13 +12,14 @@
     </div>
 
     <div class="d-flex justify-content-center mt-4">
-      <form @submit.prevent="ModifierEncan" class="text-center">
+      <form @submit.prevent="updateEncan" class="text-center">
         <div class="mb-3">
           <label for="numeroEncan" class="form-label">Numéro de l'encan:</label>
           <input
             type="number"
+            disabled
             aria-label="numeroEncan"
-            v-model="formData.numeroEncan"
+            v-model="encanData.numeroEncan"
             :class="['form-control', { 'is-invalid': v.numeroEncan.$error }]"
             @blur="v.numeroEncan.$touch()"
           />
@@ -30,7 +31,7 @@
           <label for="dateDebut" class="form-label">Date de début:</label>
           <VueDatePicker
             type="date"
-            v-model="formData.dateDebut"
+            v-model="encanData.dateDebut"
             :class="['form-control', { 'is-invalid': v.dateDebut.$error }]"
             @blur="v.dateDebut.$touch()"
             :min-date="new Date()"
@@ -50,7 +51,7 @@
           <label for="dateFin" class="form-label">Date de fin:</label>
           <VueDatePicker
             type="date"
-            v-model="formData.dateFin"
+            v-model="encanData.dateFin"
             :class="['form-control', { 'is-invalid': v.dateFin.$error }]"
             @blur="v.dateFin.$touch()"
             :min-date="desacDateFinEntre"
@@ -66,15 +67,18 @@
 
         <button
           type="button"
-          class="btn bleuMarinSecondaireFond btnSurvolerBleuMoyenFond btnClick text-white"
+          @click="resetForm"
+          class="btn btn-secondary me-3"
+          :disabled="!formDataChanged"
         >
           Réinitialiser
         </button>
         <button
           type="submit"
-          class="btn bleuMarinSecondaireFond btnSurvolerBleuMoyenFond btnClick text-white"
+          :disabled="!formDataChanged"
+          :class="[formDataChanged ? 'bleuValide' : 'bleuNonValide', 'btn ']"
         >
-          Ajouter
+          Enregistrer
         </button>
       </form>
     </div>
@@ -82,26 +86,30 @@
 </template>
 
 <script setup>
-import { ref, reactive, computed, onMounted } from "vue";
+import { ref, reactive, computed, onMounted, watch } from "vue";
 import useVuelidate from "@vuelidate/core";
 import { required, helpers } from "@vuelidate/validators";
 import { useStore } from "vuex";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import VueDatePicker from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
 import { fr } from "date-fns/locale";
 
 const route = useRoute();
+const router = useRouter();
 const store = useStore();
 
 const messageRequis = helpers.withMessage(
   "Ce champ est obligatoire.",
   required
 );
-const errorMessage = ref("");
-const successMessage = ref("");
+let errorMessage = ref("");
+let successMessage = ref("");
+let formDataChanged = ref(false);
+let initialFormData = ref({});
 
-let formData = reactive({
+let encanData = reactive({
+  id: "",
   numeroEncan: "",
   dateDebut: "",
   dateFin: "",
@@ -110,10 +118,14 @@ let formData = reactive({
 onMounted(async () => {
   const response = await store.dispatch("obtenirUnEncanParId", route.params.id);
   if (response) {
-    formData.numeroEncan = response.numeroEncan;
-    formData.dateDebut = response.dateDebut;
-    formData.dateFin = response.dateFin;
+    encanData.id = route.params.id;
+    encanData.numeroEncan = response.numeroEncan;
+    encanData.dateDebut = response.dateDebut;
+    encanData.dateFin = response.dateFin;
   }
+
+  initialFormData.value = JSON.parse(JSON.stringify(encanData));
+  formDataChanged.value = false;
 });
 
 let rules = computed(() => {
@@ -124,10 +136,10 @@ let rules = computed(() => {
   };
 });
 
-const v = useVuelidate(rules, formData);
+const v = useVuelidate(rules, encanData);
 
 const desacDateFinEntre = computed(() => {
-  const debutDate = formData.dateDebut;
+  const debutDate = encanData.dateDebut;
 
   if (debutDate != "") {
     const dateDebutDesac = new Date(debutDate);
@@ -139,7 +151,7 @@ const desacDateFinEntre = computed(() => {
 });
 
 const desacDateDebutEntre = computed(() => {
-  const finDate = formData.dateFin;
+  const finDate = encanData.dateFin;
 
   if (finDate != "") {
     const dateFinDesac = new Date(finDate);
@@ -149,6 +161,55 @@ const desacDateDebutEntre = computed(() => {
   }
   return null;
 });
+
+watch(
+  () => JSON.parse(JSON.stringify(encanData)), // Deep clone copy to avoid same ref type.
+  () => {
+    // Comparaison entre l'état initial et l'état actuel
+    if (JSON.stringify(encanData) !== JSON.stringify(initialFormData.value)) {
+      formDataChanged.value = true;
+    } else {
+      formDataChanged.value = false;
+    }
+  },
+  { deep: true }
+);
+
+const resetForm = function () {
+  Object.assign(encanData, JSON.parse(JSON.stringify(initialFormData.value)));
+  v.value.$reset();
+  formDataChanged.value = false;
+};
+
+const updateEncan = async function () {
+  try {
+    const result = await store.dispatch("modifierEncan", encanData);
+    if (result.success) {
+      successMessage.value = result.message;
+      setTimeout(() => {
+        errorMessage.value = "";
+        successMessage.value = "";
+      }, 2000);
+      setTimeout(() => {
+        router.push({ name: "TableauDeBordEncans" });
+      }, 1000);
+    } else {
+      errorMessage.value = result.message;
+    }
+  } catch (error) {
+    console.error("Erreur lors de la modification de l'encan:", error);
+  }
+};
 </script>
 
-<style scoped></style>
+<style scoped>
+.bleuValide {
+  background-color: #052445;
+  color: white;
+}
+
+.bleuNonValide {
+  background-color: #5a708a;
+  color: white;
+}
+</style>

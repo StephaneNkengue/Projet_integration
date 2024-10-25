@@ -33,7 +33,7 @@ namespace Gamma2024.Server.Controllers
         }
 
         [HttpPost("creerEncan")]
-        public async Task<IActionResult> CreerEncan([FromBody] EncanCreerVM vm)
+        public async Task<IActionResult> CreerEncan([FromBody] EncanVM vm)
         {
             if (!ModelState.IsValid)
             {
@@ -78,6 +78,25 @@ namespace Gamma2024.Server.Controllers
             }
 
             return Ok(encan);
+        }
+
+        [HttpPut("modifierEncan/{id}")]
+        public async Task<IActionResult> Modifier(int id, [FromBody] EncanVM model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var (success, message) = await _encanService.ModifierEncan(id, model);
+            if (success)
+            {
+                return Ok(new { success = true, message = message });
+            }
+            else
+            {
+                return BadRequest(new { success = false, message = message });
+            }
         }
     }
 }

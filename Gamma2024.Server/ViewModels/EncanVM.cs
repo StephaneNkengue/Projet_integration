@@ -1,6 +1,6 @@
 namespace Gamma2024.Server.ViewModels
 {
-    public class EncanCreerVM
+    public class EncanVM
     {
         public int NumeroEncan { get; set; }
         public DateTime DateDebut { get; set; }
