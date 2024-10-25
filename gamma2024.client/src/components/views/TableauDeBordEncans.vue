@@ -65,6 +65,9 @@
           <th>Actions</th>
         </tr>
       </thead>
+      <tbody>
+
+      
       <tr v-for="encan in listeEncansFiltree" :key="encan.id">
         <td>{{ encan.numeroEncan }}</td>
         <td class="d-flex justify-content-center">
@@ -154,8 +157,9 @@
         </td>
         <ConfirmDelete :h="encan" @supprimerEncan="supprimerMonEncan" />
       </tr>
-    </table>
   </div>
+</tbody>
+    </table>
 </template>
 <script setup>
 import { onMounted, ref, watch } from "vue";
