@@ -39,6 +39,35 @@ namespace Gamma2024.Server.Services
             return lots.ToList();
         }
 
+        public LotDetailsVM ChercherDetailsLotParId(int idLot)
+        {
+            var lot = _context.Lots
+                .Include(l => l.Photos)
+                .Include(l => l.Categorie)
+                .Include(l => l.Medium)
+                .FirstOrDefault(l => l.Id == idLot);
+
+            var retourLot = new LotDetailsVM()
+            {
+                Id = lot.Id,
+                Numero = lot.Numero,
+                ValeurEstimeMax = lot.ValeurEstimeMax,
+                ValeurEstimeMin = lot.ValeurEstimeMin,
+                Artiste = lot.Artiste,
+                Mise = lot.Mise,
+                EstVendu = lot.EstVendu,
+                Photos = lot.Photos.Select(p => p.Lien),
+                Description = lot.Description,
+                EstLivrable = lot.EstLivrable,
+                Hauteur = lot.Hauteur,
+                Largeur = lot.Largeur,
+                Medium = lot.Medium.Type,
+                Categorie = lot.Categorie.Nom
+            };
+
+            return retourLot;
+        }
+
         public ICollection<LotAffichageAdministrateurVM> ChercherTousLots()
         {
             var lots = _context.Lots

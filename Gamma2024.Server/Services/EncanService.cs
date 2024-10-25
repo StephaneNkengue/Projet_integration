@@ -49,5 +49,27 @@ namespace Gamma2024.Server.Services
 
             return null;
         }
+
+        public EncanAffichageVM ChercherEncanEnCours()
+        {
+            var encan = _context.Encans
+                .FirstOrDefault(e => DateTime.Now < e.DateFinSoireeCloture && DateTime.Now > e.DateDebut);
+
+            if (encan != null && encan.EstPublie)
+            {
+                return new EncanAffichageVM()
+                {
+                    Id = encan.Id,
+                    NumeroEncan = encan.NumeroEncan,
+                    DateDebut = encan.DateDebut,
+                    DateFin = encan.DateFin,
+                    DateFinSoireeCloture = encan.DateFinSoireeCloture,
+                    DateDebutSoireeCloture = encan.DateDebutSoireeCloture
+                };
+
+            }
+
+            return null;
+        }
     }
 }

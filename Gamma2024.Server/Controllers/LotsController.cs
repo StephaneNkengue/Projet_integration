@@ -36,5 +36,20 @@ namespace Gamma2024.Server.Controllers
             ICollection<LotAffichageAdministrateurVM> lots = _lotService.ChercherTousLots();
             return lots;
         }
+
+        [HttpGet("chercherDetailsLotParId/{idLot}")]
+        public LotDetailsVM ChercherDetailsLotParId(string idLot)
+        {
+            try
+            {
+                var idLotInt = int.Parse(idLot);
+                LotDetailsVM lot = _lotService.ChercherDetailsLotParId(idLotInt);
+                return lot;
+            }
+            catch
+            {
+                return null;
+            }
+        }
     }
 }
