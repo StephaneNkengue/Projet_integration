@@ -3,61 +3,61 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace Gamma2024.Server.Extensions
 {
-	public static class Encans232et233CSVExtensions
-	{
-		public static IEnumerable<Categorie> GetCategories(this IEnumerable<string> source)
-		{
-			foreach (var line in source)
-			{
-				var columns = line.Split(';');
+    public static class Encans232et233CSVExtensions
+    {
+        public static IEnumerable<Categorie> GetCategories(this IEnumerable<string> source)
+        {
+            foreach (var line in source)
+            {
+                var columns = line.Split(';');
 
-				if (!string.IsNullOrEmpty(columns[1]))
-				{
-					yield return new Categorie
-					{
-						Nom = columns[6]
-					};
-				}
+                if (!string.IsNullOrEmpty(columns[1]))
+                {
+                    yield return new Categorie
+                    {
+                        Nom = columns[6]
+                    };
+                }
 
-			}
-		}
+            }
+        }
 
-		public static IEnumerable<Medium> GetMediums(this IEnumerable<string> source)
-		{
-			foreach (var line in source)
-			{
-				var columns = line.Split(';');
+        public static IEnumerable<Medium> GetMediums(this IEnumerable<string> source)
+        {
+            foreach (var line in source)
+            {
+                var columns = line.Split(';');
 
-				if (!string.IsNullOrEmpty(columns[1]))
-				{
-					yield return new Medium
-					{
-						Type = columns[10]
-					};
-				}
+                if (!string.IsNullOrEmpty(columns[1]))
+                {
+                    yield return new Medium
+                    {
+                        Type = columns[10]
+                    };
+                }
 
-			}
-		}
+            }
+        }
 
-		public static IEnumerable<Lot> ToLotParEncan(this IEnumerable<string> source, int numeroEncan)
-		{
-			foreach (var line in source)
-			{
-				var columns = line.Split(';');
+        public static IEnumerable<Lot> ToLotParEncan(this IEnumerable<string> source, int numeroEncan)
+        {
+            foreach (var line in source)
+            {
+                var columns = line.Split(';');
 
-				if (!string.IsNullOrEmpty(columns[1]) && int.Parse(columns[0]) == numeroEncan)
-				{
-					var livrable = false;
-					if (columns[11] == "oui")
-					{
-						livrable = true;
-					}
+                if (!string.IsNullOrEmpty(columns[1]) && int.Parse(columns[0]) == numeroEncan)
+                {
+                    var livrable = false;
+                    if (columns[11] == "oui")
+                    {
+                        livrable = true;
+                    }
 
-					var prixMinVente = 0.00;
-					if (!columns[3].IsNullOrEmpty())
-					{
-						prixMinVente = double.Parse(columns[3].Replace("$", "").Trim());
-					}
+                    var prixMinVente = 0.00;
+                    if (!columns[3].IsNullOrEmpty())
+                    {
+                        prixMinVente = double.Parse(columns[3].Replace("$", "").Trim());
+                    }
 
                     var dimensions = columns[8].Split("x");
 
@@ -80,31 +80,32 @@ namespace Gamma2024.Server.Extensions
                         {
                             Type = columns[10]
                         },
-                        estLivrable = livrable
+                        EstLivrable = livrable,
+                        Mise = 0
                     };
                 }
 
-			}
-		}
+            }
+        }
 
-		public static IEnumerable<IEnumerable<string>> GetImagesParLotParEncan(this IEnumerable<string> source, int numeroEncan)
-		{
-			foreach (var line in source)
-			{
-				var columns = line.Split(';');
+        public static IEnumerable<IEnumerable<string>> GetImagesParLotParEncan(this IEnumerable<string> source, int numeroEncan)
+        {
+            foreach (var line in source)
+            {
+                var columns = line.Split(';');
 
-				if (!string.IsNullOrEmpty(columns[1]) && int.Parse(columns[0]) == numeroEncan)
-				{
-					var images = new List<string>();
+                if (!string.IsNullOrEmpty(columns[1]) && int.Parse(columns[0]) == numeroEncan)
+                {
+                    var images = new List<string>();
 
-					images.Add(columns[12]);
-					images.Add(columns[13]);
-					images.Add(columns[14]);
+                    images.Add(columns[12]);
+                    images.Add(columns[13]);
+                    images.Add(columns[14]);
 
-					yield return images;
-				}
+                    yield return images;
+                }
 
-			}
-		}
-	}
+            }
+        }
+    }
 }

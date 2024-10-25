@@ -1,6 +1,6 @@
 <template>
     <div class="d-flex flex-column align-items-center pb-3">
-        <h1>Encan en cours <span v-if="encan != ''">({{encan.numeroEncan}})</span></h1>
+        <h1>Encan {{ numeroEncan }}</h1>
 
         <div class="d-flex gap-2" v-if="chargement">
             <div class="spinner-border" role="status">
@@ -33,8 +33,13 @@
     const chargement = ref(true);
     const encan = ref('');
 
+    const props = defineProps({
+        numeroEncan: String,
+    });
+
     onMounted(async () => {
-        const response = await store.dispatch("chercherEncanEnCours");
+        const numero = props.numeroEncan;
+        const response = await store.dispatch("chercherEncanParNumero", numero);
         encan.value = response.data
 
         chargement.value = false;

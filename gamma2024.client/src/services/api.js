@@ -45,7 +45,7 @@ async function findWorkingApi() {
 }
 
 export async function initApi(getToken) {
-    if (api) return api;
+  if (api) return api;
 
     const baseURL = await findWorkingApi();
     api = axios.create({
@@ -64,7 +64,7 @@ export async function initApi(getToken) {
         return config;
     });
 
-    return api;
+  return api;
 }
 
 export default { initApi };

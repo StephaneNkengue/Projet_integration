@@ -1,13 +1,12 @@
 using Gamma2024.Server.Models;
 using Gamma2024.Server.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.Extensions.Logging; // Added for logging
 
 namespace Gamma2024.Server.Controllers
 {
@@ -43,17 +42,28 @@ namespace Gamma2024.Server.Controllers
                 user = await _userManager.FindByNameAsync(model.EmailOuPseudo);
                 if (user == null)
                 {
-                    return BadRequest(new { message = "Utilisateur non trouvé" });
+                    return BadRequest(new { element = "user_pseudo", message = "Aucun utilisateur trouvé" });
                 }
             }
 
             var result = await _signInManager.PasswordSignInAsync(user, model.Password, false, lockoutOnFailure: false);
-            if (result.Succeeded)
+            if (result.IsLockedOut)
+            {
+                return BadRequest(new
+                {
+                    element = "lock",
+                    message = "Votre compte est actuellement bloqué, " +
+                    "                           veuillez contacter l'administrateur."
+                });
+            }
+            else if (result.Succeeded)
             {
                 var roles = await _userManager.GetRolesAsync(user);
-                await _signInManager.SignInAsync(user, isPersistent: false);
 
                 var token = GenerateJwtToken(user, roles.ToArray());
+
+                await _signInManager.SignInAsync(user, isPersistent: false);
+
                 return Ok(new
                 {
                     message = "Connexion réussie",
@@ -68,7 +78,7 @@ namespace Gamma2024.Server.Controllers
             }
             else
             {
-                return BadRequest(new { message = "Mot de passe incorrect" });
+                return BadRequest(new { element = "password", message = "Le mot de passe associé au compte est incorrect" });
             }
         }
 
@@ -113,10 +123,10 @@ namespace Gamma2024.Server.Controllers
         {
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Name, user.UserName ?? string.Empty),
-                new Claim(ClaimTypes.NameIdentifier, user.Id),
-                new Claim(ClaimTypes.Email, user.Email ?? string.Empty),
-                new Claim("Avatar", user.Avatar ?? string.Empty)
+                new(ClaimTypes.Name, user.UserName ?? string.Empty),
+                new(ClaimTypes.NameIdentifier, user.Id),
+                new(ClaimTypes.Email, user.Email ?? string.Empty),
+                new("Avatar", user.Avatar ?? string.Empty)
             };
 
             foreach (var role in roles)

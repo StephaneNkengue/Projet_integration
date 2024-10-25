@@ -39,7 +39,6 @@
         </tbody>
       </table>
     </div>
-
 </template>
 
 <script setup>
@@ -69,6 +68,10 @@
         }
     }
   };
+        for (let i = positionDebut; i < positionFin && i < listeLots.value.length; i++) {
+            lotsAffiche.value.push(listeLots.value[i]);
+        }
+    }
 </script>
 
 <style scoped>

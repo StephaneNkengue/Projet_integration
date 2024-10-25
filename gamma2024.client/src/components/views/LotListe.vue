@@ -1,19 +1,19 @@
 <template>
-    <router-link class="text-decoration-none" to="DetailsLot">
+    <router-link class="text-decoration-none" :to="{name: 'DetailsLot', params: {idLot: lot.id}}">
         <div class="card">
             <div class="card-body">
                 <div class="d-flex flex-md-row flex-column gap-5 flex-wrap justify-content-between">
                     <div class="d-flex flex-column justify-content-center align-items-center">
-                        <img v-bind:src="lot.photos[0].lien"
+                        <img v-bind:src="urlApi + lot.photos[0].lien"
                              height="150"
                              alt="Image du lot" />
                     </div>
 
 
                     <div class="d-flex align-items-center gap-3 justify-content-between">
-                        <p class=" mt-1 mb-0">Lot {{lot.code}}</p>
+                        <p class=" mt-1 mb-0">Lot {{lot.numero}}</p>
                         <p class=" mt-1 mb-0">{{lot.artiste}}</p>
-                        <p class=" mt-1 mb-0">{{lot.dimension}} po</p>
+                        <p class=" mt-1 mb-0">{{lot.hauteur}} x {{lot.largeur}} po</p>
                     </div>
 
 
@@ -29,7 +29,7 @@
                              height="50"
                              width="50"
                              alt="Livrable"
-                             v-if="lot.livrable" />
+                             v-if="lot.estLivrable" />
 
                         <img src="/icons/IconeNonLivrable.png"
                              height="50"
@@ -45,27 +45,43 @@
 </template>
 
 <script setup>
-    import { ref } from 'vue'
+    import { onMounted, ref } from 'vue'
+    import { useStore } from "vuex";
 
-    let lotRecu = {
-        code: "1a",
-        artiste: "Nom de l'artiste",
-        dimension: "12 x 13",
-        valeurEstimeMin: 1000.00,
-        valeurEstimeMax: 2000.00,
-        mise: 1100.03,
-        livrable: false,
-        photos: [
+    const store = useStore();
+
+    const props = defineProps({
+        lotRecu: Object
+    })
+
+    const urlApi = ref("/api")
+    const lot = ref({
+        "id": 0,
+        "numero": "",
+        "description": "",
+        "valeurEstimeMin": 0,
+        "valeurEstimeMax": 0,
+        "artiste": " ",
+        "mise": 0,
+        "estVendu": true,
+        "dateFinVente": "",
+        "estLivrable": true,
+        "largeur": 0,
+        "hauteur": 0,
+        "photos": [
             {
-                lien: "https://placehold.co/9000",
-            },
-            {
-                lien: "https://placehold.co/6000",
-            },
+                "id": 0,
+                "lien": "",
+                "idLot": 0,
+                "lot": null
+            }
         ]
-    };
+    })
 
-    const lot = ref(lotRecu)
+    onMounted(async () => {
+        lot.value = props.lotRecu
+        urlApi.value = await store.state.api.defaults.baseURL.replace("\api", "")
+    })
 
 </script>
 

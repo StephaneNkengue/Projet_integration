@@ -12,8 +12,13 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Gamma2024.Server.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
+<<<<<<<< HEAD:Gamma2024.Server/Migrations/20241021122718_InitialCreate.Designer.cs
     [Migration("20241021122718_InitialCreate")]
     partial class InitialCreate
+========
+    [Migration("20241023195931_EnleverVendeurIdDeAdresse")]
+    partial class EnleverVendeurIdDeAdresse
+>>>>>>>> dev:Gamma2024.Server/Migrations/20241023195931_EnleverVendeurIdDeAdresse.Designer.cs
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -76,7 +81,7 @@ namespace Gamma2024.Server.Migrations
                         new
                         {
                             Id = 1,
-                            CodePostal = "12345",
+                            CodePostal = "A1A1A1",
                             EstDomicile = true,
                             IdApplicationUser = "8e445865-a24d-4543-a6c6-9443d048cdb9",
                             Numero = 123,
@@ -88,7 +93,7 @@ namespace Gamma2024.Server.Migrations
                         new
                         {
                             Id = 2,
-                            CodePostal = "67890",
+                            CodePostal = "A1A1A1",
                             EstDomicile = true,
                             IdApplicationUser = "1d8ac862-e54d-4f10-b6f8-638808c02967",
                             Numero = 456,
@@ -179,8 +184,13 @@ namespace Gamma2024.Server.Migrations
                         {
                             Id = "8e445865-a24d-4543-a6c6-9443d048cdb9",
                             AccessFailedCount = 0,
+<<<<<<<< HEAD:Gamma2024.Server/Migrations/20241021122718_InitialCreate.Designer.cs
                             Avatar = "/Avatars/default.png",
                             ConcurrencyStamp = "2e49be6c-75b9-4009-b1c9-9505c2bb5cd2",
+========
+                            Avatar = "avatars/default.png",
+                            ConcurrencyStamp = "107a9ac8-e425-425a-9235-f9152f485d03",
+>>>>>>>> dev:Gamma2024.Server/Migrations/20241023195931_EnleverVendeurIdDeAdresse.Designer.cs
                             Email = "admin@example.com",
                             EmailConfirmed = true,
                             FirstName = "Super",
@@ -188,9 +198,16 @@ namespace Gamma2024.Server.Migrations
                             Name = "Admin",
                             NormalizedEmail = "ADMIN@EXAMPLE.COM",
                             NormalizedUserName = "ADMIN@EXAMPLE.COM",
+<<<<<<<< HEAD:Gamma2024.Server/Migrations/20241021122718_InitialCreate.Designer.cs
                             PasswordHash = "AQAAAAIAAYagAAAAEACVK9XOMB1/qzEJTFR0goCimEDRAPPAKmQ8DJh3UGyBy1PQfLmykEWdF9WWDXVcAA==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "be7880be-fd27-47a1-a576-cfa8079b6b5a",
+========
+                            PasswordHash = "AQAAAAIAAYagAAAAEMbqUaQkCH39guOkEufEMl9ADHYeT19r4lAkBt0pHiCe4ETEtmstuYgZma1DFBkkbA==",
+                            PhoneNumber = "466-666-6666",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "2e9b61a8-b289-4f13-9311-1fca4921d03a",
+>>>>>>>> dev:Gamma2024.Server/Migrations/20241023195931_EnleverVendeurIdDeAdresse.Designer.cs
                             TwoFactorEnabled = false,
                             UserName = "admin@example.com"
                         },
@@ -198,8 +215,13 @@ namespace Gamma2024.Server.Migrations
                         {
                             Id = "1d8ac862-e54d-4f10-b6f8-638808c02967",
                             AccessFailedCount = 0,
+<<<<<<<< HEAD:Gamma2024.Server/Migrations/20241021122718_InitialCreate.Designer.cs
                             Avatar = "/Avatars/default.png",
                             ConcurrencyStamp = "055b0e02-6c94-42f8-8c67-530b16b66950",
+========
+                            Avatar = "avatars/default.png",
+                            ConcurrencyStamp = "fd5b67c9-5ae6-4ad7-a485-e1901b99e93f",
+>>>>>>>> dev:Gamma2024.Server/Migrations/20241023195931_EnleverVendeurIdDeAdresse.Designer.cs
                             Email = "client@example.com",
                             EmailConfirmed = true,
                             FirstName = "Jean",
@@ -207,9 +229,16 @@ namespace Gamma2024.Server.Migrations
                             Name = "Dupont",
                             NormalizedEmail = "CLIENT@EXAMPLE.COM",
                             NormalizedUserName = "CLIENT@EXAMPLE.COM",
+<<<<<<<< HEAD:Gamma2024.Server/Migrations/20241021122718_InitialCreate.Designer.cs
                             PasswordHash = "AQAAAAIAAYagAAAAELfU2gkaaBP7ixysRjaMX820GePtihBazCUz0bzhcmqsatyJna52Ivt6PJMMOHsx+A==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "248eec75-06c0-4b04-b170-1480e301695c",
+========
+                            PasswordHash = "AQAAAAIAAYagAAAAELVAHytQGOZPO18ydtn9gw1UXjfbbQ9WnnI8hn6TPqVmEEOwGZ8dRuDNILAWhp/Org==",
+                            PhoneNumber = "455-555-5555",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "0905a04e-94d9-4090-8fc5-79f17b51a568",
+>>>>>>>> dev:Gamma2024.Server/Migrations/20241023195931_EnleverVendeurIdDeAdresse.Designer.cs
                             TwoFactorEnabled = false,
                             UserName = "client@example.com"
                         });
@@ -435,6 +464,9 @@ namespace Gamma2024.Server.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("EstLivrable")
+                        .HasColumnType("bit");
+
                     b.Property<bool>("EstVendu")
                         .HasColumnType("bit");
 
@@ -480,9 +512,6 @@ namespace Gamma2024.Server.Migrations
 
                     b.Property<double>("ValeurEstimeMin")
                         .HasColumnType("float");
-
-                    b.Property<bool>("estLivrable")
-                        .HasColumnType("bit");
 
                     b.HasKey("Id");
 

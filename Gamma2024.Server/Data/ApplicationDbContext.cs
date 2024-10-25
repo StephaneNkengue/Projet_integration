@@ -173,7 +173,7 @@ namespace Gamma2024.Server.Data
                     Numero = 123,
                     Rue = "Rue Admin",
                     Ville = "Ville Admin",
-                    CodePostal = "12345",
+                    CodePostal = "A1A1A1",
                     Pays = "Pays Admin",
                     Province = "Québec",
                     IdApplicationUser = adminId,  // Utilisez adminId ici
@@ -185,7 +185,7 @@ namespace Gamma2024.Server.Data
                     Numero = 456,
                     Rue = "Rue Client",
                     Ville = "Ville Client",
-                    CodePostal = "67890",
+                    CodePostal = "A1A1A1",
                     Pays = "Pays Client",
                     Province = "Québec",
                     IdApplicationUser = clientId,  // Utilisez clientId ici

@@ -216,17 +216,17 @@
 
 
 <style>
-    @import "datatables.net-dt";
+@import "datatables.net-dt";
 
-    .boutonPersonnalise {
-        margin: 5px;
-        padding-left: 15px;
-        padding-right: 15px;
-        border: none;
-        border-radius: 5px;
-        font-size: 15px;
-        height: 25px;
-    }
+.boutonPersonnalise {
+  margin: 5px;
+  padding-left: 15px;
+  padding-right: 15px;
+  border: none;
+  border-radius: 5px;
+  font-size: 15px;
+  height: 25px;
+}
 
     h2 {
         padding-left: 15px;
@@ -247,10 +247,14 @@
         text-align: center !important;
     }
 
-    td {
-        font-size: 13px;
-        text-align: center !important;
-    }
+li label {
+  font-size: 13px;
+  padding-left: 5px;
+}
+
+.dt-column-title {
+  font-weight: bold;
+}
 
     tr:nth-child(even) {
         background-color: #f8f9fa;
