@@ -2,9 +2,24 @@
   <div class="container mt-5">
     <h1 class="text-center mb-4">Création d'un nouveau lot</h1>
     <form @submit.prevent="creerLot">
+      <!-- Champ pour ajouter de nouvelles photos -->
       <div class="mb-3">
-        <label for="numero" class="form-label">Numéro</label>
-        <input v-model="lot.numero" type="text" class="form-control" id="numero" required>
+        <label for="nouvellesPhotos" class="form-label">Ajouter des photos</label>
+        <input type="file" class="form-control" id="nouvellesPhotos" multiple @change="ajouterNouvellesPhotos">
+      </div>
+      <!-- Prévisualisation des nouvelles photos -->
+      <div v-if="nouvellesPhotos.length > 0" class="mb-3">
+        <h4>Nouvelles photos</h4>
+        <div class="d-flex flex-wrap">
+          <div v-for="(photo, index) in nouvellesPhotos" :key="index" class="me-2 mb-2">
+            <img :src="photo.preview" alt="Nouvelle photo" style="width: 100px; height: 100px; object-fit: cover;">
+          </div>
+        </div>
+      </div>
+      <!-- Le reste des champs du formulaire -->
+      <div class="mb-3">
+        <label for="code" class="form-label">Numéro</label>
+        <input v-model="lot.numero" type="text" class="form-control" id="code" required>
       </div>
       <div class="mb-3">
         <label for="description" class="form-label">Description</label>
@@ -24,7 +39,7 @@
       </div>
       <div class="mb-3">
         <label for="prixMinPourVente" class="form-label">Prix minimum pour vente</label>
-        <input v-model.number="lot.prixMinPourVente" type="number" class="form-control" id="prixMinPourVente">
+        <input v-model.number="lot.prixMinPourVente" type="number" class="form-control" id="prixMinPourVente" required>
       </div>
       <div class="mb-3">
         <label for="artiste" class="form-label">Artiste</label>
@@ -32,19 +47,39 @@
       </div>
       <div class="mb-3">
         <label for="idCategorie" class="form-label">Catégorie</label>
-        <select v-model.number="lot.idCategorie" class="form-control" id="idCategorie" required>
-          <!-- Options de catégories à ajouter dynamiquement -->
+        <select v-model="lot.idCategorie" class="form-select" id="idCategorie" required>
+          <option v-for="categorie in categories.$values" :key="categorie.id" :value="categorie.id">
+            {{ categorie.nom }}
+          </option>
         </select>
       </div>
       <div class="mb-3">
         <label for="idVendeur" class="form-label">Vendeur</label>
-        <select v-model.number="lot.idVendeur" class="form-control" id="idVendeur" required>
-          <!-- Options de vendeurs à ajouter dynamiquement -->
+        <select v-model="lot.idVendeur" class="form-select" id="idVendeur" required>
+          <option v-for="vendeur in vendeurs.$values" :key="vendeur.id" :value="vendeur.id">
+            {{ vendeur.prenom }} {{ vendeur.nom }}
+          </option>
         </select>
       </div>
       <div class="mb-3 form-check">
         <input v-model="lot.estLivrable" type="checkbox" class="form-check-input" id="estLivrable">
         <label class="form-check-label" for="estLivrable">Est livrable</label>
+      </div>
+      <div class="mb-3">
+        <label for="idMedium" class="form-label">Medium</label>
+        <select v-model="lot.idMedium" class="form-select" id="idMedium" required>
+          <option v-for="medium in mediums.$values" :key="medium.id" :value="medium.id">
+            {{ medium.type }}
+          </option>
+        </select>
+      </div>
+      <div class="mb-3">
+        <label for="idEncan" class="form-label">Encan</label>
+        <select v-model="lot.idEncan" class="form-select" id="idEncan" required>
+          <option v-for="encan in encans.$values" :key="encan.id" :value="encan.id">
+            {{ encan.numeroEncan }}
+          </option>
+        </select>
       </div>
       <div class="mb-3">
         <label for="hauteur" class="form-label">Hauteur</label>
@@ -54,37 +89,15 @@
         <label for="largeur" class="form-label">Largeur</label>
         <input v-model.number="lot.largeur" type="number" class="form-control" id="largeur" required>
       </div>
-      <div class="mb-3">
-        <label for="idMedium" class="form-label">Medium</label>
-        <select v-model.number="lot.idMedium" class="form-control" id="idMedium" required>
-          <option v-for="medium in mediums" :key="medium.id" :value="medium.id">
-            {{ medium.type }}
-          </option>
-        </select>
-      </div>
-      <div class="mb-3">
-        <label for="idEncan" class="form-label">Encan</label>
-        <select v-model.number="lot.idEncan" class="form-control" id="idEncan" required>
-          <option v-for="encan in encans" :key="encan.id" :value="encan.id">
-            {{ encan.numeroEncan }} - {{ encan.dateDebut | formatDate }}
-          </option>
-        </select>
-      </div>
-      <div class="mb-3">
-        <label for="photos" class="form-label">Photos</label>
-        <input type="file" id="photos" ref="photoInput" @change="handlePhotoUpload" multiple accept="image/*" class="form-control">
-      </div>
-      <div v-if="previewImages.length > 0" class="mb-3">
-        <h4>Aperçu des images</h4>
-        <div class="d-flex flex-wrap">
-          <div v-for="(image, index) in previewImages" :key="index" class="me-2 mb-2 position-relative">
-            <img :src="image" alt="Aperçu" style="width: 100px; height: 100px; object-fit: cover;">
-            <button @click.prevent="removeImage(index)" class="btn btn-danger btn-sm position-absolute top-0 end-0">X</button>
-          </div>
-        </div>
-      </div>
       <button type="submit" class="btn btn-primary">Créer le lot</button>
     </form>
+    <br>
+    <div v-if="message" class="alert alert-success mt-3">
+      {{ message }}
+    </div>
+    <div v-if="erreur" class="alert alert-danger mt-3">
+      {{ erreur }}
+    </div>
   </div>
 </template>
 
@@ -102,68 +115,82 @@ const lot = ref({
   valeurEstimeMin: 0,
   valeurEstimeMax: 0,
   prixOuverture: 0,
-  prixMinPourVente: null,
+  prixMinPourVente: 0,
   artiste: '',
-  dateCreation: new Date(),
   idCategorie: null,
   idVendeur: null,
   estLivrable: false,
-  hauteur: 0,
-  largeur: 0,
   idMedium: null,
   idEncan: null,
-  photoUrls: []
+  hauteur: 0,
+  largeur: 0
 });
-
+const categories = ref([]);
+const vendeurs = ref([]);
 const mediums = ref([]);
 const encans = ref([]);
-const previewImages = ref([]);
+const nouvellesPhotos = ref([]);
+const message = ref('');
+const erreur = ref('');
 
 onMounted(async () => {
   try {
+    categories.value = await store.dispatch('obtenirCategories');
+    vendeurs.value = await store.dispatch('obtenirVendeurs');
     mediums.value = await store.dispatch('obtenirMediums');
     encans.value = await store.dispatch('obtenirEncans');
   } catch (error) {
-    console.error("Erreur lors du chargement des données:", error);
+    console.error("Erreur lors de la récupération des données:", error);
   }
 });
 
-const handlePhotoUpload = (event) => {
-  const files = Array.from(event.target.files);
-  files.forEach(file => {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      previewImages.value.push(e.target.result);
-    };
-    reader.readAsDataURL(file);
-    lot.value.photos.push(file);
-  });
-};
-
-const removeImage = (index) => {
-  previewImages.value.splice(index, 1);
-  lot.value.photos.splice(index, 1);
+const ajouterNouvellesPhotos = (event) => {
+  const files = event.target.files;
+  for (let i = 0; i < files.length; i++) {
+    const file = files[i];
+    if (file.type.startsWith('image/')) {
+      const preview = URL.createObjectURL(file);
+      nouvellesPhotos.value.push({ file, preview });
+    }
+  }
 };
 
 const creerLot = async () => {
   try {
     const formData = new FormData();
-    for (const [key, value] of Object.entries(lot.value)) {
-      if (key === 'photos') {
-        value.forEach((photo, index) => {
-          formData.append(`photos[${index}]`, photo);
-        });
-      } else if (key === 'dateCreation') {
-        formData.append(key, value.toISOString());
-      } else {
-        formData.append(key, value);
-      }
+    formData.append('Numero', lot.value.numero);
+    formData.append('Description', lot.value.description);
+    formData.append('ValeurEstimeMin', lot.value.valeurEstimeMin);
+    formData.append('ValeurEstimeMax', lot.value.valeurEstimeMax);
+    formData.append('PrixOuverture', lot.value.prixOuverture);
+    formData.append('PrixMinPourVente', lot.value.prixMinPourVente);
+    formData.append('Artiste', lot.value.artiste);
+    formData.append('IdCategorie', lot.value.idCategorie);
+    formData.append('IdVendeur', lot.value.idVendeur);
+    formData.append('EstLivrable', lot.value.estLivrable);
+    formData.append('IdMedium', lot.value.idMedium);
+    formData.append('IdEncan', lot.value.idEncan);
+    formData.append('Hauteur', lot.value.hauteur);
+    formData.append('Largeur', lot.value.largeur);
+
+    nouvellesPhotos.value.forEach(({ file }) => {
+      formData.append('Photos', file);
+    });
+
+    const response = await store.dispatch('creerLot', formData);
+    if (response.success) {
+      message.value = "Le lot a été créé avec succès.";
+      erreur.value = '';
+      setTimeout(() => {
+        router.push({ name: 'TableauDeBordInventaire' });
+      }, 2000);
+    } else {
+      erreur.value = "Erreur lors de la création du lot: " + response.message;
+      message.value = '';
     }
-    await store.dispatch('creerLot', formData);
-    router.push({ name: 'AffichageLots' });
   } catch (error) {
-    console.error("Erreur lors de la création du lot:", error);
+    erreur.value = "Erreur lors de la création du lot: " + error;
+    message.value = '';
   }
 };
 </script>
-

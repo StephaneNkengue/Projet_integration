@@ -2,7 +2,6 @@ using Gamma2024.Seeder;
 using Gamma2024.Server.Extensions;
 using Gamma2024.Server.Models;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.IdentityModel.Tokens;
 
 var context = DbContextFactory.CreateDbContext();
 
@@ -93,11 +92,11 @@ context.SaveChanges();
 Console.WriteLine("Ajout des lots");
 
 // Fonction helper pour ajouter les photos aux lots
-void AjouterPhotosAuxLots(List<Lot> lots, List<List<string>> imagesLots, int numeroEncan)
+void AjouterPhotosAuxLots(List<Lot> lots, IEnumerable<IEnumerable<string>> imagesLots, int numeroEncan)
 {
     for (int i = 0; i < lots.Count; i++)
     {
-        foreach (var nomImage in imagesLots[i])
+        foreach (var nomImage in imagesLots.ElementAt(i))
         {
             if (string.IsNullOrEmpty(nomImage))
             {
@@ -125,8 +124,7 @@ var lotsVendeurs232 = File.ReadAllLines("CSV/Vendeurs.csv", System.Text.Encoding
 var imagesLots232 = File.ReadAllLines("CSV/Encan232et233.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
                         .Skip(1)
                         .Where(l => l.Length > 1)
-                        .GetImagesParLotParEncan(232)
-                        .ToList();
+                        .GetImagesParLotParEncan(232).Select(x => x.ToList()).ToList();
 
 var lots232 = File.ReadAllLines("CSV/Encan232et233.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
                         .Skip(1)
@@ -224,7 +222,7 @@ var lots233 = File.ReadAllLines("CSV/Encan232et233.csv", System.Text.Encoding.Ge
                         })
                         .ToList();
 
-AjouterPhotosAuxLots(lots233, imagesLots233, 233);
+AjouterPhotosAuxLots(lots233, imagesLots233.Select(x => x.ToList()).ToList(), 233);
 
 context.Lots.AddRange(lots233);
 context.SaveChanges();
@@ -346,7 +344,7 @@ foreach (var item in utilisateurs)
             IdAdresse = item.Adresses.First().Id,
             Adresse = item.Adresses.First(),
             DateAchat = DateTime.Now,
-            PrixLots = 0
+            PrixLots = 0    
         };
 
         foreach (var a in achats)

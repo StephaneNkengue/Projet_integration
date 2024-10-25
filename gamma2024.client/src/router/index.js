@@ -78,7 +78,7 @@ const routes = [
     },
     {
         path: '/inventaire',
-        name: 'Inventaire',
+        name: 'TableauDeBordInventaire',
         component: TableauDeBordInventaire,
         meta: { requiresAuth: true, requiredRole: 'Administrateur' }
     },

@@ -242,7 +242,7 @@ const store = createStore({
         },
         async creerLot({ state }, formData) {
             try {
-                const response = await state.api.post('/api/lots/creer', formData, {
+                const response = await state.api.post('/lots/creer', formData, {
                     headers: {
                         'Content-Type': 'multipart/form-data'
                     }
@@ -256,7 +256,7 @@ const store = createStore({
     
         async modifierLot({ state }, { id, lotData }) {
         try {
-            const response = await state.api.put(`/api/lots/modifier/${id}`, lotData, {
+            const response = await state.api.put(`/lots/modifier/${id}`, lotData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 }
@@ -271,7 +271,6 @@ const store = createStore({
         async obtenirTousLots({ state }) {
         try {
             const response = await state.api.get('/lots/tous');
-            console.log(response.data.$values);
             return response.data.$values || []; 
         } catch (error) {
             console.error("Erreur lors de la récupération de tous les lots:", error);
@@ -282,6 +281,7 @@ const store = createStore({
         async obtenirLot({ state }, id) {
         try {
             const response = await state.api.get(`/lots/${id}`);
+            console.log("Lot reçu:", response.data);
             return response.data;
         } catch (error) {
             console.error("Erreur lors de la récupération du lot:", error);
@@ -297,6 +297,22 @@ const store = createStore({
             console.error("Erreur lors de la suppression du lot:", error);
             throw error;
         }
+        },
+        async obtenirCategories({ state }) {
+            const response = await state.api.get('/lots/categories');
+            return response.data;
+        },
+        async obtenirVendeurs({ state }) {
+            const response = await state.api.get('/lots/vendeurs');
+            return response.data;
+        },
+        async obtenirMediums({ state }) {
+            const response = await state.api.get('/lots/mediums');
+            return response.data;
+        },
+        async obtenirEncans({ state }) {
+            const response = await state.api.get('/lots/encans');
+            return response.data;
         },
         async checkAuthStatus({ commit, state, dispatch }) {
             const token = state.token || localStorage.getItem('token');
@@ -341,7 +357,7 @@ const store = createStore({
         async logout({ commit, state }) {
             try {
                 // Appel à l'API pour invalider le token côté serveur (optionnel mais recommandé)
-                await state.api.post('/api/home/logout');
+                await state.api.post('/home/logout');
             } catch (error) {
                 console.error("Erreur lors de la déconnexion côté serveur:", error);
             } finally {
@@ -363,24 +379,6 @@ const store = createStore({
         },
         forceUpdate({ commit }) {
             commit('refreshUserData');
-        },
-        async obtenirMediums({ state }) {
-            try {
-                const response = await state.api.get('/api/mediums');
-                return response.data;
-            } catch (error) {
-                console.error("Erreur lors de la récupération des médiums:", error);
-                throw error;
-            }
-        },
-        async obtenirEncans({ state }) {
-            try {
-                const response = await state.api.get('/api/encans');
-                return response.data;
-            } catch (error) {
-                console.error("Erreur lors de la récupération des encans:", error);
-                throw error;
-            }
         },
     },
     getters: {

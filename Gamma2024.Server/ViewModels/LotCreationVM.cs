@@ -12,16 +12,21 @@ namespace Gamma2024.Server.ViewModels
         public double ValeurEstimeMax { get; set; }
         public double PrixOuverture { get; set; }
         public double? PrixMinPourVente { get; set; }
+        public DateTime DateDepot { get; set; }
         public string Artiste { get; set; } = null!;
         public DateTime DateCreation { get; set; }
         public int IdCategorie { get; set; }
+        public string? IdClientMise { get; set; }
+        public double? Mise { get; set; }
+        public bool EstVendu { get; set; }
+        public bool? SeraLivree { get; set; }
+        public DateTime? DateFinVente { get; set; }
         public int IdVendeur { get; set; }
         public bool EstLivrable { get; set; }
-        public double Hauteur { get; set; }
         public double Largeur { get; set; }
+        public double Hauteur { get; set; }
         public int IdMedium { get; set; }
-        public int IdEncan { get; set; } // Pour associer le lot à un encan spécifique
-        public List<string> PhotoUrls { get; set; } = new List<string>();
-        public List<IFormFile> Photos { get; set; }
+        public List<IFormFile> Photos { get; set; } = new List<IFormFile>();
+        public int IdEncan { get; set; }
     }
 }

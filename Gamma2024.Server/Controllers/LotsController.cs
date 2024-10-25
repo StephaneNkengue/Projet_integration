@@ -1,11 +1,10 @@
-using Gamma2024.Server.Services;
+using Gamma2024.Server.Data;
 using Gamma2024.Server.Models;
+using Gamma2024.Server.Services;
 using Gamma2024.Server.ViewModels;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Gamma2024.Server.Controllers
 {
@@ -15,17 +14,19 @@ namespace Gamma2024.Server.Controllers
     public class LotsController : ControllerBase
     {
         private readonly LotService _lotService;
+        private readonly ApplicationDbContext _context;
 
-        public LotsController(LotService lotService)
+        public LotsController(LotService lotService, ApplicationDbContext context)
         {
             _lotService = lotService;
+            _context = context;
         }
 
         [HttpGet("tous")]
         public async Task<ActionResult<IEnumerable<LotAffichageVM>>> ObtenirTousLots()
         {
             var lots = await _lotService.ObtenirTousLots();
-            return Ok(lots.ToList()); 
+            return Ok(lots.ToList());
         }
 
         [HttpGet("{id}")]
@@ -52,7 +53,7 @@ namespace Gamma2024.Server.Controllers
             {
                 return BadRequest(resultat.Message);
             }
-            return CreatedAtAction(nameof(ObtenirLot), new { id = resultat.Lot.Id }, resultat.Lot);
+            return Ok(new { success = true, message = "Lot crée avec succès" });
         }
 
         [HttpPut("modifier/{id}")]
@@ -63,7 +64,7 @@ namespace Gamma2024.Server.Controllers
             {
                 return BadRequest(resultat.Message);
             }
-            return NoContent();
+            return Ok(new { success = true, message = "Lot modifié avec succès" });
         }
 
         [HttpDelete("supprimer/{id}")]
@@ -74,7 +75,35 @@ namespace Gamma2024.Server.Controllers
             {
                 return BadRequest(resultat.Message);
             }
-            return NoContent();
+            return Ok(new { success = true, message = "Lot supprimé avec succès" });
+        }
+
+        [HttpGet("categories")]
+        public async Task<ActionResult<IEnumerable<Categorie>>> ObtenirCategories()
+        {
+            var categories = await _context.Categories.ToListAsync();
+            return Ok(categories);
+        }
+
+        [HttpGet("vendeurs")]
+        public async Task<ActionResult<IEnumerable<Vendeur>>> ObtenirVendeurs()
+        {
+            var vendeurs = await _context.Vendeurs.ToListAsync();
+            return Ok(vendeurs);
+        }
+
+        [HttpGet("mediums")]
+        public async Task<ActionResult<IEnumerable<Medium>>> ObtenirMediums()
+        {
+            var mediums = await _context.Mediums.ToListAsync();
+            return Ok(mediums);
+        }
+
+        [HttpGet("encans")]
+        public async Task<ActionResult<IEnumerable<Encan>>> ObtenirEncans()
+        {
+            var encans = await _context.Encans.ToListAsync();
+            return Ok(encans);
         }
     }
 }
