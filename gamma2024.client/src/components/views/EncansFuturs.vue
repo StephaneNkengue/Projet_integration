@@ -23,6 +23,12 @@
             </div>
 
         </div>
+
+        <br />
+
+        <router-link :to="{ name: 'TousLesEncans'}" class="text-black">
+            <p>Voir tous les encans</p>
+        </router-link>
     </div>
 </template>
 
