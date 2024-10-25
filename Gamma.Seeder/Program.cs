@@ -9,8 +9,10 @@ Console.WriteLine("Début du seed...");
 
 Console.WriteLine("Ajout des utilisateurs");
 
-
 var passwordHasher = new PasswordHasher<ApplicationUser>();
+
+// Récupérer tous les noms d'utilisateurs existants
+var existingUsernames = context.Users.Select(u => u.UserName).ToList();
 
 var utilisateurs = File.ReadAllLines("CSV/Acheteurs.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
                         .Skip(1)
@@ -30,23 +32,47 @@ var utilisateurs = File.ReadAllLines("CSV/Acheteurs.csv", System.Text.Encoding.G
                             u.PasswordHash = passwordHasher.HashPassword(u, u.UserName + u.Adresses.First().Numero);
                             return u;
                         })
+                        .GroupBy(u => u.UserName) // Regrouper par nom d'utilisateur
+                        .Select(g => g.First())   // Prendre le premier de chaque groupe
                         .ToList();
 
-context.Users.AddRange(utilisateurs);
+// Vérifier si les utilisateurs existent déjà avant de les ajouter
+foreach (var user in utilisateurs)
+{
+    if (!existingUsernames.Contains(user.UserName))
+    {
+        context.Users.Add(user);
+        Console.WriteLine($"L'utilisateur {user.UserName} a été ajouté.");
+    }
+    else
+    {
+        Console.WriteLine($"L'utilisateur {user.UserName} existe déjà et sera ignoré.");
+    }
+}
+
 context.SaveChanges();
 
-Console.WriteLine("Ajout des roles au utilisateurs");
+Console.WriteLine("Ajout des roles aux utilisateurs");
 
 string roleIdClient = "7da4163f-edb4-47b5-86ea-888888888888";
+
+var utilisateursExistants = context.Users.Select(u => u.Id).ToList();
 
 var utilisateursRoles = new List<IdentityUserRole<string>>();
 foreach (var item in utilisateurs)
 {
-    utilisateursRoles.Add(new IdentityUserRole<string>
+    if (utilisateursExistants.Contains(item.Id))
     {
-        RoleId = roleIdClient,
-        UserId = item.Id,
-    });
+        utilisateursRoles.Add(new IdentityUserRole<string>
+        {
+            RoleId = roleIdClient,
+            UserId = item.Id,
+        });
+    }
+    else
+    {
+        Console.WriteLine($"L'utilisateur avec l'ID {item.Id} n'existe pas dans la base de données et sera ignoré pour l'attribution du rôle.");
+    }
 }
 
 context.UserRoles.AddRange(utilisateursRoles);
@@ -59,6 +85,18 @@ var vendeurs = File.ReadAllLines("CSV/Vendeurs.csv", System.Text.Encoding.GetEnc
                 .Where(l => l.Length > 1)
                 .ToVendeur()
                 .ToList();
+
+// Ajoutez d'abord les adresses
+var adresses = vendeurs.Select(v => v.Adresse).ToList();
+context.Adresses.AddRange(adresses);
+context.SaveChanges();
+
+// Ensuite, mettez à jour les vendeurs avec les IDs d'adresse générés
+foreach (var vendeur in vendeurs)
+{
+    vendeur.AdresseId = vendeur.Adresse.Id;
+    vendeur.Adresse = null; // Détachez l'objet Adresse pour éviter une double insertionx   
+}
 
 context.Vendeurs.AddRange(vendeurs);
 context.SaveChanges();

@@ -407,7 +407,7 @@ const store = createStore({
                     dispatch('forceUpdate');
                     throw new Error("Non authentifié");
                 }
-            } catch (error) {
+             catch (error) {
                 console.error(
                     "Erreur détaillée lors de la vérification de l'authentification:",
                     error.response || error
@@ -518,7 +518,8 @@ const store = createStore({
         currentUser: (state) => state.user,
         username: (state) => state.user ? state.user.pseudonym || state.user.username : 'USERNAME',
         avatarUrl: (state) => {
-                console.log("Photo de l'utilisateur brute:", state.user.photo);
+            console.log("Photo de l'utilisateur brute:", state.user.photo);
+            if (state.user && state.user.photo) {
                 if (state.user.photo.startsWith("http")) {
                     return state.user.photo;
                 } else {

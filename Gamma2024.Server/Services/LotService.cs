@@ -40,7 +40,7 @@ namespace Gamma2024.Server.Services
                     Dimension = $"{l.Hauteur} x {l.Largeur}",
                     Description = l.Description,
                     Medium = l.Medium.Type,
-                    EstLivrable = l.estLivrable,
+                    EstLivrable = l.EstLivrable,
                     Vendeur = $"{l.Vendeur.Prenom} {l.Vendeur.Nom}",
                     Mise = l.Mise,
                     EstVendu = l.EstVendu,
@@ -91,7 +91,7 @@ namespace Gamma2024.Server.Services
                 Categorie = lot.Categorie?.Nom,
                 IdVendeur = lot.IdVendeur,
                 Vendeur = $"{lot.Vendeur?.Prenom} {lot.Vendeur?.Nom}",
-                EstLivrable = lot.estLivrable,
+                EstLivrable = lot.EstLivrable,
                 Hauteur = lot.Hauteur,
                 Largeur = lot.Largeur,
                 IdMedium = lot.IdMedium,
@@ -134,7 +134,7 @@ namespace Gamma2024.Server.Services
                     Artiste = lotVM.Artiste,
                     IdCategorie = lotVM.IdCategorie,
                     IdVendeur = lotVM.IdVendeur,
-                    estLivrable = lotVM.EstLivrable,
+                    EstLivrable = lotVM.EstLivrable,
                     Largeur = lotVM.Largeur,
                     Hauteur = lotVM.Hauteur,
                     IdMedium = lotVM.IdMedium
@@ -226,7 +226,7 @@ namespace Gamma2024.Server.Services
                 lot.Artiste = lotVM.Artiste;
                 lot.IdCategorie = lotVM.IdCategorie;
                 lot.IdVendeur = lotVM.IdVendeur;
-                lot.estLivrable = lotVM.EstLivrable;
+                lot.EstLivrable = lotVM.EstLivrable;
                 lot.Largeur = lotVM.Largeur;
                 lot.Hauteur = lotVM.Hauteur;
                 lot.IdMedium = lotVM.IdMedium;
