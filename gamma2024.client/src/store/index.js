@@ -467,6 +467,16 @@ const store = createStore({
                 return "Erreur, veuillez réessayer"
             }
         },
+
+        async chercherEncansPasses({ commit, state }) {
+            try {
+                const response = await state.api.get("/encans/chercherencanspasses");
+                return response
+            }
+            catch (error) {
+                return "Erreur, veuillez réessayer"
+            }
+        },
     },
     getters: {
         isAdmin: (state) => state.roles.includes("Administrateur"),
