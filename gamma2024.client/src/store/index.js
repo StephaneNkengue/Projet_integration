@@ -429,6 +429,15 @@ const store = createStore({
                 return "Erreur, veuillez réessayer"
             }
         },
+        async chercherEncanEnCours({ commit, state }) {
+            try {
+                const response = await state.api.get("/encans/chercherencanencours");
+                return response
+            }
+            catch (error) {
+                return "Erreur, veuillez réessayer"
+            }
+        },
         async chercherTousLotsParEncan({ commit, state }, idEncan) {
             try {
                 const response = await state.api.get(
