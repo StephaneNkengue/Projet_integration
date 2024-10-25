@@ -2,41 +2,79 @@
     <div class="d-flex flex-column align-items-center contourDiv px-5 pb-3 pt-3">
         <h3>Encan {{titre}}</h3>
 
-        <div class="bleuMoyenFond p-5 my-4 d-flex flex-column align-items-center">
-            <h4>Encan #</h4>
-            <p class="fs-6 mb-0">Encan d'oeuvres d'art</p>
+        <div class="bleuMoyenFond p-5 my-4 d-flex flex-column align-items-center" @click="voirEncan()">
+            <div v-if="chargement">
+                <div class="spinner-border" role="status">
+                    <span class="sr-only"></span>
+                </div>
+            </div>
+            <div v-else>
+                <h4 v-if="encan != ''">Encan {{encan.numeroEncan}}</h4>
+                <h4 v-else>Aucun encan trouvée</h4>
+            </div>
         </div>
 
-        <router-link to="/" class="text-decoration-none" v-if="type!=0">
+        <a class="text-decoration-none" v-if="type!=0" @click="voirEncans()">
             <p class="text-black"> Voir les encans {{titre}}s -></p>
-        </router-link>
+        </a>
     </div>
 </template>
 
 <script setup>
-    import { ref } from 'vue'
+    import { ref, onMounted } from 'vue'
+    import { useStore } from "vuex";
+    import { useRouter } from "vue-router";
 
-
+    const store = useStore();
     const props = defineProps({
         type: Number,
     });
+    const router = useRouter()
 
-    const titre = typeEncan()
+    const encan = ref('')
+    const titre = ref('')
+    const voirEncan = ref(function () { })
+    const voirEncans = ref(function () { })
+    const chargement = ref(true)
 
-    function typeEncan() {
+    if (props.type == 0) {
+        titre.value = "présent"
+    } else if (props.type == -1) {
+        titre.value = "passé"
+    } else {
+        titre.value = "futur"
+    }
+
+    onMounted(async () => {
         if (props.type == 0) {
+            const response = await store.dispatch("chercherEncanEnCours");
+            encan.value = response.data
 
-            return ref("présent")
+            if (encan.value != '') {
+                voirEncan.value = function () { router.push({ name: 'EncanPresent' }) }
+            }
         }
         else if (props.type == -1) {
+            const response = await store.dispatch("chercherEncansPasses");
+            encan.value = response.data[0]
 
-            return ref("passé")
+            if (encan.value != '') {
+                voirEncan.value = function () { router.push({ name: 'Encan', params: { numeroEncan: encan.value.numeroEncan } }) }
+                voirEncans.value = function () { router.push({ name: 'EncansPasses' }) }
+            }
         }
         else {
+            const response = await store.dispatch("chercherEncansFuturs");
+            encan.value = response.data[0]
 
-            return ref("futur")
+            if (encan.value != '') {
+                voirEncan.value = function () { router.push({ name: 'Encan', params: { numeroEncan: encan.value.numeroEncan } }) }
+                voirEncans.value = function () { router.push({ name: 'EncansFuturs' }) }
+            }
         }
-    }
+
+        chargement.value = false
+    });
 
 </script>
 
