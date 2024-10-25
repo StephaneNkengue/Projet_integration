@@ -2,15 +2,16 @@
     <div class="d-flex flex-column justify-content-between">
         <h2 class="d-flex justify-content-center">Ajout d'un encan</h2>
 
-        <div v-if="errorMessage" class="alert alert-danger">
-            {{ errorMessage }}
-        </div>
-        <div v-else>
-            <div v-if="successMessage" class="alert alert-success">
-                {{ successMessage }}
+        <transition name="fade">
+            <div v-if="errorMessage" class="alert alert-danger">
+                {{ errorMessage }}
             </div>
-        </div>
-
+            <div v-else>
+                <div v-if="successMessage" class="alert alert-success">
+                    {{ successMessage }}
+                </div>
+            </div>
+        </transition>
         <div class="d-flex justify-content-center mt-4">
             <form @submit.prevent="creerEncan" class="text-center">
                 <div class="mb-3">
@@ -56,7 +57,13 @@
                 <router-link to="TableauDeBordEncans" class="text-decoration-none me-2">
                     <button type="button" class="btn bleuMarinSecondaireFond btnSurvolerBleuMoyenFond btnClick text-white">Annuler</button>
                 </router-link>
-                <button type="submit" class="btn bleuMarinSecondaireFond btnSurvolerBleuMoyenFond btnClick text-white">Ajouter</button>
+                <button :disabled="stateFinal" :class="[
+                      stateFinal ? 'bleuValide' : 'bleuNonValide',
+                      classeActiveBouton,
+                      'btn',
+                    ]" class="bleuValideSurvoler" type="submit">
+                    Ajouter
+                </button>
             </form>
         </div>
     </div>
@@ -80,6 +87,7 @@
     const errorMessage = ref('');
     const successMessage = ref('');
 
+
     let formData = reactive({
         numeroEncan: "",
         dateDebut: "",
@@ -95,6 +103,10 @@
     });
 
     const v = useVuelidate(rules, formData);
+
+    const stateFinal = computed(() => {
+        return v.value.$invalid;
+    });
 
     const creerEncan = async () => {
         const result = await v.value.$validate();
@@ -112,7 +124,7 @@
 
                 setTimeout(() => {
                     router.push({ name: 'TableauDeBordEncans' })
-                }, 800);
+                }, 5000);
             }
             else {
                 errorMessage.value = response.error;
@@ -153,4 +165,23 @@
 </script>
 
 <style scoped>
+    .fade-enter,
+    .fade-leave-to {
+        opacity: 0;
+    }
+
+    .bleuNonValide {
+        background-color: #1C3755;
+        color: white;
+    }
+
+    .bleuValide {
+        background-color: #83a0ba;
+        color: white;
+    }
+
+        .bleuValideSurvoler:hover {
+            background-color: #83a0ba;
+            color: white;
+        }
 </style>

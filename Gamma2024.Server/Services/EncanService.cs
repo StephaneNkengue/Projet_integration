@@ -2,6 +2,8 @@ using Gamma2024.Server.Data;
 using Gamma2024.Server.Models;
 using Gamma2024.Server.Validations;
 using Gamma2024.Server.ViewModels;
+using System.Threading.Tasks;
+using System;
 
 namespace Gamma2024.Server.Services
 {
@@ -14,10 +16,10 @@ namespace Gamma2024.Server.Services
             _context = context;
         }
 
-        public ICollection<EncanAffichageVM> ChercherTousEncans()
+        public ICollection<EncanAffichageAdminVM> ChercherTousEncans()
         {
             var encans = _context.Encans
-                .Select(e => new EncanAffichageVM()
+                .Select(e => new EncanAffichageAdminVM()
                 {
                     Id = e.Id,
                     NumeroEncan = e.NumeroEncan,
@@ -25,18 +27,18 @@ namespace Gamma2024.Server.Services
                     DateFin = e.DateFin,
                     DateFinSoireeCloture = e.DateFinSoireeCloture,
                     DateDebutSoireeCloture = e.DateDebutSoireeCloture,
-                    EstPublie = e.EstPublie
-
+                    EstPublie = e.EstPublie,
+                    NbLots = _context.EncanLots.Count(el => el.IdEncan == e.Id)
                 }).ToList();
 
             return encans;
         }
 
-        public ICollection<EncanAffichageVM> ChercherTousEncansVisibles()
+        public ICollection<EncanAffichageAdminVM> ChercherTousEncansVisibles()
         {
             var encans = _context.Encans
                 .Where(e => e.EstPublie == true)
-                .Select(e => new EncanAffichageVM()
+                .Select(e => new EncanAffichageAdminVM()
                 {
                     Id = e.Id,
                     NumeroEncan = e.NumeroEncan,
@@ -79,6 +81,21 @@ namespace Gamma2024.Server.Services
             _context.Encans.Add(encan);
             _context.SaveChanges();
             return (true, encan.Id.ToString());
+        }
+
+        public async Task<(bool Success, string Message)> MettreAJourEncanPublie(EncanPublieVM vm)
+        {
+            var numeroEncan = _context.Encans.FirstOrDefault(e => e.NumeroEncan.Equals(vm.NumeroEncan));
+            if (numeroEncan != null)
+            {
+                numeroEncan.NumeroEncan = vm.NumeroEncan;
+                numeroEncan.EstPublie = vm.EstPublie;
+                _context.Encans.Update(numeroEncan);
+                _context.SaveChanges();
+                return (true, numeroEncan.Id.ToString());
+            }
+
+            return (false, "Il n'y a aucun encan à ce numéro.");
         }
 
         public Encan GetEncanByNumber(int numero)
@@ -126,4 +143,5 @@ namespace Gamma2024.Server.Services
             }
         }
     }
+}
 }

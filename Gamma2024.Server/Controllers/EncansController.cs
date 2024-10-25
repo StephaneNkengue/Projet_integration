@@ -19,16 +19,16 @@ namespace Gamma2024.Server.Controllers
         }
 
         [HttpGet("cherchertousencans")]
-        public ICollection<EncanAffichageVM> ChercherTousEncans()
+        public ICollection<EncanAffichageAdminVM> ChercherTousEncans()
         {
-            ICollection<EncanAffichageVM> encans = _encanService.ChercherTousEncans();
+            ICollection<EncanAffichageAdminVM> encans = _encanService.ChercherTousEncans();
             return encans;
         }
 
         [HttpGet("ChercherTousEncansVisibles")]
-        public ICollection<EncanAffichageVM> ChercherTousEncansVisibles()
+        public ICollection<EncanAffichageAdminVM> ChercherTousEncansVisibles()
         {
-            ICollection<EncanAffichageVM> encans = _encanService.ChercherTousEncansVisibles();
+            ICollection<EncanAffichageAdminVM> encans = _encanService.ChercherTousEncansVisibles();
             return encans;
         }
 
@@ -96,6 +96,25 @@ namespace Gamma2024.Server.Controllers
             else
             {
                 return BadRequest(new { success = false, message = message });
+            }
+        }
+
+        [HttpPut("mettreAJourEncanPublie")]
+        public async Task<IActionResult> MettreAJourEncanPublie([FromBody] EncanPublieVM vm)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var (sucess, message) = await _encanService.MettreAJourEncanPublie(vm);
+            if (sucess)
+            {
+                return Ok(new { sucess = true, message = message });
+            }
+            else
+            {
+                return BadRequest(new { sucess = false, message = message });
             }
         }
     }
