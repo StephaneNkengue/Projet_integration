@@ -10,7 +10,7 @@
             </div>
             <p>Chargement des encans en cours...</p>
         </div>
-        <div v-else>
+        <div v-else class="d-flex justify-content-center w-100">
 
             <h5 class="text-center" v-if="encans.length <1">Il n'y a aucun encan pour le moment</h5>
 

@@ -12,7 +12,7 @@
             Aucun lot trouvé
         </h5>
 
-        <div v-else>
+        <div v-else class="d-flex flex-column align-items-center">
 
             <div class="d-flex flex-row-reverse w-100 px-4 me-2 gap-2">
                 <button class="rounded bleuMoyenFond btn btnSurvolerBleuMoyenFond"
