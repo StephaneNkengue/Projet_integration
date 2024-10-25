@@ -27,7 +27,7 @@ namespace Gamma2024.Server.Services
                     DateDebutSoireeCloture = e.DateDebutSoireeCloture,
                     EstPublie = e.EstPublie,
                     NbLots = _context.EncanLots.Count(el => el.IdEncan == e.Id)
-                }).ToList();
+                }).OrderByDescending(e => e.DateDebut.Year).ThenByDescending(e => e.DateDebut.Month).ThenByDescending(e => e.DateDebut.Day).ToList();
 
             return encans;
         }
@@ -58,16 +58,18 @@ namespace Gamma2024.Server.Services
                 return (false, errorMessage);
             }
 
-            var numeroEncanExist = _context.Encans.FirstOrDefault(e => e.NumeroEncan == vm.NumeroEncan);
-            if (numeroEncanExist != null)
+            var listeEncan = _context.Encans.OrderBy(e => e.NumeroEncan).ToList();
+
+            var dernierEncan = listeEncan.LastOrDefault();
+            if (dernierEncan == null)
             {
-                return (false, "Le numéro d'encan existe déjà.");
+                return (false, errorMessage);
             }
 
             var encan = new Encan()
             {
                 Id = 0,
-                NumeroEncan = vm.NumeroEncan,
+                NumeroEncan = dernierEncan.NumeroEncan + 1,
                 DateDebut = vm.DateDebut,
                 DateFin = vm.DateFin,
                 DateDebutSoireeCloture = vm.DateFin,

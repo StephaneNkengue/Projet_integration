@@ -15,15 +15,6 @@
         <div class="d-flex justify-content-center mt-4">
             <form @submit.prevent="creerEncan" class="text-center">
                 <div class="mb-3">
-                    <label for="numeroEncan" class="form-label">Numéro de l'encan:</label>
-                    <input type="number" aria-label="numeroEncan" v-model="formData.numeroEncan"
-                           :class="['form-control', { 'is-invalid': v.numeroEncan.$error }]"
-                           @blur="v.numeroEncan.$touch()">
-                    <div class="invalid-feedback" v-if="v.numeroEncan.$error">
-                        {{v.numeroEncan.$errors[0].$message}}
-                    </div>
-                </div>
-                <div class="mb-3">
                     <label for="dateDebut" class="form-label">Date de début:</label>
                     <VueDatePicker type="date" v-model="formData.dateDebut"
                                    :class="['form-control', { 'is-invalid': v.dateDebut.$error }]"
@@ -89,14 +80,12 @@
 
 
     let formData = reactive({
-        numeroEncan: "",
         dateDebut: "",
         dateFin: "",
     });
 
     let rules = computed(() => {
         return {
-            numeroEncan: { required: messageRequis },
             dateDebut: { required: messageRequis },
             dateFin: { required: messageRequis },
         }
@@ -180,8 +169,8 @@
         color: white;
     }
 
-        .bleuValideSurvoler:hover {
-            background-color: #83a0ba;
-            color: white;
-        }
+    .bleuValideSurvoler:hover {
+        background-color: #83a0ba;
+        color: white;
+    }
 </style>

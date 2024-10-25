@@ -42,9 +42,9 @@
 
             <div class="d-flex me-1 gap-1 align-items-center">
                 <label for="Recherche">Rechercher: </label>
-                <input data-bs-theme="light" type="search" aria-label="RechercheNum" v-model="encanRechercheNumEncan" placeholder="par numéro encan">
+                <input data-bs-theme="light" type="search" aria-label="RechercheNum" v-model="encanRechercheNumEncan" placeholder="Numéro encan">
 
-                <input data-bs-theme="light" type="search" aria-label="RechercheDate" v-model="encanRechercheDate" placeholder="par date">
+                <input data-bs-theme="light" type="search" aria-label="RechercheDate" v-model="encanRechercheDate" placeholder="Date AAAA-MM-JJ">
             </div>
         </div>
 
@@ -96,17 +96,17 @@
     import TableauDeBordEncansAjout from '@/components/views/TableauDeBordEncansAjout.vue'
 
     const store = useStore();
-    const listeEncans = ref([]);
-    const listeEncansFiltree = ref([]);
-    const dateDebut = ref("");
-    const dateDebutJour = ref("");
-    const dateFin = ref("");
-    const dateFinJour = ref("");
-    const dateDebutSoireeCloture = ref("");
-    const dateDebutSoireeClotureJour = ref("");
-    const dateDebutSoireeClotureHeure = ref("");
-    const dateFinSoireeCloture = ref("");
-    const dateFinSoireeClotureHeure = ref("");
+    let listeEncans = ref([]);
+    let listeEncansFiltree = ref([]);
+    let dateDebut = ref("");
+    let dateDebutJour = ref("");
+    let dateFin = ref("");
+    let dateFinJour = ref("");
+    let dateDebutSoireeCloture = ref("");
+    let dateDebutSoireeClotureJour = ref("");
+    let dateDebutSoireeClotureHeure = ref("");
+    let dateFinSoireeCloture = ref("");
+    let dateFinSoireeClotureHeure = ref("");
 
     let encanPublieMAJ;
     const encanRechercheNumEncan = ref();
@@ -167,9 +167,6 @@
                     }
                 }
             }
-
-
-
         }
         catch (erreur) {
             console.log("Erreur encans" + erreur);
