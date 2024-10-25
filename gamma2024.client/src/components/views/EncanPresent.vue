@@ -11,7 +11,7 @@
 
         <div v-if="!chargement">
             <h5 class="text-center" v-if="encan == ''">
-                Il n'y a présentement aucun encan ayant ce numéro
+                Il n'y a présentement aucun encan en cours
             </h5>
 
             <div v-else>
