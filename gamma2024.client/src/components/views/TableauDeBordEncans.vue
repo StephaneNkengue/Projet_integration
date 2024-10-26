@@ -80,10 +80,10 @@
                         </ul>
                     </div>
                 </td>
-                <td>{{ dateDebut[0]}}-{{dateDebut[1]}}-{{dateDebutJour}}</td>
-                <td>{{ dateFin[0]}}-{{dateFin[1]}}-{{dateFinJour}}</td>
-                <td>{{ dateDebutSoireeCloture[0]}}-{{dateDebutSoireeCloture[1]}}-{{dateDebutSoireeClotureJour}} {{ dateDebutSoireeClotureHeure }} à {{ dateFinSoireeClotureHeure }}</td>
-                <td>{{ encan.nbLots }}</td>
+                <td>{{encan.dateDebut.split("T")[0]}}</td>
+                <td>{{encan.dateFin.split("T")[0]}}</td>
+                <td>{{encan.dateDebut.split("T")[0]}} {{encan.dateDebutSoireeCloture.split("T")[1]}} à {{encan.dateFinSoireeCloture.split("T")[1]}}</td>
+                <td>{{encan.nbLots}}</td>
                 <td>modifier</td>
                 <td>supprimer</td>
             </tr>
@@ -98,15 +98,6 @@
     const store = useStore();
     let listeEncans = ref([]);
     let listeEncansFiltree = ref([]);
-    let dateDebut = ref("");
-    let dateDebutJour = ref("");
-    let dateFin = ref("");
-    let dateFinJour = ref("");
-    let dateDebutSoireeCloture = ref("");
-    let dateDebutSoireeClotureJour = ref("");
-    let dateDebutSoireeClotureHeure = ref("");
-    let dateFinSoireeCloture = ref("");
-    let dateFinSoireeClotureHeure = ref("");
 
     let encanPublieMAJ;
     const encanRechercheNumEncan = ref();
@@ -123,20 +114,6 @@
             listeEncans.value = await store.dispatch("fetchEncanInfo");
 
             listeEncansFiltree.value = listeEncans.value;
-
-            listeEncansFiltree.value.forEach(element => {
-                dateDebut.value = element.dateDebut.toString().split("-");
-                dateFin.value = element.dateFin.toString().split("-");
-                dateDebutSoireeCloture.value = element.dateDebutSoireeCloture.toString().split("-");
-                dateFinSoireeCloture.value = element.dateFinSoireeCloture.toString().split("-");
-
-                dateDebutJour.value = dateDebut.value[2].substring(0, 2);
-                dateFinJour.value = dateFin.value[2].substring(0, 2);
-                dateDebutSoireeClotureJour.value = dateDebutSoireeCloture.value[2].substring(0, 2);
-
-                dateDebutSoireeClotureHeure.value = dateDebutSoireeCloture.value[2].substring(3, 8);
-                dateFinSoireeClotureHeure.value = dateFinSoireeCloture.value[2].substring(3, 8);
-            });
 
             encanPublieMAJ = async function (statutPublie) {
                 let encanId = event.srcElement.getAttribute("encanId")
