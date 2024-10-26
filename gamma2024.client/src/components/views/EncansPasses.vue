@@ -1,7 +1,7 @@
 <template>
     <div class="d-flex flex-column align-items-center pb-3">
         <h1>
-            Tous les encans
+            Encans passés
         </h1>
 
         <div class="d-flex gap-2" v-if="chargement">
@@ -12,7 +12,7 @@
         </div>
         <div v-else class="d-flex justify-content-center w-100">
 
-            <h5 class="text-center" v-if="encans.length <1">Il n'y a aucun encan pour le moment</h5>
+            <h5 class="text-center" v-if="encans.length <1">Il n'y a aucun encan passés pour le moment</h5>
 
             <div v-else class="w-100 px-3 row row-cols-lg-2 row-cols-1">
                 <div v-for="index in encans" class="col py-3">
@@ -23,6 +23,12 @@
             </div>
 
         </div>
+
+        <br />
+
+        <router-link :to="{ name: 'TousLesEncans'}" class="text-black">
+            <p>Voir tous les encans</p>
+        </router-link>
     </div>
 </template>
 
@@ -36,7 +42,7 @@
     const chargement = ref(true)
 
     onMounted(async () => {
-        const response = await store.dispatch("chercherTousEncansVisibles");
+        const response = await store.dispatch("chercherEncansPasses");
         encans.value = response.data
         chargement.value = false
     })

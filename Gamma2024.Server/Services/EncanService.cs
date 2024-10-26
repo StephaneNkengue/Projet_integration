@@ -140,5 +140,45 @@ namespace Gamma2024.Server.Services
 
             return null;
         }
+
+        public ICollection<EncanAffichageVM> ChercherEncansFuturs()
+        {
+            var encans = _context.Encans
+                .Where(e => DateTime.Now < e.DateDebut)
+                .OrderBy(e => e.DateDebut)
+                .ToList()
+                .Select(e => new EncanAffichageVM
+                {
+                    Id = e.Id,
+                    NumeroEncan = e.NumeroEncan,
+                    DateDebut = e.DateDebut,
+                    DateFin = e.DateFin,
+                    DateFinSoireeCloture = e.DateFinSoireeCloture,
+                    DateDebutSoireeCloture = e.DateDebutSoireeCloture
+                })
+                .ToList();
+
+            return encans;
+        }
+
+        public ICollection<EncanAffichageVM> ChercherEncansPasses()
+        {
+            var encans = _context.Encans
+                .Where(e => DateTime.Now > e.DateFinSoireeCloture)
+                .OrderByDescending(e => e.DateFinSoireeCloture)
+                .ToList()
+                .Select(e => new EncanAffichageVM
+                {
+                    Id = e.Id,
+                    NumeroEncan = e.NumeroEncan,
+                    DateDebut = e.DateDebut,
+                    DateFin = e.DateFin,
+                    DateFinSoireeCloture = e.DateFinSoireeCloture,
+                    DateDebutSoireeCloture = e.DateDebutSoireeCloture
+                })
+                .ToList();
+
+            return encans;
+        }
     }
 }

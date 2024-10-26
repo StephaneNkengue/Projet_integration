@@ -95,5 +95,33 @@ namespace Gamma2024.Server.Controllers
                 return null;
             }
         }
+
+        [HttpGet("ChercherEncansFuturs")]
+        public ICollection<EncanAffichageVM> ChercherEncansFuturs()
+        {
+            try
+            {
+                var encans = _encanService.ChercherEncansFuturs();
+                return encans;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        [HttpGet("ChercherEncansPasses")]
+        public ICollection<EncanAffichageVM> ChercherEncansPasses()
+        {
+            try
+            {
+                var encans = _encanService.ChercherEncansPasses();
+                return encans;
+            }
+            catch
+            {
+                return null;
+            }
+        }
     }
 }
