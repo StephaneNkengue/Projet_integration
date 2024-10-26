@@ -72,6 +72,20 @@ namespace Gamma2024.Server.Services
             return null;
         }
 
+        public int ChercherNumeroEncanEnCours()
+        {
+            var encan = _context.Encans
+                .FirstOrDefault(e => DateTime.Now < e.DateFinSoireeCloture && DateTime.Now > e.DateDebut);
+
+            if (encan != null && encan.EstPublie)
+            {
+                return encan.NumeroEncan;
+
+            }
+
+            return 0;
+        }
+
         public ICollection<EncanAffichageVM> ChercherEncansFuturs()
         {
             var encans = _context.Encans

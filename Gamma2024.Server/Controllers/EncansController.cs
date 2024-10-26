@@ -51,6 +51,20 @@ namespace Gamma2024.Server.Controllers
             }
         }
 
+        [HttpGet("ChercherNumeroEncanEnCours")]
+        public int ChercherNumeroEncanEnCours()
+        {
+            try
+            {
+                var numero = _encanService.ChercherNumeroEncanEnCours();
+                return numero;
+            }
+            catch
+            {
+                return 0;
+            }
+        }
+
         [HttpGet("ChercherEncansFuturs")]
         public ICollection<EncanAffichageVM> ChercherEncansFuturs()
         {
