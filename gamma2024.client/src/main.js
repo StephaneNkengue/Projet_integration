@@ -9,23 +9,21 @@ import Toast from "vue3-toastify";
 import "vue3-toastify/dist/index.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import InputMask from "primevue/inputmask";
-import VueDatePicker from '@vuepic/vue-datepicker';
-import '@vuepic/vue-datepicker/dist/main.css'
-
-
+import VueDatePicker from "@vuepic/vue-datepicker";
+import "@vuepic/vue-datepicker/dist/main.css";
+import "bootstrap/dist/css/bootstrap.min.css";
 
 async function initApp() {
-    await store.dispatch("initializeStore");
+  await store.dispatch("initializeStore");
 
-    const app = createApp(App);
-    app.component('VueDatePicker', VueDatePicker);
-    app.use(store).use(router).use(PrimeVue).use(Toast);
-    // Enregistrez le composant InputMask globalement
-    app.component("InputMask", InputMask);
-    await router.isReady();
-    app.mount("#app");
+  const app = createApp(App);
+  app.component("VueDatePicker", VueDatePicker);
+  app.use(store).use(router).use(PrimeVue).use(Toast);
+  app.component("InputMask", InputMask);
+  await router.isReady();
+  app.mount("#app");
 }
 
 initApp().catch((error) =>
-    console.error("Erreur lors de l'initialisation de l'app:", error)
+  console.error("Erreur lors de l'initialisation de l'app:", error)
 );

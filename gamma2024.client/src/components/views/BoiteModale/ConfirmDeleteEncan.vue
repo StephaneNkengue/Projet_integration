@@ -37,6 +37,7 @@
             type="button"
             class="btn btn-primary"
             @click="ConfirmationDelete(props.h.numeroEncan)"
+            data-bs-dismiss="modal"
           >
             Confirmer
           </button>
@@ -47,25 +48,26 @@
 </template>
 
 <script setup>
+import { ref } from "vue";
+
 const props = defineProps({
   h: {
     type: Object,
-    Required: true,
+    required: true,
   },
 });
+let modal_dismiss = ref("");
 
 const emit = defineEmits(["supprimerEncan"]);
 
 const ConfirmationDelete = function (encanNumero) {
   emit("supprimerEncan", encanNumero);
-  closeModal();
 };
 
-const closeModal = function () {
-  const myModal = document.querySelector(".modal");
-  const modalInstance = bootstrap.Modal.getOrCreateInstance(myModal);
-  modalInstance.dispose();
-  myModal.parentNode.removeChild(myModal);
-};
+// const closeModal = function () {
+//   const myModal = document.querySelector(".modal");
+//   const modalInstance = bootstrap.Modal.getOrCreateInstance(myModal);
+//   modalInstance.hide();
+// };
 </script>
 <style scoped></style>

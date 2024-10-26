@@ -147,8 +147,8 @@
               /></button
           ></span>
         </td>
+        <ConfirmDelete :h="encan" @supprimerEncan="supprimerMonEncan" />
       </tr>
-      <ConfirmDelete :h="encan" @supprimerEncan="supprimerMonEncan" />
     </table>
   </div>
 </template>
