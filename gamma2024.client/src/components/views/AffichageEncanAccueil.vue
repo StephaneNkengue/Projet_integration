@@ -65,9 +65,9 @@
         }
         else {
             const response = await store.dispatch("chercherEncansFuturs");
-            encan.value = response.data[0]
 
-            if (encan.value != '') {
+            if (response.data != '') {
+                encan.value = response.data[0]
                 voirEncan.value = function () { router.push({ name: 'Encan', params: { numeroEncan: encan.value.numeroEncan } }) }
                 voirEncans.value = function () { router.push({ name: 'EncansFuturs' }) }
             }
