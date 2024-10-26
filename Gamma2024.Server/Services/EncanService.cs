@@ -76,6 +76,7 @@ namespace Gamma2024.Server.Services
         {
             var encans = _context.Encans
                 .Where(e => DateTime.Now < e.DateDebut)
+                .Where(e => e.EstPublie == true)
                 .OrderBy(e => e.DateDebut)
                 .ToList()
                 .Select(e => new EncanAffichageVM
@@ -96,6 +97,7 @@ namespace Gamma2024.Server.Services
         {
             var encans = _context.Encans
                 .Where(e => DateTime.Now > e.DateFinSoireeCloture)
+                .Where(e => e.EstPublie == true)
                 .OrderByDescending(e => e.DateFinSoireeCloture)
                 .ToList()
                 .Select(e => new EncanAffichageVM
