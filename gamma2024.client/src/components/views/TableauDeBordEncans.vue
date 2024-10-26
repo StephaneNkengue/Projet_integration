@@ -47,25 +47,13 @@
         </ul>
       </div>
 
-      <div class="d-flex me-1 gap-1 align-items-center">
-        <label for="Recherche">Rechercher: </label>
-        <input
-          data-bs-theme="light"
-          type="search"
-          aria-label="RechercheNum"
-          v-model="encanRechercheNumEncan"
-          placeholder="par numéro encan"
-        />
+            <div class="d-flex me-1 gap-1 align-items-center">
+                <label for="Recherche">Rechercher: </label>
+                <input data-bs-theme="light" type="search" aria-label="RechercheNum" v-model="encanRechercheNumEncan" placeholder="Numéro encan">
 
-        <input
-          data-bs-theme="light"
-          type="search"
-          aria-label="RechercheDate"
-          v-model="encanRechercheDate"
-          placeholder="par date"
-        />
-      </div>
-    </div>
+                <input data-bs-theme="light" type="search" aria-label="RechercheDate" v-model="encanRechercheDate" placeholder="Date AAAA-MM-JJ">
+            </div>
+        </div>
 
     <table class="table table-striped mt-3 mx-0">
       <thead>
@@ -94,63 +82,25 @@
               <span v-else>Non publié</span>
             </button>
 
-            <ul
-              class="dropdown-menu dropdown-menu-dark bleuMarinFond text-center"
-            >
-              <li>
-                <a
-                  class="dropdown-item"
-                  @click="encanPublieMAJ(true)"
-                  :encanId="encan.id"
-                  >Publié</a
-                >
-              </li>
-              <li>
-                <a
-                  class="dropdown-item"
-                  @click="encanPublieMAJ(false)"
-                  :encanId="encan.id"
-                  >Non publié</a
-                >
-              </li>
-            </ul>
-          </div>
-        </td>
-        <td>{{ dateDebut[0] }}-{{ dateDebut[1] }}-{{ dateDebutJour }}</td>
-        <td>{{ dateFin[0] }}-{{ dateFin[1] }}-{{ dateFinJour }}</td>
-        <td>
-          {{ dateDebutSoireeCloture[0] }}-{{ dateDebutSoireeCloture[1] }}-{{
-            dateDebutSoireeClotureJour
-          }}
-          {{ dateDebutSoireeClotureHeure }} à {{ dateFinSoireeClotureHeure }}
-        </td>
-        <td>{{ encan.nbLots }}</td>
-        <td>
-          <span>
-            <button class="btn btn_delete" @click="editerEncan(encan.id)">
-              <img
-                src="/public/icons/Edit_icon.png"
-                class="img-fluid"
-                alt="..."
-              /></button
-          ></span>
-          <span>
-            <button
-              class="btn btn-danger"
-              data-bs-toggle="modal"
-              :data-bs-target="'#' + encan.numeroEncan"
-            >
-              <img
-                src="/public/icons/Delete_icon.png"
-                class="img-fluid"
-                alt="..."
-              /></button
-          ></span>
-        </td>
-        <ConfirmDelete :h="encan" @supprimerEncan="supprimerMonEncan" />
-      </tr>
-    </table>
-  </div>
+                        <ul class="dropdown-menu dropdown-menu-dark bleuMarinFond text-center">
+                            <li>
+                                <a class="dropdown-item" @click="encanPublieMAJ(true)" :encanId="encan.id">Publié</a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" @click="encanPublieMAJ(false)" :encanId="encan.id">Non publié</a>
+                            </li>
+                        </ul>
+                    </div>
+                </td>
+                <td>{{encan.dateDebut.split("T")[0]}}</td>
+                <td>{{encan.dateFin.split("T")[0]}}</td>
+                <td>{{encan.dateDebut.split("T")[0]}} {{encan.dateDebutSoireeCloture.split("T")[1]}} à {{encan.dateFinSoireeCloture.split("T")[1]}}</td>
+                <td>{{encan.nbLots}}</td>
+                <td>modifier</td>
+                <td>supprimer</td>
+            </tr>
+        </table>
+    </div>
 </template>
 
 <script setup>
@@ -160,19 +110,9 @@ import { useRouter } from "vue-router";
 import TableauDeBordEncansAjout from "@/components/views/TableauDeBordEncansAjout.vue";
 import ConfirmDelete from "./BoiteModale/ConfirmDeleteEncan.vue";
 
-const store = useStore();
-const router = useRouter();
-const listeEncans = ref([]);
-const listeEncansFiltree = ref([]);
-const dateDebut = ref("");
-const dateDebutJour = ref("");
-const dateFin = ref("");
-const dateFinJour = ref("");
-const dateDebutSoireeCloture = ref("");
-const dateDebutSoireeClotureJour = ref("");
-const dateDebutSoireeClotureHeure = ref("");
-const dateFinSoireeCloture = ref("");
-const dateFinSoireeClotureHeure = ref("");
+    const store = useStore();
+    let listeEncans = ref([]);
+    let listeEncansFiltree = ref([]);
 
 let encanPublieMAJ;
 const encanRechercheNumEncan = ref();
@@ -221,32 +161,9 @@ async function initializeData() {
 
     listeEncansFiltree.value = listeEncans.value;
 
-    listeEncansFiltree.value.forEach((element) => {
-      dateDebut.value = element.dateDebut.toString().split("-");
-      dateFin.value = element.dateFin.toString().split("-");
-      dateDebutSoireeCloture.value = element.dateDebutSoireeCloture
-        .toString()
-        .split("-");
-      dateFinSoireeCloture.value = element.dateFinSoireeCloture
-        .toString()
-        .split("-");
-
-      dateDebutJour.value = dateDebut.value[2].substring(0, 2);
-      dateFinJour.value = dateFin.value[2].substring(0, 2);
-      dateDebutSoireeClotureJour.value =
-        dateDebutSoireeCloture.value[2].substring(0, 2);
-
-      dateDebutSoireeClotureHeure.value =
-        dateDebutSoireeCloture.value[2].substring(3, 8);
-      dateFinSoireeClotureHeure.value = dateFinSoireeCloture.value[2].substring(
-        3,
-        8
-      );
-    });
-
-    encanPublieMAJ = async function (statutPublie) {
-      let encanId = event.srcElement.getAttribute("encanId");
-      encan.value = listeEncans.value.find((e) => e.id == encanId);
+            encanPublieMAJ = async function (statutPublie) {
+                let encanId = event.srcElement.getAttribute("encanId")
+                encan.value = listeEncans.value.find(e => e.id == encanId);
 
       if (encan.value.estPublie != statutPublie) {
         encan.value.estPublie = !encan.value.estPublie;
@@ -256,29 +173,28 @@ async function initializeData() {
           estPublie: encan.value.estPublie,
         });
 
-        const response = await store.dispatch(
-          "mettreAJourEncanPublie",
-          formData
-        );
-        if (response.success) {
-          successMessage.value = "Statut encan modifié!";
-          errorMessage.value = "";
-          setTimeout(() => {
-            successMessage.value = "";
-          }, 5000);
-        } else {
-          errorMessage.value = response.error;
-          successMessage.value = "";
-          setTimeout(() => {
-            errorMessage.value = "";
-          }, 5000);
+                    const response = await store.dispatch('mettreAJourEncanPublie', formData);
+                    if (response.success) {
+                        successMessage.value = "Statut encan modifié!";
+                        errorMessage.value = "";
+                        setTimeout(() => {
+                            successMessage.value = "";
+                        }, 5000);
+                    }
+                    else {
+                        errorMessage.value = response.error;
+                        successMessage.value = "";
+                        setTimeout(() => {
+                            errorMessage.value = "";
+                        }, 5000);
+                    }
+                }
+            }
         }
-      }
-    };
-  } catch (erreur) {
-    console.log("Erreur encans" + erreur);
-  }
-}
+        catch (erreur) {
+            console.log("Erreur encans" + erreur);
+        }
+    });
 
 watch(encanRechercheNumEncan, () => {
   listeEncansFiltree.value = listeEncans.value;

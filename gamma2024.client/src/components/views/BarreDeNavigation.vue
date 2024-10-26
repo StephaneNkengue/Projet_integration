@@ -42,9 +42,16 @@
                             </li>
 
                             <li class="nav-item">
-                                <router-link :to="{ name: 'TousLesEncans' }"
+                                <router-link :to="{ name: 'EncansPasses' }"
                                              class="text-decoration-none">
-                                    <a class="nav-link"> Tous les encans </a>
+                                    <a class="nav-link"> Encans passés </a>
+                                </router-link>
+                            </li>
+
+                            <li class="nav-item">
+                                <router-link :to="{ name: 'EncansFuturs' }"
+                                             class="text-decoration-none">
+                                    <a class="nav-link"> Encans futurs </a>
                                 </router-link>
                             </li>
                         </ul>

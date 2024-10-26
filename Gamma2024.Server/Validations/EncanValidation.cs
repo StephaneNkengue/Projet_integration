@@ -13,11 +13,6 @@ namespace Gamma2024.Server.Validations
                 return (false, "Les données d'ajout d'un encan sont manquantes.");
             }
 
-            if (model.NumeroEncan.ToString().IsNullOrEmpty())
-            {
-                return (false, "Le numéro d'encan est obligatoire,");
-            }
-
             if (model.DateDebut.ToString().IsNullOrEmpty())
             {
                 return (false, "La date de début est obligatoire.");
@@ -39,12 +34,7 @@ namespace Gamma2024.Server.Validations
                 return (false, "La date de fin ne doit pas être avant ou égale à la date de début.");
             }
 
-            //if (model.DateDebutSoireeCloture < model.DateFin)
-            //{
-            //    return (false, "Le début de la soirée de clotûre ne peut pas être avant la date de fin.");
-            //}
-
-            return (true, "L'encan est valide.");
+            return (true, "L'encan a été créé.");
         }
     }
 }
