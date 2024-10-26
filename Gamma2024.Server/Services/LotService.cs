@@ -16,12 +16,13 @@ namespace Gamma2024.Server.Services
         public ICollection<LotAffichageVM> ChercherTousLotsParEncan(int idEncan)
         {
             var lots = _context.Lots
-                .Include(l => l.EncanLots.Where(el => el.IdEncan == idEncan))
+                .Include(l => l.EncanLots)
                 .Include(l => l.Photos)
+                .Where(l => l.EncanLots.FirstOrDefault(el => el.IdEncan == idEncan) != null)
                 .Select(l => new LotAffichageVM()
                 {
                     Id = l.Id,
-                    Code = l.Numero,
+                    Numero = l.Numero,
                     ValeurEstimeMax = l.ValeurEstimeMax,
                     ValeurEstimeMin = l.ValeurEstimeMin,
                     Artiste = l.Artiste,
@@ -29,6 +30,10 @@ namespace Gamma2024.Server.Services
                     EstVendu = l.EstVendu,
                     DateFinVente = l.DateFinVente,
                     Photos = l.Photos,
+                    Description = l.Description,
+                    EstLivrable = l.EstLivrable,
+                    Hauteur = l.Hauteur,
+                    Largeur = l.Largeur
                 });
 
             return lots.ToList();

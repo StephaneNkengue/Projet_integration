@@ -7,6 +7,7 @@ import Contact from "@/components/views/Contact.vue";
 import APropos from "@/components/views/APropos.vue";
 import TableauDeBordInventaire from "@/components/views/TableauDeBordInventaire.vue";
 import EncanPresent from "@/components/views/EncanPresent.vue";
+import Encan from "@/components/views/Encan.vue";
 import TousLesEncans from "@/components/views/TousLesEncans.vue";
 import DetailsLot from "@/components/views/DetailsLot.vue";
 import AffichageVendeur from "@/components/views/AffichageVendeur.vue";
@@ -139,6 +140,13 @@ const routes = [
         component: DetailsMembreParAdmin,
         props: true,
         meta: { requiresAuth: true, requiredRole: "Administrateur" },
+    },
+    {
+        path: "/encan/:numeroEncan",
+        name: "Encan",
+        component: Encan,
+        props: true,
+        meta: { requiresAuth: false },
     },
     {
         path: '/tableaudebordencans',

@@ -165,7 +165,7 @@
                                    placeholder="Faire une recherche"
                                    aria-label="Search" />
 
-                            <router-link to="Accueil">
+                            <router-link :to="{name:'Accueil'}">
                                 <button class="btn btn-outline bleuMoyenFond me-3 text-white butttonNavBar py-0 btnSurvolerBleuMoyenFond"
                                         type="submit">
                                     Rechercher

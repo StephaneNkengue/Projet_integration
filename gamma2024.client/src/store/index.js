@@ -496,47 +496,47 @@ const store = createStore({
       }
     },
 
-    async mettreAJourEncanPublie({ commit, state }, encanData) {
-      try {
-        const response = await state.api.put(
-          "/encan/mettreAJourEncanPublie",
-          encanData
-        );
-        if (response.data.success) {
-          return { success: true, message: response.data.message };
-        } else {
-          return { success: false, error: response.data.message };
-        }
-      } catch (error) {
-        return {
-          success: false,
-          error: error.response.data.message,
-          details: error.response?.data,
-        };
-      }
+        async mettreAJourEncanPublie({ commit, state }, encanData) {
+            try {
+                const response = await state.api.put('/encans/mettreAJourEncanPublie', encanData);
+                if (response.data.sucess) {
+                    return { success: true, message: response.data.message };
+                }
+                else {
+                    return { success: false, error: response.data.message };
+                }
+            }
+            catch (error) {
+                return {
+                    success: false,
+                    error: error.response.data.message,
+                    details: error.response?.data
+                };
+            }
+        },
+
     },
-  },
-  getters: {
-    isAdmin: (state) => state.roles.includes("Administrateur"),
-    isClient: (state) => state.roles.includes("Client"),
-    currentUser: (state) => state.user,
-    username: (state) =>
-      state.user ? state.user.pseudonym || state.user.username : "USERNAME",
-    avatarUrl: (state) => {
-      if (state.user && state.user.photo) {
-        console.log("Photo de l'utilisateur brute:", state.user.photo);
-        if (state.user.photo.startsWith("http")) {
-          return state.user.photo;
-        } else {
-          const baseUrl = state.api.defaults.baseURL.replace("/api", "");
-          const fullUrl = new URL(state.user.photo, baseUrl).href;
-          console.log("URL complète de l'avatar:", fullUrl);
-          return fullUrl;
-        }
-      }
-      return "/gamma2024.client/public/icons/Avatar.png";
+    getters: {
+        isAdmin: (state) => state.roles.includes("Administrateur"),
+        isClient: (state) => state.roles.includes("Client"),
+        currentUser: (state) => state.user,
+        username: (state) =>
+            state.user ? state.user.pseudonym || state.user.username : "USERNAME",
+        avatarUrl: (state) => {
+            if (state.user && state.user.photo) {
+                console.log("Photo de l'utilisateur brute:", state.user.photo);
+                if (state.user.photo.startsWith("http")) {
+                    return state.user.photo;
+                } else {
+                    const baseUrl = state.api.defaults.baseURL.replace("/api", "");
+                    const fullUrl = new URL(state.user.photo, baseUrl).href;
+                    console.log("URL complète de l'avatar:", fullUrl);
+                    return fullUrl;
+                }
+            }
+            return "/gamma2024.client/public/icons/Avatar.png";
+        },
     },
-  },
 });
 
 // Initialiser le store immédiatement

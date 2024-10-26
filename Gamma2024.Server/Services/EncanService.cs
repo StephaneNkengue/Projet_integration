@@ -2,6 +2,8 @@ using Gamma2024.Server.Data;
 using Gamma2024.Server.Models;
 using Gamma2024.Server.Validations;
 using Gamma2024.Server.ViewModels;
+using System.Threading.Tasks;
+using System;
 
 namespace Gamma2024.Server.Services
 {
@@ -139,6 +141,27 @@ namespace Gamma2024.Server.Services
                 await transaction.RollbackAsync();
                 return (false, $"Une erreur est survenue lors de la modification de l'encan : {ex.Message}");
             }
+        }
+        public EncanAffichageVM ChercherEncanParNumero(int numero)
+        {
+            var encan = _context.Encans
+                .FirstOrDefault(e => e.NumeroEncan == numero);
+
+            if (encan != null && encan.EstPublie)
+            {
+                return new EncanAffichageVM()
+                {
+                    Id = encan.Id,
+                    NumeroEncan = encan.NumeroEncan,
+                    DateDebut = encan.DateDebut,
+                    DateFin = encan.DateFin,
+                    DateFinSoireeCloture = encan.DateFinSoireeCloture,
+                    DateDebutSoireeCloture = encan.DateDebutSoireeCloture
+                };
+
+            }
+
+            return null;
         }
     }
 }
