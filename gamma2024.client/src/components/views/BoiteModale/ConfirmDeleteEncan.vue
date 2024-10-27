@@ -48,26 +48,17 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
-
 const props = defineProps({
   h: {
     type: Object,
     required: true,
   },
 });
-let modal_dismiss = ref("");
 
 const emit = defineEmits(["supprimerEncan"]);
 
 const ConfirmationDelete = function (encanNumero) {
   emit("supprimerEncan", encanNumero);
 };
-
-// const closeModal = function () {
-//   const myModal = document.querySelector(".modal");
-//   const modalInstance = bootstrap.Modal.getOrCreateInstance(myModal);
-//   modalInstance.hide();
-// };
 </script>
 <style scoped></style>

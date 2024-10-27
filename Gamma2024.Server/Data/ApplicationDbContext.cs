@@ -90,13 +90,15 @@ namespace Gamma2024.Server.Data
             builder.Entity<EncanLot>()
                 .HasOne(el => el.Encan)
                 .WithMany(e => e.EncanLots)
-                .HasForeignKey(el => el.IdEncan);
+                .HasForeignKey(el => el.IdEncan)
+                .IsRequired(false)
+                .OnDelete(DeleteBehavior.NoAction);
 
             builder.Entity<EncanLot>()
                 .HasOne(el => el.Lot)
                 .WithMany(l => l.EncanLots)
                 .HasForeignKey(el => el.IdLot)
-                .OnDelete(DeleteBehavior.NoAction);
+            .OnDelete(DeleteBehavior.NoAction);
 
             builder.Entity<Facture>()
                 .HasOne(f => f.Adresse)

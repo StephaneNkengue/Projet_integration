@@ -37,9 +37,9 @@
     color: #000000;
 }
 
-    .lienEnTexteNoir:hover {
-        color: #6c757d;
-    }
+.lienEnTexteNoir:hover {
+    color: #6c757d;
+}   
 
 .imageDeFondEsquise {
     background-image: url('/images/DessinGris.PNG');

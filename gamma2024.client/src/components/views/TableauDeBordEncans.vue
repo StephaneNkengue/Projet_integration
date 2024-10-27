@@ -2,7 +2,10 @@
   <div class="d-flex flex-column justify-content-between">
     <div class="d-flex justify-content-between">
       <h2 class="d-flex-1">Liste des encans</h2>
-      <router-link to="TableauDeBordEncansAjout" class="text-decoration-none">
+      <router-link
+        :to="{ name: 'TableauDeBordEncansAjout' }"
+        class="text-decoration-none"
+      >
         <button
           class="btn bleuMarinSecondaireFond btnSurvolerBleuMoyenFond btnClick text-white d-flex-1"
           type="button"
@@ -47,13 +50,25 @@
         </ul>
       </div>
 
-            <div class="d-flex me-1 gap-1 align-items-center">
-                <label for="Recherche">Rechercher: </label>
-                <input data-bs-theme="light" type="search" aria-label="RechercheNum" v-model="encanRechercheNumEncan" placeholder="Numéro encan">
+      <div class="d-flex me-1 gap-1 align-items-center">
+        <label for="Recherche">Rechercher: </label>
+        <input
+          data-bs-theme="light"
+          type="search"
+          aria-label="RechercheNum"
+          v-model="encanRechercheNumEncan"
+          placeholder="Numéro encan"
+        />
 
-                <input data-bs-theme="light" type="search" aria-label="RechercheDate" v-model="encanRechercheDate" placeholder="Date AAAA-MM-JJ">
-            </div>
-        </div>
+        <input
+          data-bs-theme="light"
+          type="search"
+          aria-label="RechercheDate"
+          v-model="encanRechercheDate"
+          placeholder="Date AAAA-MM-JJ"
+        />
+      </div>
+    </div>
 
     <table class="table table-striped mt-3 mx-0">
       <thead>
@@ -82,37 +97,74 @@
               <span v-else>Non publié</span>
             </button>
 
-                        <ul class="dropdown-menu dropdown-menu-dark bleuMarinFond text-center">
-                            <li>
-                                <a class="dropdown-item" @click="encanPublieMAJ(true)" :encanId="encan.id">Publié</a>
-                            </li>
-                            <li>
-                                <a class="dropdown-item" @click="encanPublieMAJ(false)" :encanId="encan.id">Non publié</a>
-                            </li>
-                        </ul>
-                    </div>
-                </td>
-                <td>{{encan.dateDebut.split("T")[0]}}</td>
-                <td>{{encan.dateFin.split("T")[0]}}</td>
-                <td>{{encan.dateDebut.split("T")[0]}} {{encan.dateDebutSoireeCloture.split("T")[1]}} à {{encan.dateFinSoireeCloture.split("T")[1]}}</td>
-                <td>{{encan.nbLots}}</td>
-                <td>modifier</td>
-                <td>supprimer</td>
-            </tr>
-        </table>
-    </div>
+            <ul
+              class="dropdown-menu dropdown-menu-dark bleuMarinFond text-center"
+            >
+              <li>
+                <a
+                  class="dropdown-item"
+                  @click="encanPublieMAJ(true)"
+                  :encanId="encan.id"
+                  >Publié</a
+                >
+              </li>
+              <li>
+                <a
+                  class="dropdown-item"
+                  @click="encanPublieMAJ(false)"
+                  :encanId="encan.id"
+                  >Non publié</a
+                >
+              </li>
+            </ul>
+          </div>
+        </td>
+        <td>{{ encan.dateDebut.split("T")[0] }}</td>
+        <td>{{ encan.dateFin.split("T")[0] }}</td>
+        <td>
+          {{ encan.dateDebut.split("T")[0] }}
+          {{ encan.dateDebutSoireeCloture.split("T")[1] }} à
+          {{ encan.dateFinSoireeCloture.split("T")[1] }}
+        </td>
+        <td>{{ encan.nbLots }}</td>
+        <td>
+          <span>
+            <button class="btn btn_delete" @click="editerEncan(encan.id)">
+              <img
+                src="/public/icons/Edit_icon.png"
+                class="img-fluid"
+                alt="..."
+              /></button
+          ></span>
+          <span>
+            <button
+              class="btn btn-danger"
+              data-bs-toggle="modal"
+              :data-bs-target="'#' + encan.numeroEncan"
+            >
+              <img
+                src="/public/icons/Delete_icon.png"
+                class="img-fluid"
+                alt="..."
+              /></button
+          ></span>
+        </td>
+        <ConfirmDelete :h="encan" @supprimerEncan="supprimerMonEncan" />
+      </tr>
+    </table>
+  </div>
 </template>
 
 <script setup>
 import { onMounted, ref, watch, reactive } from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
-import TableauDeBordEncansAjout from "@/components/views/TableauDeBordEncansAjout.vue";
 import ConfirmDelete from "./BoiteModale/ConfirmDeleteEncan.vue";
 
-    const store = useStore();
-    let listeEncans = ref([]);
-    let listeEncansFiltree = ref([]);
+const router = useRouter();
+const store = useStore();
+let listeEncans = ref([]);
+let listeEncansFiltree = ref([]);
 
 let encanPublieMAJ;
 const encanRechercheNumEncan = ref();
@@ -161,9 +213,9 @@ async function initializeData() {
 
     listeEncansFiltree.value = listeEncans.value;
 
-            encanPublieMAJ = async function (statutPublie) {
-                let encanId = event.srcElement.getAttribute("encanId")
-                encan.value = listeEncans.value.find(e => e.id == encanId);
+    encanPublieMAJ = async function (statutPublie) {
+      let encanId = event.srcElement.getAttribute("encanId");
+      encan.value = listeEncans.value.find((e) => e.id == encanId);
 
       if (encan.value.estPublie != statutPublie) {
         encan.value.estPublie = !encan.value.estPublie;
@@ -173,28 +225,29 @@ async function initializeData() {
           estPublie: encan.value.estPublie,
         });
 
-                    const response = await store.dispatch('mettreAJourEncanPublie', formData);
-                    if (response.success) {
-                        successMessage.value = "Statut encan modifié!";
-                        errorMessage.value = "";
-                        setTimeout(() => {
-                            successMessage.value = "";
-                        }, 5000);
-                    }
-                    else {
-                        errorMessage.value = response.error;
-                        successMessage.value = "";
-                        setTimeout(() => {
-                            errorMessage.value = "";
-                        }, 5000);
-                    }
-                }
-            }
+        const response = await store.dispatch(
+          "mettreAJourEncanPublie",
+          formData
+        );
+        if (response.success) {
+          successMessage.value = "Statut encan modifié!";
+          errorMessage.value = "";
+          setTimeout(() => {
+            successMessage.value = "";
+          }, 5000);
+        } else {
+          errorMessage.value = response.error;
+          successMessage.value = "";
+          setTimeout(() => {
+            errorMessage.value = "";
+          }, 5000);
         }
-        catch (erreur) {
-            console.log("Erreur encans" + erreur);
-        }
-    });
+      }
+    };
+  } catch (erreur) {
+    console.log("Erreur encans" + erreur);
+  }
+}
 
 watch(encanRechercheNumEncan, () => {
   listeEncansFiltree.value = listeEncans.value;

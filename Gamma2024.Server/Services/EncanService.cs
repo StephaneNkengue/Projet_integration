@@ -126,7 +126,6 @@ namespace Gamma2024.Server.Services
 
             try
             {
-                encan.NumeroEncan = model.NumeroEncan;
                 encan.DateDebut = model.DateDebut;
                 encan.DateFin = model.DateFin;
 
