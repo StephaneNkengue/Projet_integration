@@ -1,7 +1,7 @@
 <template>
     <div class="contourDiv p-2 align-items-center d-flex flex-column">
         <h2>Encan {{props.encan.numeroEncan}}</h2>
-        <div class="d-flex w-100 mt-3 flex-sm-row flex-column">
+        <div class="d-flex w-100 mt-3 flex-row">
             <div class="col-7 d-flex align-items-center justify-content-center flex-column text-center">
                 <div class="row justify-content-start w-100">
                     <p>{{dateDebut}} - {{dateFin}}</p>
