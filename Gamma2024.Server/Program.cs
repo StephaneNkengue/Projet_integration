@@ -89,26 +89,34 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-else
-{
-    app.UseExceptionHandler("/Error");
-    app.UseHsts();
-}
 
-//app.UseHttpsRedirection();
-app.UseRouting();
+//else
+//{
+//    app.UseExceptionHandler("/Error");
+//    app.UseHsts();
+//}
+
+app.UseCors();
+app.UseDefaultFiles();
+app.UseStaticFiles();
+
+app.UseHttpsRedirection();
+
+//app.UseRouting();
+
 //app.UseCors("Development");
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
 
-app.UseStaticFiles();
 //app.UseStaticFiles(new StaticFileOptions
 //{
 //    FileProvider = new PhysicalFileProvider(
 //        Path.Combine(Directory.GetCurrentDirectory(), "wwwroot")),
 //    RequestPath = ""
 //});
+
+app.MapFallbackToFile("/index.html");
 
 app.Run();
