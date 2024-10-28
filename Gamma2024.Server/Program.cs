@@ -46,18 +46,18 @@ builder.Services.Configure<EmailConfiguration>(
 
 builder.Services.AddTransient<IEmailSender, EmailService>();
 
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("Development", builder =>
-    {
-        builder
-            .SetIsOriginAllowed(_ => true)
-            .WithOrigins("https://localhost:5173")
-            .AllowAnyMethod()
-            .AllowAnyHeader()
-            .AllowCredentials();
-    });
-});
+//builder.Services.AddCors(options =>
+//{
+//    options.AddPolicy("Development", builder =>
+//    {
+//        builder
+//            .SetIsOriginAllowed(_ => true)
+//            .WithOrigins("https://localhost:5173")
+//            .AllowAnyMethod()
+//            .AllowAnyHeader()
+//            .AllowCredentials();
+//    });
+//});
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
