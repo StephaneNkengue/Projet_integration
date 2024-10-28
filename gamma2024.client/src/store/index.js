@@ -125,9 +125,6 @@ const store = createStore({
           "/utilisateurs/miseajourinfoclient",
           userData
         );
-        console.log("Réponse de mise à jour:", response.data);
-
-        // Mise à jour plus complète de l'utilisateur
         const updatedUser = { ...state.user, ...response.data };
         commit("setUser", updatedUser);
 
@@ -389,8 +386,6 @@ const store = createStore({
     async fetchListeDeLotsPourAdministrateur({ commit, state }) {
       try {
         const response = await state.api.get("/lots/chercherTousLots");
-        console.log("Données reçues de l'API:", response.data); // Pour le débogage
-        // let dataResponse = await response.json();
         return response.data;
       } catch (error) {
         console.error("Erreur détaillée:", error.response || error);
@@ -416,30 +411,30 @@ const store = createStore({
       }
     },
 
-        async chercherTousEncansVisibles({ commit, state }) {
-            try {
-                const response = await state.api.get("/encans/cherchertousencansvisibles");
-                return response
-            }
-            catch (error) {
-                return "Erreur, veuillez réessayer"
-            }
-        },
-        async chercherEncanParNumero({ commit, state }, numeroEncan) {
-            try {
-                const response = await state.api.get("/encans/chercherencanparnumero/" + numeroEncan);
-                return response
-            }
-            catch (error) {
-                return "Erreur, veuillez réessayer"
-            }
-        },
+    async chercherTousEncansVisibles({ commit, state }) {
+      try {
+        const response = await state.api.get(
+          "/encans/cherchertousencansvisibles"
+        );
+        return response;
+      } catch (error) {
+        return "Erreur, veuillez réessayer";
+      }
+    },
+    async chercherEncanParNumero({ commit, state }, numeroEncan) {
+      try {
+        const response = await state.api.get(
+          "/encans/chercherencanparnumero/" + numeroEncan
+        );
+        return response;
+      } catch (error) {
+        return "Erreur, veuillez réessayer";
+      }
+    },
 
-        async fetchEncanInfo({ commit, state }) {
-            try {
-                const response = await state.api.get('/encans/cherchertousencans');
-                console.log("Données reçues de l'API:", response.data); // Pour le débogage
-
+    async fetchEncanInfo({ commit, state }) {
+      try {
+        const response = await state.api.get("/encans/cherchertousencans");
         return response.data;
       } catch (error) {
         console.error("Erreur détaillée:", error.response || error);
@@ -515,94 +510,93 @@ const store = createStore({
       }
     },
 
-        async mettreAJourEncanPublie({ commit, state }, encanData) {
-            try {
-                const response = await state.api.put('/encans/mettreAJourEncanPublie', encanData);
-                if (response.data.sucess) {
-                    return { success: true, message: response.data.message };
-                }
-                else {
-                    return { success: false, error: response.data.message };
-                }
-            }
-            catch (error) {
-                return {
-                    success: false,
-                    error: error.response.data.message,
-                    details: error.response?.data
-                };
-            }
-        },
-        async chercherEncanEnCours({ commit, state }) {
-            try {
-                const response = await state.api.get("/encans/chercherencanencours");
-                return response
-            }
-            catch (error) {
-                return "Erreur, veuillez réessayer"
-            }
-        },
-        async chercherTousLotsParEncan({ commit, state }, idEncan) {
-            try {
-                const response = await state.api.get(
-                    "/lots/cherchertouslotsparencan/" + idEncan
-                );
-                return response;
-            } catch (error) {
-                return "Erreur, veuillez réessayer";
-            }
-        },
-        async chercherDetailsLotParId({ commit, state }, idLot) {
-            try {
-                const response = await state.api.get("/lots/chercherDetailsLotParId/" + idLot);
-                return response
-            }
-            catch (error) {
-                return "Erreur, veuillez réessayer";
-            }
-        },
-
-        async chercherEncansFuturs({ commit, state }) {
-            try {
-                const response = await state.api.get("/encans/chercherencansfuturs");
-                return response
-            }
-            catch (error) {
-                return "Erreur, veuillez réessayer"
-            }
-        },
-
-        async chercherEncansPasses({ commit, state }) {
-            try {
-                const response = await state.api.get("/encans/chercherencanspasses");
-                return response
-            }
-            catch (error) {
-                return "Erreur, veuillez réessayer"
-            }
-        },
+    async mettreAJourEncanPublie({ commit, state }, encanData) {
+      try {
+        const response = await state.api.put(
+          "/encans/mettreAJourEncanPublie",
+          encanData
+        );
+        if (response.data.sucess) {
+          return { success: true, message: response.data.message };
+        } else {
+          return { success: false, error: response.data.message };
+        }
+      } catch (error) {
+        return {
+          success: false,
+          error: error.response.data.message,
+          details: error.response?.data,
+        };
+      }
     },
-    getters: {
-        isAdmin: (state) => state.roles.includes("Administrateur"),
-        isClient: (state) => state.roles.includes("Client"),
-        currentUser: (state) => state.user,
-        username: (state) =>
-            state.user ? state.user.pseudonym || state.user.username : "USERNAME",
-        avatarUrl: (state) => {
-            if (state.user && state.user.photo) {
-                console.log("Photo de l'utilisateur brute:", state.user.photo);
-                if (state.user.photo.startsWith("http")) {
-                    return state.user.photo;
-                } else {
-                    const baseUrl = state.api.defaults.baseURL.replace("/api", "");
-                    const fullUrl = new URL(state.user.photo, baseUrl).href;
-                    console.log("URL complète de l'avatar:", fullUrl);
-                    return fullUrl;
-                }
-            }
-            return "/gamma2024.client/public/icons/Avatar.png";
-        },
+    async chercherEncanEnCours({ commit, state }) {
+      try {
+        const response = await state.api.get("/encans/chercherencanencours");
+        return response;
+      } catch (error) {
+        return "Erreur, veuillez réessayer";
+      }
     },
+    async chercherTousLotsParEncan({ commit, state }, idEncan) {
+      try {
+        const response = await state.api.get(
+          "/lots/cherchertouslotsparencan/" + idEncan
+        );
+        return response;
+      } catch (error) {
+        return "Erreur, veuillez réessayer";
+      }
+    },
+    async chercherDetailsLotParId({ commit, state }, idLot) {
+      try {
+        const response = await state.api.get(
+          "/lots/chercherDetailsLotParId/" + idLot
+        );
+        return response;
+      } catch (error) {
+        return "Erreur, veuillez réessayer";
+      }
+    },
+
+    async chercherEncansFuturs({ commit, state }) {
+      try {
+        const response = await state.api.get("/encans/chercherencansfuturs");
+        return response;
+      } catch (error) {
+        return "Erreur, veuillez réessayer";
+      }
+    },
+
+    async chercherEncansPasses({ commit, state }) {
+      try {
+        const response = await state.api.get("/encans/chercherencanspasses");
+        return response;
+      } catch (error) {
+        return "Erreur, veuillez réessayer";
+      }
+    },
+  },
+  getters: {
+    isAdmin: (state) => state.roles.includes("Administrateur"),
+    isClient: (state) => state.roles.includes("Client"),
+    currentUser: (state) => state.user,
+    username: (state) =>
+      state.user ? state.user.pseudonym || state.user.username : "USERNAME",
+    avatarUrl: (state) => {
+      if (state.user && state.user.photo) {
+        console.log("Photo de l'utilisateur brute:", state.user.photo);
+        if (state.user.photo.startsWith("http")) {
+          return state.user.photo;
+        } else {
+          const baseUrl = state.api.defaults.baseURL.replace("/api", "");
+          const fullUrl = new URL(state.user.photo, baseUrl).href;
+          console.log("URL complète de l'avatar:", fullUrl);
+          return fullUrl;
+        }
+      }
+      return "/gamma2024.client/public/icons/Avatar.png";
+    },
+  },
 });
 
 // Initialiser le store immédiatement
