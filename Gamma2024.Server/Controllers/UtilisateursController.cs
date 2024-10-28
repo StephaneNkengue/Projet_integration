@@ -223,6 +223,52 @@ namespace Gamma2024.Server.Controllers
             var disponible = utilisateurExistant == null;
             return Ok(new { disponible = disponible });
         }
+
+
+
+        [HttpPost("reinitialiser_motDePasse")]
+        public async Task<IActionResult> ResetPassword(ResetPasswordVM model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            try
+            {
+                if (model is null)
+                {
+                    return BadRequest("Aucune donnée envoyé");
+                }
+
+                var user = await _userManager.FindByEmailAsync(model.Email);
+                if (user == null)
+                {
+                    return NotFound("Aucun utilisateur trouvé");
+                }
+
+                string resetToken = await _userManager.GeneratePasswordResetTokenAsync(user);
+                if (string.IsNullOrEmpty(resetToken))
+                {
+                    return BadRequest("Erreur lors de la génération du token");
+                }
+
+                var result = await _userManager.ResetPasswordAsync(user, resetToken, model.Password);
+
+                if (result.Succeeded)
+                {
+                    return Ok("Mot de passe changé avec succès");
+                }
+                else
+                {
+                    return BadRequest();
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
+        }
     }
 
 }
