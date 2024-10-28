@@ -95,9 +95,9 @@ else
     app.UseHsts();
 }
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 app.UseRouting();
-app.UseCors("Development");
+//app.UseCors("Development");
 app.UseAuthentication();
 app.UseAuthorization();
 
