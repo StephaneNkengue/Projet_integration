@@ -26,11 +26,7 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
 
-builder.Services.AddControllers()
-    .AddJsonOptions(options =>
-    {
-        options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
-    });
+builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -39,7 +35,6 @@ builder.Services.AddScoped<ClientInscriptionService>();
 builder.Services.AddScoped<ClientModificationService>();
 builder.Services.AddScoped<EncanService>();
 builder.Services.AddScoped<VendeurService>();
-builder.Services.AddScoped<AdministrateurService>();
 builder.Services.AddScoped<LotService>();
 
 builder.Services.Configure<EmailConfiguration>(

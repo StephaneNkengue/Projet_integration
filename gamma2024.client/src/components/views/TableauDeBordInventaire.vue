@@ -1,233 +1,219 @@
 <template>
-  <div class="d-flex justify-content-between">
-    <h2 class="d-flex-1">Liste des lots</h2>
-    <div class="d-flex d-flex-1">
-      <button
-        class="btn bleuMoyenFond btnSurvolerBleuMoyenFond text-white d-flex-1"
-        type="button"
-        id="ajouterLotButton"
-      >
-        Ajouter un lot
-      </button>
-      <div class="dropdown d-flex-1">
-        <button
-          class="btn bleuMoyenFond btnSurvolerBleuMoyenFond text-white dropdown-toggle"
-          type="button"
-          id="dropdownMenuButton"
-          data-toggle="dropdown"
-          data-bs-toggle="dropdown"
-          aria-haspopup="true"
-          aria-expanded="false"
-        >
-          Sélectionner les colonnes
-        </button>
-        <ul class="dropdown-menu">
-          <li class="d-flex justify-content-start dropdown-item">
-            <input
-              class="form-check-input toggle-vis d-flex-1"
-              type="checkbox"
-              id="lotIdCheckbox"
-              checked
-            />
-            <label class="form-check-label d-flex-1" for="lotIdCheckbox">
-              Lot Id
-            </label>
-          </li>
-          <li class="d-flex justify-content-start dropdown-item">
-            <input
-              class="form-check-input toggle-vis d-flex-1"
-              type="checkbox"
-              id="lotEncanCheckbox"
-              checked
-            />
-            <label class="form-check-label d-flex-1" for="lotEncanCheckbox">
-              Encan
-            </label>
-          </li>
-          <li class="d-flex justify-content-start dropdown-item">
-            <input
-              class="toggle-vis d-flex-1"
-              type="checkbox"
-              id="lotNumeroCheckbox"
-              checked
-            />
-            <label class="form-check-label d-flex-1" for="lotNumeroCheckbox">
-              Lot #
-            </label>
-          </li>
-          <li class="d-flex justify-content-start dropdown-item">
-            <input
-              class="toggle-vis d-flex-1"
-              type="checkbox"
-              id="lotPrixOuvertureCheckbox"
-              checked
-            />
-            <label
-              class="form-check-label d-flex-1"
-              for="lotPrixOuvertureCheckbox"
+    <div class="d-flex justify-content-between">
+        <div v-if="messageConfirmation" class="alert alert-success">
+        {{ messageConfirmation }}
+        </div>
+        <h2 class="d-flex-1">Liste des lots</h2>
+        <div class="d-flex d-flex-1 align-items-end">
+            <button
+                class="bleuMoyenFond btnSurvolerBleuMoyenFond boutonPersonnalise text-white d-flex-1"
+                type="button"
+                id="ajouterLotButton"
+                @click="redirigerVersCreationLot"
             >
-              Prix Ouverture
-            </label>
-          </li>
-          <li class="d-flex justify-content-start dropdown-item">
-            <input
-              class="toggle-vis d-flex-1"
-              type="checkbox"
-              id="lotValeurMinPourVenteCheckbox"
-              checked
-            />
-            <label
-              class="form-check-label d-flex-1"
-              for="lotValeurMinPourVenteCheckbox"
-            >
-              Valeur Min Pour Vente
-            </label>
-          </li>
-          <li class="d-flex justify-content-start dropdown-item">
-            <input
-              class="toggle-vis d-flex-1"
-              type="checkbox"
-              id="lotEstimationMinCheckbox"
-              checked
-            />
-            <label
-              class="form-check-label d-flex-1"
-              for="lotEstimationMinCheckbox"
-            >
-              Estimation Min
-            </label>
-          </li>
-          <li class="d-flex justify-content-start dropdown-item">
-            <input
-              class="toggle-vis d-flex-1"
-              type="checkbox"
-              id="lotEstimationMaxCheckbox"
-              checked
-            />
-            <label
-              class="form-check-label d-flex-1"
-              for="lotEstimationMaxCheckbox"
-            >
-              EstimationMax
-            </label>
-          </li>
-          <li class="d-flex justify-content-start dropdown-item">
-            <input
-              class="toggle-vis d-flex-1"
-              type="checkbox"
-              id="lotCategorieCheckbox"
-              checked
-            />
-            <label class="form-check-label d-flex-1" for="lotCategorieCheckbox">
-              Catégorie
-            </label>
-          </li>
-          <li class="d-flex justify-content-start dropdown-item">
-            <input
-              class="toggle-vis d-flex-1"
-              type="checkbox"
-              id="lotArtisteCheckbox"
-              checked
-            />
-            <label class="form-check-label d-flex-1" for="lotArtisteCheckbox">
-              Artiste
-            </label>
-          </li>
-          <li class="d-flex justify-content-start dropdown-item">
-            <input
-              class="toggle-vis d-flex-1"
-              type="checkbox"
-              id="lotDimensionCheckbox"
-              checked
-            />
-            <label class="form-check-label d-flex-1" for="lotDimensionCheckbox">
-              Dimension
-            </label>
-          </li>
-          <li class="d-flex justify-content-start dropdown-item">
-            <input
-              class="toggle-vis d-flex-1"
-              type="checkbox"
-              id="lotDescriptionCheckbox"
-              checked
-            />
-            <label
-              class="form-check-label d-flex-1"
-              for="lotDescriptionCheckbox"
-            >
-              Description
-            </label>
-          </li>
-          <li class="d-flex justify-content-start dropdown-item">
-            <input
-              class="toggle-vis d-flex-1"
-              type="checkbox"
-              id="lotMediumCheckbox"
-              checked
-            />
-            <label class="form-check-label d-flex-1" for="lotMediumCheckbox">
-              Medium
-            </label>
-          </li>
-          <li class="d-flex justify-content-start dropdown-item">
-            <input
-              class="toggle-vis d-flex-1"
-              type="checkbox"
-              id="lotLivraisonCheckbox"
-              checked
-            />
-            <label class="form-check-label d-flex-1" for="lotLivraisonCheckbox">
-              Livraison
-            </label>
-          </li>
-          <li class="d-flex justify-content-start dropdown-item">
-            <input
-              class="toggle-vis d-flex-1"
-              type="checkbox"
-              id="lotModifierCheckbox"
-              checked
-            />
-            <label class="form-check-label d-flex-1" for="lotModifierCheckbox">
-              Modifier
-            </label>
-          </li>
-          <li class="d-flex justify-content-start dropdown-item">
-            <input
-              class="toggle-vis d-flex-1"
-              type="checkbox"
-              id="lotSupprimerCheckbox"
-              checked
-            />
-            <label class="form-check-label d-flex-1" for="lotSupprimerCheckbox">
-              Supprimer
-            </label>
-          </li>
-        </ul>
-      </div>
+                Ajouter un lot
+            </button>
+            <div class="dropdown d-flex-1">
+                <button class="bleuMoyenFond btnSurvolerBleuMoyenFond boutonPersonnalise text-white dropdown-toggle"
+                        type="button"
+                        id="dropdownMenuButton"
+                        data-toggle="dropdown"
+                        data-bs-toggle="dropdown"
+                        aria-haspopup="true"
+                        aria-expanded="false">
+                    Sélectionner les colonnes
+                </button>
+                <ul class="dropdown-menu">
+                    <li class="d-flex justify-content-start dropdown-item">
+                        <input class="checkboxTous d-flex-1"
+                               type="checkbox"
+                               id="tousSelectionnerCheckbox"
+                               :checked="Object.values(colonnesVisibles).every(v => v)"
+                               @change="toggleToutesColonnes" />
+                        <label class="d-flex-1 labelpadding"
+                               for="tousSelectionnerCheckbox">
+                            Tous Sélectionner
+                        </label>
+                    </li>
+                    <li v-for="(visible, colonne) in colonnesVisibles" :key="colonne" class="d-flex justify-content-start dropdown-item">
+                        <input class="checkboxSeul d-flex-1"
+                               type="checkbox"
+                               :id="`lot${colonne.charAt(0).toUpperCase() + colonne.slice(1)}Checkbox`"
+                               :checked="visible"
+                               @change="toggleColonne(colonne)" />
+                        <label class="d-flex-1 labelpadding" :for="`lot${colonne.charAt(0).toUpperCase() + colonne.slice(1)}Checkbox`">
+                            {{ colonne.charAt(0).toUpperCase() + colonne.slice(1) }}
+                        </label>
+                    </li>
+                </ul>
+            </div>
+        </div>
     </div>
-  </div>
-  <DataTable ref="table" :data="data" class="display exemple">
-    <thead>
-      <tr>
-        <th>Lot Id</th>
-        <th>Encan</th>
-        <th>Lot #</th>
-        <th>Prix Ouverture</th>
-        <th>Valeur Min Pour Vente</th>
-        <th>Estimation Min</th>
-        <th>Estimation Max</th>
-        <th>Catégorie</th>
-        <th>Artiste</th>
-        <th>Dimension</th>
-        <th>Description</th>
-        <th>Medium</th>
-        <th>Livraison</th>
-        <th>Modifier</th>
-        <th>Supprimer</th>
-      </tr>
-    </thead>
-  </DataTable>
+    <div class="margesPourTable">
+        <table class="table table-striped">
+            <colgroup id="colgroup">
+                <col id="colEncan">
+                <col id="colNumero">
+                <col id="colPrixOuverture">
+                <col id="colValeurMinPourVente">
+                <col id="colEstimationMin">
+                <col id="colEstimationMax">
+                <col id="colCategorie">
+                <col id="colArtiste">
+                <col id="colDimensions">
+                <col id="colDescription">
+                <col id="colMedium">
+                <col id="colVendeur">
+                <col id="colVendu">
+                <col id="colLivraison">
+                <col id="colModifier">
+                <col id="colSupprimer">
+            </colgroup>
+            <thead>
+                <tr>
+                    <th v-if="colonnesVisibles.encan">Encan</th>
+                    <th v-if="colonnesVisibles.numero">Lot #</th>
+                    <th v-if="colonnesVisibles.prixOuverture">Prix Ouverture</th>
+                    <th v-if="colonnesVisibles.valeurMinPourVente">Valeur Min Pour Vente</th>
+                    <th v-if="colonnesVisibles.estimationMin">Estimation Min</th>
+                    <th v-if="colonnesVisibles.estimationMax">Estimation Max</th>
+                    <th v-if="colonnesVisibles.categorie">Catégorie</th>
+                    <th v-if="colonnesVisibles.artiste">Artiste</th>
+                    <th v-if="colonnesVisibles.dimension">Dimension (en po)</th>
+                    <th v-if="colonnesVisibles.description">Description</th>
+                    <th v-if="colonnesVisibles.medium">Medium</th>
+                    <th v-if="colonnesVisibles.vendeur">Vendeur</th>
+                    <th v-if="colonnesVisibles.estVendu">Vendu</th>
+                    <th v-if="colonnesVisibles.livraison">Livraison</th>
+                    <th v-if="colonnesVisibles.modifier"></th>
+                    <th v-if="colonnesVisibles.supprimer"></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="lot in lots" :key="lot.id">
+                    <td v-if="colonnesVisibles.encan">{{ lot.numeroEncan }}</td>
+                    <td v-if="colonnesVisibles.numero">{{ lot.code }}</td>
+                    <td v-if="colonnesVisibles.prixOuverture">{{ lot.prixOuverture }}</td>
+                    <td v-if="colonnesVisibles.valeurMinPourVente">{{ lot.prixMinPourVente }}</td>
+                    <td v-if="colonnesVisibles.estimationMin">{{ lot.valeurEstimeMin }}</td>
+                    <td v-if="colonnesVisibles.estimationMax">{{ lot.valeurEstimeMax }}</td>
+                    <td v-if="colonnesVisibles.categorie">{{ lot.categorie }}</td>
+                    <td v-if="colonnesVisibles.artiste">{{ lot.artiste }}</td>
+                    <td v-if="colonnesVisibles.dimension">{{ lot.dimension }}</td>
+                    <td v-if="colonnesVisibles.description">{{ lot.description }}</td>
+                    <td v-if="colonnesVisibles.medium">{{ lot.medium }}</td>
+                    <td v-if="colonnesVisibles.vendeur">{{ lot.vendeur }}</td>
+                    <td v-if="colonnesVisibles.estVendu">
+                        {{ lot.estVendu ? 'Oui' : 'Non' }}
+                    </td>
+                    <td v-if="colonnesVisibles.livraison">
+                        {{ lot.estLivrable ? 'Oui' : 'Non' }}
+                    </td>
+                    <td v-if="colonnesVisibles.modifier">
+                        <router-link :to="{ name: 'ModificationLot', params: { id: lot.id } }">
+                            Modifier
+                        </router-link>
+                    </td>
+                    <td v-if="colonnesVisibles.supprimer">
+                        <button @click="ouvrirBoiteModale(lot.id)" class="btn btn-danger">Supprimer</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Modal de confirmation -->
+    <div v-if="lotASupprimer !== null" class="modal-overlay">
+        <div class="modal-content">
+            <p>Êtes-vous sûr de vouloir supprimer ce lot ?</p>
+            <div class="modal-buttons">
+                <button @click="confirmerSuppression" class="btn btn-danger">OK</button>
+                <button @click="annulerSuppression" class="btn btn-secondary">Annuler</button>
+            </div>
+        </div>
+    </div>
+
+    
 </template>
+
+<script setup>
+    import { onMounted, ref } from "vue";
+    import { useStore } from "vuex";
+    import { useRouter } from 'vue-router';
+
+    const store = useStore();
+    const router = useRouter();
+    const lots = ref([]);
+    const lotASupprimer = ref(null);
+    const messageConfirmation = ref(null);
+    const colonnesVisibles = ref({
+        encan: true,
+        numero: true,
+        prixOuverture: true,
+        valeurMinPourVente: true,
+        estimationMin: true,
+        estimationMax: true,
+        categorie: true,
+        artiste: true,
+        dimension: true,
+        description: true,
+        medium: true,
+        vendeur: true,
+        estVendu: true,
+        livraison: true,
+        modifier: true,
+        supprimer: true
+    });
+
+    const toggleToutesColonnes = () => {
+        const nouvelEtat = !Object.values(colonnesVisibles.value).every(v => v);
+        Object.keys(colonnesVisibles.value).forEach(key => {
+            colonnesVisibles.value[key] = nouvelEtat;
+        });
+    };
+
+    const toggleColonne = (colonne) => {
+        colonnesVisibles.value[colonne] = !colonnesVisibles.value[colonne];
+    };
+
+    onMounted(async () => {
+        try {
+            lots.value = await store.dispatch('obtenirTousLots');
+        } catch (error) {
+            console.error("Erreur lors de la récupération des lots:", error);
+        }
+    });
+
+    const ouvrirBoiteModale = (id) => {
+        lotASupprimer.value = id;
+    };
+
+    const confirmerSuppression = async () => {
+        if (lotASupprimer.value !== null) {
+            try {
+                await store.dispatch('supprimerLot', lotASupprimer.value);
+                lots.value = lots.value.filter(lot => lot.id !== lotASupprimer.value);
+                messageConfirmation.value = "Lot supprimé avec succès.";
+                setTimeout(() => {
+                    messageConfirmation.value = null;
+                }, 2000);
+            } catch (error) {
+                console.error("Erreur lors de la suppression du lot:", error);
+            } finally {
+                lotASupprimer.value = null;
+            }
+        }
+    };
+
+    const annulerSuppression = () => {
+        lotASupprimer.value = null;
+    };
+
+    const redirigerVersCreationLot = () => {
+        router.push({ name: 'CreationLot' });
+    };
+</script>
+
 
 <style>
 @import "datatables.net-dt";
@@ -242,22 +228,24 @@
   height: 25px;
 }
 
-.margesPourLaTable {
-  padding-left: 15px;
-  padding-right: 15px;
-}
+    h2 {
+        padding-left: 15px;
+    }
 
-table {
-  border-collapse: collapse;
-  font-size: 13px;
-  text-align: center;
-  margin-left: 15px;
-  margin-right: 15px;
-}
+    li label {
+        font-size: 15px;
+    }
 
-table label {
-  font-size: 13px;
-}
+    .margesPourTable {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+
+    th {
+        font-weight: bold;
+        font-size: 13px;
+        text-align: center !important;
+    }
 
 li label {
   font-size: 13px;
@@ -268,290 +256,60 @@ li label {
   font-weight: bold;
 }
 
-th,
-td {
-  text-align: center !important;
+    tr:nth-child(even) {
+        background-color: #f8f9fa;
+    }
+
+    tr:nth-child(odd) {
+        background-color: #e9ecef;
+    }
+
+    tr:hover {
+        background-color: #d1e7ff;
+    }
+
+    .cacher {
+        visibility: collapse;
+    }
+</style>
+
+<style scoped>
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 5px;
+    text-align: center;
+}
+
+.modal-buttons {
+    margin-top: 15px;
+}
+
+.modal-buttons button {
+    margin: 0 10px;
+}
+
+.alert {
+    margin: 10px 0;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.alert-success {
+    background-color: #d4edda;
+    color: #155724;
 }
 </style>
 
-<script setup>
-import { onMounted, ref } from "vue";
-import DataTable from "datatables.net-vue3";
-import DataTablesCore from "datatables.net-dt";
-
-DataTable.use(DataTablesCore);
-const table = ref();
-const options = {
-  ordering: false,
-  language: {
-    url: "https://cdn.datatables.net/plug-ins/2.1.8/i18n/fr-FR.json",
-  },
-};
-
-let data = ref([
-  [
-    1,
-    232,
-    "1",
-    "200$",
-    "",
-    "600$",
-    "800$",
-    "Paintings",
-    "Guy Paquet",
-    "12po x 16po",
-    "1984/La nouvelle pratique",
-    "Huile sur panneau",
-    "Oui",
-    "Modifier",
-    "Supprimer",
-  ],
-  [
-    2,
-    232,
-    "1a",
-    "2200$",
-    "3800$",
-    "3500$",
-    "5000$",
-    "Paintings",
-    "Vladimir Horik",
-    "20po x 30po",
-    "La messe du soir",
-    "Huile sur panneau",
-    "Oui",
-    "Modifier",
-    "Supprimer",
-  ],
-  [
-    3,
-    232,
-    "1b",
-    "400$",
-    "",
-    "700$",
-    "1200$",
-    "Paintings",
-    "Vladimir Horik",
-    "12po x 16po",
-    "1979/Paysage",
-    "Huile sur panneau",
-    "Oui",
-    "Modifier",
-    "Supprimer",
-  ],
-  [
-    4,
-    232,
-    "2",
-    "150$",
-    "",
-    "250$",
-    "350$",
-    "Paintings",
-    "Marcel Poirier",
-    "16po x 20po",
-    "1979/Début d'automne",
-    "Huile sur toile",
-    "Oui",
-    "Modifier",
-    "Supprimer",
-  ],
-  [
-    5,
-    232,
-    "3",
-    "3000$",
-    "",
-    "5500$",
-    "6500$",
-    "Paintings",
-    "Normand Hudon",
-    "16po x 20po",
-    "1989/Le beau bonhomme",
-    "Huile sur panneau",
-    "Oui",
-    "Modifier",
-    "Supprimer",
-  ],
-  [
-    6,
-    232,
-    "4",
-    "1500$",
-    "",
-    "3000$",
-    "4000$",
-    "Paintings",
-    "Normand Hudon",
-    "16po x 12po",
-    "1988/Coup de vent",
-    "Huile sur panneau",
-    "Oui",
-    "Modifier",
-    "Supprimer",
-  ],
-  [
-    7,
-    232,
-    "5",
-    "800$",
-    "",
-    "1500$",
-    "2000$",
-    "Paintings",
-    "Normand Hudon",
-    "12po x 16po",
-    "1990/Le père, le fils et le saint esprit. Amen",
-    "Huile sur panneau",
-    "Oui",
-    "Modifier",
-    "Supprimer",
-  ],
-  [
-    8,
-    232,
-    "6",
-    "800$",
-    "",
-    "1500$",
-    "2000$",
-    "Paintings",
-    "Claude Langevin",
-    "20po x 24po",
-    "Sous-bois",
-    "Huile sur toile",
-    "Oui",
-    "Modifier",
-    "Supprimer",
-  ],
-  [
-    9,
-    233,
-    "1",
-    "200$",
-    "",
-    "750$",
-    "1250$",
-    "Paintings",
-    "Denis Juneau",
-    "26po x 20po",
-    "1979/Envolée",
-    "Aquarelle",
-    "Oui",
-    "Modifier",
-    "Supprimer",
-  ],
-  [
-    10,
-    233,
-    "2",
-    "600$",
-    "",
-    "1400$",
-    "1800$",
-    "Paintings",
-    "Serge Lemoyne",
-    "12po x 12po",
-    "1996/Hommage à Matis",
-    "Huile sur panneau",
-    "Oui",
-    "Modifier",
-    "Supprimer",
-  ],
-  [
-    11,
-    233,
-    "3",
-    "120$",
-    "",
-    "400$",
-    "600$",
-    "Paintings",
-    "Marc Siméon",
-    "48po x 40po",
-    "Pointe bleue",
-    "Huile sur toile",
-    "Oui",
-    "Modifier",
-    "Supprimer",
-  ],
-  [
-    12,
-    233,
-    "4",
-    "150$",
-    "",
-    "400$",
-    "600$",
-    "Paintings",
-    "Jean Gaudreau",
-    "40po x 28po",
-    "1996/Visage",
-    "Huile sur toile",
-    "Oui",
-    "Modifier",
-    "Supprimer",
-  ],
-  [
-    13,
-    233,
-    "5",
-    "350$",
-    "",
-    "600$",
-    "800$",
-    "Paintings",
-    "Jean-Paul Jérome",
-    "5.5po x 7po",
-    "1996/Abstraction",
-    "Encre",
-    "Oui",
-    "Modifier",
-    "Supprimer",
-  ],
-  [
-    14,
-    233,
-    "6",
-    "3500$",
-    "6500$",
-    "5000$",
-    "7000$",
-    "Lithograph",
-    "Jean-Paul Riopelle",
-    "29po x 41po",
-    "Jazz",
-    "Lithographie",
-    "Oui",
-    "Modifier",
-    "Supprimer",
-  ],
-  [
-    15,
-    233,
-    "7",
-    "1750$",
-    "3000$",
-    "2500$",
-    "3500$",
-    "Lithograph",
-    "Jean-Paul Riopelle",
-    "23po x 28po",
-    "19781/Les oies 1",
-    "Lithographie (signé dans la plaque)",
-    "Oui",
-    "Modifier",
-    "Supprimer",
-  ],
-]);
-
-onMounted(() => {
-  let dt = table.value.dt;
-  document.querySelectorAll(".toggle-vis").forEach((el, index) => {
-    el.addEventListener("click", function (e) {
-      dt.column(index).visible(!dt.column(index).visible());
-    });
-  });
-});
-</script>
