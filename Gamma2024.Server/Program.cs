@@ -78,7 +78,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 builder.Services.AddSession(options =>
 {
-    options.IdleTimeout = TimeSpan.FromMinutes(3); // Ajustez selon vos besoins
+    options.IdleTimeout = TimeSpan.FromMinutes(3);
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
 });
