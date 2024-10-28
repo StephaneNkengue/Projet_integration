@@ -18,7 +18,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(vendeur, index) in vendeurs" :key="vendeur.id">
+          <tr v-for="(vendeur, index) in vendeursAffichage" :key="vendeur.id">
             <th scope="row">{{ index + 1 }}</th>
             <td>{{ vendeur.nom }}</td>
             <td>{{ vendeur.prenom }}</td>
@@ -26,7 +26,7 @@
             <td>{{ vendeur.telephone }}</td>
             <td>
               <router-link 
-                :to="{ name: 'vendeurModification', params: { id: vendeur.id } }" 
+                :to="{ name: 'vendeurModification', params: { id: vendeur.id.toString() } }" 
                 class="text-decoration-none"
               >
                 <span class="btn-like-field">Modifier</span>
@@ -39,11 +39,18 @@
   </template>
   
   <script setup>
-  import { ref, onMounted } from 'vue';
+  import { ref, onMounted, computed } from 'vue';
   import { useStore } from 'vuex';
   
   const store = useStore();
-  const vendeurs = ref([]);
+  const vendeurs = ref(null);
+  
+  const vendeursAffichage = computed(() => {
+    if (vendeurs.value && vendeurs.value) {
+      return vendeurs.value;
+    }
+    return [];
+  });
   
   onMounted(async () => {
     try {

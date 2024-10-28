@@ -31,6 +31,7 @@ namespace Gamma2024.Server.Services
                 var adresse = new Adresse
                 {
                     Numero = int.Parse(model.Adresse.NumeroCivique),
+                    Appartement = model.Adresse.Appartement,
                     Rue = model.Adresse.Rue,
                     Ville = model.Adresse.Ville,
                     Province = model.Adresse.Province,
@@ -89,10 +90,11 @@ namespace Gamma2024.Server.Services
                 vendeur.Courriel = model.Courriel;
                 vendeur.Telephone = model.Telephone;
 
-                var adresse = await _context.Adresses.FirstOrDefaultAsync(a => a.Id == vendeur.AdresseId);
+                var adresse = await _context.Adresses.FindAsync(vendeur.AdresseId);
                 if (adresse != null)
                 {
                     adresse.Numero = int.Parse(model.Adresse.NumeroCivique);
+                    adresse.Appartement = model.Adresse.Appartement;
                     adresse.Rue = model.Adresse.Rue;
                     adresse.Ville = model.Adresse.Ville;
                     adresse.Province = model.Adresse.Province;
@@ -133,6 +135,7 @@ namespace Gamma2024.Server.Services
                 Adresse = new AdresseVendeurVM
                 {
                     NumeroCivique = vendeur.Adresse.Numero.ToString(),
+                    Appartement = vendeur.Adresse.Appartement,
                     Rue = vendeur.Adresse.Rue,
                     Ville = vendeur.Adresse.Ville,
                     Province = vendeur.Adresse.Province,
@@ -156,6 +159,7 @@ namespace Gamma2024.Server.Services
                     Adresse = new AdresseVendeurVM
                     {
                         NumeroCivique = v.Adresse.Numero.ToString(),
+                        Appartement = v.Adresse.Appartement,
                         Rue = v.Adresse.Rue,
                         Ville = v.Adresse.Ville,
                         Province = v.Adresse.Province,

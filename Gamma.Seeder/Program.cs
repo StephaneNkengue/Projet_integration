@@ -33,21 +33,38 @@ var utilisateurs = File.ReadAllLines("CSV/Acheteurs.csv", System.Text.Encoding.G
                         })
                         .ToList();
 
-context.Users.AddRange(utilisateurs);
+// Vérifier et ajouter uniquement les nouveaux utilisateurs
+foreach (var utilisateur in utilisateurs)
+{
+    if (!context.Users.Any(u => u.UserName == utilisateur.UserName))
+    {
+        context.Users.Add(utilisateur);
+    }
+}
+
 context.SaveChanges();
 
-Console.WriteLine("Ajout des roles au utilisateurs");
+Console.WriteLine("Ajout des roles aux utilisateurs");
 
 string roleIdClient = "7da4163f-edb4-47b5-86ea-888888888888";
+
+var utilisateursExistants = context.Users.Select(u => u.Id).ToList();
 
 var utilisateursRoles = new List<IdentityUserRole<string>>();
 foreach (var item in utilisateurs)
 {
-    utilisateursRoles.Add(new IdentityUserRole<string>
+    if (utilisateursExistants.Contains(item.Id))
     {
-        RoleId = roleIdClient,
-        UserId = item.Id,
-    });
+        utilisateursRoles.Add(new IdentityUserRole<string>
+        {
+            RoleId = roleIdClient,
+            UserId = item.Id,
+        });
+    }
+    else
+    {
+        Console.WriteLine($"L'utilisateur avec l'ID {item.Id} n'existe pas dans la base de données et sera ignoré pour l'attribution de rôle.");
+    }
 }
 
 context.UserRoles.AddRange(utilisateursRoles);
@@ -60,6 +77,24 @@ var vendeurs = File.ReadAllLines("CSV/Vendeurs.csv", System.Text.Encoding.GetEnc
                 .Where(l => l.Length > 1)
                 .ToVendeur()
                 .ToList();
+
+// Ajoutez cette vérification
+foreach (var vendeur in vendeurs)
+{
+    if (vendeur.Adresse != null)
+    {
+        var adresseExistante = context.Adresses.FirstOrDefault(a => a.Id == vendeur.Adresse.Id);
+        if (adresseExistante == null)
+        {
+            context.Adresses.Add(vendeur.Adresse);
+        }
+        else
+        {
+            vendeur.Adresse = adresseExistante;
+        }
+        vendeur.AdresseId = vendeur.Adresse.Id;
+    }
+}
 
 context.Vendeurs.AddRange(vendeurs);
 context.SaveChanges();
@@ -398,3 +433,4 @@ context.Lots.UpdateRange(lots232);
 context.SaveChanges();
 
 Console.WriteLine("Fin du seed");
+

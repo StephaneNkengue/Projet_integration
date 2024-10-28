@@ -26,8 +26,12 @@ namespace Gamma2024.Server.Models
         private double _tVQ;
         public double TVQ { get => _tVQ; set => _tVQ = double.Round(value, 2, MidpointRounding.ToZero); }
 
-        private double _don;
-        public double? Don { get => _don; set => _don = double.Round(value.Value, 2, MidpointRounding.ToZero); }
+        private double? _don;
+        public double? Don
+        {
+            get => _don;
+            set => _don = value.HasValue ? Math.Round(value.Value, 2, MidpointRounding.ToZero) : null;
+        }
 
         public int IdAdresse { get; set; }
         public string IdClient { get; set; } = null!;
@@ -44,11 +48,15 @@ namespace Gamma2024.Server.Models
             SousTotal = PrixLots + FraisEncanteur;
             CalculerFraisLivraison();
 
-
             if (IdCharite.HasValue)
             {
-                Don = SousTotal * 0.02;
-                SousTotal += Don.Value;
+                double donCalcule = SousTotal * 0.02;
+                Don = Math.Round(donCalcule, 2, MidpointRounding.ToZero);
+                SousTotal += Don.Value; // Utilisation de .Value car on est sûr que Don a une valeur ici
+            }
+            else
+            {
+                Don = null;
             }
 
             TPS = SousTotal * 0.05;
@@ -70,13 +78,16 @@ namespace Gamma2024.Server.Models
                     prix.Add(65);
                 }
             }
-            prix.OrderByDescending(p => p);
-
-            FraisLivraison = prix[0];
-
-            prix.RemoveAt(0);
-
-            FraisLivraison += (prix.Sum()) / 2;
+            if (prix.Any())
+            {
+                FraisLivraison = prix[0];
+                prix.RemoveAt(0);
+                FraisLivraison += (prix.Sum()) / 2;
+            }
+            else
+            {
+                FraisLivraison = 0;
+            }
         }
     }
 }

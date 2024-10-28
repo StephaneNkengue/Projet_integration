@@ -19,6 +19,10 @@ import AccesNonAutorise from "@/components/views/AccesNonAutorise.vue";
 import ModificationProfilUtilisateur from "@/components/views/ModificationProfilUtilisateur.vue";
 import GestionMembreParAdmin from "@/components/views/GestionMembreParAdmin.vue";
 import DetailsMembreParAdmin from "@/components/views/DetailsMembreParAdmin.vue";
+import AffichageLots from "@/components/views/AffichageLots.vue";
+import CreationLot from "@/components/views/CreationLot.vue";
+import ModificationLot from "@/components/views/ModificationLot.vue";
+
 import TableauDeBordEncans from '@/components/views/TableauDeBordEncans.vue'
 import TableauDeBordEncansAjout from '@/components/views/TableauDeBordEncansAjout.vue'
 const routes = [
@@ -90,8 +94,8 @@ const routes = [
         meta: { requiresAuth: false },
     },
     {
-        path: "/inventaire",
-        name: "Inventaire",
+        path: '/inventaire',
+        name: 'TableauDeBordInventaire',
         component: TableauDeBordInventaire,
         meta: { requiresAuth: true, requiredRole: "Administrateur" },
     },
@@ -140,7 +144,26 @@ const routes = [
         path: "/accesnonautorise",
         name: "AccesNonAutorise",
         component: AccesNonAutorise,
-        meta: { requiresAuth: false },
+        meta: { requiresAuth: false }
+    },
+    {
+        path: '/affichagelots',
+        name: 'AffichageLots',
+        component: AffichageLots,
+        meta: { requiresAuth: true, requiredRole: 'Administrateur' }
+    },
+    {
+        path: '/lots/creation',
+        name: 'CreationLot',
+        component: CreationLot,
+        meta: { requiresAuth: true, requiredRole: 'Administrateur' }
+    },
+    {
+        path: '/lots/modification/:id',
+        name: 'ModificationLot',
+        component: ModificationLot,
+        props: true,
+        meta: { requiresAuth: true, requiredRole: 'Administrateur' }
     },
     {
         path: "/gestionMembre",

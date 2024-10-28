@@ -58,6 +58,12 @@ namespace Gamma2024.Server.Data
                 .HasForeignKey(l => l.IdVendeur)
                 .OnDelete(DeleteBehavior.NoAction);
 
+            builder.Entity<Vendeur>()
+                .HasOne(v => v.Adresse)
+                .WithOne()
+                .HasForeignKey<Vendeur>(v => v.AdresseId)
+                .OnDelete(DeleteBehavior.NoAction);
+
             // Lot
             builder.Entity<Lot>()
                 .HasOne(l => l.Categorie)
@@ -170,7 +176,7 @@ namespace Gamma2024.Server.Data
                     CodePostal = "A1A1A1",
                     Pays = "Pays Admin",
                     Province = "Québec",
-                    IdApplicationUser = adminId,
+                    IdApplicationUser = adminId,  // Utilisez adminId ici
                     EstDomicile = true,
                 },
                 new Adresse
@@ -182,7 +188,7 @@ namespace Gamma2024.Server.Data
                     CodePostal = "A1A1A1",
                     Pays = "Pays Client",
                     Province = "Québec",
-                    IdApplicationUser = clientId,
+                    IdApplicationUser = clientId,  // Utilisez clientId ici
                     EstDomicile = true,
                 }
             );
@@ -222,8 +228,7 @@ namespace Gamma2024.Server.Data
                 SecurityStamp = Guid.NewGuid().ToString(),
                 Name = "Admin",
                 FirstName = "Super",
-                Avatar = "avatars/default.png",
-                PhoneNumber = "466-666-6666"
+                Avatar = "/Avatars/default.png"
             };
             adminUser.PasswordHash = passwordHasher.HashPassword(adminUser, "MotDePasseAdmin123!");
 
@@ -238,8 +243,7 @@ namespace Gamma2024.Server.Data
                 SecurityStamp = Guid.NewGuid().ToString(),
                 Name = "Dupont",
                 FirstName = "Jean",
-                Avatar = "avatars/default.png",
-                PhoneNumber = "455-555-5555"
+                Avatar = "/Avatars/default.png"
             };
             clientUser.PasswordHash = passwordHasher.HashPassword(clientUser, "MotDePasseClient123!");
 
