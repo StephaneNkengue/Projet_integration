@@ -545,14 +545,16 @@ const store = createStore({
             }
         },
 
-        async chercherTousLotsParEncan({ commit, state }, idEncan) {
+        async chercherTousLotsParEncan({ state }, idEncan) {
             try {
                 const response = await state.api.get(
-                    "/lots/cherchertouslotsparencan/" + idEncan
+                    `/lots/cherchertouslotsparencan/${idEncan}`
                 );
                 return response;
-            } catch (error) {
-                return "Erreur, veuillez réessayer";
+            }
+            catch (error) {
+                console.error("Erreur détaillée:", error.response || error);
+                throw error;
             }
         },
         async chercherDetailsLotParId({ commit, state }, idLot) {
