@@ -6,7 +6,6 @@ using Gamma2024.Server.Services.Email;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
@@ -42,18 +41,18 @@ builder.Services.Configure<EmailConfiguration>(
 
 builder.Services.AddTransient<IEmailSender, EmailService>();
 
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("Development", builder =>
-    {
-        builder
-            .SetIsOriginAllowed(_ => true)
-            .WithOrigins("https://localhost:5173")
-            .AllowAnyMethod()
-            .AllowAnyHeader()
-            .AllowCredentials();
-    });
-});
+//builder.Services.AddCors(options =>
+//{
+//    options.AddPolicy("Development", builder =>
+//    {
+//        builder
+//            .SetIsOriginAllowed(_ => true)
+//            .WithOrigins("https://localhost:5173")
+//            .AllowAnyMethod()
+//            .AllowAnyHeader()
+//            .AllowCredentials();
+//    });
+//});
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
@@ -85,26 +84,34 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-else
-{
-    app.UseExceptionHandler("/Error");
-    app.UseHsts();
-}
+
+//else
+//{
+//    app.UseExceptionHandler("/Error");
+//    app.UseHsts();
+//}
+
+app.UseCors();
+app.UseDefaultFiles();
+app.UseStaticFiles();
 
 app.UseHttpsRedirection();
-app.UseRouting();
-app.UseCors("Development");
+
+//app.UseRouting();
+
+//app.UseCors("Development");
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
 
-app.UseStaticFiles();
-app.UseStaticFiles(new StaticFileOptions
-{
-    FileProvider = new PhysicalFileProvider(
-        Path.Combine(Directory.GetCurrentDirectory(), "wwwroot")),
-    RequestPath = ""
-});
+//app.UseStaticFiles(new StaticFileOptions
+//{
+//    FileProvider = new PhysicalFileProvider(
+//        Path.Combine(Directory.GetCurrentDirectory(), "wwwroot")),
+//    RequestPath = ""
+//});
+
+app.MapFallbackToFile("/index.html");
 
 app.Run();
