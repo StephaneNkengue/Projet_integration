@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Gamma2024.Server.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241026185248_encanId_nullable_encan_lots_2")]
-    partial class encanId_nullable_encan_lots_2
+    [Migration("20241028153433_DeleteCascadeNullEncan")]
+    partial class DeleteCascadeNullEncan
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -340,7 +340,7 @@ namespace Gamma2024.Server.Migrations
 
             modelBuilder.Entity("Gamma2024.Server.Models.EncanLot", b =>
                 {
-                    b.Property<int?>("IdEncan")
+                    b.Property<int>("IdEncan")
                         .HasColumnType("int");
 
                     b.Property<int>("IdLot")
@@ -765,7 +765,8 @@ namespace Gamma2024.Server.Migrations
                     b.HasOne("Gamma2024.Server.Models.Encan", "Encan")
                         .WithMany("EncanLots")
                         .HasForeignKey("IdEncan")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Gamma2024.Server.Models.Lot", "Lot")
                         .WithMany("EncanLots")
