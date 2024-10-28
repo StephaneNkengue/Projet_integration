@@ -105,5 +105,44 @@ namespace Gamma2024.Server.Controllers
             var encans = await _context.Encans.ToListAsync();
             return Ok(encans);
         }
+
+        [HttpGet("cherchertouslotsparencan/{idEncan}")]
+        [AllowAnonymous]
+        public async Task<ActionResult<ICollection<LotEncanAffichageVM>>> ChercherTousLotsParEncan(string idEncan)
+        {
+            try
+            {
+                var idEncanInt = int.Parse(idEncan);
+                var lots = _lotService.ChercherTousLotsParEncan(idEncanInt);
+                return Ok(lots);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Erreur: {ex.Message}");
+            }
+        }
+
+        [HttpGet("chercherTousLots")]
+        public ICollection<LotAffichageAdministrateurVM> ChercherTousLots()
+        {
+            ICollection<LotAffichageAdministrateurVM> lots = _lotService.ChercherTousLots();
+            return lots;
+        }
+
+        [HttpGet("chercherDetailsLotParId/{idLot}")]
+        public LotDetailsVM ChercherDetailsLotParId(string idLot)
+        {
+            try
+            {
+                var idLotInt = int.Parse(idLot);
+                LotDetailsVM lot = _lotService.ChercherDetailsLotParId(idLotInt);
+                return lot;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
     }
 }
