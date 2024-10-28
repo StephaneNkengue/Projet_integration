@@ -7,12 +7,12 @@ pool:
 variables:
   solution: "**/*.sln"
   buildPlatform: "Any CPU"
-  buildConfiguration: "Release"
+  buildConfiguration: "Staging"
 
 stages:
-  - stage: Build
+  - stage: Build_Stage
     jobs:
-      - job: BuildJob
+      - job: Build_Application
         steps:
           - task: NuGetToolInstaller@1
 
@@ -23,9 +23,18 @@ stages:
           - task: VSBuild@1
             inputs:
               solution: "$(solution)"
-              msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=FileSystem /p:publishUrl="$(Build.ArtifactStagingDirectory)/webapp" /p:EnvironmentName=Staging'
+              # Add /p:EnvironmentName=Staging to ensure that we have the variable "ASPNETCORE_ENVIRONMENT=Staging" in the web.config file -> so our WebApp uses "appsettings.Staging.json"
+              msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=FileSystem /p:publishUrl="$(Build.ArtifactStagingDirectory)" /p:EnvironmentName=Staging'
               platform: "$(buildPlatform)"
               configuration: "$(buildConfiguration)"
+
+          - script: |
+              echo "Vous devriez parler avec [$(Build.RequestedFor)], car il y a des chances que l'erreur ait été introduite par cette personne"
+              echo "Last commit author: $(Build.RequestedFor)"
+              echo "Last commit email: $(Build.RequestedForEmail)"
+              echo "Commit ID: $(Build.SourceVersion)"
+            displayName: "Print commit info"
+            condition: failed()
 
           - task: VSTest@2
             inputs:
@@ -39,11 +48,10 @@ stages:
               echo "Commit ID: $(Build.SourceVersion)"
             displayName: "Print commit info"
             condition: failed()
-          #  condition: false # This task will be skipped, we don't want to blame people, should rather focus on team building.
 
           - task: ArchiveFiles@2
             inputs:
-              rootFolderOrFile: "$(Build.ArtifactStagingDirectory)/webapp"
+              rootFolderOrFile: "$(Build.ArtifactStagingDirectory)"
               includeRootFolder: false
               archiveType: "zip"
               archiveFile: "$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip"
@@ -52,12 +60,12 @@ stages:
           - task: PublishBuildArtifacts@1
             inputs:
               PathtoPublish: "$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip"
-              ArtifactName: "drop"
+              ArtifactName: "webapp"
               publishLocation: "Container"
 
-  - stage: UpdateDB
-    dependsOn: Build
-    condition: succeeded('Build')
+  - stage: UpdateDB_Stage
+    dependsOn: Build_Stage
+    condition: succeeded('Build_Stage')
     jobs:
       - job: Generate_SQL_script
         steps:
@@ -88,6 +96,7 @@ stages:
               custom: "ef"
               arguments: "migrations script --output $(Build.ArtifactStagingDirectory)/migrate.sql --idempotent --startup-project $(ProjectNameWithDB) " #--context ApplicationDbContext"
 
+          # Publish artifact (sql script) for debugging purposes
           - publish: $(Build.ArtifactStagingDirectory)/migrate.sql
             artifact: db-migrations
 
@@ -97,7 +106,7 @@ stages:
               artifactName: "db-migrations"
               targetPath: "$(Pipeline.Workspace)"
 
-          # Update the database
+          # Update the database (same as doing manually update-database)
           - task: SqlDacpacDeploymentOnMachineGroup@0
             displayName: "Execute migration script"
             inputs:
@@ -109,19 +118,52 @@ stages:
               SqlPassword: $(sqlPassword)
               SqlFile: "$(Pipeline.Workspace)\\migrate.sql"
 
-  - stage: Deploy
+  - stage: Deploy_Website
     dependsOn:
-      - Build
-      - UpdateDB
-    condition: and(succeeded('Build'), succeeded('UpdateDB'))
+      - UpdateDB_Stage
+    condition: and(succeeded('Build_Stage'), succeeded('UpdateDB_Stage'))
     jobs:
-      - job: DeployJob
+      - job: Delete_FTP_WebConfig
+        steps:
+          # Delete the web.config file from the FTP server in order to avoid error 550 during the FTP upload.
+          # This is a workaround since the FTP task does not support deleting a file
+          # By removing the web.config file, the IIS server will stop serving the website and will release the handle on the files (which is causing the error 550 during the FTP upload)
+          - task: PowerShell@2
+            inputs:
+              targetType: "inline"
+              script: |
+                $ftpUrl = "ftp://sqlinfocg.cegepgranby.qc.ca/$($env:ftpDirectory)/web.config"
+                $credentials = New-Object System.Net.NetworkCredential($env:ftpUsername, $env:ftpPassword)
+
+                $ftpRequest = [System.Net.FtpWebRequest]::Create($ftpUrl)
+                $ftpRequest.Method = [System.Net.WebRequestMethods+Ftp]::DeleteFile
+                $ftpRequest.Credentials = $credentials
+                $ftpRequest.UseBinary = $true
+                $ftpRequest.KeepAlive = $false
+
+                try {
+                    Write-Host "ftpUrl: $ftpUrl"
+                    $response = $ftpRequest.GetResponse()
+                    $response.Close()
+                    Write-Host "Successfully deleted web.config"
+                } catch {
+                    Write-Host "File web.config not found or already deleted"
+                }
+            env:
+              ftpUsername: $(ftpUsername)
+              ftpPassword: $(ftpPassword)
+              ftpDirectory: $(ftpDirectory)
+            displayName: "Stop the web server (delete web.config)"
+
+      - job: Deploy_Website
+        dependsOn: Delete_FTP_WebConfig
+        condition: succeeded()
         steps:
           - task: DownloadBuildArtifacts@0
             inputs:
               buildType: "current"
               downloadType: "single"
-              artifactName: "drop"
+              artifactName: "webapp"
               downloadPath: "$(System.ArtifactsDirectory)"
 
           - task: ExtractFiles@1
@@ -139,7 +181,7 @@ stages:
               rootDirectory: "$(System.ArtifactsDirectory)/extracted"
               filePatterns: "**"
               remoteDirectory: "/$(ftpDirectory)"
-              clean: false
+              cleanContents: false
               preservePaths: true
               trustSSL: true
             displayName: "FTP Upload WebAPI"
