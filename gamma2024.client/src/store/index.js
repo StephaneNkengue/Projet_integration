@@ -145,11 +145,11 @@ const store = createStore({
                 });
 
                 // Construire l'URL complète de l'avatar
-                const avatarPath = response.data.avatarUrl.startsWith('/') 
-                    ? response.data.avatarUrl 
+                const avatarPath = response.data.avatarUrl.startsWith('/')
+                    ? response.data.avatarUrl
                     : `/Avatars/${response.data.avatarUrl}`;
                 const fullAvatarUrl = `${state.api.defaults.baseURL.replace('/api', '')}${avatarPath}`;
-                
+
                 // Mettre à jour l'utilisateur avec la nouvelle URL de l'avatar
                 const updatedUser = { ...state.user, photo: avatarPath };
                 commit("setUser", updatedUser);
@@ -273,51 +273,51 @@ const store = createStore({
                 throw error;
             }
         },
-    
+
         async modifierLot({ state }, { id, lotData }) {
-        try {
-            const response = await state.api.put(`/lots/modifier/${id}`, lotData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data'
-                }
-            });
-            return response.data;
-        } catch (error) {
-            console.error("Erreur lors de la modification du lot:", error);
-            throw error;
-        }
+            try {
+                const response = await state.api.put(`/lots/modifier/${id}`, lotData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    }
+                });
+                return response.data;
+            } catch (error) {
+                console.error("Erreur lors de la modification du lot:", error);
+                throw error;
+            }
         },
-    
+
         async obtenirTousLots({ state }) {
-        try {
-            const response = await state.api.get('/lots/tous');
-            console.log("Données brutes:", response.data);
-            return response.data || []; 
-        } catch (error) {
-            console.error("Erreur lors de la récupération de tous les lots:", error);
-            throw error;
-        }
+            try {
+                const response = await state.api.get('/lots/tous');
+                console.log("Données brutes:", response.data);
+                return response.data || [];
+            } catch (error) {
+                console.error("Erreur lors de la récupération de tous les lots:", error);
+                throw error;
+            }
         },
-    
+
         async obtenirLot({ state }, id) {
-        try {
-            const response = await state.api.get(`/lots/${id}`);
-            console.log("Lot reçu:", response.data);
-            return response.data;
-        } catch (error) {
-            console.error("Erreur lors de la récupération du lot:", error);
-            throw error;
-        }
+            try {
+                const response = await state.api.get(`/lots/${id}`);
+                console.log("Lot reçu:", response.data);
+                return response.data;
+            } catch (error) {
+                console.error("Erreur lors de la récupération du lot:", error);
+                throw error;
+            }
         },
-    
+
         async supprimerLot({ state }, id) {
-        try {
-            const response = await state.api.delete(`/lots/supprimer/${id}`);
-            return response.data;
-        } catch (error) {
-            console.error("Erreur lors de la suppression du lot:", error);
-            throw error;
-        }
+            try {
+                const response = await state.api.delete(`/lots/supprimer/${id}`);
+                return response.data;
+            } catch (error) {
+                console.error("Erreur lors de la suppression du lot:", error);
+                throw error;
+            }
         },
         async obtenirCategories({ state }) {
             const response = await state.api.get('/lots/categories');
@@ -459,62 +459,131 @@ const store = createStore({
             }
         },
 
-    async initializeStore({ commit, dispatch }) {
-        const token = localStorage.getItem('token');
-        if (token) {
-            commit('setToken', token);
-        }
-        const api = await initApi(() => store.state.token || localStorage.getItem('token'));
-        commit('SET_API', api);
-        await dispatch('checkAuthStatus');
-    },
+        async initializeStore({ commit, dispatch }) {
+            const token = localStorage.getItem('token');
+            if (token) {
+                commit('setToken', token);
+            }
+            const api = await initApi(() => store.state.token || localStorage.getItem('token'));
+            commit('SET_API', api);
+            await dispatch('checkAuthStatus');
+        },
 
-    async chercherTousEncansVisibles({ commit, state }) {
-        try {
-            const response = await state.api.get("/encans/cherchertousencansvisibles");
-            return response
-        }
-        catch (error) {
-            return "Erreur, veuillez réessayer"
-        }
-    },
-    async chercherEncanParNumero({ commit, state }, numeroEncan) {
-        try {
-            const response = await state.api.get("/encans/chercherencanparnumero/" + numeroEncan);
-            return response
-        }
-        catch (error) {
-            return "Erreur, veuillez réessayer"
-        }
-    },
-    async chercherEncanEnCours({ commit, state }) {
-        try {
-            const response = await state.api.get("/encans/chercherencanencours");
-            return response
-        }
-        catch (error) {
-            return "Erreur, veuillez réessayer"
-        }
-    },
-    async chercherTousLotsParEncan({ commit, state }, idEncan) {
-        try {
-            const response = await state.api.get(
-                "/lots/cherchertouslotsparencan/" + idEncan
-            );
-            return response;
-        } catch (error) {
-            return "Erreur, veuillez réessayer";
-        }
-    },
-    async chercherDetailsLotParId({ commit, state }, idLot) {
-        try {
-            const response = await state.api.get("/lots/chercherDetailsLotParId/" + idLot);
-            return response
-        }
-        catch (error) {
-            return "Erreur, veuillez réessayer";
-        }
-    },
+        async chercherTousEncansVisibles({ commit, state }) {
+            try {
+                const response = await state.api.get("/encans/cherchertousencansvisibles");
+                return response
+            }
+            catch (error) {
+                return "Erreur, veuillez réessayer"
+            }
+        },
+        async chercherEncanParNumero({ commit, state }, numeroEncan) {
+            try {
+                const response = await state.api.get("/encans/chercherencanparnumero/" + numeroEncan);
+                return response
+            }
+            catch (error) {
+                return "Erreur, veuillez réessayer"
+            }
+        },
+        async chercherEncanEnCours({ commit, state }) {
+            try {
+                const response = await state.api.get("/encans/chercherencanencours");
+                return response
+            }
+            catch (error) {
+                return "Erreur, veuillez réessayer"
+            }
+        },
+
+        async fetchEncanInfo({ commit, state }) {
+            try {
+                const response = await state.api.get('/encans/cherchertousencans');
+                console.log("Données reçues de l'API:", response.data); // Pour le débogage
+
+                return response.data;
+            } catch (error) {
+                console.error("Erreur détaillée:", error.response || error);
+                throw error;
+            }
+        },
+
+        async creerEncan({ commit, state }, encanData) {
+            try {
+                const response = await state.api.post('/encans/creerEncan', encanData);
+                if (response.data.sucess) {
+                    return { success: true, message: response.data.message };
+                } else {
+                    return { success: false, error: response.data.message };
+                }
+            } catch (error) {
+                return {
+                    success: false,
+                    error: error.response.data.message,
+                    details: error.response?.data
+                };
+            }
+        },
+
+        async mettreAJourEncanPublie({ commit, state }, encanData) {
+            try {
+                const response = await state.api.put('/encans/mettreAJourEncanPublie', encanData);
+                if (response.data.sucess) {
+                    return { success: true, message: response.data.message };
+                }
+                else {
+                    return { success: false, error: response.data.message };
+                }
+            }
+            catch (error) {
+                return {
+                    success: false,
+                    error: error.response.data.message,
+                    details: error.response?.data
+                };
+            }
+        },
+
+        async chercherTousLotsParEncan({ commit, state }, idEncan) {
+            try {
+                const response = await state.api.get(
+                    "/lots/cherchertouslotsparencan/" + idEncan
+                );
+                return response;
+            } catch (error) {
+                return "Erreur, veuillez réessayer";
+            }
+        },
+        async chercherDetailsLotParId({ commit, state }, idLot) {
+            try {
+                const response = await state.api.get("/lots/chercherDetailsLotParId/" + idLot);
+                return response
+            }
+            catch (error) {
+                return "Erreur, veuillez réessayer";
+            }
+        },
+
+        async chercherEncansFuturs({ commit, state }) {
+            try {
+                const response = await state.api.get("/encans/chercherencansfuturs");
+                return response
+            }
+            catch (error) {
+                return "Erreur, veuillez réessayer"
+            }
+        },
+
+        async chercherEncansPasses({ commit, state }) {
+            try {
+                const response = await state.api.get("/encans/chercherencanspasses");
+                return response
+            }
+            catch (error) {
+                return "Erreur, veuillez réessayer"
+            }
+        },
         forceUpdate({ commit }) {
             commit('refreshUserData');
         },

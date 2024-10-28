@@ -1,6 +1,6 @@
 namespace Gamma2024.Server.ViewModels
 {
-    public class EncanAffichageVM
+    public class EncanAffichageAdminVM
     {
         public int Id { get; set; }
         public int NumeroEncan { get; set; }
@@ -9,5 +9,6 @@ namespace Gamma2024.Server.ViewModels
         public DateTime DateDebutSoireeCloture { get; set; }
         public DateTime DateFinSoireeCloture { get; set; }
         public bool EstPublie { get; set; }
+        public int NbLots { get; set; }
     }
 }
