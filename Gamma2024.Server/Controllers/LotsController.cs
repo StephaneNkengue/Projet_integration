@@ -123,6 +123,7 @@ namespace Gamma2024.Server.Controllers
         }
 
         [HttpGet("chercherTousLots")]
+        [AllowAnonymous]
         public ICollection<LotAffichageAdministrateurVM> ChercherTousLots()
         {
             ICollection<LotAffichageAdministrateurVM> lots = _lotService.ChercherTousLots();
@@ -130,6 +131,7 @@ namespace Gamma2024.Server.Controllers
         }
 
         [HttpGet("chercherDetailsLotParId/{idLot}")]
+        [AllowAnonymous]
         public LotDetailsVM ChercherDetailsLotParId(string idLot)
         {
             try

@@ -5,13 +5,14 @@ const store = createStore({
     state: {
         api: null,
         token: null,
-        // ... autres états
-        roles: [], // Assurez-vous que c'est initialisé comme un tableau vide
+        roles: [],
+        isLoggedIn: false,  // Initialisation explicite
+        user: null
     },
     mutations: {
         setLoggedIn(state, value) {
-            state.isLoggedIn = value
-            localStorage.setItem('isLoggedIn', value)
+            state.isLoggedIn = value;
+            localStorage.setItem('isLoggedIn', value);
         },
         setUser(state, user) {
             state.user = user;
@@ -459,14 +460,24 @@ const store = createStore({
             }
         },
 
-        async initializeStore({ commit, dispatch }) {
-            const token = localStorage.getItem('token');
-            if (token) {
-                commit('setToken', token);
-            }
-            const api = await initApi(() => store.state.token || localStorage.getItem('token'));
+        async initializeStore({ commit, state }) {
+            console.log("=== Initialisation du Store ===");
+            
+            // Récupérer l'état depuis localStorage
+            const savedIsLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+            const savedToken = localStorage.getItem('token');
+            const savedUser = JSON.parse(localStorage.getItem('user'));
+            const savedRoles = JSON.parse(localStorage.getItem('roles')) || [];
+
+            // Initialiser l'état
+            commit('setLoggedIn', savedIsLoggedIn);
+            commit('setToken', savedToken);
+            commit('setUser', savedUser);
+            commit('setRoles', savedRoles);
+
+            const api = initApi(() => state.token);
             commit('SET_API', api);
-            await dispatch('checkAuthStatus');
+
         },
 
         async chercherTousEncansVisibles({ commit, state }) {
@@ -547,13 +558,21 @@ const store = createStore({
 
         async chercherTousLotsParEncan({ state }, idEncan) {
             try {
+                
                 const response = await state.api.get(
                     `/lots/cherchertouslotsparencan/${idEncan}`
                 );
+                
+                console.log("Réponse reçue:", response);
                 return response;
             }
             catch (error) {
-                console.error("Erreur détaillée:", error.response || error);
+                console.error("Erreur détaillée:", {
+                    message: error.message,
+                    status: error.response?.status,
+                    data: error.response?.data,
+                    config: error.config
+                });
                 throw error;
             }
         },
