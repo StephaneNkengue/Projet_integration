@@ -352,13 +352,13 @@ namespace Gamma2024.Server.Services
                 Console.WriteLine("Erreur lors de la suppression du lot: " + ex.Message);
                 if (ex.InnerException != null)
                 {
-                    Console.WriteLine("Détails de l'erreur interne: " + ex.InnerException.Message);
+                    Console.WriteLine("D�tails de l'erreur interne: " + ex.InnerException.Message);
                 }
                 return (false, "Erreur lors de la suppression du lot : " + ex.Message);
             }
         }
 
-        // Ajoutez cette nouvelle méthode pour convertir LotModificationVM en LotAffichageVM
+        // Ajoutez cette nouvelle m�thode pour convertir LotModificationVM en LotAffichageVM
         private LotAffichageVM ConvertirEnLotAffichageVM(LotModificationVM lotModification)
         {
             return new LotAffichageVM

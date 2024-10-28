@@ -1,7 +1,7 @@
 <template>
     <div class="d-flex flex-column align-items-center pb-3">
         <h1>
-            Tous les encans
+            Encans futurs
         </h1>
 
         <div class="d-flex gap-2" v-if="chargement">
@@ -12,17 +12,23 @@
         </div>
         <div v-else class="d-flex justify-content-center w-100">
 
-            <h5 class="text-center" v-if="encans.length <1">Il n'y a aucun encan pour le moment</h5>
+            <h5 class="text-center" v-if="encans.length <1">Il n'y a aucun encan futur pour le moment</h5>
 
             <div v-else class="w-100 px-3 row row-cols-lg-2 row-cols-1">
                 <div v-for="index in encans" class="col py-3">
-                    <span @click="voirEncan(index.numeroEncan)">
+                    <router-link :to="{ name: 'Encan', params: { numeroEncan: index.numeroEncan }}" class="text-decoration-none text-black">
                         <AffichageEncanTuile :encan="index" />
-                    </span>
+                    </router-link>
                 </div>
             </div>
 
         </div>
+
+        <br />
+
+        <router-link :to="{ name: 'TousLesEncans'}" class="text-black">
+            <p>Voir tous les encans</p>
+        </router-link>
     </div>
 </template>
 
@@ -30,34 +36,14 @@
     import AffichageEncanTuile from '@/components/views/AffichageEncanTuile.vue'
     import { onMounted, ref } from 'vue'
     import { useStore } from "vuex";
-    import { useRouter } from "vue-router";
 
     const store = useStore();
-    const router = useRouter()
     const encans = ref([])
     const chargement = ref(true)
-    const numEncanCours = ref(0)
-
-    const voirEncan = ref(function (numeroEncanRecu) {
-        console.log(numeroEncanRecu)
-        if (numeroEncanRecu == numEncanCours.value) {
-            router.push({ name: 'EncanPresent' })
-        }
-        else {
-            router.push({
-                name: 'Encan', params: { numeroEncan: numeroEncanRecu }
-            })
-        }
-    })
 
     onMounted(async () => {
-        const response = await store.dispatch("chercherTousEncansVisibles");
+        const response = await store.dispatch("chercherEncansFuturs");
         encans.value = response.data
-
-        const responseNumEncanCourrant = await store.dispatch("chercherNumeroEncanEnCours");
-        if (response.data != '') {
-            numEncanCours.value = responseNumEncanCourrant.data
-        }
         chargement.value = false
     })
 </script>

@@ -288,7 +288,7 @@ encans.Add(new Encan
     DateDebut = new DateTime(2005, 3, 15, 6, 0, 0),
     DateFin = new DateTime(2005, 3, 18, 6, 0, 0),
     DateDebutSoireeCloture = new DateTime(2005, 3, 18, 6, 0, 1),
-    DateFinSoireeCloture = new DateTime(2005, 3, 18, 9, 0, 0),
+    DateFinSoireeCloture = new DateTime(2005, 3, 18, 6, 0, 1),
     EstPublie = true
 });
 
@@ -298,17 +298,17 @@ encans.Add(new Encan
     DateDebut = new DateTime(2024, 3, 15, 6, 0, 0),
     DateFin = new DateTime(2025, 3, 18, 6, 0, 0),
     DateDebutSoireeCloture = new DateTime(2025, 3, 18, 6, 0, 1),
-    DateFinSoireeCloture = new DateTime(2025, 3, 18, 9, 0, 0),
+    DateFinSoireeCloture = new DateTime(2025, 3, 18, 6, 0, 1),
     EstPublie = true
 });
 
 encans.Add(new Encan
 {
     NumeroEncan = 234,
-    DateDebut = new DateTime(2007, 3, 15, 6, 0, 0),
-    DateFin = new DateTime(2007, 3, 18, 6, 0, 0),
-    DateDebutSoireeCloture = new DateTime(2007, 3, 18, 6, 0, 1),
-    DateFinSoireeCloture = new DateTime(2007, 3, 18, 9, 0, 0),
+    DateDebut = new DateTime(2027, 3, 15, 6, 0, 0),
+    DateFin = new DateTime(2027, 3, 18, 6, 0, 0),
+    DateDebutSoireeCloture = new DateTime(2027, 3, 18, 6, 0, 1),
+    DateFinSoireeCloture = new DateTime(2027, 3, 18, 6, 0, 1),
     EstPublie = true
 });
 
@@ -318,7 +318,7 @@ encans.Add(new Encan
     DateDebut = new DateTime(2008, 3, 15, 6, 0, 0),
     DateFin = new DateTime(2008, 3, 18, 6, 0, 0),
     DateDebutSoireeCloture = new DateTime(2008, 3, 18, 6, 0, 1),
-    DateFinSoireeCloture = new DateTime(2008, 3, 18, 9, 0, 0),
+    DateFinSoireeCloture = new DateTime(2008, 3, 18, 6, 0, 1),
     EstPublie = true
 });
 
@@ -338,7 +338,12 @@ foreach (var item in lots232)
         Encan = encans[0],
         IdEncan = encans[0].Id
     });
+
+    encans[0].DateFinSoireeCloture = encans[0].DateFinSoireeCloture.AddSeconds(30);
 }
+
+context.Encans.Update(encans[0]);
+context.SaveChanges();
 
 foreach (var item in lots233)
 {
@@ -349,7 +354,11 @@ foreach (var item in lots233)
         Encan = encans[1],
         IdEncan = encans[1].Id
     });
+    encans[1].DateFinSoireeCloture = encans[1].DateFinSoireeCloture.AddSeconds(30);
 }
+
+context.Encans.Update(encans[1]);
+context.SaveChanges();
 
 context.EncanLots.AddRange(encanLots);
 context.SaveChanges();
