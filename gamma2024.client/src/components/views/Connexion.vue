@@ -157,8 +157,8 @@ export default {
           // Vérifiez la structure de result.roles
           const rolesString = Array.isArray(result.roles) 
             ? result.roles.join(", ")
-            : (result.roles && result.roles.$values 
-                ? result.roles.$values.join(", ") 
+            : (result.roles && result.roles 
+                ? result.roles.join(", ") 
                 : "Rôles non disponibles");
           
           this.messageSucces = `Connexion réussie en tant que ${rolesString}`;

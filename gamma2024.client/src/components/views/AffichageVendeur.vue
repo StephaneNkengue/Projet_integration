@@ -46,8 +46,8 @@
   const vendeurs = ref(null);
   
   const vendeursAffichage = computed(() => {
-    if (vendeurs.value && vendeurs.value.$values) {
-      return vendeurs.value.$values;
+    if (vendeurs.value && vendeurs.value) {
+      return vendeurs.value;
     }
     return [];
   });

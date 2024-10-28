@@ -48,7 +48,7 @@
       <div class="mb-3">
         <label for="idCategorie" class="form-label">Catégorie</label>
         <select v-model="lot.idCategorie" class="form-select" id="idCategorie" required>
-          <option v-for="categorie in categories.$values" :key="categorie.id" :value="categorie.id">
+          <option v-for="categorie in categories" :key="categorie.id" :value="categorie.id">
             {{ categorie.nom }}
           </option>
         </select>
@@ -56,7 +56,7 @@
       <div class="mb-3">
         <label for="idVendeur" class="form-label">Vendeur</label>
         <select v-model="lot.idVendeur" class="form-select" id="idVendeur" required>
-          <option v-for="vendeur in vendeurs.$values" :key="vendeur.id" :value="vendeur.id">
+          <option v-for="vendeur in vendeurs" :key="vendeur.id" :value="vendeur.id">
             {{ vendeur.prenom }} {{ vendeur.nom }}
           </option>
         </select>
@@ -68,7 +68,7 @@
       <div class="mb-3">
         <label for="idMedium" class="form-label">Medium</label>
         <select v-model="lot.idMedium" class="form-select" id="idMedium" required>
-          <option v-for="medium in mediums.$values" :key="medium.id" :value="medium.id">
+          <option v-for="medium in mediums" :key="medium.id" :value="medium.id">
             {{ medium.type }}
           </option>
         </select>
@@ -76,7 +76,7 @@
       <div class="mb-3">
         <label for="idEncan" class="form-label">Encan</label>
         <select v-model="lot.idEncan" class="form-select" id="idEncan" required>
-          <option v-for="encan in encans.$values" :key="encan.id" :value="encan.id">
+          <option v-for="encan in encans" :key="encan.id" :value="encan.id">
             {{ encan.numeroEncan }}
           </option>
         </select>

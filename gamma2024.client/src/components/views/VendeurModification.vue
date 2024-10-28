@@ -54,6 +54,11 @@
                       <label class="form-label" for="rue">Rue</label>
                     </div>
 
+                    <div class="form-outline mb-4">
+                      <input v-model="vendeur.adresse.appartement" type="text" id="appartement" class="form-control form-control-lg" />
+                      <label class="form-label" for="appartement">Appartement (optionnel)</label>
+                    </div>
+
                     <div class="row">
                       <div class="col-md-6 mb-4">
                         <div class="form-outline">
@@ -83,6 +88,8 @@
                       <input v-model="vendeur.adresse.pays" type="text" id="pays" class="form-control form-control-lg" required />
                       <label class="form-label" for="pays">Pays</label>
                     </div>
+
+                    
 
                     <div class="d-flex justify-content-end pt-3">
                       <button type="button" class="btn btn-light btn-lg" @click="resetForm">Réinitialiser</button>
@@ -135,7 +142,8 @@ const vendeur = ref({
     ville: '',
     province: '',
     pays: '',
-    codePostal: ''
+      codePostal: '',
+    appartement: ''
   }
 });
 
@@ -154,7 +162,8 @@ onMounted(async () => {
         ville: vendeurData.adresse.ville,
         province: vendeurData.adresse.province,
         pays: vendeurData.adresse.pays,
-        codePostal: vendeurData.adresse.codePostal
+        codePostal: vendeurData.adresse.codePostal,
+        appartement: vendeurData.adresse.appartement
       }
     };
     

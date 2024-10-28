@@ -23,8 +23,8 @@ const store = createStore({
         },
         setRoles(state, roles) {
             console.log("Roles reçus dans setRoles:", roles);
-            if (roles && roles.$values) {
-                state.roles = roles.$values;
+            if (roles && roles) {
+                state.roles = roles;
             } else if (Array.isArray(roles)) {
                 state.roles = roles;
             } else {
@@ -291,7 +291,8 @@ const store = createStore({
         async obtenirTousLots({ state }) {
         try {
             const response = await state.api.get('/lots/tous');
-            return response.data.$values || []; 
+            console.log("Données brutes:", response.data);
+            return response.data || []; 
         } catch (error) {
             console.error("Erreur lors de la récupération de tous les lots:", error);
             throw error;
@@ -407,7 +408,7 @@ const store = createStore({
                 if (response.data.isAuthenticated) {
                     commit('setLoggedIn', true);
                     commit('setUser', response.data.user);
-                    commit('setRoles', response.data.roles.$values);
+                    commit('setRoles', response.data.roles);
                     dispatch('forceUpdate');
                 } else {
                     throw new Error("Non authentifié");

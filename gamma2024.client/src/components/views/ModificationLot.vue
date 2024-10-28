@@ -3,10 +3,10 @@
     <h1 class="text-center mb-4">Modification du lot</h1>
     <form @submit.prevent="modifierLot" v-if="lot">
       <!-- Bloc des photos existantes -->
-      <div v-if="lot.photos.$values.length > 0" class="mb-3">
+      <div v-if="lot.photos && lot.photos.length > 0" class="mb-3">
         <h4>Photos existantes</h4>
         <div class="d-flex flex-wrap">
-          <div v-for="photo in lot.photos.$values" :key="photo.id" class="me-2 mb-2 position-relative">
+          <div v-for="photo in lot.photos" :key="photo.id" class="me-2 mb-2 position-relative">
             <img :src="getImageUrl(photo.url)" alt="Photo du lot" 
                  style="width: 100px; height: 100px; object-fit: cover; border: 1px solid #ddd;">
             <button @click.prevent="marquerPhotoASupprimer(photo.id)" class="btn btn-danger btn-sm position-absolute top-0 end-0">X</button>
@@ -62,7 +62,7 @@
       <div class="mb-3">
         <label for="idCategorie" class="form-label">Catégorie</label>
         <select v-model="lot.idCategorie" class="form-select" id="idCategorie" required>
-          <option v-for="categorie in categories.$values" :key="categorie.id" :value="categorie.id">
+          <option v-for="categorie in categories" :key="categorie.id" :value="categorie.id">
             {{ categorie.nom }}
           </option>
         </select>
@@ -70,7 +70,7 @@
       <div class="mb-3">
         <label for="idVendeur" class="form-label">Vendeur</label>
         <select v-model="lot.idVendeur" class="form-select" id="idVendeur" required>
-          <option v-for="vendeur in vendeurs.$values" :key="vendeur.id" :value="vendeur.id">
+          <option v-for="vendeur in vendeurs" :key="vendeur.id" :value="vendeur.id">
              {{ vendeur.prenom }} {{ vendeur.nom }}
           </option>
         </select>
@@ -82,7 +82,7 @@
       <div class="mb-3">
         <label for="idMedium" class="form-label">Medium</label>
         <select v-model="lot.idMedium" class="form-select" id="idMedium" required>
-          <option v-for="medium in mediums.$values" :key="medium.id" :value="medium.id">
+          <option v-for="medium in mediums" :key="medium.id" :value="medium.id">
             {{ medium.type }}
           </option>
         </select>
@@ -90,7 +90,7 @@
       <div class="mb-3">
         <label for="idEncan" class="form-label">Encan</label>
         <select v-model="lot.idEncan" class="form-select" id="idEncan" required>
-          <option v-for="encan in encans.$values" :key="encan.id" :value="encan.id">
+          <option v-for="encan in encans" :key="encan.id" :value="encan.id">
             {{ encan.numeroEncan }}
           </option>
         </select>
@@ -137,7 +137,7 @@ const erreur = ref('');
 onMounted(async () => {
   try {
     lot.value = await store.dispatch('obtenirLot', route.params.id);
-    console.log('Photos du lot:', lot.value.photos.$values);
+    console.log('Photos du lot:', lot.value.photos);
     categories.value = await store.dispatch('obtenirCategories');
     vendeurs.value = await store.dispatch('obtenirVendeurs');
     mediums.value = await store.dispatch('obtenirMediums');
@@ -156,7 +156,7 @@ onBeforeUnmount(() => {
 const marquerPhotoASupprimer = (photoId) => {
   if (!photosASupprimer.value.includes(photoId)) {
     photosASupprimer.value.push(photoId);
-    lot.value.photos.$values = lot.value.photos.$values.filter(photo => photo.id !== photoId);
+    lot.value.photos = lot.value.photos.filter(photo => photo.id !== photoId);
   }
 };
 

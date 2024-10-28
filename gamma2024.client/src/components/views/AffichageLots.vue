@@ -52,9 +52,10 @@
 
   onMounted(async () => {
     try {
-      lots.value = await store.dispatch('obtenirTousLots');
+        const response = await store.dispatch('obtenirTousLots');
+        lots.value = response.data;
     } catch (error) {
-      console.error("Erreur lors de la récupération des lots:", error);
+        console.error("Erreur lors de la récupération des lots:", error);
     }
   });
 
@@ -75,5 +76,5 @@
 </script>
 
 <style scoped>
-  /* Styles similaires � ceux de AffichageVendeur.vue */
+  /* Styles similaires ceux de AffichageVendeur.vue */
 </style>
