@@ -12,9 +12,9 @@
             Aucun lot trouvé
         </h5>
 
-        <div v-else>
+        <div v-else class="d-flex flex-column align-items-center">
 
-            <div class="d-flex flex-row-reverse w-100 px-4 me-2 gap-2">
+            <div class="d-flex flex-row-reverse w-100 px-4 me-2 gap-2 ">
                 <button class="rounded bleuMoyenFond btn btnSurvolerBleuMoyenFond"
                         v-if="!siTuile"
                         @click="changerTypeAffichage('tuile')">
@@ -52,12 +52,12 @@
 
             <div v-if="siTuile"
                  class="row row-cols-lg-5 row-cols-md-3 row-cols-sm-2 row-cols-1 w-100 px-3">
-                <div v-for="index in lotsAffiche" :key="index.id" class="col p-2">
+                <div v-for="index in lotsAffiche" :key="index.id" class="col p-2 d-flex">
                     <LotTuile :lotRecu="index" />
                 </div>
             </div>
 
-            <div v-else class="d-flex flex-column p-5 w-100">
+            <div v-else class="d-flex flex-column px-5 w-100">
                 <div v-for="index in lotsAffiche" :key="index.id" class="p-2">
                     <LotListe :lotRecu="index" />
                 </div>

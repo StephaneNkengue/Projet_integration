@@ -456,7 +456,37 @@ const store = createStore({
             catch (error) {
                 return "Erreur, veuillez réessayer";
             }
-        }
+        },
+
+        async chercherEncansFuturs({ commit, state }) {
+            try {
+                const response = await state.api.get("/encans/chercherencansfuturs");
+                return response
+            }
+            catch (error) {
+                return "Erreur, veuillez réessayer"
+            }
+        },
+
+        async chercherEncansPasses({ commit, state }) {
+            try {
+                const response = await state.api.get("/encans/chercherencanspasses");
+                return response
+            }
+            catch (error) {
+                return "Erreur, veuillez réessayer"
+            }
+        },
+
+        async chercherNumeroEncanEnCours({ commit, state }) {
+            try {
+                const response = await state.api.get("/encans/ChercherNumeroEncanEnCours");
+                return response
+            }
+            catch (error) {
+                return "Erreur, veuillez réessayer"
+            }
+        },
     },
     getters: {
         isAdmin: (state) => state.roles.includes("Administrateur"),

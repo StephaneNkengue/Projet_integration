@@ -1,7 +1,7 @@
 <template>
-    <router-link class="text-decoration-none" :to="{name: 'DetailsLot', params: {idLot: lot.id}}">
-        <div class="card">
-            <div class="card-body align-items-middle">
+    <router-link class="text-decoration-none d-flex align-self-stretch" :to="{name: 'DetailsLot', params: {idLot: lot.id}}">
+        <div class="card align-self-stretch">
+            <div class="card-body d-flex flex-column justify-content-between">
                 <div class="d-flex align-items-middle justify-content-between">
                     <p class="fs-7 pe-2 mt-1 mb-0">Lot {{lot.numero}} {{lot.artiste}} {{lot.hauteur}} x {{lot.largeur}} po</p>
 

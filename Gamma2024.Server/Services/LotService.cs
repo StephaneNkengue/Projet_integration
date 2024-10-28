@@ -47,25 +47,30 @@ namespace Gamma2024.Server.Services
                 .Include(l => l.Medium)
                 .FirstOrDefault(l => l.Id == idLot);
 
-            var retourLot = new LotDetailsVM()
+            if (lot != null)
             {
-                Id = lot.Id,
-                Numero = lot.Numero,
-                ValeurEstimeMax = lot.ValeurEstimeMax,
-                ValeurEstimeMin = lot.ValeurEstimeMin,
-                Artiste = lot.Artiste,
-                Mise = lot.Mise,
-                EstVendu = lot.EstVendu,
-                Photos = lot.Photos.Select(p => p.Lien),
-                Description = lot.Description,
-                EstLivrable = lot.EstLivrable,
-                Hauteur = lot.Hauteur,
-                Largeur = lot.Largeur,
-                Medium = lot.Medium.Type,
-                Categorie = lot.Categorie.Nom
-            };
+                var retourLot = new LotDetailsVM()
+                {
+                    Id = lot.Id,
+                    Numero = lot.Numero,
+                    ValeurEstimeMax = lot.ValeurEstimeMax,
+                    ValeurEstimeMin = lot.ValeurEstimeMin,
+                    Artiste = lot.Artiste,
+                    Mise = lot.Mise,
+                    EstVendu = lot.EstVendu,
+                    Photos = lot.Photos.Select(p => p.Lien),
+                    Description = lot.Description,
+                    EstLivrable = lot.EstLivrable,
+                    Hauteur = lot.Hauteur,
+                    Largeur = lot.Largeur,
+                    Medium = lot.Medium.Type,
+                    Categorie = lot.Categorie.Nom
+                };
 
-            return retourLot;
+                return retourLot;
+            }
+
+            return null;
         }
 
         public ICollection<LotAffichageAdministrateurVM> ChercherTousLots()
