@@ -462,9 +462,9 @@ const store = createStore({
             }
         },
 
-        async fetchListeDeLotsPourAdministrateur({ commit }) {
+        async fetchListeDeLotsPourAdministrateur({ commit, state }) {
             try {
-                const response = await api.get("/lots/chercherTousLots");
+                const response = await state.api.get("/lots/chercherTousLots");
                 console.log("Données reçues de l'API:", response.data); // Pour le débogage
                 // let dataResponse = await response.json();
                 return response.data;
