@@ -1,7 +1,7 @@
 <template>
     <header class="sticky-top">
         <div>
-            <nav class="navbar navbar-expand-md bleuMarinSecondaireFond py-0"
+            <nav class="navbar navbar-expand-lg bleuMarinSecondaireFond py-0"
                  data-bs-theme="dark">
                 <div class="container-fluid justify-content-between">
                     <router-link :to="{ name: 'Accueil' }" class="text-decoration-none">
