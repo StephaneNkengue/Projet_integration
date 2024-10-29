@@ -55,7 +55,7 @@
         encans.value = response.data
 
         const responseNumEncanCourrant = await store.dispatch("chercherNumeroEncanEnCours");
-        if (response.data != '') {
+        if (responseNumEncanCourrant.data != '') {
             numEncanCours.value = responseNumEncanCourrant.data
         }
         chargement.value = false

@@ -96,9 +96,9 @@ namespace Gamma2024.Server.Services
                 Largeur = lot.Largeur,
                 IdMedium = lot.IdMedium,
                 Medium = lot.Medium?.Type,
-                IdEncan = lot.EncanLots.FirstOrDefault()?.IdEncan,
+                IdEncanModifie = lot.EncanLots.FirstOrDefault()?.IdEncan,
                 NumeroEncan = lot.EncanLots.FirstOrDefault()?.Encan?.NumeroEncan.ToString(),
-                Photos = lot.Photos.Select(p => new PhotoVM
+                PhotosModifie = lot.Photos.Select(p => new PhotoVM
                 {
                     Id = p.Id,
                     Url = p.Lien
@@ -232,16 +232,16 @@ namespace Gamma2024.Server.Services
                 lot.IdMedium = lotVM.IdMedium;
 
                 // Mettre à jour l'encan associé si nécessaire
-                if (lotVM.IdEncan.HasValue)
+                if (lotVM.IdEncanModifie.HasValue)
                 {
                     var encanLot = lot.EncanLots.FirstOrDefault();
-                    if (encanLot == null || encanLot.IdEncan != lotVM.IdEncan.Value)
+                    if (encanLot == null || encanLot.IdEncan != lotVM.IdEncanModifie.Value)
                     {
                         if (encanLot != null)
                         {
                             _context.EncanLots.Remove(encanLot);
                         }
-                        lot.EncanLots.Add(new EncanLot { IdEncan = lotVM.IdEncan.Value, IdLot = lot.Id });
+                        lot.EncanLots.Add(new EncanLot { IdEncan = lotVM.IdEncanModifie.Value, IdLot = lot.Id });
                     }
                 }
 
@@ -535,7 +535,7 @@ namespace Gamma2024.Server.Services
                 DateCreation = lotModification.DateCreation,
                 IdClientMise = lotModification.IdClientMise,
                 SeraLivree = lotModification.SeraLivree,
-                Photos = lotModification.Photos
+                Photos = lotModification.PhotosModifie
             };
         }
     }
