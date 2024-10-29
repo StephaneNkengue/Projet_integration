@@ -22,22 +22,30 @@
         </transition>
 
         <div class="d-flex justify-content-between">
-            <div class="d-flex collapse dropdown dropdown-center">
-                <button class="btn dropdown-toggle bleuMarinSecondaireFond rounded text-white contenuListeDropdown" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    Données par page
+
+            <div class="d-flex flex-row w-100 ms-3 gap-2 pt-3">
+                <button class="d-flex align-items-center text-center rounded btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
+                        @click="changerNbEncanParPage(20)"
+                        v-bind:disabled="encansParPage == 20">
+                    20
+                </button><button class="d-flex align-items-center text-center rounded btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
+                                 @click="changerNbEncanParPage(50)"
+                                 v-bind:disabled="encansParPage == 50">
+                    50
+                </button><button class="d-flex align-items-center text-center rounded btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
+                                 @click="changerNbEncanParPage(100)"
+                                 v-bind:disabled="encansParPage == 100">
+                    100
+                </button>
+                <button class="d-flex align-items-center text-center rounded btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
+                        type="button"
+                        @click="afficherTousEncans"
+                        v-bind:disabled="encansParPage == nbEncansRecus">
+                    Tous
                 </button>
 
-                <ul class="dropdown-menu dropdown-menu-dark bleuMarinFond text-center">
-                    <li>
-                        <a class="dropdown-item">10</a>
-                    </li>
-                    <li>
-                        <a class="dropdown-item">25</a>
-                    </li>
-                    <li>
-                        <a class="dropdown-item">Tous</a>
-                    </li>
-                </ul>
+
+
             </div>
 
             <div class="d-flex me-1 gap-1 align-items-center">
@@ -47,31 +55,6 @@
                 <input data-bs-theme="light" type="search" aria-label="RechercheDate" v-model="encanRechercheDate" placeholder="Date AAAA-MM-JJ">
             </div>
         </div>
-
-        <div class="d-flex flex-row-reverse w-100 px-4 me-2 gap-2 pt-3">
-            <button class="d-flex align-items-center text-center rounded btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
-                    type="button"
-                    @click="afficherTousEncans"
-                    v-bind:disabled="encansParPage == nbEncansRecus">
-                Tous
-            </button>
-            <button class="d-flex align-items-center text-center rounded btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
-                    @click="changerNbEncanParPage(100)"
-                    v-bind:disabled="encansParPage == 100">
-                100
-            </button>
-            <button class="d-flex align-items-center text-center rounded btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
-                    @click="changerNbEncanParPage(50)"
-                    v-bind:disabled="encansParPage == 50">
-                50
-            </button>
-            <button class="d-flex align-items-center text-center rounded btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
-                    @click="changerNbEncanParPage(20)"
-                    v-bind:disabled="encansParPage == 20">
-                20
-            </button>
-        </div>
-
 
         <table class="table table-striped mt-3">
             <thead>
