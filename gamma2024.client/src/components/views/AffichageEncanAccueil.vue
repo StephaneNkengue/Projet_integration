@@ -56,20 +56,20 @@
         }
         else if (props.type == -1) {
             const response = await store.dispatch("chercherEncansPasses");
+            voirEncans.value = function () { router.push({ name: 'EncansPasses' }) }
 
             if (response.data != '') {
                 encan.value = response.data[0]
                 voirEncan.value = function () { router.push({ name: 'Encan', params: { numeroEncan: encan.value.numeroEncan } }) }
-                voirEncans.value = function () { router.push({ name: 'EncansPasses' }) }
             }
         }
         else {
             const response = await store.dispatch("chercherEncansFuturs");
+            voirEncans.value = function () { router.push({ name: 'EncansFuturs' }) }
 
             if (response.data != '') {
                 encan.value = response.data[0]
                 voirEncan.value = function () { router.push({ name: 'Encan', params: { numeroEncan: encan.value.numeroEncan } }) }
-                voirEncans.value = function () { router.push({ name: 'EncansFuturs' }) }
             }
         }
 
