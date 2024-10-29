@@ -4,6 +4,7 @@ using Gamma2024.Server.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Gamma2024.Server.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241021134610_RenommageAttributEstLivrableDansLot")]
+    partial class RenommageAttributEstLivrableDansLot
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -59,6 +62,9 @@ namespace Gamma2024.Server.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("VendeurId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Ville")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -80,6 +86,7 @@ namespace Gamma2024.Server.Migrations
                             Pays = "Pays Admin",
                             Province = "Québec",
                             Rue = "Rue Admin",
+                            VendeurId = 0,
                             Ville = "Ville Admin"
                         },
                         new
@@ -92,6 +99,7 @@ namespace Gamma2024.Server.Migrations
                             Pays = "Pays Client",
                             Province = "Québec",
                             Rue = "Rue Client",
+                            VendeurId = 0,
                             Ville = "Ville Client"
                         });
                 });
@@ -177,7 +185,7 @@ namespace Gamma2024.Server.Migrations
                             Id = "8e445865-a24d-4543-a6c6-9443d048cdb9",
                             AccessFailedCount = 0,
                             Avatar = "avatars/default.png",
-                            ConcurrencyStamp = "f1f3de20-69b9-491d-bc82-b484b44cd47f",
+                            ConcurrencyStamp = "83ec5aa2-f21e-43f6-a8a7-56ba32852a32",
                             Email = "admin@example.com",
                             EmailConfirmed = true,
                             FirstName = "Super",
@@ -185,10 +193,10 @@ namespace Gamma2024.Server.Migrations
                             Name = "Admin",
                             NormalizedEmail = "ADMIN@EXAMPLE.COM",
                             NormalizedUserName = "ADMIN@EXAMPLE.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEImrQqIdpN3WKyTx0Ys/9QQXVKT5jTAyfxsPYj6ljA7MwE8U/IWotqFi5RT5o5V7VQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEDA4mW389h/kigEqjfqMfgzmSDUKkP/dT4EJIhvjRqAI67PxFDqhMIgLYAhBQ5djog==",
                             PhoneNumber = "466-666-6666",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "87162d4b-fc3b-4d65-8341-2f4a480982d1",
+                            SecurityStamp = "6423639c-ed68-4f59-9609-0c5e80dc0581",
                             TwoFactorEnabled = false,
                             UserName = "admin@example.com"
                         },
@@ -197,7 +205,7 @@ namespace Gamma2024.Server.Migrations
                             Id = "1d8ac862-e54d-4f10-b6f8-638808c02967",
                             AccessFailedCount = 0,
                             Avatar = "avatars/default.png",
-                            ConcurrencyStamp = "ff176598-423c-4557-bfc4-48e928f579e9",
+                            ConcurrencyStamp = "676aa399-3ba1-4c68-9e93-bb9537313f5a",
                             Email = "client@example.com",
                             EmailConfirmed = true,
                             FirstName = "Jean",
@@ -205,10 +213,10 @@ namespace Gamma2024.Server.Migrations
                             Name = "Dupont",
                             NormalizedEmail = "CLIENT@EXAMPLE.COM",
                             NormalizedUserName = "CLIENT@EXAMPLE.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEBCLhDAVClAVnNnHmZ3ahe6KYsdJa/tTtcmHC64QlZsy07wt7VRMIl+nfrP0UJ8oKw==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEEz7FHzUQf5wf7R7RA0Jb3oXiLKh787rFgV6gaTxCIJWxTyexq2yJxHZR0HWJp+yfQ==",
                             PhoneNumber = "455-555-5555",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "860b65a9-156b-473d-b11b-be6f787cf1e4",
+                            SecurityStamp = "d0789ac2-3d85-4d37-9f07-3c96a2a2d303",
                             TwoFactorEnabled = false,
                             UserName = "client@example.com"
                         });
@@ -548,6 +556,9 @@ namespace Gamma2024.Server.Migrations
                     b.Property<int>("AdresseId")
                         .HasColumnType("int");
 
+                    b.Property<int>("AdresseId1")
+                        .HasColumnType("int");
+
                     b.Property<string>("Courriel")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -566,7 +577,7 @@ namespace Gamma2024.Server.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AdresseId");
+                    b.HasIndex("AdresseId1");
 
                     b.ToTable("Vendeurs");
                 });
@@ -857,7 +868,7 @@ namespace Gamma2024.Server.Migrations
                 {
                     b.HasOne("Gamma2024.Server.Models.Adresse", "Adresse")
                         .WithMany()
-                        .HasForeignKey("AdresseId")
+                        .HasForeignKey("AdresseId1")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
