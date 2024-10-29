@@ -653,28 +653,9 @@ const store = createStore({
       }
     },
 
-    async chercherEncanEnCours({ commit, state }) {
-      try {
-        const response = await state.api.get("/encans/chercherencanencours");
-        return response;
-      } catch (error) {
-        return "Erreur, veuillez réessayer";
-      }
-    },
-    async chercherTousLotsParEncan({ commit, state }, idEncan) {
-      try {
-        const response = await state.api.get(
-          "/lots/cherchertouslotsparencan/" + idEncan
-        );
-        return response;
-      } catch (error) {
-        return "Erreur, veuillez réessayer";
-      }
-    },
-
     async chercherEncansPasses({ commit, state }) {
       try {
-        const response = await state.api.get("/encans/chercherencanspasses");
+        const response = await state.api.get("/encans/ChercherEncansPasses");
         return response;
       } catch (error) {
         return "Erreur, veuillez réessayer";

@@ -1,6 +1,3 @@
-using Gamma2024.Server.Models;
-using System.Collections.Generic;
-
 namespace Gamma2024.Server.ViewModels
 {
     public class LotAffichageVM
@@ -19,9 +16,6 @@ namespace Gamma2024.Server.ViewModels
         public string Medium { get; set; } = null!; // MÉDIUM
         public bool EstLivrable { get; set; } // LIVRAISON
         public string Vendeur { get; set; } = null!; // Formaté comme "Prénom Nom"
-        //public DateTime DateCreation { get; set; } = DateTime.Now;
-        //public int IdCategorie { get; set; }
-        //public string? IdClientMise { get; set; }
         public double? Mise { get; set; }
         public bool EstVendu { get; set; }
         public DateTime? DateFinVente { get; set; }

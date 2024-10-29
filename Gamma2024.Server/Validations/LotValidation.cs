@@ -90,9 +90,9 @@ namespace Gamma2024.Server.Validations
             // Validation spécifique pour LotModificationVM
             if (lot is LotModificationVM modificationLot)
             {
-                if (modificationLot.IdEncan.HasValue)
+                if (modificationLot.IdEncanModifie.HasValue)
                 {
-                    var encanExists = await context.Encans.AnyAsync(e => e.Id == modificationLot.IdEncan.Value);
+                    var encanExists = await context.Encans.AnyAsync(e => e.Id == modificationLot.IdEncanModifie.Value);
                     if (!encanExists)
                     {
                         return (false, "L'encan spécifié n'existe pas.");
