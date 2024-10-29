@@ -10,6 +10,7 @@ Console.WriteLine("Début du seed...");
 
 Console.WriteLine("Ajout des utilisateurs");
 
+
 var passwordHasher = new PasswordHasher<ApplicationUser>();
 
 var utilisateurs = File.ReadAllLines("CSV/Acheteurs.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
@@ -32,38 +33,21 @@ var utilisateurs = File.ReadAllLines("CSV/Acheteurs.csv", System.Text.Encoding.G
                         })
                         .ToList();
 
-// Vérifier et ajouter uniquement les nouveaux utilisateurs
-foreach (var utilisateur in utilisateurs)
-{
-    if (!context.Users.Any(u => u.UserName == utilisateur.UserName))
-    {
-        context.Users.Add(utilisateur);
-    }
-}
-
+context.Users.AddRange(utilisateurs);
 context.SaveChanges();
 
-Console.WriteLine("Ajout des rôles aux utilisateurs");
+Console.WriteLine("Ajout des roles au utilisateurs");
 
 string roleIdClient = "7da4163f-edb4-47b5-86ea-888888888888";
-
-var utilisateursExistants = context.Users.Select(u => u.Id).ToList();
 
 var utilisateursRoles = new List<IdentityUserRole<string>>();
 foreach (var item in utilisateurs)
 {
-    if (utilisateursExistants.Contains(item.Id))
+    utilisateursRoles.Add(new IdentityUserRole<string>
     {
-        utilisateursRoles.Add(new IdentityUserRole<string>
-        {
-            RoleId = roleIdClient,
-            UserId = item.Id,
-        });
-    }
-    else
-    {
-        Console.WriteLine($"L'utilisateur avec l'ID {item.Id} n'existe pas dans la base de données et sera ignoré pour l'attribution de rôle.");
-    }
+        RoleId = roleIdClient,
+        UserId = item.Id,
+    });
 }
 
 context.UserRoles.AddRange(utilisateursRoles);
@@ -77,36 +61,10 @@ var vendeurs = File.ReadAllLines("CSV/Vendeurs.csv", System.Text.Encoding.GetEnc
                 .ToVendeur()
                 .ToList();
 
-// Vérifier et ajouter uniquement les nouveaux vendeurs
-foreach (var vendeur in vendeurs)
-{
-    if (vendeur.Adresse != null)
-    {
-        var adresseExistante = context.Adresses.FirstOrDefault(a => a.Id == vendeur.Adresse.Id);
-        if (adresseExistante == null)
-        {
-            context.Adresses.Add(vendeur.Adresse);
-        }
-        else
-        {
-            vendeur.Adresse = adresseExistante;
-        }
-        vendeur.AdresseId = vendeur.Adresse.Id;
-    }
-}
-
-// Ajout des vendeurs uniques
-foreach (var vendeur in vendeurs)
-{
-    if (!context.Vendeurs.Any(v => v.Id == vendeur.Id))
-    {
-        context.Vendeurs.Add(vendeur);
-    }
-}
-
+context.Vendeurs.AddRange(vendeurs);
 context.SaveChanges();
 
-Console.WriteLine("Ajout des catégories");
+Console.WriteLine("Ajout des categories");
 
 var categoriesLotsUniques = File.ReadAllLines("CSV/Encan232et233.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
                         .Skip(1)
@@ -116,15 +74,7 @@ var categoriesLotsUniques = File.ReadAllLines("CSV/Encan232et233.csv", System.Te
                         .Select(c => c.First())
                         .ToList();
 
-// Ajout des catégories uniques
-foreach (var category in categoriesLotsUniques)
-{
-    if (!context.Categories.Any(c => c.Nom == category.Nom))
-    {
-        context.Categories.Add(category);
-    }
-}
-
+context.Categories.AddRange(categoriesLotsUniques);
 context.SaveChanges();
 
 Console.WriteLine("Ajout des médiums");
@@ -137,20 +87,11 @@ var mediumsLotsUniques = File.ReadAllLines("CSV/Encan232et233.csv", System.Text.
                         .Select(m => m.First())
                         .ToList();
 
-// Ajout des médiums uniques
-foreach (var medium in mediumsLotsUniques)
-{
-    if (!context.Mediums.Any(m => m.Type == medium.Type))
-    {
-        context.Mediums.Add(medium);
-    }
-}
-
+context.Mediums.AddRange(mediumsLotsUniques);
 context.SaveChanges();
 
 Console.WriteLine("Ajout des lots");
 
-// Processus similaire pour les lots encan 232
 var lotsVendeurs232 = File.ReadAllLines("CSV/Vendeurs.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
                 .Skip(1)
                 .Where(l => l.Length > 1)
@@ -202,17 +143,6 @@ var lots232 = File.ReadAllLines("CSV/Encan232et233.csv", System.Text.Encoding.Ge
                         })
                         .ToList();
 
-// Ajout des lots uniques
-foreach (var lot in lots232)
-{
-    if (!context.Lots.Any(l => l.Numero == lot.Numero))
-    {
-        context.Lots.Add(lot);
-    }
-}
-
-context.SaveChanges();
-
 var acheteurs232 = File.ReadAllLines("CSV/AcheteurEncan232.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
                         .Skip(1)
                         .Where(l => l.Length > 1)
@@ -238,6 +168,7 @@ for (int i = 0; i < lots232.Count; i++)
     }
 }
 
+context.Lots.AddRange(lots232);
 context.SaveChanges();
 
 var lotsVendeurs233 = File.ReadAllLines("CSV/Vendeurs.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
@@ -291,14 +222,179 @@ var lots233 = File.ReadAllLines("CSV/Encan232et233.csv", System.Text.Encoding.Ge
                         })
                         .ToList();
 
-// Ajout des lots uniques pour l'encan 233
-foreach (var lot in lots233)
+for (int i = 0; i < lots233.Count; i++)
 {
-    if (!context.Lots.Any(l => l.Numero == lot.Numero))
+    foreach (var nomImage in imagesLots233[i])
     {
-        context.Lots.Add(lot);
+        if (nomImage.IsNullOrEmpty())
+        {
+            break;
+        }
+        else
+        {
+            var imagePath = Path.Combine("Images", "ImagesEncan233", nomImage);
+            lots233[i].Photos.Add(new Photo
+            {
+                Lien = imagePath
+            });
+        }
     }
 }
 
+context.Lots.AddRange(lots233);
 context.SaveChanges();
+
+Console.WriteLine("Ajout des encans");
+var encans = new List<Encan>();
+
+encans.Add(new Encan
+{
+    NumeroEncan = 232,
+    DateDebut = new DateTime(2005, 3, 15, 6, 0, 0),
+    DateFin = new DateTime(2005, 3, 18, 6, 0, 0),
+    DateDebutSoireeCloture = new DateTime(2005, 3, 18, 6, 0, 1),
+    DateFinSoireeCloture = new DateTime(2005, 3, 18, 6, 0, 1),
+    EstPublie = true
+});
+
+encans.Add(new Encan
+{
+    NumeroEncan = 233,
+    DateDebut = new DateTime(2024, 3, 15, 6, 0, 0),
+    DateFin = new DateTime(2025, 3, 18, 6, 0, 0),
+    DateDebutSoireeCloture = new DateTime(2025, 3, 18, 6, 0, 1),
+    DateFinSoireeCloture = new DateTime(2025, 3, 18, 6, 0, 1),
+    EstPublie = true
+});
+
+encans.Add(new Encan
+{
+    NumeroEncan = 234,
+    DateDebut = new DateTime(2027, 3, 15, 6, 0, 0),
+    DateFin = new DateTime(2027, 3, 18, 6, 0, 0),
+    DateDebutSoireeCloture = new DateTime(2027, 3, 18, 6, 0, 1),
+    DateFinSoireeCloture = new DateTime(2027, 3, 18, 6, 0, 1),
+    EstPublie = true
+});
+
+encans.Add(new Encan
+{
+    NumeroEncan = 235,
+    DateDebut = new DateTime(2008, 3, 15, 6, 0, 0),
+    DateFin = new DateTime(2008, 3, 18, 6, 0, 0),
+    DateDebutSoireeCloture = new DateTime(2008, 3, 18, 6, 0, 1),
+    DateFinSoireeCloture = new DateTime(2008, 3, 18, 6, 0, 1),
+    EstPublie = true
+});
+
+
+context.Encans.AddRange(encans);
+context.SaveChanges();
+
+Console.WriteLine("Association des lots au encans respectifs");
+var encanLots = new List<EncanLot>();
+
+foreach (var item in lots232)
+{
+    encanLots.Add(new EncanLot
+    {
+        Lot = item,
+        IdLot = item.Id,
+        Encan = encans[0],
+        IdEncan = encans[0].Id
+    });
+
+    encans[0].DateFinSoireeCloture = encans[0].DateFinSoireeCloture.AddSeconds(30);
+}
+
+context.Encans.Update(encans[0]);
+context.SaveChanges();
+
+foreach (var item in lots233)
+{
+    encanLots.Add(new EncanLot
+    {
+        Lot = item,
+        IdLot = item.Id,
+        Encan = encans[1],
+        IdEncan = encans[1].Id
+    });
+    encans[1].DateFinSoireeCloture = encans[1].DateFinSoireeCloture.AddSeconds(30);
+}
+
+context.Encans.Update(encans[1]);
+context.SaveChanges();
+
+context.EncanLots.AddRange(encanLots);
+context.SaveChanges();
+
+Console.WriteLine("Ajout des charités");
+var charites = new List<Charite>();
+
+charites.Add(new Charite
+{
+    NomOrganisme = "Le phare des rives"
+});
+charites.Add(new Charite
+{
+    NomOrganisme = "Un petit pas pour l'avenir"
+});
+charites.Add(new Charite
+{
+    NomOrganisme = "Rendez-vous dans 30 ans"
+});
+
+context.Charites.AddRange(charites);
+context.SaveChanges();
+
+
+Console.WriteLine("Ajout des factures");
+var infoFactures = File.ReadAllLines("CSV/AcheteurEncan232.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
+                .Skip(1)
+                .Where(l => l.Length > 1)
+                .GetAcheteursEncan232()
+                .ToList();
+
+var factures = new List<Facture>();
+
+foreach (var item in utilisateurs)
+{
+    var achats = infoFactures.FindAll(i => i.Pseudonyme == item.UserName).ToList();
+
+    if (achats.Any())
+    {
+        var facture = new Facture
+        {
+            IdClient = item.Id,
+            Client = item,
+            IdAdresse = item.Adresses.First().Id,
+            Adresse = item.Adresses.First(),
+            DateAchat = DateTime.Now,
+            PrixLots = 0
+        };
+
+        foreach (var a in achats)
+        {
+            var lot = lots232.FirstOrDefault(l => l.Numero == a.Lot);
+            lot.EstVendu = true;
+            lot.Mise = a.PrixAchete;
+            lot.IdClientMise = item.Id;
+            lot.ClientMise = item;
+            lot.SeraLivree = a.Livraison;
+            lot.DateFinVente = DateTime.Now;
+            facture.Lots.Add(lot);
+        }
+
+        facture.CalculerFacture();
+        factures.Add(facture);
+        infoFactures.RemoveAll(i => i.Pseudonyme == item.UserName);
+    }
+}
+
+context.Factures.AddRange(factures);
+context.SaveChanges();
+
+context.Lots.UpdateRange(lots232);
+context.SaveChanges();
+
 Console.WriteLine("Fin du seed");
