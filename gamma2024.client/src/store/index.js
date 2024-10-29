@@ -6,7 +6,7 @@ const store = createStore({
     api: null,
     token: null,
     roles: [],
-    isLoggedIn: false, // Initialisation explicite
+    isLoggedIn: false,
     user: null,
   },
   mutations: {
