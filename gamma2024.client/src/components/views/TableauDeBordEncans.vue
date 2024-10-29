@@ -26,32 +26,36 @@
       </div>
     </transition>
 
-        <div class="d-flex justify-content-between">
-
-            <div class="d-flex flex-row w-100 ms-3 gap-2 pt-3">
-                <button class="d-flex align-items-center text-center rounded btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
-                        @click="changerNbEncanParPage(20)"
-                        v-bind:disabled="encansParPage == 20">
-                    20
-                </button><button class="d-flex align-items-center text-center rounded btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
-                                 @click="changerNbEncanParPage(50)"
-                                 v-bind:disabled="encansParPage == 50">
-                    50
-                </button><button class="d-flex align-items-center text-center rounded btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
-                                 @click="changerNbEncanParPage(100)"
-                                 v-bind:disabled="encansParPage == 100">
-                    100
-                </button>
-                <button class="d-flex align-items-center text-center rounded btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
-                        type="button"
-                        @click="afficherTousEncans"
-                        v-bind:disabled="encansParPage == nbEncansRecus">
-                    Tous
-                </button>
-
-
-
-            </div>
+    <div class="d-flex justify-content-between">
+      <div class="d-flex flex-row w-100 ms-3 gap-2 pt-3">
+        <button
+          class="d-flex align-items-center text-center rounded btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
+          @click="changerNbEncanParPage(20)"
+          v-bind:disabled="encansParPage == 20"
+        >
+          20</button
+        ><button
+          class="d-flex align-items-center text-center rounded btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
+          @click="changerNbEncanParPage(50)"
+          v-bind:disabled="encansParPage == 50"
+        >
+          50</button
+        ><button
+          class="d-flex align-items-center text-center rounded btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
+          @click="changerNbEncanParPage(100)"
+          v-bind:disabled="encansParPage == 100"
+        >
+          100
+        </button>
+        <button
+          class="d-flex align-items-center text-center rounded btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
+          type="button"
+          @click="afficherTousEncans"
+          v-bind:disabled="encansParPage == nbEncansRecus"
+        >
+          Tous
+        </button>
+      </div>
 
       <div class="d-flex me-1 gap-1 align-items-center">
         <label for="Recherche">Rechercher: </label>
@@ -164,19 +168,16 @@ import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 import ConfirmDelete from "./BoiteModale/ConfirmDeleteEncan.vue";
 
-    const store = useStore();
-    const listeEncans = ref([]);
-    const listeEncansFiltree = ref([]);
-    const nbEncansRecus = ref()
-    const encansParPage = ref()
-    const listePagination = ref([])
-    const pageCourante = ref(1)
-    const nbPages = ref()
-    const encansAffiche = ref([])
-const router = useRouter();
 const store = useStore();
-let listeEncans = ref([]);
-let listeEncansFiltree = ref([]);
+const listeEncans = ref([]);
+const listeEncansFiltree = ref([]);
+const nbEncansRecus = ref()
+const encansParPage = ref()
+const listePagination = ref([])
+const pageCourante = ref(1)
+const nbPages = ref()
+const encansAffiche = ref([])
+const router = useRouter();
 
 let encanPublieMAJ;
 const encanRechercheNumEncan = ref();
@@ -225,16 +226,13 @@ async function initializeData() {
 
     listeEncansFiltree.value = listeEncans.value;
 
-            nbEncansRecus.value = listeEncansFiltree.value.length
-            encansParPage.value = nbEncansRecus.value
-            nbPages.value = recalculerNbPages();
+nbEncansRecus.value = listeEncansFiltree.value.length
+encansParPage.value = nbEncansRecus.value
+nbPages.value = recalculerNbPages();
 
-            genererListePagination();
-            chercherEncansAAfficher();
+genererListePagination();
+chercherEncansAAfficher();
 
-            encanPublieMAJ = async function (statutPublie) {
-                let encanId = event.srcElement.getAttribute("encanId")
-                encan.value = listeEncans.value.find(e => e.id == encanId);
     encanPublieMAJ = async function (statutPublie) {
       let encanId = event.srcElement.getAttribute("encanId");
       encan.value = listeEncans.value.find((e) => e.id == encanId);
