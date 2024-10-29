@@ -165,19 +165,17 @@
 <script setup>
 import { onMounted, ref, watch, reactive } from "vue";
 import { useStore } from "vuex";
-import { useRouter } from "vue-router";
-import ConfirmDelete from "./BoiteModale/ConfirmDeleteEncan.vue";
+import TableauDeBordEncansAjout from "@/components/views/TableauDeBordEncansAjout.vue";
 
 const store = useStore();
 const listeEncans = ref([]);
 const listeEncansFiltree = ref([]);
-const nbEncansRecus = ref()
-const encansParPage = ref()
-const listePagination = ref([])
-const pageCourante = ref(1)
-const nbPages = ref()
-const encansAffiche = ref([])
-const router = useRouter();
+const nbEncansRecus = ref();
+const encansParPage = ref();
+const listePagination = ref([]);
+const pageCourante = ref(1);
+const nbPages = ref();
+const encansAffiche = ref([]);
 
 let encanPublieMAJ;
 const encanRechercheNumEncan = ref();
@@ -189,26 +187,11 @@ const successMessage = ref("");
 const encan = ref("");
 
 onMounted(async () => {
-  initializeData();
-});
-
-watch(encanRechercheDate, () => {
-  listeEncansFiltree.value = listeEncans.value;
-
-  listeEncansFiltree.value = listeEncansFiltree.value.filter(
-    ({
-      numeroEncan,
-      dateDebut,
-      dateFin,
-      dateDebutSoireeCloture,
-      dateFinSoireeCloture,
-    }) =>
-      numeroEncan.toString().startsWith(encanRechercheDate.value) ||
-      dateDebut.toString().startsWith(encanRechercheDate.value) ||
-      dateFin.toString().startsWith(encanRechercheDate.value) ||
-      dateDebutSoireeCloture.toString().startsWith(encanRechercheDate) ||
-      dateFinSoireeCloture.toString().startsWith(encanRechercheDate.value)
-  );
+  try {
+    initializeData();
+  } catch (erreur) {
+    console.log("Erreur encans" + erreur);
+  }
 });
 
 const supprimerMonEncan = async (idEncan) => {
@@ -220,155 +203,27 @@ const editerEncan = async (idEncan) => {
   router.push({ name: "ModificationEncan", params: { id: idEncan } });
 };
 
-async function initializeData() {
-  try {
-    listeEncans.value = await store.dispatch("fetchEncanInfo");
-
-    listeEncansFiltree.value = listeEncans.value;
-
-nbEncansRecus.value = listeEncansFiltree.value.length
-encansParPage.value = nbEncansRecus.value
-nbPages.value = recalculerNbPages();
-
-genererListePagination();
-chercherEncansAAfficher();
-
-    encanPublieMAJ = async function (statutPublie) {
-      let encanId = event.srcElement.getAttribute("encanId");
-      encan.value = listeEncans.value.find((e) => e.id == encanId);
-
-      if (encan.value.estPublie != statutPublie) {
-        encan.value.estPublie = !encan.value.estPublie;
-
-        let formData = reactive({
-          numeroEncan: encan.value.numeroEncan,
-          estPublie: encan.value.estPublie,
-        });
-
-        const response = await store.dispatch(
-          "mettreAJourEncanPublie",
-          formData
-        );
-        if (response.success) {
-          successMessage.value = "Statut encan modifié!";
-          errorMessage.value = "";
-          setTimeout(() => {
-            successMessage.value = "";
-          }, 5000);
-        } else {
-          errorMessage.value = response.error;
-          successMessage.value = "";
-          setTimeout(() => {
-            errorMessage.value = "";
-          }, 5000);
-        }
-      }
-    };
-  } catch (erreur) {
-    console.log("Erreur encans" + erreur);
-  }
-}
-
 watch(encanRechercheNumEncan, () => {
   listeEncansFiltree.value = listeEncans.value;
 
-        listeEncansFiltree.value = listeEncansFiltree.value.filter(({ numeroEncan }) =>
-            numeroEncan.toString().startsWith(encanRechercheNumEncan.value)
-        );
+  listeEncansFiltree.value = listeEncansFiltree.value.filter(
+    ({ numeroEncan }) =>
+      numeroEncan.toString().startsWith(encanRechercheNumEncan.value)
+  );
 
-        nbEncansRecus.value = listeEncansFiltree.value.length
-        pageCourante.value = 1
-        AjusterPagination()
-    });
+  nbEncansRecus.value = listeEncansFiltree.value.length;
+  pageCourante.value = 1;
+  AjusterPagination();
+});
 
-    watch(pageCourante, () => {
-        genererListePagination();
-        chercherEncansAAfficher();
-    });
+watch(pageCourante, () => {
+  genererListePagination();
+  chercherEncansAAfficher();
+});
 
 watch(encanRechercheDate, () => {
   listeEncansFiltree.value = listeEncans.value;
 
-        listeEncansFiltree.value = listeEncansFiltree.value.filter(({ dateDebut, dateFin, dateDebutSoireeCloture, dateFinSoireeCloture }) =>
-            dateDebut.toString().startsWith(encanRechercheDate.value) ||
-            dateFin.toString().startsWith(encanRechercheDate.value) ||
-            dateDebutSoireeCloture.toString().startsWith(encanRechercheDate.value) ||
-            dateFinSoireeCloture.toString().startsWith(encanRechercheDate.value)
-        );
-
-        nbEncansRecus.value = listeEncansFiltree.value.length
-        pageCourante.value = 1
-        AjusterPagination()
-    });
-
-    const changerNbEncanParPage = ref(function (nouvEncansParPage) {
-        encansParPage.value = nouvEncansParPage;
-        nbPages.value = recalculerNbPages();
-        pageCourante.value = 1;
-        AjusterPagination()
-    });
-
-    const afficherTousEncans = ref(function () {
-        encansParPage.value = nbEncansRecus.value;
-        nbPages.value = recalculerNbPages();
-        pageCourante.value = 1;
-        AjusterPagination()
-    });
-
-    const reculerPage = ref(function () {
-        if (pageCourante.value > 1) {
-            pageCourante.value--;
-        }
-    });
-
-    const avancerPage = ref(function () {
-        if (pageCourante.value < nbPages.value) {
-            pageCourante.value++;
-        }
-    });
-
-    const changerPage = ref(function () {
-        pageCourante.value = parseInt(event.srcElement.getAttribute("pageId"));
-    });
-
-    function recalculerNbPages() {
-        return Math.ceil(nbEncansRecus.value / encansParPage.value);
-    }
-
-    function genererListePagination() {
-        listePagination.value = [];
-
-        for (let i = 1; i <= nbPages.value; i++) {
-            if (
-                i == 1 ||
-                (i >= pageCourante.value - 1 && i <= pageCourante.value + 1) ||
-                i == nbPages.value
-            ) {
-                listePagination.value.push(i);
-            } else if (
-                listePagination.value[listePagination.value.length - 1] != "..."
-            ) {
-                listePagination.value.push("...");
-            }
-        }
-    }
-
-    function chercherEncansAAfficher() {
-        encansAffiche.value = [];
-
-        let positionDebut = (pageCourante.value - 1) * encansParPage.value;
-        let positionFin = pageCourante.value * encansParPage.value;
-
-        for (let i = positionDebut; i < positionFin && i < listeEncansFiltree.value.length; i++) {
-            encansAffiche.value.push(listeEncansFiltree.value[i]);
-        }
-    }
-
-    function AjusterPagination() {
-        nbPages.value = recalculerNbPages()
-        genererListePagination();
-        chercherEncansAAfficher();
-    }
   listeEncansFiltree.value = listeEncansFiltree.value.filter(
     ({ dateDebut, dateFin, dateDebutSoireeCloture, dateFinSoireeCloture }) =>
       dateDebut.toString().startsWith(encanRechercheDate.value) ||
@@ -376,7 +231,126 @@ watch(encanRechercheDate, () => {
       dateDebutSoireeCloture.toString().startsWith(encanRechercheDate.value) ||
       dateFinSoireeCloture.toString().startsWith(encanRechercheDate.value)
   );
+
+  nbEncansRecus.value = listeEncansFiltree.value.length;
+  pageCourante.value = 1;
+  AjusterPagination();
 });
+
+const changerNbEncanParPage = ref(function (nouvEncansParPage) {
+  encansParPage.value = nouvEncansParPage;
+  nbPages.value = recalculerNbPages();
+  pageCourante.value = 1;
+  AjusterPagination();
+});
+
+const afficherTousEncans = ref(function () {
+  encansParPage.value = nbEncansRecus.value;
+  nbPages.value = recalculerNbPages();
+  pageCourante.value = 1;
+  AjusterPagination();
+});
+
+const reculerPage = ref(function () {
+  if (pageCourante.value > 1) {
+    pageCourante.value--;
+  }
+});
+
+const avancerPage = ref(function () {
+  if (pageCourante.value < nbPages.value) {
+    pageCourante.value++;
+  }
+});
+
+const changerPage = ref(function () {
+  pageCourante.value = parseInt(event.srcElement.getAttribute("pageId"));
+});
+
+function recalculerNbPages() {
+  return Math.ceil(nbEncansRecus.value / encansParPage.value);
+}
+
+function genererListePagination() {
+  listePagination.value = [];
+
+  for (let i = 1; i <= nbPages.value; i++) {
+    if (
+      i == 1 ||
+      (i >= pageCourante.value - 1 && i <= pageCourante.value + 1) ||
+      i == nbPages.value
+    ) {
+      listePagination.value.push(i);
+    } else if (
+      listePagination.value[listePagination.value.length - 1] != "..."
+    ) {
+      listePagination.value.push("...");
+    }
+  }
+}
+
+function chercherEncansAAfficher() {
+  encansAffiche.value = [];
+
+  let positionDebut = (pageCourante.value - 1) * encansParPage.value;
+  let positionFin = pageCourante.value * encansParPage.value;
+
+  for (
+    let i = positionDebut;
+    i < positionFin && i < listeEncansFiltree.value.length;
+    i++
+  ) {
+    encansAffiche.value.push(listeEncansFiltree.value[i]);
+  }
+}
+
+async function initializeData() {
+  listeEncans.value = await store.dispatch("fetchEncanInfo");
+
+  listeEncansFiltree.value = listeEncans.value;
+
+  nbEncansRecus.value = listeEncansFiltree.value.length;
+  encansParPage.value = nbEncansRecus.value;
+  nbPages.value = recalculerNbPages();
+
+  genererListePagination();
+  chercherEncansAAfficher();
+
+  encanPublieMAJ = async function (statutPublie) {
+    let encanId = event.srcElement.getAttribute("encanId");
+    encan.value = listeEncans.value.find((e) => e.id == encanId);
+
+    if (encan.value.estPublie != statutPublie) {
+      encan.value.estPublie = !encan.value.estPublie;
+
+      let formData = reactive({
+        numeroEncan: encan.value.numeroEncan,
+        estPublie: encan.value.estPublie,
+      });
+
+      const response = await store.dispatch("mettreAJourEncanPublie", formData);
+      if (response.success) {
+        successMessage.value = "Statut encan modifié!";
+        errorMessage.value = "";
+        setTimeout(() => {
+          successMessage.value = "";
+        }, 5000);
+      } else {
+        errorMessage.value = response.error;
+        successMessage.value = "";
+        setTimeout(() => {
+          errorMessage.value = "";
+        }, 5000);
+      }
+    }
+  };
+}
+
+function AjusterPagination() {
+  nbPages.value = recalculerNbPages();
+  genererListePagination();
+  chercherEncansAAfficher();
+}
 </script>
 
 <style scoped>
