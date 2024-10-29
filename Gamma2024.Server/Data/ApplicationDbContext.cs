@@ -228,6 +228,8 @@ namespace Gamma2024.Server.Data
                 PasswordHash = "AQAAAAIAAYagAAAAEImrQqIdpN3WKyTx0Ys/9QQXVKT5jTAyfxsPYj6ljA7MwE8U/IWotqFi5RT5o5V7VQ=="
 
             };
+            //clientUser.PasswordHash = passwordHasher.HashPassword(clientUser, "MotDePasseClient123!");
+
 
             var clientUser = new ApplicationUser
             {
@@ -245,6 +247,7 @@ namespace Gamma2024.Server.Data
                 ConcurrencyStamp = "ff176598-423c-4557-bfc4-48e928f579e9",
                 PasswordHash = "AQAAAAIAAYagAAAAEBCLhDAVClAVnNnHmZ3ahe6KYsdJa/tTtcmHC64QlZsy07wt7VRMIl+nfrP0UJ8oKw=="
             };
+            //adminUser.PasswordHash = passwordHasher.HashPassword(adminUser, "MotDePasseAdmin123!");
 
             builder.Entity<ApplicationUser>().HasData(adminUser, clientUser);
 
