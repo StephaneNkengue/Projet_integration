@@ -11,7 +11,7 @@ namespace Gamma2024.Server.Validations
             // Vérification du numéro de lot unique dans le même encan
             var lotExistant = await context.Lots
                 .Include(l => l.EncanLots)
-                .AnyAsync(l => l.Numero == lot.Numero && 
+                .AnyAsync(l => l.Numero == lot.Numero &&
                                l.EncanLots.Any(el => el.IdEncan == lot.IdEncan));
 
             if (lotExistant)

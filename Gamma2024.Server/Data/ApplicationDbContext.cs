@@ -58,12 +58,6 @@ namespace Gamma2024.Server.Data
                 .HasForeignKey(l => l.IdVendeur)
                 .OnDelete(DeleteBehavior.NoAction);
 
-            builder.Entity<Vendeur>()
-                .HasOne(v => v.Adresse)
-                .WithOne()
-                .HasForeignKey<Vendeur>(v => v.AdresseId)
-                .OnDelete(DeleteBehavior.NoAction);
-
             // Lot
             builder.Entity<Lot>()
                 .HasOne(l => l.Categorie)
@@ -176,7 +170,7 @@ namespace Gamma2024.Server.Data
                     CodePostal = "A1A1A1",
                     Pays = "Pays Admin",
                     Province = "Québec",
-                    IdApplicationUser = adminId,  // Utilisez adminId ici
+                    IdApplicationUser = adminId,
                     EstDomicile = true,
                 },
                 new Adresse
@@ -188,7 +182,7 @@ namespace Gamma2024.Server.Data
                     CodePostal = "A1A1A1",
                     Pays = "Pays Client",
                     Province = "Québec",
-                    IdApplicationUser = clientId,  // Utilisez clientId ici
+                    IdApplicationUser = clientId,
                     EstDomicile = true,
                 }
             );
@@ -234,6 +228,8 @@ namespace Gamma2024.Server.Data
                 PasswordHash = "AQAAAAIAAYagAAAAEImrQqIdpN3WKyTx0Ys/9QQXVKT5jTAyfxsPYj6ljA7MwE8U/IWotqFi5RT5o5V7VQ=="
 
             };
+            //clientUser.PasswordHash = passwordHasher.HashPassword(clientUser, "MotDePasseClient123!");
+
 
             var clientUser = new ApplicationUser
             {
@@ -251,6 +247,7 @@ namespace Gamma2024.Server.Data
                 ConcurrencyStamp = "ff176598-423c-4557-bfc4-48e928f579e9",
                 PasswordHash = "AQAAAAIAAYagAAAAEBCLhDAVClAVnNnHmZ3ahe6KYsdJa/tTtcmHC64QlZsy07wt7VRMIl+nfrP0UJ8oKw=="
             };
+            //adminUser.PasswordHash = passwordHasher.HashPassword(adminUser, "MotDePasseAdmin123!");
 
             builder.Entity<ApplicationUser>().HasData(adminUser, clientUser);
 

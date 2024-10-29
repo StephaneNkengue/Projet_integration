@@ -26,29 +26,32 @@
       </div>
     </transition>
 
-    <div class="d-flex justify-content-between">
-      <div class="d-flex collapse dropdown dropdown-center">
-        <button
-          class="btn dropdown-toggle bleuMarinSecondaireFond rounded text-white contenuListeDropdown"
-          type="button"
-          data-bs-toggle="dropdown"
-          aria-expanded="false"
-        >
-          Données par page
-        </button>
+        <div class="d-flex justify-content-between">
 
-        <ul class="dropdown-menu dropdown-menu-dark bleuMarinFond text-center">
-          <li>
-            <a class="dropdown-item">10</a>
-          </li>
-          <li>
-            <a class="dropdown-item">25</a>
-          </li>
-          <li>
-            <a class="dropdown-item">Tous</a>
-          </li>
-        </ul>
-      </div>
+            <div class="d-flex flex-row w-100 ms-3 gap-2 pt-3">
+                <button class="d-flex align-items-center text-center rounded btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
+                        @click="changerNbEncanParPage(20)"
+                        v-bind:disabled="encansParPage == 20">
+                    20
+                </button><button class="d-flex align-items-center text-center rounded btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
+                                 @click="changerNbEncanParPage(50)"
+                                 v-bind:disabled="encansParPage == 50">
+                    50
+                </button><button class="d-flex align-items-center text-center rounded btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
+                                 @click="changerNbEncanParPage(100)"
+                                 v-bind:disabled="encansParPage == 100">
+                    100
+                </button>
+                <button class="d-flex align-items-center text-center rounded btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
+                        type="button"
+                        @click="afficherTousEncans"
+                        v-bind:disabled="encansParPage == nbEncansRecus">
+                    Tous
+                </button>
+
+
+
+            </div>
 
       <div class="d-flex me-1 gap-1 align-items-center">
         <label for="Recherche">Rechercher: </label>
@@ -161,6 +164,15 @@ import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 import ConfirmDelete from "./BoiteModale/ConfirmDeleteEncan.vue";
 
+    const store = useStore();
+    const listeEncans = ref([]);
+    const listeEncansFiltree = ref([]);
+    const nbEncansRecus = ref()
+    const encansParPage = ref()
+    const listePagination = ref([])
+    const pageCourante = ref(1)
+    const nbPages = ref()
+    const encansAffiche = ref([])
 const router = useRouter();
 const store = useStore();
 let listeEncans = ref([]);
@@ -213,6 +225,16 @@ async function initializeData() {
 
     listeEncansFiltree.value = listeEncans.value;
 
+            nbEncansRecus.value = listeEncansFiltree.value.length
+            encansParPage.value = nbEncansRecus.value
+            nbPages.value = recalculerNbPages();
+
+            genererListePagination();
+            chercherEncansAAfficher();
+
+            encanPublieMAJ = async function (statutPublie) {
+                let encanId = event.srcElement.getAttribute("encanId")
+                encan.value = listeEncans.value.find(e => e.id == encanId);
     encanPublieMAJ = async function (statutPublie) {
       let encanId = event.srcElement.getAttribute("encanId");
       encan.value = listeEncans.value.find((e) => e.id == encanId);
@@ -252,15 +274,103 @@ async function initializeData() {
 watch(encanRechercheNumEncan, () => {
   listeEncansFiltree.value = listeEncans.value;
 
-  listeEncansFiltree.value = listeEncansFiltree.value.filter(
-    ({ numeroEncan }) =>
-      numeroEncan.toString().startsWith(encanRechercheNumEncan.value)
-  );
-});
+        listeEncansFiltree.value = listeEncansFiltree.value.filter(({ numeroEncan }) =>
+            numeroEncan.toString().startsWith(encanRechercheNumEncan.value)
+        );
+
+        nbEncansRecus.value = listeEncansFiltree.value.length
+        pageCourante.value = 1
+        AjusterPagination()
+    });
+
+    watch(pageCourante, () => {
+        genererListePagination();
+        chercherEncansAAfficher();
+    });
 
 watch(encanRechercheDate, () => {
   listeEncansFiltree.value = listeEncans.value;
 
+        listeEncansFiltree.value = listeEncansFiltree.value.filter(({ dateDebut, dateFin, dateDebutSoireeCloture, dateFinSoireeCloture }) =>
+            dateDebut.toString().startsWith(encanRechercheDate.value) ||
+            dateFin.toString().startsWith(encanRechercheDate.value) ||
+            dateDebutSoireeCloture.toString().startsWith(encanRechercheDate.value) ||
+            dateFinSoireeCloture.toString().startsWith(encanRechercheDate.value)
+        );
+
+        nbEncansRecus.value = listeEncansFiltree.value.length
+        pageCourante.value = 1
+        AjusterPagination()
+    });
+
+    const changerNbEncanParPage = ref(function (nouvEncansParPage) {
+        encansParPage.value = nouvEncansParPage;
+        nbPages.value = recalculerNbPages();
+        pageCourante.value = 1;
+        AjusterPagination()
+    });
+
+    const afficherTousEncans = ref(function () {
+        encansParPage.value = nbEncansRecus.value;
+        nbPages.value = recalculerNbPages();
+        pageCourante.value = 1;
+        AjusterPagination()
+    });
+
+    const reculerPage = ref(function () {
+        if (pageCourante.value > 1) {
+            pageCourante.value--;
+        }
+    });
+
+    const avancerPage = ref(function () {
+        if (pageCourante.value < nbPages.value) {
+            pageCourante.value++;
+        }
+    });
+
+    const changerPage = ref(function () {
+        pageCourante.value = parseInt(event.srcElement.getAttribute("pageId"));
+    });
+
+    function recalculerNbPages() {
+        return Math.ceil(nbEncansRecus.value / encansParPage.value);
+    }
+
+    function genererListePagination() {
+        listePagination.value = [];
+
+        for (let i = 1; i <= nbPages.value; i++) {
+            if (
+                i == 1 ||
+                (i >= pageCourante.value - 1 && i <= pageCourante.value + 1) ||
+                i == nbPages.value
+            ) {
+                listePagination.value.push(i);
+            } else if (
+                listePagination.value[listePagination.value.length - 1] != "..."
+            ) {
+                listePagination.value.push("...");
+            }
+        }
+    }
+
+    function chercherEncansAAfficher() {
+        encansAffiche.value = [];
+
+        let positionDebut = (pageCourante.value - 1) * encansParPage.value;
+        let positionFin = pageCourante.value * encansParPage.value;
+
+        for (let i = positionDebut; i < positionFin && i < listeEncansFiltree.value.length; i++) {
+            encansAffiche.value.push(listeEncansFiltree.value[i]);
+        }
+    }
+
+    function AjusterPagination() {
+        nbPages.value = recalculerNbPages()
+        genererListePagination();
+        chercherEncansAAfficher();
+    }
   listeEncansFiltree.value = listeEncansFiltree.value.filter(
     ({ dateDebut, dateFin, dateDebutSoireeCloture, dateFinSoireeCloture }) =>
       dateDebut.toString().startsWith(encanRechercheDate.value) ||
