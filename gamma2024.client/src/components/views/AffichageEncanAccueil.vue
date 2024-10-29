@@ -2,7 +2,7 @@
     <div class="d-flex flex-column align-items-center contourDiv px-5 pb-3 pt-3">
         <h3>Encan {{titre}}</h3>
 
-        <div class="bleuMoyenFond p-5 my-4 d-flex flex-column align-items-center" @click="voirEncan()">
+        <div class="bleuMoyenFond p-5 my-4 d-flex flex-column align-items-center" role="button" @click="voirEncan()">
             <div v-if="chargement">
                 <div class="spinner-border" role="status">
                     <span class="sr-only"></span>
@@ -15,7 +15,7 @@
         </div>
 
         <a class="text-decoration-none" v-if="type!=0" @click="voirEncans()">
-            <p class="text-black"> Voir les encans {{titre}}s -></p>
+            <p class="text-black" role="button"> Voir les encans {{titre}}s ⮞</p>
         </a>
     </div>
 </template>

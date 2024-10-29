@@ -68,7 +68,7 @@
                         class="btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
                         @click="reculerPage"
                         v-bind:disabled="pageCourante == 1">
-                    <
+                    ⮜
                 </button>
 
                 <div v-for="item in listePagination">
@@ -85,7 +85,7 @@
                         class="btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
                         @click="avancerPage"
                         v-bind:disabled="pageCourante == nbPages">
-                    >
+                    ⮞
                 </button>
             </div>
 

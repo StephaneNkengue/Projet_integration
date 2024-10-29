@@ -12,7 +12,7 @@
             </p>
 
             <router-link to="APropos" class="text-decoration-none text-black">
-                <a>Lire plus -></a>
+                <a>Lire plus ⮞</a>
             </router-link>
         </div>
 
@@ -43,7 +43,7 @@
             </p>
 
             <router-link to="Accueil" class="text-decoration-none text-white">
-                <a>Lire plus -></a>
+                <a>Lire plus ⮞</a>
             </router-link>
         </div>
     </div>
