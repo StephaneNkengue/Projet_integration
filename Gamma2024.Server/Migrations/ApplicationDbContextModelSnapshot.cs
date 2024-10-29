@@ -566,7 +566,8 @@ namespace Gamma2024.Server.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AdresseId");
+                    b.HasIndex("AdresseId")
+                        .IsUnique();
 
                     b.ToTable("Vendeurs");
                 });
@@ -856,9 +857,9 @@ namespace Gamma2024.Server.Migrations
             modelBuilder.Entity("Gamma2024.Server.Models.Vendeur", b =>
                 {
                     b.HasOne("Gamma2024.Server.Models.Adresse", "Adresse")
-                        .WithMany()
-                        .HasForeignKey("AdresseId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .WithOne()
+                        .HasForeignKey("Gamma2024.Server.Models.Vendeur", "AdresseId")
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Adresse");

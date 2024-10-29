@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Gamma2024.Server.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241017180748_CorrectionProblemeLiaisonAvatars")]
-    partial class CorrectionProblemeLiaisonAvatars
+    [Migration("20241028121627_RetraitProprieteVendeurDansClasseAdresse")]
+    partial class RetraitProprieteVendeurDansClasseAdresse
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -62,9 +62,6 @@ namespace Gamma2024.Server.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("VendeurId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Ville")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -79,27 +76,25 @@ namespace Gamma2024.Server.Migrations
                         new
                         {
                             Id = 1,
-                            CodePostal = "12345",
+                            CodePostal = "A1A1A1",
                             EstDomicile = true,
                             IdApplicationUser = "8e445865-a24d-4543-a6c6-9443d048cdb9",
                             Numero = 123,
                             Pays = "Pays Admin",
                             Province = "Québec",
                             Rue = "Rue Admin",
-                            VendeurId = 0,
                             Ville = "Ville Admin"
                         },
                         new
                         {
                             Id = 2,
-                            CodePostal = "67890",
+                            CodePostal = "A1A1A1",
                             EstDomicile = true,
                             IdApplicationUser = "1d8ac862-e54d-4f10-b6f8-638808c02967",
                             Numero = 456,
                             Pays = "Pays Client",
                             Province = "Québec",
                             Rue = "Rue Client",
-                            VendeurId = 0,
                             Ville = "Ville Client"
                         });
                 });
@@ -184,8 +179,8 @@ namespace Gamma2024.Server.Migrations
                         {
                             Id = "8e445865-a24d-4543-a6c6-9443d048cdb9",
                             AccessFailedCount = 0,
-                            Avatar = "avatars/default.png",
-                            ConcurrencyStamp = "40f30b0f-4629-487d-93d3-fb178c7c51d2",
+                            Avatar = "/Avatars/default.png",
+                            ConcurrencyStamp = "5e37fecb-9721-4c9e-b711-5aa3dfc56f16",
                             Email = "admin@example.com",
                             EmailConfirmed = true,
                             FirstName = "Super",
@@ -193,9 +188,9 @@ namespace Gamma2024.Server.Migrations
                             Name = "Admin",
                             NormalizedEmail = "ADMIN@EXAMPLE.COM",
                             NormalizedUserName = "ADMIN@EXAMPLE.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEEE7TNb5KmgcgB05sjGNzRd1Tn6+OMOVwFg4uheE36l8WAidr/lYLq7bw1pIgDe1gA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEMAiD8yt/MCwHVMPrFVRMx61/TX0bQIlcedDH48Jo7z8FSsbg7vh/jwRSQc9aj8gLQ==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "2bee4470-ffd3-49c0-be55-7cb5967e1949",
+                            SecurityStamp = "7797d4a5-9191-450e-83a0-ea1b7e09a897",
                             TwoFactorEnabled = false,
                             UserName = "admin@example.com"
                         },
@@ -203,8 +198,8 @@ namespace Gamma2024.Server.Migrations
                         {
                             Id = "1d8ac862-e54d-4f10-b6f8-638808c02967",
                             AccessFailedCount = 0,
-                            Avatar = "avatars/default.png",
-                            ConcurrencyStamp = "8e8a5bea-df53-4266-b7c5-7befcf4e6150",
+                            Avatar = "/Avatars/default.png",
+                            ConcurrencyStamp = "c235de07-e292-4012-9139-78d70014842d",
                             Email = "client@example.com",
                             EmailConfirmed = true,
                             FirstName = "Jean",
@@ -212,9 +207,9 @@ namespace Gamma2024.Server.Migrations
                             Name = "Dupont",
                             NormalizedEmail = "CLIENT@EXAMPLE.COM",
                             NormalizedUserName = "CLIENT@EXAMPLE.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEMtNtBawSqEhUMegDasLJGyHvVkkvu89dD9EhWpfWABKqTYlsD3os2RufgI5h31TjQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEE4DbAVgaFHR1lvBR6erCHgrdGTOLLKkazSyEeww7XKaitGlppz0UWxD1KkmJlgFZw==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "cc886c33-e1f9-4aca-8bb6-cb39e7d32926",
+                            SecurityStamp = "8fe5acd2-90cc-491b-b637-183e87143bf1",
                             TwoFactorEnabled = false,
                             UserName = "client@example.com"
                         });
@@ -440,6 +435,9 @@ namespace Gamma2024.Server.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("EstLivrable")
+                        .HasColumnType("bit");
+
                     b.Property<bool>("EstVendu")
                         .HasColumnType("bit");
 
@@ -485,9 +483,6 @@ namespace Gamma2024.Server.Migrations
 
                     b.Property<double>("ValeurEstimeMin")
                         .HasColumnType("float");
-
-                    b.Property<bool>("estLivrable")
-                        .HasColumnType("bit");
 
                     b.HasKey("Id");
 
@@ -554,9 +549,6 @@ namespace Gamma2024.Server.Migrations
                     b.Property<int>("AdresseId")
                         .HasColumnType("int");
 
-                    b.Property<int>("AdresseId1")
-                        .HasColumnType("int");
-
                     b.Property<string>("Courriel")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -575,7 +567,8 @@ namespace Gamma2024.Server.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AdresseId1");
+                    b.HasIndex("AdresseId")
+                        .IsUnique();
 
                     b.ToTable("Vendeurs");
                 });
@@ -865,9 +858,9 @@ namespace Gamma2024.Server.Migrations
             modelBuilder.Entity("Gamma2024.Server.Models.Vendeur", b =>
                 {
                     b.HasOne("Gamma2024.Server.Models.Adresse", "Adresse")
-                        .WithMany()
-                        .HasForeignKey("AdresseId1")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .WithOne()
+                        .HasForeignKey("Gamma2024.Server.Models.Vendeur", "AdresseId")
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Adresse");

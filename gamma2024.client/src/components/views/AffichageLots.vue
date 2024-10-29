@@ -9,75 +9,60 @@
   <div v-else>
     <h5 class="text-center" v-if="nbLotsRecus == 0">Aucun lot trouvé</h5>
 
-    <div v-else class="d-flex flex-column align-items-center">
-      <div class="d-flex flex-row-reverse w-100 px-4 me-2 gap-2">
-        <button
-          class="rounded bleuMoyenFond btn btnSurvolerBleuMoyenFond"
-          v-if="!siTuile"
-          @click="changerTypeAffichage('tuile')"
-        >
-          <img
-            src="/icons/IconTableau.png"
-            alt="Affichage en tableau"
-            height="25"
-          />
-        </button>
-        <button
-          class="rounded bleuMoyenFond btn btnSurvolerBleuMoyenFond"
-          v-else
-          @click="changerTypeAffichage('liste')"
-        >
-          <img
-            src="/icons/IconListe.png"
-            alt="Affichage en liste"
-            height="25"
-          />
-        </button>
-        <button
-          class="d-flex align-items-center text-center rounded btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
-          type="button"
-          @click="afficherTousLots"
-          v-bind:disabled="lotsParPage == nbLotsRecus"
-        >
-          Tous
-        </button>
-        <button
-          class="d-flex align-items-center text-center rounded btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
-          @click="changerNbLotParPage(100)"
-          v-bind:disabled="lotsParPage == 100"
-        >
-          100
-        </button>
-        <button
-          class="d-flex align-items-center text-center rounded btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
-          @click="changerNbLotParPage(50)"
-          v-bind:disabled="lotsParPage == 50"
-        >
-          50
-        </button>
-        <button
-          class="d-flex align-items-center text-center rounded btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
-          @click="changerNbLotParPage(20)"
-          v-bind:disabled="lotsParPage == 20"
-        >
-          20
-        </button>
-      </div>
+        <h5 class="text-center" v-if="nbLotsRecus == 0">
+            Aucun lot trouvé
+        </h5>
 
-      <div
-        v-if="siTuile"
-        class="row row-cols-lg-5 row-cols-md-3 row-cols-sm-2 row-cols-1 w-100 px-3"
-      >
-        <div v-for="index in lotsAffiche" :key="index.id" class="col p-2">
-          <LotTuile :lotRecu="index" />
-        </div>
-      </div>
+        <div v-else class="d-flex flex-column align-items-center">
 
-      <div v-else class="d-flex flex-column p-5 w-100">
-        <div v-for="index in lotsAffiche" :key="index.id" class="p-2">
-          <LotListe :lotRecu="index" />
-        </div>
-      </div>
+            <div class="d-flex flex-row-reverse w-100 px-4 me-2 gap-2 ">
+                <button class="rounded bleuMoyenFond btn btnSurvolerBleuMoyenFond"
+                        v-if="!siTuile"
+                        @click="changerTypeAffichage('tuile')">
+                    <img src="/icons/IconTableau.png"
+                         alt="Affichage en tableau"
+                         height="25" />
+                </button>
+                <button class="rounded bleuMoyenFond btn btnSurvolerBleuMoyenFond"
+                        v-else
+                        @click="changerTypeAffichage('liste')">
+                    <img src="/icons/IconListe.png" alt="Affichage en liste" height="25" />
+                </button>
+                <button class="d-flex align-items-center text-center rounded btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
+                        type="button"
+                        @click="afficherTousLots"
+                        v-bind:disabled="lotsParPage == nbLotsRecus">
+                    Tous
+                </button>
+                <button class="d-flex align-items-center text-center rounded btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
+                        @click="changerNbLotParPage(100)"
+                        v-bind:disabled="lotsParPage == 100">
+                    100
+                </button>
+                <button class="d-flex align-items-center text-center rounded btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
+                        @click="changerNbLotParPage(50)"
+                        v-bind:disabled="lotsParPage == 50">
+                    50
+                </button>
+                <button class="d-flex align-items-center text-center rounded btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
+                        @click="changerNbLotParPage(20)"
+                        v-bind:disabled="lotsParPage == 20">
+                    20
+                </button>
+            </div>
+
+            <div v-if="siTuile"
+                 class="row row-cols-lg-5 row-cols-md-3 row-cols-sm-2 row-cols-1 w-100 px-3">
+                <div v-for="index in lotsAffiche" :key="index.id" class="col p-2 d-flex">
+                    <LotTuile :lotRecu="index" />
+                </div>
+            </div>
+
+            <div v-else class="d-flex flex-column px-5 w-100">
+                <div v-for="index in lotsAffiche" :key="index.id" class="p-2">
+                    <LotListe :lotRecu="index" />
+                </div>
+            </div>
 
       <div class="d-flex flex-row justify-content-center gap-1 flex-wrap p-3">
         <button
@@ -136,21 +121,32 @@ const lotsAffiche = ref();
 const nbPages = ref();
 const chargement = ref(true);
 
-onMounted(async () => {
-  const response = await store.dispatch(
-    "chercherTousLotsParEncan",
-    props.idEncan
-  );
+    onMounted(async () => {
+        try {
+            console.log("ID Encan envoyé:", props.idEncan);
+            const response = await store.dispatch(
+                "chercherTousLotsParEncan",
+                props.idEncan
+            );
+            console.log("Réponse complète:", response);
+            
+            if (response && response.data) {
+                listeLots.value = response.data;
+                nbLotsRecus.value = listeLots.value.length;
+                lotsParPage.value = nbLotsRecus.value;
+                nbPages.value = recalculerNbPages();
 
-  listeLots.value = response.data;
-  nbLotsRecus.value = listeLots.value.length;
-  lotsParPage.value = nbLotsRecus.value;
-  nbPages.value = recalculerNbPages();
-
-  genererListePagination();
-  chercherLotsAAfficher();
-  chargement.value = false;
-});
+                genererListePagination();
+                chercherLotsAAfficher();
+            } else {
+                console.error("Réponse invalide:", response);
+            }
+        } catch (error) {
+            console.error("Erreur lors du chargement des lots:", error);
+        } finally {
+            chargement.value = false;
+        }
+    })
 
 watch(pageCourante, () => {
   genererListePagination();

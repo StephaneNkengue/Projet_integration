@@ -109,6 +109,16 @@
                       <label class="form-label" for="rue">Rue</label>
                     </div>
 
+                    <div class="form-outline mb-4">
+                      <input
+                        v-model="vendeur.adresse.appartement"
+                        type="text"
+                        id="appartement"
+                        class="form-control form-control-lg"
+                      />
+                      <label class="form-label" for="appartement">Appartement (optionnel)</label>
+                    </div>
+
                     <div class="row">
                       <div class="col-md-6 mb-4">
                         <div class="form-outline">
@@ -167,6 +177,8 @@
                       />
                       <label class="form-label" for="pays">Pays</label>
                     </div>
+
+                   
 
                     <div class="d-flex justify-content-end pt-3">
                       <button
@@ -228,6 +240,7 @@ const vendeur = ref({
     province: "",
     codePostal: "",
     pays: "",
+    appartement: "",
   },
 });
 
@@ -269,6 +282,7 @@ const resetForm = () => {
       province: "",
       codePostal: "",
       pays: "",
+      appartement: "",
     },
   };
 };

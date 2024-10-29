@@ -108,6 +108,11 @@
                       <label class="form-label" for="rue">Rue</label>
                     </div>
 
+                    <div class="form-outline mb-4">
+                      <input v-model="vendeur.adresse.appartement" type="text" id="appartement" class="form-control form-control-lg" />
+                      <label class="form-label" for="appartement">Appartement (optionnel)</label>
+                    </div>
+
                     <div class="row">
                       <div class="col-md-6 mb-4">
                         <div class="form-outline">
@@ -168,6 +173,8 @@
                       />
                       <label class="form-label" for="pays">Pays</label>
                     </div>
+
+                    
 
                     <div class="d-flex justify-content-end pt-3">
                       <button
@@ -237,13 +244,14 @@ const vendeur = ref({
   courriel: "",
   telephone: "",
   adresse: {
-    numeroCivique: "",
-    rue: "",
-    ville: "",
-    province: "",
-    pays: "",
-    codePostal: "",
-  },
+    numeroCivique: '',
+    rue: '',
+    ville: '',
+    province: '',
+    pays: '',
+      codePostal: '',
+    appartement: ''
+  }
 });
 
 onMounted(async () => {
@@ -262,7 +270,8 @@ onMounted(async () => {
         province: vendeurData.adresse.province,
         pays: vendeurData.adresse.pays,
         codePostal: vendeurData.adresse.codePostal,
-      },
+        appartement: vendeurData.adresse.appartement
+      }
     };
 
     // Normaliser et trouver la correspondance
