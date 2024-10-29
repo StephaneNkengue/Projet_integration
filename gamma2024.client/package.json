@@ -3,13 +3,15 @@
   "version": "0.0.0",
   "private": true,
   "type": "module",
-  "scripts": {
-    "dev": "vite",
-    "build:staging": "vite build --mode staging --base=/2162067",
-    "build:prod": "vite build --mode production --base=/2135621",
-    "preview": "vite preview",
-    "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore"
-  },
+"scripts": {
+  "dev": "vite",
+  "build:dev": "vite build --mode development",
+  "build:staging": "vite build --mode staging --base=/2162067",
+  "build:prod": "vite build --mode production --base=/2135621",
+  "preview": "vite preview",
+  "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore"
+},
+
   "dependencies": {
     "@primevue/themes": "^4.0.7",
     "@vuelidate/core": "^2.0.3",
