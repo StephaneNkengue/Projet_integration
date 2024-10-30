@@ -20,64 +20,77 @@
 </template>
 
 <script setup>
-    import { ref } from 'vue'
+import { ref } from "vue";
 
-    let mois = [
-        "janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"
-    ]
+let mois = [
+  "janvier",
+  "février",
+  "mars",
+  "avril",
+  "mai",
+  "juin",
+  "juillet",
+  "août",
+  "septembre",
+  "octobre",
+  "novembre",
+  "décembre",
+];
 
-    const props = defineProps({
-        encan: Object
-    })
+const props = defineProps({
+  encan: Object,
+});
 
-    const dateDebut = ref(formatageDate(props.encan.dateDebut, affiche2Annees(), false))
-    const dateFin = ref(formatageDate(props.encan.dateFin, true, false))
-    const soireeDate = ref(formatageDate(props.encan.dateDebutSoireeCloture, affiche2Annees(), true))
+const dateDebut = ref(
+  formatageDate(props.encan.dateDebut, affiche2Annees(), false)
+);
+const dateFin = ref(formatageDate(props.encan.dateFin, true, false));
+const soireeDate = ref(
+  formatageDate(props.encan.dateDebutSoireeCloture, affiche2Annees(), true)
+);
 
+let lotRecu = {
+  photos: [
+    {
+      lien: "https://placehold.co/9000",
+    },
+    {
+      lien: "https://placehold.co/6000",
+    },
+  ],
+};
 
-    let lotRecu = {
-        photos: [
-            {
-                lien: "https://placehold.co/9000",
-            },
-            {
-                lien: "https://placehold.co/6000",
-            },
-        ]
-    };
+const lot = ref(lotRecu);
 
-    const lot = ref(lotRecu)
+function affiche2Annees() {
+  let anneeFin = props.encan.dateFin.split("-")[0];
+  let anneeDebut = props.encan.dateDebut.split("-")[0];
 
-    function affiche2Annees() {
-        let anneeFin = (props.encan.dateFin.split("-"))[0]
-        let anneeDebut = (props.encan.dateDebut.split("-"))[0]
+  if (anneeDebut == anneeFin) {
+    return false;
+  }
+  return true;
+}
 
-        if (anneeDebut == anneeFin) {
-            return false
-        }
-        return true
-    }
+function formatageDate(dateTexte, siAnnee, siHeure) {
+  let sep = dateTexte.split("T");
+  let dates = sep[0].split("-");
+  let temps = sep[1].split(":");
 
-    function formatageDate(dateTexte, siAnnee, siHeure) {
-        let sep = dateTexte.split("T")
-        let dates = sep[0].split("-")
-        let temps = sep[1].split(":")
+  let resultat = dates[2] + " " + mois[dates[1] - 1];
 
-        let resultat = dates[2] + " " + mois[dates[1] - 1]
-
-        if (siAnnee) {
-            resultat += " " + dates[0]
-        }
-        if (siHeure) {
-            resultat += " à " + parseInt(temps[0]) + "h" + temps[1]
-        }
-        return resultat
-    }
-
+  if (siAnnee) {
+    resultat += " " + dates[0];
+  }
+  if (siHeure) {
+    resultat += " à " + parseInt(temps[0]) + "h" + temps[1];
+  }
+  return resultat;
+}
 </script>
 
 <style scoped>
-    img {
-        height: 200px;
-    }
+img {
+  height: 200px;
+}
 </style>

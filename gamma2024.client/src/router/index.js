@@ -22,7 +22,7 @@ import DetailsMembreParAdmin from "@/components/views/DetailsMembreParAdmin.vue"
 import AffichageLots from "@/components/views/AffichageLots.vue";
 import CreationLot from "@/components/views/CreationLot.vue";
 import ModificationLot from "@/components/views/ModificationLot.vue";
-
+import ModificationEncan from "@/components/views/ModificationEncan.vue";
 import TableauDeBordEncans from '@/components/views/TableauDeBordEncans.vue'
 import TableauDeBordEncansAjout from '@/components/views/TableauDeBordEncansAjout.vue'
 const routes = [
@@ -196,7 +196,13 @@ const routes = [
         name: 'TableauDeBordEncansAjout',
         component: TableauDeBordEncansAjout,
         meta: { requiresAuth: true, requiredRole: "Administrateur" },
-    }
+    },
+    {
+        path: "/ModificationEncan/:id",
+        name: "ModificationEncan",
+        component: ModificationEncan,
+        meta: { requiresAuth: true, requiredRole: "Administrateur" },
+    },
 ];
 
 const router = createRouter({
@@ -207,7 +213,6 @@ const router = createRouter({
     },
 });
 
-// Attendez que l'URL de base de l'API soit dtermine avant de permettre la navigation
 router.beforeEach(async (to, from, next) => {
     if (!store.state.api) {
         await store.dispatch("initializeStore");

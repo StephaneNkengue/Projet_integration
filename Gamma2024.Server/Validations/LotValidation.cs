@@ -9,14 +9,34 @@ namespace Gamma2024.Server.Validations
         public static async Task<(bool IsValid, string ErrorMessage)> ValidateLot<T>(T lot, ApplicationDbContext context) where T : LotCreationVM
         {
             // Vérification du numéro de lot unique dans le même encan
-            var lotExistant = await context.Lots
+            var query = context.Lots
                 .Include(l => l.EncanLots)
-                .AnyAsync(l => l.Numero == lot.Numero &&
-                               l.EncanLots.Any(el => el.IdEncan == lot.IdEncan));
+                .Where(l => l.Numero == lot.Numero);
 
-            if (lotExistant)
+            // Si c'est une modification, exclure le lot actuel de la vérification
+            if (lot is LotModificationVM modificationLot)
             {
-                return (false, "Un lot avec ce numéro existe déjà dans cet encan.");
+                query = query.Where(l => l.Id != modificationLot.Id);
+                
+                // Vérifier dans l'encan cible
+                var lotExistant = await query.AnyAsync(l => 
+                    l.EncanLots.Any(el => el.IdEncan == modificationLot.IdEncanModifie));
+
+                if (lotExistant)
+                {
+                    return (false, "Un lot avec ce numéro existe déjà dans l'encan cible.");
+                }
+            }
+            else
+            {
+                // Pour la création, vérifier dans l'encan spécifié
+                var lotExistant = await query.AnyAsync(l => 
+                    l.EncanLots.Any(el => el.IdEncan == lot.IdEncan));
+
+                if (lotExistant)
+                {
+                    return (false, "Un lot avec ce numéro existe déjà dans cet encan.");
+                }
             }
 
             if (string.IsNullOrWhiteSpace(lot.Numero))
@@ -88,11 +108,11 @@ namespace Gamma2024.Server.Validations
             }
 
             // Validation spécifique pour LotModificationVM
-            if (lot is LotModificationVM modificationLot)
+            if (lot is LotModificationVM lotModification)
             {
-                if (modificationLot.IdEncanModifie.HasValue)
+                if (lotModification.IdEncanModifie.HasValue)
                 {
-                    var encanExists = await context.Encans.AnyAsync(e => e.Id == modificationLot.IdEncanModifie.Value);
+                    var encanExists = await context.Encans.AnyAsync(e => e.Id == lotModification.IdEncanModifie.Value);
                     if (!encanExists)
                     {
                         return (false, "L'encan spécifié n'existe pas.");
