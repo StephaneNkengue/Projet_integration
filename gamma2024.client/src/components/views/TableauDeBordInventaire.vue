@@ -199,29 +199,31 @@
 
     <!-- Ajout de la pagination en bas -->
     <div class="d-flex flex-row justify-content-center gap-1 flex-wrap p-3">
-        <button class="d-flex align-items-center text-center rounded btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond"
-                type="button"
-                @click="afficherTousLots"
-                v-bind:disabled="lotsParPage == nbLotsRecus">
-            Tous
+        <!-- Bouton Précédent -->
+        <button type="button"
+                class="btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
+                @click="reculerPage"
+                v-bind:disabled="pageCourante == 1">
+            Précédent
         </button>
-        <button class="d-flex align-items-center text-center rounded btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond"
-                type="button"
-                @click="afficherLotsParPage(20)"
-                v-bind:disabled="lotsParPage == 20">
-            20
-        </button>
-        <button class="d-flex align-items-center text-center rounded btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond"
-                type="button"
-                @click="afficherLotsParPage(50)"
-                v-bind:disabled="lotsParPage == 50">
-            50
-        </button>
-        <button class="d-flex align-items-center text-center rounded btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond"
-                type="button"
-                @click="afficherLotsParPage(100)"
-                v-bind:disabled="lotsParPage == 100">
-            100
+
+        <!-- Boutons de pages -->
+        <div v-for="item in listePagination">
+            <button type="button"
+                    class="btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
+                    :pageId="item"
+                    @click="changerPage(item)"
+                    v-bind:disabled="pageCourante == item || item == '...'">
+                {{ item }}
+            </button>
+        </div>
+
+        <!-- Bouton Suivant -->
+        <button type="button"
+                class="btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
+                @click="avancerPage"
+                v-bind:disabled="pageCourante == nbPages">
+            Suivant
         </button>
     </div>
 
@@ -323,21 +325,26 @@
         chercherLotsAAfficher();
     };
 
-    const reculerPage = () => {
+    const reculerPage = ref(function(event) {
         if (pageCourante.value > 1) {
             pageCourante.value--;
+            chercherLotsAAfficher(event);
         }
-    };
+    });
 
-    const avancerPage = () => {
+    const avancerPage = ref(function(event) {
         if (pageCourante.value < nbPages.value) {
             pageCourante.value++;
+            chercherLotsAAfficher(event);
         }
-    };
+    });
 
-    const changerPage = (event) => {
-        pageCourante.value = parseInt(event.target.getAttribute("pageId"));
-    };
+    const changerPage = ref(function(numeroPage) {
+        if (numeroPage !== '...') {
+            pageCourante.value = parseInt(numeroPage);
+            chercherLotsAAfficher();
+        }
+    });
 
     function recalculerNbPages() {
         return Math.ceil(nbLotsRecus.value / lotsParPage.value);
@@ -346,7 +353,9 @@
     function genererListePagination() {
         listePagination.value = [];
         for (let i = 1; i <= nbPages.value; i++) {
-            if (i == 1 || (i >= pageCourante.value - 1 && i <= pageCourante.value + 1) || i == nbPages.value) {
+            if (i == 1 || 
+                (i >= pageCourante.value - 1 && i <= pageCourante.value + 1) || 
+                i == nbPages.value) {
                 listePagination.value.push(i);
             } else if (listePagination.value[listePagination.value.length - 1] != "...") {
                 listePagination.value.push("...");
@@ -354,7 +363,7 @@
         }
     }
 
-    function chercherLotsAAfficher() {
+    function chercherLotsAAfficher(event) {
         lotsAffiches.value = [];
         let positionDebut = (pageCourante.value - 1) * lotsParPage.value;
         let positionFin = pageCourante.value * lotsParPage.value;

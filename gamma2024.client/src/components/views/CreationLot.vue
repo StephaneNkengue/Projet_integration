@@ -4,17 +4,41 @@
     <form @submit.prevent="creerLot">
       <!-- Champ pour ajouter de nouvelles photos -->
       <div class="mb-3">
-        <label for="nouvellesPhotos" class="form-label">Ajouter des photos</label>
-        <input type="file" class="form-control" id="nouvellesPhotos" multiple @change="ajouterNouvellesPhotos">
+        <label for="nouvellesPhotos" class="form-label">
+          Ajouter des photos (maximum 5)
+        </label>
+        <input 
+          type="file" 
+          class="form-control" 
+          id="nouvellesPhotos" 
+          multiple 
+          @change="ajouterNouvellesPhotos"
+          accept="image/*"
+        >
       </div>
       <!-- Prévisualisation des nouvelles photos -->
       <div v-if="nouvellesPhotos.length > 0" class="mb-3">
-        <h4>Nouvelles photos</h4>
+        <h4>Nouvelles photos ({{ nouvellesPhotos.length }}/5)</h4>
         <div class="d-flex flex-wrap">
-          <div v-for="(photo, index) in nouvellesPhotos" :key="index" class="me-2 mb-2">
-            <img :src="photo.preview" alt="Nouvelle photo" style="width: 100px; height: 100px; object-fit: cover;">
+          <div v-for="(photo, index) in nouvellesPhotos" :key="index" class="me-2 mb-2 position-relative">
+            <img 
+              :src="photo.preview" 
+              alt="Nouvelle photo" 
+              style="width: 100px; height: 100px; object-fit: cover;"
+            >
+            <button 
+              type="button" 
+              class="btn btn-danger btn-sm position-absolute top-0 end-0"
+              @click="supprimerPhoto(index)"
+            >
+              X
+            </button>
           </div>
         </div>
+      </div>
+      <!-- Message d'erreur pour les photos -->
+      <div v-if="erreurPhotos" class="alert alert-danger mb-3">
+        {{ erreurPhotos }}
       </div>
       <!-- Le reste des champs du formulaire -->
       <div class="mb-3">
@@ -95,7 +119,7 @@
     <div v-if="message" class="alert alert-success mt-3">
       {{ message }}
     </div>
-    <div v-if="erreur" class="alert alert-danger mt-3">
+    <div v-if="erreur && !erreurPhotos" class="alert alert-danger mt-3">
       {{ erreur }}
     </div>
   </div>
@@ -132,6 +156,7 @@ const encans = ref([]);
 const nouvellesPhotos = ref([]);
 const message = ref('');
 const erreur = ref('');
+const erreurPhotos = ref('');
 
 onMounted(async () => {
   try {
@@ -146,6 +171,14 @@ onMounted(async () => {
 
 const ajouterNouvellesPhotos = (event) => {
   const files = event.target.files;
+  erreurPhotos.value = '';
+
+  if (nouvellesPhotos.value.length + files.length > 5) {
+    erreurPhotos.value = "Vous ne pouvez pas ajouter plus de 5 photos par lot.";
+    event.target.value = '';
+    return;
+  }
+  
   for (let i = 0; i < files.length; i++) {
     const file = files[i];
     if (file.type.startsWith('image/')) {
@@ -153,6 +186,10 @@ const ajouterNouvellesPhotos = (event) => {
       nouvellesPhotos.value.push({ file, preview });
     }
   }
+};
+
+const supprimerPhoto = (index) => {
+  nouvellesPhotos.value.splice(index, 1);
 };
 
 const creerLot = async () => {
