@@ -7,11 +7,9 @@ import store from "./store";
 import PrimeVue from "primevue/config";
 import Toast from "vue3-toastify";
 import "vue3-toastify/dist/index.css";
-import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import InputMask from "primevue/inputmask";
 import VueDatePicker from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
-import "bootstrap/dist/css/bootstrap.min.css";
 
 async function initApp() {
   await store.dispatch("initializeStore");
