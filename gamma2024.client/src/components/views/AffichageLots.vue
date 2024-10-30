@@ -1,80 +1,228 @@
 <template>
-    <div class="container mt-5">
-      <h1 class="text-center mb-4 fw-bold display-4">Gestion des lots</h1>
+    <div class="d-flex gap-2" v-if="chargement">
+        <div class="spinner-border" role="status">
+            <span class="visually-hidden">Chargement des lots...</span>
+        </div>
+        <p>Chargement des lots en cours...</p>
+    </div>
 
-      <router-link to="/lots/creation" class="btn btn-lg btn-block mb-4 w-100 bleuMarinSecondaireFond text-white">
-        Ajouter un lot
-      </router-link>
+    <div v-else>
 
-      <table class="table table-striped table-borderless">
-        <thead class="table-dark">
-          <tr>
-            <th scope="col">#</th>
-            <th scope="col">Code</th>
-            <th scope="col">Artiste</th>
-            <th scope="col">Valeur estimée min</th>
-            <th scope="col">Valeur estimée max</th>
-            <th scope="col">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="(lot, index) in lots" :key="lot.id">
-            <th scope="row">{{ index + 1 }}</th>
-            <td>{{ lot.code }}</td>
-            <td>{{ lot.artiste }}</td>
-            <td>{{ lot.valeurEstimeMin }}</td>
-            <td>{{ lot.valeurEstimeMax }}</td>
-            <td>
-              <router-link 
-                :to="{ name: 'ModificationLot', params: { id: lot.id } }" 
-                class="btn btn-sm btn-primary me-2"
-            >
-                Modifier
-              </router-link>
-              <button @click="supprimerLot(lot.id)" class="btn btn-sm btn-danger">
-                Supprimer
-        </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+        <h5 class="text-center" v-if="nbLotsRecus == 0">
+            Aucun lot trouvé
+        </h5>
+
+        <div v-else class="d-flex flex-column align-items-center">
+
+            <div class="d-flex flex-row-reverse w-100 px-4 me-2 gap-2 ">
+                <button class="rounded bleuMoyenFond btn btnSurvolerBleuMoyenFond"
+                        v-if="!siTuile"
+                        @click="changerTypeAffichage('tuile')">
+                    <img src="/icons/IconTableau.png"
+                         alt="Affichage en tableau"
+                         height="25" />
+                </button>
+                <button class="rounded bleuMoyenFond btn btnSurvolerBleuMoyenFond"
+                        v-else
+                        @click="changerTypeAffichage('liste')">
+                    <img src="/icons/IconListe.png" alt="Affichage en liste" height="25" />
+                </button>
+                <button class="d-flex align-items-center text-center rounded btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
+                        type="button"
+                        @click="afficherTousLots"
+                        v-bind:disabled="lotsParPage == nbLotsRecus">
+                    Tous
+                </button>
+                <button class="d-flex align-items-center text-center rounded btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
+                        @click="changerNbLotParPage(100)"
+                        v-bind:disabled="lotsParPage == 100">
+                    100
+                </button>
+                <button class="d-flex align-items-center text-center rounded btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
+                        @click="changerNbLotParPage(50)"
+                        v-bind:disabled="lotsParPage == 50">
+                    50
+                </button>
+                <button class="d-flex align-items-center text-center rounded btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
+                        @click="changerNbLotParPage(20)"
+                        v-bind:disabled="lotsParPage == 20">
+                    20
+                </button>
+            </div>
+
+            <div v-if="siTuile"
+                 class="row row-cols-lg-5 row-cols-md-3 row-cols-sm-2 row-cols-1 w-100 px-3">
+                <div v-for="index in lotsAffiche" :key="index.id" class="col p-2 d-flex">
+                    <LotTuile :lotRecu="index" />
+                </div>
+            </div>
+
+            <div v-else class="d-flex flex-column px-5 w-100">
+                <div v-for="index in lotsAffiche" :key="index.id" class="p-2">
+                    <LotListe :lotRecu="index" />
+                </div>
+            </div>
+
+            <div class="d-flex flex-row justify-content-center gap-1 flex-wrap p-3">
+                <button type="button"
+                        class="btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
+                        @click="reculerPage"
+                        v-bind:disabled="pageCourante == 1">
+                    <
+                </button>
+
+                <div v-for="item in listePagination">
+                    <button type="button"
+                            class="btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
+                            :pageId="item"
+                            @click="changerPage()"
+                            v-bind:disabled="pageCourante == item || item == '...'">
+                        {{ item }}
+                    </button>
+                </div>
+
+                <button type="button"
+                        class="btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
+                        @click="avancerPage"
+                        v-bind:disabled="pageCourante == nbPages">
+                    >
+                </button>
+            </div>
+
+        </div>
+
     </div>
 </template>
 
 <script setup>
-  import { ref, onMounted } from 'vue';
-  import { useStore } from 'vuex';
-  import { useRouter } from 'vue-router';
+    import LotTuile from "@/components/views/LotTuile.vue";
+    import LotListe from "@/components/views/LotListe.vue";
+    import { ref, watch, onMounted } from "vue";
+    import { useStore } from "vuex";
 
-  const store = useStore();
-  const router = useRouter();
-  const lots = ref([]);
+    const store = useStore();
 
-  onMounted(async () => {
-    try {
-        const response = await store.dispatch('obtenirTousLots');
-        lots.value = response.data;
-    } catch (error) {
-        console.error("Erreur lors de la récupération des lots:", error);
+    const props = defineProps({
+        idEncan: Number,
+    });
+
+    const listeLots = ref([])
+    const nbLotsRecus = ref()
+    const lotsParPage = ref()
+    const listePagination = ref([]);
+    const pageCourante = ref(1);
+    const siTuile = ref(true);
+    const lotsAffiche = ref();
+    const nbPages = ref()
+    const chargement = ref(true);
+
+    onMounted(async () => {
+        try {
+            console.log("ID Encan envoyé:", props.idEncan);
+            const response = await store.dispatch(
+                "chercherTousLotsParEncan",
+                props.idEncan
+            );
+            console.log("Réponse complète:", response);
+            
+            if (response && response.data) {
+                listeLots.value = response.data;
+                nbLotsRecus.value = listeLots.value.length;
+                lotsParPage.value = nbLotsRecus.value;
+                nbPages.value = recalculerNbPages();
+
+                genererListePagination();
+                chercherLotsAAfficher();
+            } else {
+                console.error("Réponse invalide:", response);
+            }
+        } catch (error) {
+            console.error("Erreur lors du chargement des lots:", error);
+        } finally {
+            chargement.value = false;
+        }
+    })
+
+    watch(pageCourante, () => {
+        genererListePagination();
+        chercherLotsAAfficher();
+    });
+
+    const changerTypeAffichage = ref(function (typeAffichage) {
+        if (typeAffichage == "tuile") {
+            siTuile.value = true;
+        } else {
+            siTuile.value = false;
+        }
+        pageCourante.value = 1;
+        genererListePagination();
+        chercherLotsAAfficher();
+    });
+
+    const changerNbLotParPage = ref(function (nouvLotsParPage) {
+        lotsParPage.value = nouvLotsParPage;
+        nbPages.value = recalculerNbPages();
+        pageCourante.value = 1;
+        genererListePagination();
+        chercherLotsAAfficher();
+    });
+
+    const afficherTousLots = ref(function () {
+        lotsParPage.value = nbLotsRecus.value;
+        nbPages.value = recalculerNbPages();
+        pageCourante.value = 1;
+        genererListePagination();
+        chercherLotsAAfficher();
+    });
+
+    const reculerPage = ref(function () {
+        if (pageCourante.value > 1) {
+            pageCourante.value--;
+        }
+    });
+
+    const avancerPage = ref(function () {
+        if (pageCourante.value < nbPages.value) {
+            pageCourante.value++;
+        }
+    });
+
+    const changerPage = ref(function () {
+        pageCourante.value = parseInt(event.srcElement.getAttribute("pageId"));
+    });
+
+    function recalculerNbPages() {
+        return Math.ceil(nbLotsRecus.value / lotsParPage.value);
     }
-  });
 
-  const supprimerLot = async (id) => {
-    if (confirm('Êtes-vous sûr de vouloir supprimer ce lot ?')) {
-      try {
-        await store.dispatch('supprimerLot', id);
-        lots.value = lots.value.filter(lot => lot.id !== id);
-      } catch (error) {
-        console.error("Erreur lors de la suppression du lot:", error);
+    function genererListePagination() {
+        listePagination.value = [];
+
+        for (let i = 1; i <= nbPages.value; i++) {
+            if (
+                i == 1 ||
+                (i >= pageCourante.value - 1 && i <= pageCourante.value + 1) ||
+                i == nbPages.value
+            ) {
+                listePagination.value.push(i);
+            } else if (
+                listePagination.value[listePagination.value.length - 1] != "..."
+            ) {
+                listePagination.value.push("...");
+            }
         }
     }
-  };
+
+    function chercherLotsAAfficher() {
+        lotsAffiche.value = [];
+
+        let positionDebut = (pageCourante.value - 1) * lotsParPage.value;
+        let positionFin = pageCourante.value * lotsParPage.value;
+
         for (let i = positionDebut; i < positionFin && i < listeLots.value.length; i++) {
             lotsAffiche.value.push(listeLots.value[i]);
         }
-    
+    }
 </script>
 
-<style scoped>
-  /* Styles similaires ceux de AffichageVendeur.vue */
-</style>
+<style scoped></style>

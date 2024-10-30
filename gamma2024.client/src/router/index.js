@@ -23,6 +23,8 @@ import AffichageLots from "@/components/views/AffichageLots.vue";
 import CreationLot from "@/components/views/CreationLot.vue";
 import ModificationLot from "@/components/views/ModificationLot.vue";
 
+import TableauDeBordEncans from '@/components/views/TableauDeBordEncans.vue'
+import TableauDeBordEncansAjout from '@/components/views/TableauDeBordEncansAjout.vue'
 const routes = [
     {
         path: "/",
@@ -183,10 +185,22 @@ const routes = [
         props: true,
         meta: { requiresAuth: false },
     },
-]
+    {
+        path: '/tableaudebordencans',
+        name: 'TableauDeBordEncans',
+        component: TableauDeBordEncans,
+        meta: { requiresAuth: true, requiredRole: "Administrateur" },
+    },
+    {
+        path: '/tableaudebordencansajout',
+        name: 'TableauDeBordEncansAjout',
+        component: TableauDeBordEncansAjout,
+        meta: { requiresAuth: true, requiredRole: "Administrateur" },
+    }
+];
 
 const router = createRouter({
-    history: createWebHistory(),
+    history: createWebHistory("/2162067"),
     routes,
     scrollBehavior(to, from, savedPosition) {
         return { top: 0 };

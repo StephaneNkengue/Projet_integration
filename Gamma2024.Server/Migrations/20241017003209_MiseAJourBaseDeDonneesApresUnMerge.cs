@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Gamma2024.Server.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class MiseAJourBaseDeDonneesApresUnMerge : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -147,7 +147,8 @@ namespace Gamma2024.Server.Migrations
                     Pays = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CodePostal = table.Column<string>(type: "nvarchar(6)", maxLength: 6, nullable: false),
                     EstDomicile = table.Column<bool>(type: "bit", nullable: false),
-                    IdApplicationUser = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                    IdApplicationUser = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    VendeurId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -317,21 +318,17 @@ namespace Gamma2024.Server.Migrations
                     Courriel = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Telephone = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     AdresseId = table.Column<int>(type: "int", nullable: false),
-                    AdresseId1 = table.Column<int>(type: "int", nullable: true)
+                    AdresseId1 = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Vendeurs", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Vendeurs_Adresses_AdresseId",
-                        column: x => x.AdresseId,
-                        principalTable: "Adresses",
-                        principalColumn: "Id");
-                    table.ForeignKey(
                         name: "FK_Vendeurs_Adresses_AdresseId1",
                         column: x => x.AdresseId1,
                         principalTable: "Adresses",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -356,7 +353,7 @@ namespace Gamma2024.Server.Migrations
                     SeraLivree = table.Column<bool>(type: "bit", nullable: true),
                     DateFinVente = table.Column<DateTime>(type: "datetime2", nullable: true),
                     IdVendeur = table.Column<int>(type: "int", nullable: false),
-                    EstLivrable = table.Column<bool>(type: "bit", nullable: false),
+                    estLivrable = table.Column<bool>(type: "bit", nullable: false),
                     Largeur = table.Column<double>(type: "float", nullable: false),
                     Hauteur = table.Column<double>(type: "float", nullable: false),
                     IdMedium = table.Column<int>(type: "int", nullable: false),
@@ -450,17 +447,17 @@ namespace Gamma2024.Server.Migrations
                 columns: new[] { "Id", "AccessFailedCount", "Avatar", "ConcurrencyStamp", "Email", "EmailConfirmed", "FirstName", "LockoutEnabled", "LockoutEnd", "Name", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
                 values: new object[,]
                 {
-                    { "1d8ac862-e54d-4f10-b6f8-638808c02967", 0, "/Avatars/default.png", "306d5a9e-2ac7-4426-a9a3-5e128a93fd4d", "client@example.com", true, "Jean", false, null, "Dupont", "CLIENT@EXAMPLE.COM", "CLIENT@EXAMPLE.COM", "AQAAAAIAAYagAAAAEOUTMd5AWup+radwdzVIWze3PYXKRBacwAp1FeEABGlQeIwjlh1An7yJTKyWny0ggw==", null, false, "99c16b7d-7926-4c3b-8937-6e005c789ec7", false, "client@example.com" },
-                    { "8e445865-a24d-4543-a6c6-9443d048cdb9", 0, "/Avatars/default.png", "f169f751-c329-4ebe-afbc-2c82cac5fcb3", "admin@example.com", true, "Super", false, null, "Admin", "ADMIN@EXAMPLE.COM", "ADMIN@EXAMPLE.COM", "AQAAAAIAAYagAAAAEGqIDYQs9N//7QOOPRK/lA6cKreVmweQRtp87hLTgv5SM+/MhP14LK7Rv1JmUd4Vpg==", null, false, "5f168da9-01fd-4134-88b9-88df3618f3e4", false, "admin@example.com" }
+                    { "1d8ac862-e54d-4f10-b6f8-638808c02967", 0, "default.png", "3fb8704b-b359-4179-a835-07c77271dafd", "client@example.com", true, "Jean", false, null, "Dupont", "CLIENT@EXAMPLE.COM", "CLIENT@EXAMPLE.COM", "AQAAAAIAAYagAAAAEJuIZIMsxnRAlmw3hbRXGQFv1Bwf0l+yrZe7N0YY/34Oi5tb6zc3AckYgFh2X8bXXg==", null, false, "82a9df8e-26d0-41dc-9b77-5652614da447", false, "client@example.com" },
+                    { "8e445865-a24d-4543-a6c6-9443d048cdb9", 0, "default.png", "07b638e7-0f4c-4d31-a35a-4d6368342f0a", "admin@example.com", true, "Super", false, null, "Admin", "ADMIN@EXAMPLE.COM", "ADMIN@EXAMPLE.COM", "AQAAAAIAAYagAAAAEN310TMdyw5nRcIT0KqQQfWEuNQlhWx1ldOWVz8RVofMyTQDXB+i35ZLBwOVAMEs/Q==", null, false, "2f990e49-4025-41e6-9ee7-da2d3de1a2e0", false, "admin@example.com" }
                 });
 
             migrationBuilder.InsertData(
                 table: "Adresses",
-                columns: new[] { "Id", "Appartement", "CodePostal", "EstDomicile", "IdApplicationUser", "Numero", "Pays", "Province", "Rue", "Ville" },
+                columns: new[] { "Id", "Appartement", "CodePostal", "EstDomicile", "IdApplicationUser", "Numero", "Pays", "Province", "Rue", "VendeurId", "Ville" },
                 values: new object[,]
                 {
-                    { 1, null, "A1A1A1", true, "8e445865-a24d-4543-a6c6-9443d048cdb9", 123, "Pays Admin", "Québec", "Rue Admin", "Ville Admin" },
-                    { 2, null, "A1A1A1", true, "1d8ac862-e54d-4f10-b6f8-638808c02967", 456, "Pays Client", "Québec", "Rue Client", "Ville Client" }
+                    { 1, null, "12345", true, "8e445865-a24d-4543-a6c6-9443d048cdb9", 123, "Pays Admin", "Québec", "Rue Admin", 0, "Ville Admin" },
+                    { 2, null, "67890", true, "1d8ac862-e54d-4f10-b6f8-638808c02967", 456, "Pays Client", "Québec", "Rue Client", 0, "Ville Client" }
                 });
 
             migrationBuilder.InsertData(
@@ -587,17 +584,9 @@ namespace Gamma2024.Server.Migrations
                 column: "IdLot");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Vendeurs_AdresseId",
-                table: "Vendeurs",
-                column: "AdresseId",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Vendeurs_AdresseId1",
                 table: "Vendeurs",
-                column: "AdresseId1",
-                unique: true,
-                filter: "[AdresseId1] IS NOT NULL");
+                column: "AdresseId1");
         }
 
         /// <inheritdoc />

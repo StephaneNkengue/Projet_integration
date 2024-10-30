@@ -96,9 +96,9 @@ namespace Gamma2024.Server.Services
                 Largeur = lot.Largeur,
                 IdMedium = lot.IdMedium,
                 Medium = lot.Medium?.Type,
-                IdEncan = lot.EncanLots.FirstOrDefault()?.IdEncan,
+                IdEncanModifie = lot.EncanLots.FirstOrDefault()?.IdEncan,
                 NumeroEncan = lot.EncanLots.FirstOrDefault()?.Encan?.NumeroEncan.ToString(),
-                Photos = lot.Photos.Select(p => new PhotoVM
+                PhotosModifie = lot.Photos.Select(p => new PhotoVM
                 {
                     Id = p.Id,
                     Url = p.Lien
@@ -232,16 +232,16 @@ namespace Gamma2024.Server.Services
                 lot.IdMedium = lotVM.IdMedium;
 
                 // Mettre à jour l'encan associé si nécessaire
-                if (lotVM.IdEncan.HasValue)
+                if (lotVM.IdEncanModifie.HasValue)
                 {
                     var encanLot = lot.EncanLots.FirstOrDefault();
-                    if (encanLot == null || encanLot.IdEncan != lotVM.IdEncan.Value)
+                    if (encanLot == null || encanLot.IdEncan != lotVM.IdEncanModifie.Value)
                     {
                         if (encanLot != null)
                         {
                             _context.EncanLots.Remove(encanLot);
                         }
-                        lot.EncanLots.Add(new EncanLot { IdEncan = lotVM.IdEncan.Value, IdLot = lot.Id });
+                        lot.EncanLots.Add(new EncanLot { IdEncan = lotVM.IdEncanModifie.Value, IdLot = lot.Id });
                     }
                 }
 
@@ -309,6 +309,157 @@ namespace Gamma2024.Server.Services
             }
         }
 
+
+        public ICollection<LotEncanAffichageVM> ChercherTousLotsParEncan(int idEncan)
+        {
+            try
+            {
+                var lots = _context.Lots
+                    .Include(l => l.EncanLots)
+                    .Include(l => l.Photos)
+                    .Where(l => l.EncanLots.Any(el => el.IdEncan == idEncan)) // Modifié ici
+                    .Select(l => new LotEncanAffichageVM()
+                    {
+                        Id = l.Id,
+                        Numero = l.Numero,
+                        ValeurEstimeMax = l.ValeurEstimeMax,
+                        ValeurEstimeMin = l.ValeurEstimeMin,
+                        Artiste = l.Artiste,
+                        Mise = l.Mise,
+                        EstVendu = l.EstVendu,
+                        DateFinVente = l.DateFinVente,
+                        Photos = l.Photos,
+                        Description = l.Description,
+                        EstLivrable = l.EstLivrable,
+                        Hauteur = l.Hauteur,
+                        Largeur = l.Largeur
+                    })
+                    .ToList();
+
+                Console.WriteLine($"Lots trouvés dans le service: {lots.Count}");
+                return lots;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Erreur dans le service: {ex.Message}");
+                throw;
+            }
+        }
+
+
+        public LotDetailsVM ChercherDetailsLotParId(int idLot)
+
+        {
+
+            var lot = _context.Lots
+
+                .Include(l => l.Photos)
+
+                .Include(l => l.Categorie)
+
+                .Include(l => l.Medium)
+
+                .FirstOrDefault(l => l.Id == idLot);
+
+
+            if (lot != null)
+
+            {
+
+                var retourLot = new LotDetailsVM()
+
+                {
+
+                    Id = lot.Id,
+
+                    Numero = lot.Numero,
+
+                    ValeurEstimeMax = lot.ValeurEstimeMax,
+
+                    ValeurEstimeMin = lot.ValeurEstimeMin,
+
+                    Artiste = lot.Artiste,
+
+                    Mise = lot.Mise,
+
+                    EstVendu = lot.EstVendu,
+
+                    Photos = lot.Photos.Select(p => p.Lien),
+
+                    Description = lot.Description,
+
+                    EstLivrable = lot.EstLivrable,
+
+                    Hauteur = lot.Hauteur,
+
+                    Largeur = lot.Largeur,
+
+                    Medium = lot.Medium.Type,
+
+                    Categorie = lot.Categorie.Nom
+
+                };
+
+
+                return retourLot;
+
+            }
+
+
+            return null;
+
+        }
+
+
+        public ICollection<LotAffichageAdministrateurVM> ChercherTousLots()
+
+        {
+
+            var lots = _context.Lots
+
+                .Select(l => new LotAffichageAdministrateurVM()
+
+                {
+
+                    Id = l.Id,
+
+                    Encan = _context.Encans.Where(e => e.Id == (_context.EncanLots.Where(e => e.IdLot == l.Id).Max(e => e.IdEncan))).Single().NumeroEncan,
+
+                    Numero = l.Numero,
+
+                    PrixOuverture = l.PrixOuverture.ToString() + " $",
+
+                    ValeurMinPourVente = l.PrixMinPourVente.ToString() + " $",
+
+                    ValeurEstimeMax = l.ValeurEstimeMax.ToString() + " $",
+
+                    ValeurEstimeMin = l.ValeurEstimeMin.ToString() + " $",
+
+                    Categorie = _context.Categories.Where(c => c.Id == l.IdCategorie).Single().Nom,
+
+                    Artiste = l.Artiste,
+
+                    Description = l.Description,
+
+                    Hauteur = l.Hauteur,
+
+                    Largeur = l.Largeur,
+
+                    Medium = _context.Mediums.Where(m => m.Id == l.IdMedium).Single().Type,
+
+                    Vendeur = l.Vendeur.Prenom + " " + l.Vendeur.Nom,
+
+                    EstVendu = l.EstVendu,
+
+                    EstLivrable = l.EstLivrable,
+
+                }).ToList();
+
+
+            return lots;
+
+        }
+
         public async Task<(bool Success, string Message)> SupprimerLot(int id)
         {
             try
@@ -352,13 +503,13 @@ namespace Gamma2024.Server.Services
                 Console.WriteLine("Erreur lors de la suppression du lot: " + ex.Message);
                 if (ex.InnerException != null)
                 {
-                    Console.WriteLine("D�tails de l'erreur interne: " + ex.InnerException.Message);
+                    Console.WriteLine("Détails de l'erreur interne: " + ex.InnerException.Message);
                 }
                 return (false, "Erreur lors de la suppression du lot : " + ex.Message);
             }
         }
 
-        // Ajoutez cette nouvelle m�thode pour convertir LotModificationVM en LotAffichageVM
+        // Ajoutez cette nouvelle méthode pour convertir LotModificationVM en LotAffichageVM
         private LotAffichageVM ConvertirEnLotAffichageVM(LotModificationVM lotModification)
         {
             return new LotAffichageVM
@@ -384,7 +535,7 @@ namespace Gamma2024.Server.Services
                 DateCreation = lotModification.DateCreation,
                 IdClientMise = lotModification.IdClientMise,
                 SeraLivree = lotModification.SeraLivree,
-                Photos = lotModification.Photos
+                Photos = lotModification.PhotosModifie
             };
         }
     }
