@@ -75,6 +75,8 @@ namespace Gamma2024.Server.Services
                 return null;
             }
 
+            var encanLot = lot.EncanLots.FirstOrDefault();
+            
             return new LotModificationVM
             {
                 Id = lot.Id,
@@ -96,8 +98,8 @@ namespace Gamma2024.Server.Services
                 Largeur = lot.Largeur,
                 IdMedium = lot.IdMedium,
                 Medium = lot.Medium?.Type,
-                IdEncanModifie = lot.EncanLots.FirstOrDefault()?.IdEncan,
-                NumeroEncan = lot.EncanLots.FirstOrDefault()?.Encan?.NumeroEncan.ToString(),
+                IdEncanModifie = encanLot?.IdEncan,
+                NumeroEncan = encanLot?.Encan?.NumeroEncan.ToString(),
                 PhotosModifie = lot.Photos.Select(p => new PhotoVM
                 {
                     Id = p.Id,
