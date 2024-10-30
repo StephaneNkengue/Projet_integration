@@ -16,7 +16,11 @@
       <p class="text-center">Se connecter pour continuer</p>
 
       <!-- Ajoutez cette section pour afficher les messages d'erreur -->
-      <div v-if="messageErreur" class="alert alert-danger text-center" role="alert">
+      <div
+        v-if="messageErreur"
+        class="alert alert-danger text-center"
+        role="alert"
+      >
         {{ messageErreur }}
       </div>
 
@@ -107,6 +111,7 @@ export default {
       emailOuPseudoError: "",
       passwordError: "",
       messageLockout: "",
+      messageErreur: "",
       isSubmitting: false,
       invalide: false,
     };
@@ -155,12 +160,12 @@ export default {
         });
         if (result.success) {
           // Vérifiez la structure de result.roles
-          const rolesString = Array.isArray(result.roles) 
+          const rolesString = Array.isArray(result.roles)
             ? result.roles.join(", ")
-            : (result.roles && result.roles 
-                ? result.roles.join(", ") 
-                : "Rôles non disponibles");
-          
+            : result.roles && result.roles
+            ? result.roles.join(", ")
+            : "Rôles non disponibles";
+
           this.messageSucces = `Connexion réussie en tant que ${rolesString}`;
           // Redirection immédiate vers la page d'accueil
           this.$router.push("/");

@@ -11,6 +11,12 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Charger les fichiers de configuration selon l'environnement
+builder.Configuration
+    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+    .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true, reloadOnChange: true);
+
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
     ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
@@ -26,7 +32,11 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
+    });
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -35,6 +45,7 @@ builder.Services.AddScoped<ClientInscriptionService>();
 builder.Services.AddScoped<ClientModificationService>();
 builder.Services.AddScoped<EncanService>();
 builder.Services.AddScoped<VendeurService>();
+builder.Services.AddScoped<AdministrateurService>();
 builder.Services.AddScoped<LotService>();
 
 builder.Services.Configure<EmailConfiguration>(
@@ -42,17 +53,32 @@ builder.Services.Configure<EmailConfiguration>(
 
 builder.Services.AddTransient<IEmailSender, EmailService>();
 
+// Configuration CORS pour différents environnements
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("Development", builder =>
+    if (builder.Environment.IsDevelopment())
     {
-        builder
-            .SetIsOriginAllowed(_ => true)
-            .WithOrigins("https://localhost:5173")
-            .AllowAnyMethod()
-            .AllowAnyHeader()
-            .AllowCredentials();
-    });
+        options.AddPolicy("Development", builder =>
+        {
+            builder
+                .SetIsOriginAllowed(_ => true)
+                .WithOrigins("https://localhost:5173")
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                .AllowCredentials();
+        });
+    }
+    else
+    {
+        options.AddPolicy("Production", builder =>
+        {
+            builder
+                .WithOrigins("https://sqlinfocg.cegepgranby.qc.ca")
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                .AllowCredentials();
+        });
+    }
 });
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -73,7 +99,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 builder.Services.AddSession(options =>
 {
-    options.IdleTimeout = TimeSpan.FromMinutes(3); // Ajustez selon vos besoins
+    options.IdleTimeout = TimeSpan.FromMinutes(3);
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
 });
@@ -84,16 +110,17 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+    app.UseCors("Development");
 }
 else
 {
     app.UseExceptionHandler("/Error");
     app.UseHsts();
+    app.UseCors("Production");
 }
 
 app.UseHttpsRedirection();
 app.UseRouting();
-app.UseCors("Development");
 app.UseAuthentication();
 app.UseAuthorization();
 

@@ -15,11 +15,56 @@ namespace Gamma2024.Server.Controllers
             _encanService = encanService;
         }
 
-        [HttpGet("ChercherTousEncansVisibles")]
-        public ICollection<EncanAffichageVM> ChercherTousEncansVisibles()
+        [HttpGet("cherchertousencans")]
+        public ICollection<EncanAffichageAdminVM> ChercherTousEncans()
         {
-            ICollection<EncanAffichageVM> encans = _encanService.ChercherTousEncansVisibles();
+            ICollection<EncanAffichageAdminVM> encans = _encanService.ChercherTousEncans();
             return encans;
+        }
+
+        [HttpGet("ChercherTousEncansVisibles")]
+        public ICollection<EncanAffichageAdminVM> ChercherTousEncansVisibles()
+        {
+            ICollection<EncanAffichageAdminVM> encans = _encanService.ChercherTousEncansVisibles();
+            return encans;
+        }
+
+        [HttpPost("creerEncan")]
+        public async Task<IActionResult> CreerEncan([FromBody] EncanCreerVM vm)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var (sucess, message) = await _encanService.CreerEncan(vm);
+            if (sucess)
+            {
+                return Ok(new { sucess = true, message = message });
+            }
+            else
+            {
+                return BadRequest(new { sucess = false, message = message });
+            }
+        }
+
+        [HttpPut("mettreAJourEncanPublie")]
+        public async Task<IActionResult> MettreAJourEncanPublie([FromBody] EncanPublieVM vm)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var (sucess, message) = await _encanService.MettreAJourEncanPublie(vm);
+            if (sucess)
+            {
+                return Ok(new { sucess = true, message = message });
+            }
+            else
+            {
+                return BadRequest(new { sucess = false, message = message });
+            }
         }
 
         [HttpGet("ChercherEncanParNumero/{numeroEncan}")]

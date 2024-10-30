@@ -105,7 +105,7 @@
                   </li> -->
                   <li>
                     <router-link
-                      :to="{ name: 'TousLesEncans' }"
+                      :to="{ name: 'TableauDeBordEncans' }"
                       class="text-decoration-none"
                     >
                       <a class="dropdown-item contenuListeDropdown">Encans</a>

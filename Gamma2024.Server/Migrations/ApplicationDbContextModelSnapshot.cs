@@ -176,8 +176,8 @@ namespace Gamma2024.Server.Migrations
                         {
                             Id = "8e445865-a24d-4543-a6c6-9443d048cdb9",
                             AccessFailedCount = 0,
-                            Avatar = "/Avatars/default.png",
-                            ConcurrencyStamp = "5e37fecb-9721-4c9e-b711-5aa3dfc56f16",
+                            Avatar = "avatars/default.png",
+                            ConcurrencyStamp = "f1f3de20-69b9-491d-bc82-b484b44cd47f",
                             Email = "admin@example.com",
                             EmailConfirmed = true,
                             FirstName = "Super",
@@ -185,9 +185,10 @@ namespace Gamma2024.Server.Migrations
                             Name = "Admin",
                             NormalizedEmail = "ADMIN@EXAMPLE.COM",
                             NormalizedUserName = "ADMIN@EXAMPLE.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEMAiD8yt/MCwHVMPrFVRMx61/TX0bQIlcedDH48Jo7z8FSsbg7vh/jwRSQc9aj8gLQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEImrQqIdpN3WKyTx0Ys/9QQXVKT5jTAyfxsPYj6ljA7MwE8U/IWotqFi5RT5o5V7VQ==",
+                            PhoneNumber = "466-666-6666",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "7797d4a5-9191-450e-83a0-ea1b7e09a897",
+                            SecurityStamp = "87162d4b-fc3b-4d65-8341-2f4a480982d1",
                             TwoFactorEnabled = false,
                             UserName = "admin@example.com"
                         },
@@ -195,8 +196,8 @@ namespace Gamma2024.Server.Migrations
                         {
                             Id = "1d8ac862-e54d-4f10-b6f8-638808c02967",
                             AccessFailedCount = 0,
-                            Avatar = "/Avatars/default.png",
-                            ConcurrencyStamp = "c235de07-e292-4012-9139-78d70014842d",
+                            Avatar = "avatars/default.png",
+                            ConcurrencyStamp = "ff176598-423c-4557-bfc4-48e928f579e9",
                             Email = "client@example.com",
                             EmailConfirmed = true,
                             FirstName = "Jean",
@@ -204,9 +205,10 @@ namespace Gamma2024.Server.Migrations
                             Name = "Dupont",
                             NormalizedEmail = "CLIENT@EXAMPLE.COM",
                             NormalizedUserName = "CLIENT@EXAMPLE.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEE4DbAVgaFHR1lvBR6erCHgrdGTOLLKkazSyEeww7XKaitGlppz0UWxD1KkmJlgFZw==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEBCLhDAVClAVnNnHmZ3ahe6KYsdJa/tTtcmHC64QlZsy07wt7VRMIl+nfrP0UJ8oKw==",
+                            PhoneNumber = "455-555-5555",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "8fe5acd2-90cc-491b-b637-183e87143bf1",
+                            SecurityStamp = "860b65a9-156b-473d-b11b-be6f787cf1e4",
                             TwoFactorEnabled = false,
                             UserName = "client@example.com"
                         });
@@ -564,8 +566,7 @@ namespace Gamma2024.Server.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AdresseId")
-                        .IsUnique();
+                    b.HasIndex("AdresseId");
 
                     b.ToTable("Vendeurs");
                 });
@@ -855,9 +856,9 @@ namespace Gamma2024.Server.Migrations
             modelBuilder.Entity("Gamma2024.Server.Models.Vendeur", b =>
                 {
                     b.HasOne("Gamma2024.Server.Models.Adresse", "Adresse")
-                        .WithOne()
-                        .HasForeignKey("Gamma2024.Server.Models.Vendeur", "AdresseId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .WithMany()
+                        .HasForeignKey("AdresseId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Adresse");

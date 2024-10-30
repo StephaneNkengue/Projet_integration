@@ -86,7 +86,4 @@
 </script>
 
 <style scoped>
-    .fs-7 {
-        font-size: 0.89rem;
-    }
 </style>
