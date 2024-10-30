@@ -1,12 +1,12 @@
 <template>
-    <div class="d-flex gap-2" v-if="chargement">
+    <div class="d-flex gap-2 w-100" v-if="chargement">
         <div class="spinner-border" role="status">
             <span class="visually-hidden">Chargement des lots...</span>
         </div>
         <p>Chargement des lots en cours...</p>
     </div>
 
-    <div v-else>
+    <div v-else class="w-100">
 
         <h5 class="text-center" v-if="nbLotsRecus == 0">
             Aucun lot trouvé
@@ -124,7 +124,7 @@
                 props.idEncan
             );
             console.log("Réponse complète:", response);
-            
+
             if (response && response.data) {
                 listeLots.value = response.data;
                 nbLotsRecus.value = listeLots.value.length;
