@@ -48,9 +48,13 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <None Update="Avatars\default.png">
-	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-	  </None>
+		<None Update="Avatars\default.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
 	</ItemGroup>
+
+	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
+		<Exec Command="xcopy &quot;$(ProjectDir)wwwroot/Images&quot; &quot;$(ProjectDir)..\Gamma.Seeder/Images&quot; /S /Y /I" />
+	</Target>
 
 </Project>

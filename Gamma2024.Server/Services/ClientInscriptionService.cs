@@ -64,6 +64,7 @@ namespace Gamma2024.Server.Services
                     FirstName = model.GeneralInfo.Prenom,
                     PhoneNumber = model.GeneralInfo.Telephone,
                     PhoneNumberConfirmed = true,
+                    Avatar = "/Avatars/default.png"
                 };
 
                 var result = await _userManager.CreateAsync(client, model.GeneralInfo.MotDePasse);
@@ -83,7 +84,7 @@ namespace Gamma2024.Server.Services
                     Numero = ParseCreditCard(model.CarteCredit.NumeroCarte),
                     MoisExpiration = moisExpiration,
                     AnneeExpiration = anneeExpiration,
-                    IdClient = client.Id
+                    IdApplicationUser = client.Id
                 };
                 _context.CartesCredits.Add(carteCredit);
 

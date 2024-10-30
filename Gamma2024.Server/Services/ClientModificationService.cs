@@ -24,14 +24,14 @@ namespace Gamma2024.Server.Services
             var (isValid, errorMessage) = ClientValidation.ValidateClientUpdate(model);
             if (!isValid)
             {
-                return (false, errorMessage, null);
+                return (false, errorMessage, new object());
             }
 
             var user = await _userManager.FindByIdAsync(userId);
 
             if (user == null)
             {
-                return (false, "Utilisateur non trouvé.", null);
+                return (false, "Utilisateur non trouvé.", new object());
             }
 
             // Mettre à jour les informations générales
@@ -42,7 +42,7 @@ namespace Gamma2024.Server.Services
             user.UserName = model.Pseudonym;
 
             // Mettre à jour les informations de carte de crédit
-            var carteCredit = await _context.CartesCredits.FirstOrDefaultAsync(c => c.IdClient == user.Id);
+            var carteCredit = await _context.CartesCredits.FirstOrDefaultAsync(c => c.IdApplicationUser == user.Id);
             if (carteCredit != null)
             {
                 carteCredit.Nom = model.CardOwnerName;
@@ -50,14 +50,14 @@ namespace Gamma2024.Server.Services
                 var (isValidExpiration, moisExpiration, anneeExpiration) = ClientValidation.ValidateAndParseExpirationDate(model.CardExpiryDate);
                 if (!isValidExpiration)
                 {
-                    return (false, "La date d'expiration de la carte est invalide ou expirée.", null);
+                    return (false, "La date d'expiration de la carte est invalide ou expirée.", new object());
                 }
                 carteCredit.MoisExpiration = moisExpiration;
                 carteCredit.AnneeExpiration = anneeExpiration;
             }
             else
             {
-                return (false, "Aucune carte de crédit trouvée pour cet utilisateur.", null);
+                return (false, "Aucune carte de crédit trouvée pour cet utilisateur.", new object());
             }
 
             // Mettre à jour les informations d'adresse
@@ -66,7 +66,7 @@ namespace Gamma2024.Server.Services
             {
                 if (!int.TryParse(model.CivicNumber, out int numeroCivique))
                 {
-                    return (false, "Le numéro civique doit être un nombre entier.", null);
+                    return (false, "Le numéro civique doit être un nombre entier.", new object());
                 }
                 adresse.Numero = numeroCivique;
                 adresse.Rue = model.Street;
@@ -78,7 +78,7 @@ namespace Gamma2024.Server.Services
             }
             else
             {
-                return (false, "Aucune adresse trouvée pour cet utilisateur.", null);
+                return (false, "Aucune adresse trouvée pour cet utilisateur.", new object());
             }
 
             // Gestion du mot de passe
@@ -86,13 +86,13 @@ namespace Gamma2024.Server.Services
             {
                 if (string.IsNullOrEmpty(model.CurrentPassword))
                 {
-                    return (false, "Le mot de passe actuel est requis pour changer le mot de passe.", null);
+                    return (false, "Le mot de passe actuel est requis pour changer le mot de passe.", new object());
                 }
 
                 var passwordCheckResult = await _userManager.CheckPasswordAsync(user, model.CurrentPassword);
                 if (!passwordCheckResult)
                 {
-                    return (false, "Mot de passe actuel incorrect.", null);
+                    return (false, "Mot de passe actuel incorrect.", new object());
                 }
 
                 var passwordValidator = new PasswordValidator<ApplicationUser>();
@@ -100,13 +100,13 @@ namespace Gamma2024.Server.Services
 
                 if (!passwordValidationResult.Succeeded)
                 {
-                    return (false, string.Join(", ", passwordValidationResult.Errors.Select(e => e.Description)), null);
+                    return (false, string.Join(", ", passwordValidationResult.Errors.Select(e => e.Description)), new object());
                 }
 
                 var passwordChangeResult = await _userManager.ChangePasswordAsync(user, model.CurrentPassword, model.NewPassword);
                 if (!passwordChangeResult.Succeeded)
                 {
-                    return (false, "Erreur lors de la mise à jour du mot de passe : " + string.Join(", ", passwordChangeResult.Errors.Select(e => e.Description)), null);
+                    return (false, "Erreur lors de la mise à jour du mot de passe : " + string.Join(", ", passwordChangeResult.Errors.Select(e => e.Description)), new object());
                 }
             }
 
@@ -114,7 +114,7 @@ namespace Gamma2024.Server.Services
 
             if (!result.Succeeded)
             {
-                return (false, "Erreur lors de la mise à jour des informations : " + string.Join(", ", result.Errors.Select(e => e.Description)), null);
+                return (false, "Erreur lors de la mise à jour des informations : " + string.Join(", ", result.Errors.Select(e => e.Description)), new object());
             }
 
             await _context.SaveChangesAsync();

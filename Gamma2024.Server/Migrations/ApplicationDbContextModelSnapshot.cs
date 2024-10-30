@@ -44,12 +44,6 @@ namespace Gamma2024.Server.Migrations
                     b.Property<string>("IdApplicationUser")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<int?>("IdPersonne")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("IdVendeur")
-                        .HasColumnType("int");
-
                     b.Property<int>("Numero")
                         .HasColumnType("int");
 
@@ -65,9 +59,6 @@ namespace Gamma2024.Server.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("VendeurId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Ville")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -76,16 +67,14 @@ namespace Gamma2024.Server.Migrations
 
                     b.HasIndex("IdApplicationUser");
 
-                    b.HasIndex("VendeurId");
-
                     b.ToTable("Adresses");
 
                     b.HasData(
                         new
                         {
                             Id = 1,
-                            CodePostal = "12345",
-                            EstDomicile = false,
+                            CodePostal = "A1A1A1",
+                            EstDomicile = true,
                             IdApplicationUser = "8e445865-a24d-4543-a6c6-9443d048cdb9",
                             Numero = 123,
                             Pays = "Pays Admin",
@@ -96,8 +85,8 @@ namespace Gamma2024.Server.Migrations
                         new
                         {
                             Id = 2,
-                            CodePostal = "67890",
-                            EstDomicile = false,
+                            CodePostal = "A1A1A1",
+                            EstDomicile = true,
                             IdApplicationUser = "1d8ac862-e54d-4f10-b6f8-638808c02967",
                             Numero = 456,
                             Pays = "Pays Client",
@@ -132,9 +121,6 @@ namespace Gamma2024.Server.Migrations
                     b.Property<string>("FirstName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("IdAdresse")
-                        .HasColumnType("int");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
@@ -190,19 +176,18 @@ namespace Gamma2024.Server.Migrations
                         {
                             Id = "8e445865-a24d-4543-a6c6-9443d048cdb9",
                             AccessFailedCount = 0,
-                            Avatar = "/Gamma2024.Server/Avatars/default.png",
-                            ConcurrencyStamp = "6e1f49b9-492a-43fe-8d49-b933c82cec75",
+                            Avatar = "/Avatars/default.png",
+                            ConcurrencyStamp = "5e37fecb-9721-4c9e-b711-5aa3dfc56f16",
                             Email = "admin@example.com",
                             EmailConfirmed = true,
                             FirstName = "Super",
-                            IdAdresse = 1,
                             LockoutEnabled = false,
                             Name = "Admin",
                             NormalizedEmail = "ADMIN@EXAMPLE.COM",
                             NormalizedUserName = "ADMIN@EXAMPLE.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEMAc6sudrjXReWW3cMoh2dGsr7j3Ln7Sylcuss4uS9Q29MXbd/FSt2cTaY2pMPvMnQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEMAiD8yt/MCwHVMPrFVRMx61/TX0bQIlcedDH48Jo7z8FSsbg7vh/jwRSQc9aj8gLQ==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "81e32f56-3d6f-48be-aeef-665122453be4",
+                            SecurityStamp = "7797d4a5-9191-450e-83a0-ea1b7e09a897",
                             TwoFactorEnabled = false,
                             UserName = "admin@example.com"
                         },
@@ -210,19 +195,18 @@ namespace Gamma2024.Server.Migrations
                         {
                             Id = "1d8ac862-e54d-4f10-b6f8-638808c02967",
                             AccessFailedCount = 0,
-                            Avatar = "/Gamma2024.Server/Avatars/default.png",
-                            ConcurrencyStamp = "31458349-1aae-4952-b80b-1349df7e3464",
+                            Avatar = "/Avatars/default.png",
+                            ConcurrencyStamp = "c235de07-e292-4012-9139-78d70014842d",
                             Email = "client@example.com",
                             EmailConfirmed = true,
                             FirstName = "Jean",
-                            IdAdresse = 2,
                             LockoutEnabled = false,
                             Name = "Dupont",
                             NormalizedEmail = "CLIENT@EXAMPLE.COM",
                             NormalizedUserName = "CLIENT@EXAMPLE.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEKGFfBxenw/RV7qPAkgD+LGSufYOJK4o4a7g6m/BZSGkpSCtC7d+4RKCrn/N1/n6WQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEE4DbAVgaFHR1lvBR6erCHgrdGTOLLKkazSyEeww7XKaitGlppz0UWxD1KkmJlgFZw==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "ddb519eb-460f-40c3-b18c-33dccae56676",
+                            SecurityStamp = "8fe5acd2-90cc-491b-b637-183e87143bf1",
                             TwoFactorEnabled = false,
                             UserName = "client@example.com"
                         });
@@ -239,7 +223,7 @@ namespace Gamma2024.Server.Migrations
                     b.Property<int>("AnneeExpiration")
                         .HasColumnType("int");
 
-                    b.Property<string>("IdClient")
+                    b.Property<string>("IdApplicationUser")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
@@ -256,9 +240,29 @@ namespace Gamma2024.Server.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("IdClient");
+                    b.HasIndex("IdApplicationUser");
 
                     b.ToTable("CartesCredits");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            AnneeExpiration = 2025,
+                            IdApplicationUser = "8e445865-a24d-4543-a6c6-9443d048cdb9",
+                            MoisExpiration = 12,
+                            Nom = "Admin Admin",
+                            Numero = "5555555555554444"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            AnneeExpiration = 2026,
+                            IdApplicationUser = "1d8ac862-e54d-4f10-b6f8-638808c02967",
+                            MoisExpiration = 12,
+                            Nom = "Jean Dupont",
+                            Numero = "4242424242424242"
+                        });
                 });
 
             modelBuilder.Entity("Gamma2024.Server.Models.Categorie", b =>
@@ -286,27 +290,11 @@ namespace Gamma2024.Server.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("IdClient")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("IdFacture")
-                        .HasColumnType("int");
-
-                    b.Property<double>("MontantDon")
-                        .HasColumnType("float");
-
                     b.Property<string>("NomOrganisme")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("IdClient")
-                        .IsUnique();
-
-                    b.HasIndex("IdFacture")
-                        .IsUnique();
 
                     b.ToTable("Charites");
                 });
@@ -331,26 +319,29 @@ namespace Gamma2024.Server.Migrations
                     b.Property<DateTime>("DateFinSoireeCloture")
                         .HasColumnType("datetime2");
 
+                    b.Property<bool>("EstPublie")
+                        .HasColumnType("bit");
+
                     b.Property<int>("NumeroEncan")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("NumeroEncan")
+                        .IsUnique();
 
                     b.ToTable("Encans");
                 });
 
             modelBuilder.Entity("Gamma2024.Server.Models.EncanLot", b =>
                 {
-                    b.Property<int>("NumeroEncan")
+                    b.Property<int>("IdEncan")
                         .HasColumnType("int");
 
                     b.Property<int>("IdLot")
                         .HasColumnType("int");
 
-                    b.Property<int>("Id")
-                        .HasColumnType("int");
-
-                    b.HasKey("NumeroEncan", "IdLot");
+                    b.HasKey("IdEncan", "IdLot");
 
                     b.HasIndex("IdLot");
 
@@ -365,35 +356,53 @@ namespace Gamma2024.Server.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int?>("ChariteId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("DateAchat")
                         .HasColumnType("datetime2");
 
-                    b.Property<bool>("EstLivree")
-                        .HasColumnType("bit");
+                    b.Property<double?>("Don")
+                        .HasColumnType("float");
+
+                    b.Property<double>("FraisEncanteur")
+                        .HasColumnType("float");
+
+                    b.Property<double>("FraisLivraison")
+                        .HasColumnType("float");
 
                     b.Property<int>("IdAdresse")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("IdCharite")
                         .HasColumnType("int");
 
                     b.Property<string>("IdClient")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("IdLot")
-                        .HasColumnType("int");
+                    b.Property<double>("PrixFinal")
+                        .HasColumnType("float");
 
-                    b.Property<int>("NumeroFacture")
-                        .HasColumnType("int");
+                    b.Property<double>("PrixLots")
+                        .HasColumnType("float");
 
-                    b.Property<double>("PrixTotal")
+                    b.Property<double>("SousTotal")
+                        .HasColumnType("float");
+
+                    b.Property<double>("TPS")
+                        .HasColumnType("float");
+
+                    b.Property<double>("TVQ")
                         .HasColumnType("float");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ChariteId");
+
                     b.HasIndex("IdAdresse");
 
                     b.HasIndex("IdClient");
-
-                    b.HasIndex("IdLot");
 
                     b.ToTable("Factures");
                 });
@@ -410,10 +419,6 @@ namespace Gamma2024.Server.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Code")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<DateTime>("DateCreation")
                         .HasColumnType("datetime2");
 
@@ -427,11 +432,14 @@ namespace Gamma2024.Server.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Dimensions")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<bool>("EstLivrable")
+                        .HasColumnType("bit");
 
                     b.Property<bool>("EstVendu")
                         .HasColumnType("bit");
+
+                    b.Property<double>("Hauteur")
+                        .HasColumnType("float");
 
                     b.Property<int>("IdCategorie")
                         .HasColumnType("int");
@@ -439,18 +447,33 @@ namespace Gamma2024.Server.Migrations
                     b.Property<string>("IdClientMise")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<int?>("IdFacture")
+                        .HasColumnType("int");
+
                     b.Property<int>("IdMedium")
                         .HasColumnType("int");
 
                     b.Property<int>("IdVendeur")
                         .HasColumnType("int");
 
+                    b.Property<double>("Largeur")
+                        .HasColumnType("float");
+
                     b.Property<double?>("Mise")
                         .HasColumnType("float");
 
-                    b.Property<string>("Nom")
+                    b.Property<string>("Numero")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<double?>("PrixMinPourVente")
+                        .HasColumnType("float");
+
+                    b.Property<double>("PrixOuverture")
+                        .HasColumnType("float");
+
+                    b.Property<bool?>("SeraLivree")
+                        .HasColumnType("bit");
 
                     b.Property<double>("ValeurEstimeMax")
                         .HasColumnType("float");
@@ -458,14 +481,13 @@ namespace Gamma2024.Server.Migrations
                     b.Property<double>("ValeurEstimeMin")
                         .HasColumnType("float");
 
-                    b.Property<bool>("estLivrable")
-                        .HasColumnType("bit");
-
                     b.HasKey("Id");
 
                     b.HasIndex("IdCategorie");
 
                     b.HasIndex("IdClientMise");
+
+                    b.HasIndex("IdFacture");
 
                     b.HasIndex("IdMedium");
 
@@ -521,12 +543,12 @@ namespace Gamma2024.Server.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("AdresseId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Courriel")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("IdAdresse")
-                        .HasColumnType("int");
 
                     b.Property<string>("Nom")
                         .IsRequired()
@@ -541,6 +563,9 @@ namespace Gamma2024.Server.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AdresseId")
+                        .IsUnique();
 
                     b.ToTable("Vendeurs");
                 });
@@ -717,57 +742,32 @@ namespace Gamma2024.Server.Migrations
                         .HasForeignKey("IdApplicationUser")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.HasOne("Gamma2024.Server.Models.Vendeur", "Vendeur")
-                        .WithMany()
-                        .HasForeignKey("VendeurId");
-
                     b.Navigation("ApplicationUser");
-
-                    b.Navigation("Vendeur");
                 });
 
             modelBuilder.Entity("Gamma2024.Server.Models.CarteCredit", b =>
                 {
-                    b.HasOne("Gamma2024.Server.Models.ApplicationUser", "Client")
+                    b.HasOne("Gamma2024.Server.Models.ApplicationUser", "ApplicationUser")
                         .WithMany("CarteCredits")
-                        .HasForeignKey("IdClient")
+                        .HasForeignKey("IdApplicationUser")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.Navigation("Client");
-                });
-
-            modelBuilder.Entity("Gamma2024.Server.Models.Charite", b =>
-                {
-                    b.HasOne("Gamma2024.Server.Models.ApplicationUser", "Client")
-                        .WithOne()
-                        .HasForeignKey("Gamma2024.Server.Models.Charite", "IdClient")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Gamma2024.Server.Models.Facture", "Facture")
-                        .WithOne("Charite")
-                        .HasForeignKey("Gamma2024.Server.Models.Charite", "IdFacture")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Client");
-
-                    b.Navigation("Facture");
+                    b.Navigation("ApplicationUser");
                 });
 
             modelBuilder.Entity("Gamma2024.Server.Models.EncanLot", b =>
                 {
+                    b.HasOne("Gamma2024.Server.Models.Encan", "Encan")
+                        .WithMany("EncanLots")
+                        .HasForeignKey("IdEncan")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Gamma2024.Server.Models.Lot", "Lot")
                         .WithMany("EncanLots")
                         .HasForeignKey("IdLot")
                         .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("Gamma2024.Server.Models.Encan", "Encan")
-                        .WithMany("EncanLots")
-                        .HasForeignKey("NumeroEncan")
-                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Encan");
@@ -777,6 +777,10 @@ namespace Gamma2024.Server.Migrations
 
             modelBuilder.Entity("Gamma2024.Server.Models.Facture", b =>
                 {
+                    b.HasOne("Gamma2024.Server.Models.Charite", "Charite")
+                        .WithMany()
+                        .HasForeignKey("ChariteId");
+
                     b.HasOne("Gamma2024.Server.Models.Adresse", "Adresse")
                         .WithMany("Factures")
                         .HasForeignKey("IdAdresse")
@@ -789,17 +793,11 @@ namespace Gamma2024.Server.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("Gamma2024.Server.Models.Lot", "Lot")
-                        .WithMany()
-                        .HasForeignKey("IdLot")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
                     b.Navigation("Adresse");
 
-                    b.Navigation("Client");
+                    b.Navigation("Charite");
 
-                    b.Navigation("Lot");
+                    b.Navigation("Client");
                 });
 
             modelBuilder.Entity("Gamma2024.Server.Models.Lot", b =>
@@ -813,6 +811,11 @@ namespace Gamma2024.Server.Migrations
                     b.HasOne("Gamma2024.Server.Models.ApplicationUser", "ClientMise")
                         .WithMany()
                         .HasForeignKey("IdClientMise")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.HasOne("Gamma2024.Server.Models.Facture", "Facture")
+                        .WithMany("Lots")
+                        .HasForeignKey("IdFacture")
                         .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("Gamma2024.Server.Models.Medium", "Medium")
@@ -831,6 +834,8 @@ namespace Gamma2024.Server.Migrations
 
                     b.Navigation("ClientMise");
 
+                    b.Navigation("Facture");
+
                     b.Navigation("Medium");
 
                     b.Navigation("Vendeur");
@@ -845,6 +850,17 @@ namespace Gamma2024.Server.Migrations
                         .IsRequired();
 
                     b.Navigation("Lot");
+                });
+
+            modelBuilder.Entity("Gamma2024.Server.Models.Vendeur", b =>
+                {
+                    b.HasOne("Gamma2024.Server.Models.Adresse", "Adresse")
+                        .WithOne()
+                        .HasForeignKey("Gamma2024.Server.Models.Vendeur", "AdresseId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Adresse");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -922,7 +938,7 @@ namespace Gamma2024.Server.Migrations
 
             modelBuilder.Entity("Gamma2024.Server.Models.Facture", b =>
                 {
-                    b.Navigation("Charite");
+                    b.Navigation("Lots");
                 });
 
             modelBuilder.Entity("Gamma2024.Server.Models.Lot", b =>
