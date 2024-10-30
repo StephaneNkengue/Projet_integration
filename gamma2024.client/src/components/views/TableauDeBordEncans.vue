@@ -438,9 +438,6 @@ img {
   width: 25px;
   height: 30px;
 }
-.dropdown-item:active {
-  background-color: #5a708a;
-}
 
 .fade-enter-active,
 .fade-leave-active {
