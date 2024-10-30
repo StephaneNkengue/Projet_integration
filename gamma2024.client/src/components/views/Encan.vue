@@ -9,7 +9,7 @@
       <p>Chargement de l'encan en cours...</p>
     </div>
 
-    <div v-if="!chargement" class="card">
+    <div v-if="!chargement">
       <h5 class="text-center" v-if="encan == ''">
         Il n'y a présentement aucun encan ayant ce numéro
       </h5>

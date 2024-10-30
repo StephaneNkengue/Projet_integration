@@ -60,16 +60,16 @@ namespace Gamma2024.Server.Services
 
             var listeEncan = _context.Encans.OrderBy(e => e.NumeroEncan).ToList();
 
-            var dernierEncan = listeEncan.LastOrDefault();
-            if (dernierEncan == null)
+            bool estVide = false;
+            if (listeEncan.Count == 0)
             {
-                return (false, errorMessage);
+                estVide = true;
             }
 
             var encan = new Encan()
             {
                 Id = 0,
-                NumeroEncan = dernierEncan.NumeroEncan + 1,
+                NumeroEncan = estVide ? 1 : listeEncan.LastOrDefault().NumeroEncan + 1,
                 DateDebut = vm.DateDebut,
                 DateFin = vm.DateFin,
                 DateDebutSoireeCloture = vm.DateFin,

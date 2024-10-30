@@ -8,9 +8,6 @@
 
   <div v-else>
     <h5 class="text-center" v-if="nbLotsRecus == 0">Aucun lot trouvé</h5>
-
-    <h5 class="text-center" v-if="nbLotsRecus == 0">Aucun lot trouvé</h5>
-
     <div v-else class="d-flex flex-column align-items-center">
       <div class="d-flex flex-row-reverse w-100 px-4 me-2 gap-2">
         <button
