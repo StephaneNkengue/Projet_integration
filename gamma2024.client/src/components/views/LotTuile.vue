@@ -24,7 +24,7 @@
                 </div>
 
                 <p class="text-center mb-0">Valeur: {{(lot.valeurEstimeMin).toFixed(0)}}$ - {{(lot.valeurEstimeMax).toFixed(0)}}$</p>
-                <p class="text-center mb-0">Mise actuelle: {{(lot.mise).toFixed(0)}}$</p>
+                <p class="text-center mb-0">Mise actuelle: {{mise.toFixed(0)}}$</p>
 
                 <div class="d-flex justify-content-around pt-2">
                     <button type="button" class="btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond">Miser</button>
@@ -47,6 +47,7 @@
     const props = defineProps({
         lotRecu: Object
     })
+    const mise = ref(0)
 
     const urlApi = ref("/api")
     const lot = ref({
@@ -75,6 +76,10 @@
     onMounted(async () => {
         lot.value = props.lotRecu
         urlApi.value = await store.state.api.defaults.baseURL.replace("\api", "")
+
+        if (lot.value.mise != null) {
+            mise.value = lot.value.mise
+        }
     })
 
 </script>
