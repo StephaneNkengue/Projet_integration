@@ -3,10 +3,10 @@
     <h1 class="text-center mb-4">Modification du lot</h1>
     <form @submit.prevent="modifierLot" v-if="lot">
       <!-- Bloc des photos existantes -->
-      <div v-if="lot.photos && lot.photos.length > 0" class="mb-3">
+      <div v-if="lot.photosModifie && lot.photosModifie.length > 0" class="mb-3">
         <h4>Photos existantes</h4>
         <div class="d-flex flex-wrap">
-          <div v-for="photo in lot.photos" :key="photo.id" class="me-2 mb-2 position-relative">
+          <div v-for="photo in lot.photosModifie" :key="photo.id" class="me-2 mb-2 position-relative">
             <img :src="getImageUrl(photo.url)" alt="Photo du lot" 
                  style="width: 100px; height: 100px; object-fit: cover; border: 1px solid #ddd;">
             <button @click.prevent="marquerPhotoASupprimer(photo.id)" class="btn btn-danger btn-sm position-absolute top-0 end-0">X</button>
@@ -89,7 +89,7 @@
       </div>
       <div class="mb-3">
         <label for="idEncan" class="form-label">Encan</label>
-        <select v-model="lot.idEncan" class="form-select" id="idEncan" required>
+        <select v-model="lot.idEncanModifie" class="form-select" id="idEncan" required>
           <option v-for="encan in encans" :key="encan.id" :value="encan.id">
             {{ encan.numeroEncan }}
           </option>
@@ -156,7 +156,7 @@ onBeforeUnmount(() => {
 const marquerPhotoASupprimer = (photoId) => {
   if (!photosASupprimer.value.includes(photoId)) {
     photosASupprimer.value.push(photoId);
-    lot.value.photos = lot.value.photos.filter(photo => photo.id !== photoId);
+    lot.value.photosModifie = lot.value.photosModifie.filter(photo => photo.id !== photoId);
   }
 };
 
@@ -177,7 +177,7 @@ const modifierLot = async () => {
     formData.append('IdVendeur', lot.value.idVendeur || 0);
     formData.append('EstLivrable', lot.value.estLivrable || false);
     formData.append('IdMedium', lot.value.idMedium || 0);
-    formData.append('IdEncan', lot.value.idEncan || 0);
+    formData.append('IdEncanModifie', lot.value.idEncanModifie || 0);
     formData.append('Hauteur', lot.value.hauteur || 0);
     formData.append('Largeur', lot.value.largeur || 0);
     
@@ -188,7 +188,7 @@ const modifierLot = async () => {
     
     // Ajoutez les IDs des photos à supprimer
     photosASupprimer.value.forEach((photoId) => {
-      formData.append('PhotosASupprimer', photoId);
+      formData.append('PhotosASupprimer[]', photoId);
     });
     
     const response = await store.dispatch('modifierLot', { id: route.params.id, lotData: formData });
@@ -215,9 +215,7 @@ const modifierLot = async () => {
 const getImageUrl = computed(() => (url) => {
   if (!url) return '';
   const baseUrl = store.state.api.defaults.baseURL.replace('/api', '');
-  const fullUrl = new URL(url, baseUrl).href;
-  console.log('URL de l\'image:', fullUrl); // Ajoutez cette ligne
-  return fullUrl;
+  return new URL(url, baseUrl).href;
 });
 
 const ajouterNouvellesPhotos = (event) => {
