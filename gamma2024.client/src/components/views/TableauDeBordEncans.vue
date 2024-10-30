@@ -1,320 +1,456 @@
 <template>
-    <div class="d-flex flex-column justify-content-between">
-        <div class="d-flex justify-content-between">
-            <h2 class="d-flex-1">Liste des encans</h2>
-            <router-link to="TableauDeBordEncansAjout" class="text-decoration-none">
-                <button class="btn bleuMarinSecondaireFond btnSurvolerBleuMoyenFond btnClick text-white d-flex-1"
-                        type="button"
-                        id="ajouterEncanButton">
-                    Ajouter un encan
-                </button>
-            </router-link>
-        </div>
-        <transition name="fade">
-            <div v-if="errorMessage" class="alert alert-danger">
-                {{ errorMessage }}
-            </div>
-            <div v-else>
-                <div v-if="successMessage" class="alert alert-success">
-                    {{ successMessage }}
-                </div>
-            </div>
-        </transition>
-
-        <div class="d-flex justify-content-between">
-
-            <div class="d-flex flex-row w-100 ms-3 gap-2 pt-3">
-                <button class="d-flex align-items-center text-center rounded btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
-                        @click="changerNbEncanParPage(20)"
-                        v-bind:disabled="encansParPage == 20">
-                    20
-                </button><button class="d-flex align-items-center text-center rounded btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
-                                 @click="changerNbEncanParPage(50)"
-                                 v-bind:disabled="encansParPage == 50">
-                    50
-                </button><button class="d-flex align-items-center text-center rounded btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
-                                 @click="changerNbEncanParPage(100)"
-                                 v-bind:disabled="encansParPage == 100">
-                    100
-                </button>
-                <button class="d-flex align-items-center text-center rounded btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
-                        type="button"
-                        @click="afficherTousEncans"
-                        v-bind:disabled="encansParPage == nbEncansRecus">
-                    Tous
-                </button>
-
-
-
-            </div>
-
-            <div class="d-flex me-1 gap-1 align-items-center">
-                <label for="Recherche">Rechercher: </label>
-                <input data-bs-theme="light" type="search" aria-label="RechercheNum" v-model="encanRechercheNumEncan" placeholder="Numéro encan">
-
-                <input data-bs-theme="light" type="search" aria-label="RechercheDate" v-model="encanRechercheDate" placeholder="Date AAAA-MM-JJ">
-            </div>
-        </div>
-
-        <table class="table table-striped mt-3">
-            <thead>
-                <tr>
-                    <th data-field="numeroEncan">Encan</th>
-                    <th data-field="statut">Statut</th>
-                    <th data-field="dateDebut">Date de début</th>
-                    <th data-field="dateFin">Date de fin</th>
-                    <th data-field="soireeCloture">Soirée de clôture</th>
-                    <th data-field="nbLot">Nombre de lots</th>
-                    <th></th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tr v-for="(encan) in encansAffiche" :key="encan.id">
-                <td>{{encan.numeroEncan}}</td>
-                <td class="d-flex justify-content-center">
-                    <div class="d-flex collapse dropdown dropdown-center">
-                        <button :encanId="encan.id" class="btn dropdown-toggle bleuMarinSecondaireFond rounded text-white contenuListeDropdown fs-7" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <span v-if="encan.estPublie==true">Publié</span>
-                            <span v-else>Non publié</span>
-                        </button>
-
-                        <ul class="dropdown-menu dropdown-menu-dark bleuMarinFond text-center">
-                            <li>
-                                <a class="dropdown-item" @click="encanPublieMAJ(true)" :encanId="encan.id">Publié</a>
-                            </li>
-                            <li>
-                                <a class="dropdown-item" @click="encanPublieMAJ(false)" :encanId="encan.id">Non publié</a>
-                            </li>
-                        </ul>
-                    </div>
-                </td>
-                <td>{{encan.dateDebut.split("T")[0]}}</td>
-                <td>{{encan.dateFin.split("T")[0]}}</td>
-                <td>{{encan.dateDebut.split("T")[0]}} {{encan.dateDebutSoireeCloture.split("T")[1]}} à {{encan.dateFinSoireeCloture.split("T")[1]}}</td>
-                <td>{{encan.nbLots}}</td>
-                <td>modifier</td>
-                <td>supprimer</td>
-            </tr>
-        </table>
-
-        <div class="d-flex flex-row justify-content-center gap-1 flex-wrap p-3">
-            <button type="button"
-                    class="btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
-                    @click="reculerPage"
-                    v-bind:disabled="pageCourante == 1">
-                <
-            </button>
-
-            <div v-for="item in listePagination">
-                <button type="button"
-                        class="btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
-                        :pageId="item"
-                        @click="changerPage()"
-                        v-bind:disabled="pageCourante == item || item == '...'">
-                    {{ item }}
-                </button>
-            </div>
-
-            <button type="button"
-                    class="btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
-                    @click="avancerPage"
-                    v-bind:disabled="pageCourante == nbPages">
-                >
-            </button>
-        </div>
+  <div class="d-flex flex-column justify-content-between">
+    <div class="d-flex justify-content-between">
+      <h2 class="d-flex-1">Liste des encans</h2>
+      <router-link
+        :to="{ name: 'TableauDeBordEncansAjout' }"
+        class="text-decoration-none"
+      >
+        <button
+          class="btn bleuMarinSecondaireFond btnSurvolerBleuMoyenFond btnClick text-white d-flex-1"
+          type="button"
+          id="ajouterEncanButton"
+        >
+          Ajouter un encan
+        </button>
+      </router-link>
     </div>
+    <transition name="fade">
+      <div v-if="errorMessage" class="alert alert-danger">
+        {{ errorMessage }}
+      </div>
+      <div v-else>
+        <div v-if="successMessage" class="alert alert-success">
+          {{ successMessage }}
+        </div>
+      </div>
+    </transition>
+
+    <div class="d-flex justify-content-between">
+      <div class="d-flex collapse dropdown dropdown-center">
+        <button
+          class="btn dropdown-toggle bleuMarinSecondaireFond rounded text-white contenuListeDropdown"
+          type="button"
+          data-bs-toggle="dropdown"
+          aria-expanded="false"
+        >
+          Données par page
+        </button>
+
+        <ul class="dropdown-menu dropdown-menu-dark bleuMarinFond text-center">
+          <li>
+            <a class="dropdown-item">10</a>
+          </li>
+          <li>
+            <a class="dropdown-item">25</a>
+          </li>
+          <li>
+            <a class="dropdown-item">Tous</a>
+          </li>
+        </ul>
+      </div>
+
+      <div class="d-flex me-1 gap-1 align-items-center">
+        <label for="Recherche">Rechercher: </label>
+        <input
+          data-bs-theme="light"
+          type="search"
+          aria-label="RechercheNum"
+          v-model="encanRechercheNumEncan"
+          placeholder="Numéro encan"
+        />
+
+        <input
+          data-bs-theme="light"
+          type="search"
+          aria-label="RechercheDate"
+          v-model="encanRechercheDate"
+          placeholder="Date AAAA-MM-JJ"
+        />
+      </div>
+    </div>
+
+    <div class="d-flex flex-row-reverse w-100 px-4 me-2 gap-2 pt-3">
+      <button
+        class="d-flex align-items-center text-center rounded btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
+        type="button"
+        @click="afficherTousEncans"
+        v-bind:disabled="encansParPage == nbEncansRecus"
+      >
+        Tous
+      </button>
+      <button
+        class="d-flex align-items-center text-center rounded btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
+        @click="changerNbEncanParPage(100)"
+        v-bind:disabled="encansParPage == 100"
+      >
+        100
+      </button>
+      <button
+        class="d-flex align-items-center text-center rounded btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
+        @click="changerNbEncanParPage(50)"
+        v-bind:disabled="encansParPage == 50"
+      >
+        50
+      </button>
+      <button
+        class="d-flex align-items-center text-center rounded btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
+        @click="changerNbEncanParPage(20)"
+        v-bind:disabled="encansParPage == 20"
+      >
+        20
+      </button>
+    </div>
+
+    <table class="table table-striped mt-3 mx-0 text-center">
+      <thead class="fw-bold">
+        <tr class="fs-4">
+          <th data-field="numeroEncan">Encan</th>
+          <th data-field="statut">Statut</th>
+          <th data-field="dateDebut">Date de début</th>
+          <th data-field="dateFin">Date de fin</th>
+          <th data-field="soireeCloture">Soirée de clôture</th>
+          <th data-field="nbLot">Nombre de lots</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tr v-for="encan in listeEncansFiltree" :key="encan.id">
+        <td>{{ encan.numeroEncan }}</td>
+        <td class="d-flex justify-content-center">
+          <div class="d-flex collapse dropdown dropdown-center">
+            <button
+              :encanId="encan.id"
+              class="btn dropdown-toggle bleuMarinSecondaireFond rounded text-white contenuListeDropdown fs-7"
+              type="button"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            >
+              <span v-if="encan.estPublie == true">Publié</span>
+              <span v-else>Non publié</span>
+            </button>
+
+            <ul
+              class="dropdown-menu dropdown-menu-dark bleuMarinFond text-center"
+            >
+              <li>
+                <a
+                  class="dropdown-item"
+                  @click="encanPublieMAJ(true)"
+                  :encanId="encan.id"
+                  >Publié</a
+                >
+              </li>
+              <li>
+                <a
+                  class="dropdown-item"
+                  @click="encanPublieMAJ(false)"
+                  :encanId="encan.id"
+                  >Non publié</a
+                >
+              </li>
+            </ul>
+          </div>
+        </td>
+        <td>{{ encan.dateDebut.split("T")[0] }}</td>
+        <td>{{ encan.dateFin.split("T")[0] }}</td>
+        <td>
+          {{ encan.dateDebut.split("T")[0] }}
+          {{ encan.dateDebutSoireeCloture.split("T")[1] }} à
+          {{ encan.dateFinSoireeCloture.split("T")[1] }}
+        </td>
+        <td>{{ encan.nbLots }}</td>
+        <td>
+          <button class="btn btn_edit px-3 me-3" @click="editerEncan(encan.id)">
+            <img
+              src="/public/icons/Edit_icon.png"
+              class="img-fluid"
+              alt="..."
+            />
+          </button>
+          <button
+            class="btn btn-danger px-3 btn_delete"
+            data-bs-toggle="modal"
+            :data-bs-target="'#' + encan.numeroEncan"
+          >
+            <img
+              src="/public/icons/Delete_icon.png"
+              class="img-fluid"
+              alt="..."
+            />
+          </button>
+        </td>
+        <ConfirmDelete :h="encan" @supprimerEncan="supprimerMonEncan" />
+      </tr>
+    </table>
+    <div class="d-flex flex-row justify-content-center gap-1 flex-wrap p-3">
+      <button
+        type="button"
+        class="btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
+        @click="reculerPage"
+        v-bind:disabled="pageCourante == 1"
+      >
+        <
+      </button>
+
+      <div v-for="item in listePagination">
+        <button
+          type="button"
+          class="btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
+          :pageId="item"
+          @click="changerPage()"
+          v-bind:disabled="pageCourante == item || item == '...'"
+        >
+          {{ item }}
+        </button>
+      </div>
+
+      <button
+        type="button"
+        class="btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
+        @click="avancerPage"
+        v-bind:disabled="pageCourante == nbPages"
+      >
+        >
+      </button>
+    </div>
+  </div>
 </template>
+
 <script setup>
-    import { onMounted, ref, watch, reactive } from "vue";
-    import { useStore } from "vuex";
-    import TableauDeBordEncansAjout from '@/components/views/TableauDeBordEncansAjout.vue'
+import { onMounted, ref, watch, reactive } from "vue";
+import { useStore } from "vuex";
+import { useRouter } from "vue-router";
+import ConfirmDelete from "@/components/views/BoiteModale/ConfirmDeleteEncan.vue";
 
-    const store = useStore();
-    const listeEncans = ref([]);
-    const listeEncansFiltree = ref([]);
-    const nbEncansRecus = ref()
-    const encansParPage = ref()
-    const listePagination = ref([])
-    const pageCourante = ref(1)
-    const nbPages = ref()
-    const encansAffiche = ref([])
+const store = useStore();
+const router = useRouter();
+const listeEncans = ref([]);
+const listeEncansFiltree = ref([]);
+const nbEncansRecus = ref();
+const encansParPage = ref();
+const listePagination = ref([]);
+const pageCourante = ref(1);
+const nbPages = ref();
+const encansAffiche = ref([]);
 
-    let encanPublieMAJ;
-    const encanRechercheNumEncan = ref();
-    const encanRechercheDate = ref();
+let encanPublieMAJ;
+const encanRechercheNumEncan = ref();
+const encanRechercheDate = ref();
 
-    const errorMessage = ref('');
-    const successMessage = ref('');
+const errorMessage = ref("");
+const successMessage = ref("");
 
-    const encan = ref("");
+const encan = ref("");
 
-    onMounted(async () => {
+onMounted(async () => {
+  try {
+    initializeData();
+  } catch (erreur) {
+    console.log("Erreur encans" + erreur);
+  }
+});
 
-        try {
-            listeEncans.value = await store.dispatch("fetchEncanInfo");
+const supprimerMonEncan = async (idEncan) => {
+  await store.dispatch("supprimerUnEncan", idEncan);
+  initializeData();
+};
 
-            listeEncansFiltree.value = listeEncans.value;
+const editerEncan = async (idEncan) => {
+  router.push({ name: "ModificationEncan", params: { id: idEncan } });
+};
 
-            nbEncansRecus.value = listeEncansFiltree.value.length
-            encansParPage.value = nbEncansRecus.value
-            nbPages.value = recalculerNbPages();
+watch(encanRechercheNumEncan, () => {
+  listeEncansFiltree.value = listeEncans.value;
 
-            genererListePagination();
-            chercherEncansAAfficher();
+  listeEncansFiltree.value = listeEncansFiltree.value.filter(
+    ({ numeroEncan }) =>
+      numeroEncan.toString().startsWith(encanRechercheNumEncan.value)
+  );
 
-            encanPublieMAJ = async function (statutPublie) {
-                let encanId = event.srcElement.getAttribute("encanId")
-                encan.value = listeEncans.value.find(e => e.id == encanId);
+  nbEncansRecus.value = listeEncansFiltree.value.length;
+  pageCourante.value = 1;
+  AjusterPagination();
+});
 
-                if (encan.value.estPublie != statutPublie) {
-                    encan.value.estPublie = !encan.value.estPublie;
+watch(pageCourante, () => {
+  genererListePagination();
+  chercherEncansAAfficher();
+});
 
-                    let formData = reactive({
-                        numeroEncan: encan.value.numeroEncan,
-                        estPublie: encan.value.estPublie,
-                    });
+watch(encanRechercheDate, () => {
+  listeEncansFiltree.value = listeEncans.value;
 
-                    const response = await store.dispatch('mettreAJourEncanPublie', formData);
-                    if (response.success) {
-                        successMessage.value = "Statut encan modifié!";
-                        errorMessage.value = "";
-                        setTimeout(() => {
-                            successMessage.value = "";
-                        }, 5000);
-                    }
-                    else {
-                        errorMessage.value = response.error;
-                        successMessage.value = "";
-                        setTimeout(() => {
-                            errorMessage.value = "";
-                        }, 5000);
-                    }
-                }
-            }
-        }
-        catch (erreur) {
-            console.log("Erreur encans" + erreur);
-        }
-    });
+  listeEncansFiltree.value = listeEncansFiltree.value.filter(
+    ({ dateDebut, dateFin, dateDebutSoireeCloture, dateFinSoireeCloture }) =>
+      dateDebut.toString().startsWith(encanRechercheDate.value) ||
+      dateFin.toString().startsWith(encanRechercheDate.value) ||
+      dateDebutSoireeCloture.toString().startsWith(encanRechercheDate.value) ||
+      dateFinSoireeCloture.toString().startsWith(encanRechercheDate.value)
+  );
 
-    watch(encanRechercheNumEncan, () => {
-        listeEncansFiltree.value = listeEncans.value;
+  nbEncansRecus.value = listeEncansFiltree.value.length;
+  pageCourante.value = 1;
+  AjusterPagination();
+});
 
-        listeEncansFiltree.value = listeEncansFiltree.value.filter(({ numeroEncan }) =>
-            numeroEncan.toString().startsWith(encanRechercheNumEncan.value)
-        );
+const changerNbEncanParPage = ref(function (nouvEncansParPage) {
+  encansParPage.value = nouvEncansParPage;
+  nbPages.value = recalculerNbPages();
+  pageCourante.value = 1;
+  AjusterPagination();
+});
 
-        nbEncansRecus.value = listeEncansFiltree.value.length
-        pageCourante.value = 1
-        AjusterPagination()
-    });
+const afficherTousEncans = ref(function () {
+  encansParPage.value = nbEncansRecus.value;
+  nbPages.value = recalculerNbPages();
+  pageCourante.value = 1;
+  AjusterPagination();
+});
 
-    watch(pageCourante, () => {
-        genererListePagination();
-        chercherEncansAAfficher();
-    });
+const reculerPage = ref(function () {
+  if (pageCourante.value > 1) {
+    pageCourante.value--;
+  }
+});
 
-    watch(encanRechercheDate, () => {
-        listeEncansFiltree.value = listeEncans.value;
+const avancerPage = ref(function () {
+  if (pageCourante.value < nbPages.value) {
+    pageCourante.value++;
+  }
+});
 
-        listeEncansFiltree.value = listeEncansFiltree.value.filter(({ dateDebut, dateFin, dateDebutSoireeCloture, dateFinSoireeCloture }) =>
-            dateDebut.toString().startsWith(encanRechercheDate.value) ||
-            dateFin.toString().startsWith(encanRechercheDate.value) ||
-            dateDebutSoireeCloture.toString().startsWith(encanRechercheDate.value) ||
-            dateFinSoireeCloture.toString().startsWith(encanRechercheDate.value)
-        );
+const changerPage = ref(function () {
+  pageCourante.value = parseInt(event.srcElement.getAttribute("pageId"));
+});
 
-        nbEncansRecus.value = listeEncansFiltree.value.length
-        pageCourante.value = 1
-        AjusterPagination()
-    });
+function recalculerNbPages() {
+  return Math.ceil(nbEncansRecus.value / encansParPage.value);
+}
 
-    const changerNbEncanParPage = ref(function (nouvEncansParPage) {
-        encansParPage.value = nouvEncansParPage;
-        nbPages.value = recalculerNbPages();
-        pageCourante.value = 1;
-        AjusterPagination()
-    });
+function genererListePagination() {
+  listePagination.value = [];
 
-    const afficherTousEncans = ref(function () {
-        encansParPage.value = nbEncansRecus.value;
-        nbPages.value = recalculerNbPages();
-        pageCourante.value = 1;
-        AjusterPagination()
-    });
-
-    const reculerPage = ref(function () {
-        if (pageCourante.value > 1) {
-            pageCourante.value--;
-        }
-    });
-
-    const avancerPage = ref(function () {
-        if (pageCourante.value < nbPages.value) {
-            pageCourante.value++;
-        }
-    });
-
-    const changerPage = ref(function () {
-        pageCourante.value = parseInt(event.srcElement.getAttribute("pageId"));
-    });
-
-    function recalculerNbPages() {
-        return Math.ceil(nbEncansRecus.value / encansParPage.value);
+  for (let i = 1; i <= nbPages.value; i++) {
+    if (
+      i == 1 ||
+      (i >= pageCourante.value - 1 && i <= pageCourante.value + 1) ||
+      i == nbPages.value
+    ) {
+      listePagination.value.push(i);
+    } else if (
+      listePagination.value[listePagination.value.length - 1] != "..."
+    ) {
+      listePagination.value.push("...");
     }
+  }
+}
 
-    function genererListePagination() {
-        listePagination.value = [];
+function chercherEncansAAfficher() {
+  encansAffiche.value = [];
 
-        for (let i = 1; i <= nbPages.value; i++) {
-            if (
-                i == 1 ||
-                (i >= pageCourante.value - 1 && i <= pageCourante.value + 1) ||
-                i == nbPages.value
-            ) {
-                listePagination.value.push(i);
-            } else if (
-                listePagination.value[listePagination.value.length - 1] != "..."
-            ) {
-                listePagination.value.push("...");
-            }
-        }
+  let positionDebut = (pageCourante.value - 1) * encansParPage.value;
+  let positionFin = pageCourante.value * encansParPage.value;
+
+  for (
+    let i = positionDebut;
+    i < positionFin && i < listeEncansFiltree.value.length;
+    i++
+  ) {
+    encansAffiche.value.push(listeEncansFiltree.value[i]);
+  }
+}
+
+async function initializeData() {
+  listeEncans.value = await store.dispatch("fetchEncanInfo");
+
+  listeEncansFiltree.value = listeEncans.value;
+
+  nbEncansRecus.value = listeEncansFiltree.value.length;
+  encansParPage.value = nbEncansRecus.value;
+  nbPages.value = recalculerNbPages();
+
+  genererListePagination();
+  chercherEncansAAfficher();
+
+  encanPublieMAJ = async function (statutPublie) {
+    let encanId = event.srcElement.getAttribute("encanId");
+    encan.value = listeEncans.value.find((e) => e.id == encanId);
+
+    if (encan.value.estPublie != statutPublie) {
+      encan.value.estPublie = !encan.value.estPublie;
+
+      let formData = reactive({
+        numeroEncan: encan.value.numeroEncan,
+        estPublie: encan.value.estPublie,
+      });
+
+      const response = await store.dispatch("mettreAJourEncanPublie", formData);
+      if (response.success) {
+        successMessage.value = "Statut encan modifié!";
+        errorMessage.value = "";
+        setTimeout(() => {
+          successMessage.value = "";
+        }, 5000);
+      } else {
+        errorMessage.value = response.error;
+        successMessage.value = "";
+        setTimeout(() => {
+          errorMessage.value = "";
+        }, 5000);
+      }
     }
+  };
+}
 
-    function chercherEncansAAfficher() {
-        encansAffiche.value = [];
-
-        let positionDebut = (pageCourante.value - 1) * encansParPage.value;
-        let positionFin = pageCourante.value * encansParPage.value;
-
-        for (let i = positionDebut; i < positionFin && i < listeEncansFiltree.value.length; i++) {
-            encansAffiche.value.push(listeEncansFiltree.value[i]);
-        }
-    }
-
-    function AjusterPagination() {
-        nbPages.value = recalculerNbPages()
-        genererListePagination();
-        chercherEncansAAfficher();
-    }
+function AjusterPagination() {
+  nbPages.value = recalculerNbPages();
+  genererListePagination();
+  chercherEncansAAfficher();
+}
 </script>
 
 <style scoped>
-    .dropdown-toggle[aria-expanded="true"] {
-        background-color: #5A708A;
-    }
+.dropdown-toggle[aria-expanded="true"] {
+  background-color: #5a708a;
+}
 
-    .dropdown-item:active {
-        background-color: #5A708A;
-    }
+.btn_edit {
+  background-color: #243e5f;
+}
 
-    .fade-enter-active,
-    .fade-leave-active {
-        transition: opacity 1s ease;
-    }
+.btn_edit:hover {
+  background-color: #142336;
+}
 
-    .fade-enter,
-    .fade-leave-to {
-        opacity: 0;
-    }
+.dropdown-item:active {
+  background-color: #5a708a;
+}
+
+.btn_delete {
+  background-color: rgb(194, 8, 8);
+}
+
+.btn_delete:hover {
+  background-color: rgb(235, 6, 6);
+}
+
+img {
+  width: 25px;
+  height: 30px;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 1s ease;
+}
+
+.fade-enter,
+.fade-leave-to {
+  opacity: 0;
+}
+
+table,
+input {
+  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.2), 0 3px 5px 0 rgba(0, 0, 0, 0.19);
+}
 </style>
