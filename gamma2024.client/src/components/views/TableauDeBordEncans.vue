@@ -102,9 +102,9 @@
       </button>
     </div>
 
-    <table class="table table-striped mt-3 mx-0">
-      <thead>
-        <tr>
+    <table class="table table-striped mt-3 mx-0 text-center">
+      <thead class="fw-bold">
+        <tr class="fs-4">
           <th data-field="numeroEncan">Encan</th>
           <th data-field="statut">Statut</th>
           <th data-field="dateDebut">Date de début</th>
@@ -160,26 +160,24 @@
         </td>
         <td>{{ encan.nbLots }}</td>
         <td>
-          <span>
-            <button class="btn btn_delete" @click="editerEncan(encan.id)">
-              <img
-                src="/public/icons/Edit_icon.png"
-                class="img-fluid"
-                alt="..."
-              /></button
-          ></span>
-          <span>
-            <button
-              class="btn btn-danger"
-              data-bs-toggle="modal"
-              :data-bs-target="'#' + encan.numeroEncan"
-            >
-              <img
-                src="/public/icons/Delete_icon.png"
-                class="img-fluid"
-                alt="..."
-              /></button
-          ></span>
+          <button class="btn btn_edit px-3 me-3" @click="editerEncan(encan.id)">
+            <img
+              src="/public/icons/Edit_icon.png"
+              class="img-fluid"
+              alt="..."
+            />
+          </button>
+          <button
+            class="btn btn-danger px-3 btn_delete"
+            data-bs-toggle="modal"
+            :data-bs-target="'#' + encan.numeroEncan"
+          >
+            <img
+              src="/public/icons/Delete_icon.png"
+              class="img-fluid"
+              alt="..."
+            />
+          </button>
         </td>
         <ConfirmDelete :h="encan" @supprimerEncan="supprimerMonEncan" />
       </tr>
@@ -222,7 +220,7 @@
 import { onMounted, ref, watch, reactive } from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
-import TableauDeBordEncansAjout from "@/components/views/TableauDeBordEncansAjout.vue";
+import ConfirmDelete from "@/components/views/BoiteModale/ConfirmDeleteEncan.vue";
 
 const store = useStore();
 const router = useRouter();
@@ -416,16 +414,24 @@ function AjusterPagination() {
   background-color: #5a708a;
 }
 
-.btn_delete {
+.btn_edit {
   background-color: #243e5f;
 }
 
-.btn_delete:hover {
+.btn_edit:hover {
   background-color: #142336;
 }
 
 .dropdown-item:active {
   background-color: #5a708a;
+}
+
+.btn_delete {
+  background-color: rgb(194, 8, 8);
+}
+
+.btn_delete:hover {
+  background-color: rgb(235, 6, 6);
 }
 
 img {
@@ -444,5 +450,10 @@ img {
 .fade-enter,
 .fade-leave-to {
   opacity: 0;
+}
+
+table,
+input {
+  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.2), 0 3px 5px 0 rgba(0, 0, 0, 0.19);
 }
 </style>
