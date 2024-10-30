@@ -6,8 +6,8 @@
             <h2>Encans d'oeuvres d'art</h2>
         </div>
 
-        <div class="w-50 text-center">
-            <p class="justifyText mb-0">
+        <div class="row text-center w-100 justify-content-center">
+            <p class="justifyText mb-0 col-11 col-md-6">
                 Les Encans de Nantes au Québec est une entreprise spécialisée dans la gestion d'encans virtuels, axée principalement sur la vente d'œuvres d'art. Elle est co-propriétée par Frédérique Nantes, en collaboration avec deux autres associées, Monique Inverness et Patricia DeNice. L'entreprise est située à Stanstead, dans un bâtiment annexé à la bibliothèque Haskell, un lieu historique partagé entre le Canada et les États-Unis.
             </p>
 
@@ -22,7 +22,7 @@
             <AffichageEncanAccueil :type="futur" />
         </div>
 
-        <div class="w-50 pt-3 px-4 mt-4 bleuMoyenFond text-center text-white contourDiv">
+        <div class="col-11 col-md-6 pt-3 px-4 mt-4 bleuMoyenFond text-center text-white contourDiv">
 
             <div class="fw-bold">
                 <img src="/icons/IconeMarteauBleuGris.png"
