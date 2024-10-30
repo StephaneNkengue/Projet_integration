@@ -12,8 +12,13 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Gamma2024.Server.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
+<<<<<<<< HEAD:Gamma2024.Server/Migrations/20241028153433_DeleteCascadeNullEncan.Designer.cs
     [Migration("20241028153433_DeleteCascadeNullEncan")]
     partial class DeleteCascadeNullEncan
+========
+    [Migration("20241023195931_EnleverVendeurIdDeAdresse")]
+    partial class EnleverVendeurIdDeAdresse
+>>>>>>>> dev:Gamma2024.Server/Migrations/20241023195931_EnleverVendeurIdDeAdresse.Designer.cs
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -180,7 +185,11 @@ namespace Gamma2024.Server.Migrations
                             Id = "8e445865-a24d-4543-a6c6-9443d048cdb9",
                             AccessFailedCount = 0,
                             Avatar = "avatars/default.png",
+<<<<<<<< HEAD:Gamma2024.Server/Migrations/20241028153433_DeleteCascadeNullEncan.Designer.cs
                             ConcurrencyStamp = "f1f3de20-69b9-491d-bc82-b484b44cd47f",
+========
+                            ConcurrencyStamp = "107a9ac8-e425-425a-9235-f9152f485d03",
+>>>>>>>> dev:Gamma2024.Server/Migrations/20241023195931_EnleverVendeurIdDeAdresse.Designer.cs
                             Email = "admin@example.com",
                             EmailConfirmed = true,
                             FirstName = "Super",
@@ -188,10 +197,17 @@ namespace Gamma2024.Server.Migrations
                             Name = "Admin",
                             NormalizedEmail = "ADMIN@EXAMPLE.COM",
                             NormalizedUserName = "ADMIN@EXAMPLE.COM",
+<<<<<<<< HEAD:Gamma2024.Server/Migrations/20241028153433_DeleteCascadeNullEncan.Designer.cs
                             PasswordHash = "AQAAAAIAAYagAAAAEImrQqIdpN3WKyTx0Ys/9QQXVKT5jTAyfxsPYj6ljA7MwE8U/IWotqFi5RT5o5V7VQ==",
                             PhoneNumber = "466-666-6666",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "87162d4b-fc3b-4d65-8341-2f4a480982d1",
+========
+                            PasswordHash = "AQAAAAIAAYagAAAAEMbqUaQkCH39guOkEufEMl9ADHYeT19r4lAkBt0pHiCe4ETEtmstuYgZma1DFBkkbA==",
+                            PhoneNumber = "466-666-6666",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "2e9b61a8-b289-4f13-9311-1fca4921d03a",
+>>>>>>>> dev:Gamma2024.Server/Migrations/20241023195931_EnleverVendeurIdDeAdresse.Designer.cs
                             TwoFactorEnabled = false,
                             UserName = "admin@example.com"
                         },
@@ -200,7 +216,11 @@ namespace Gamma2024.Server.Migrations
                             Id = "1d8ac862-e54d-4f10-b6f8-638808c02967",
                             AccessFailedCount = 0,
                             Avatar = "avatars/default.png",
+<<<<<<<< HEAD:Gamma2024.Server/Migrations/20241028153433_DeleteCascadeNullEncan.Designer.cs
                             ConcurrencyStamp = "ff176598-423c-4557-bfc4-48e928f579e9",
+========
+                            ConcurrencyStamp = "fd5b67c9-5ae6-4ad7-a485-e1901b99e93f",
+>>>>>>>> dev:Gamma2024.Server/Migrations/20241023195931_EnleverVendeurIdDeAdresse.Designer.cs
                             Email = "client@example.com",
                             EmailConfirmed = true,
                             FirstName = "Jean",
@@ -208,10 +228,17 @@ namespace Gamma2024.Server.Migrations
                             Name = "Dupont",
                             NormalizedEmail = "CLIENT@EXAMPLE.COM",
                             NormalizedUserName = "CLIENT@EXAMPLE.COM",
+<<<<<<<< HEAD:Gamma2024.Server/Migrations/20241028153433_DeleteCascadeNullEncan.Designer.cs
                             PasswordHash = "AQAAAAIAAYagAAAAEBCLhDAVClAVnNnHmZ3ahe6KYsdJa/tTtcmHC64QlZsy07wt7VRMIl+nfrP0UJ8oKw==",
                             PhoneNumber = "455-555-5555",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "860b65a9-156b-473d-b11b-be6f787cf1e4",
+========
+                            PasswordHash = "AQAAAAIAAYagAAAAELVAHytQGOZPO18ydtn9gw1UXjfbbQ9WnnI8hn6TPqVmEEOwGZ8dRuDNILAWhp/Org==",
+                            PhoneNumber = "455-555-5555",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "0905a04e-94d9-4090-8fc5-79f17b51a568",
+>>>>>>>> dev:Gamma2024.Server/Migrations/20241023195931_EnleverVendeurIdDeAdresse.Designer.cs
                             TwoFactorEnabled = false,
                             UserName = "client@example.com"
                         });
