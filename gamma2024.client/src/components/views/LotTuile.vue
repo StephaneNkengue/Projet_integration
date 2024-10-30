@@ -3,7 +3,7 @@
     class="text-decoration-none card d-flex align-self-stretch"
     :to="{ name: 'DetailsLot', params: { idLot: lot.id } }"
   >
-    <div class="card align-self-stretch">
+    <div class="align-self-stretch">
       <div class="card-body d-flex flex-column justify-content-between">
         <div class="d-flex align-items-middle justify-content-between">
           <p class="fs-7 pe-2 mt-1 mb-0">
