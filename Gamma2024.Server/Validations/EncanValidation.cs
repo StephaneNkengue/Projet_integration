@@ -6,7 +6,7 @@ namespace Gamma2024.Server.Validations
     public class EncanValidation
     {
 
-        public static (bool IsValid, string ErrorMessage) ValidateEncan(EncanCreerVM model)
+        public static (bool IsValid, string message) ValidateEncan(EncanVM model)
         {
             if (model == null)
             {

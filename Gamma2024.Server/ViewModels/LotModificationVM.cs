@@ -3,7 +3,6 @@ namespace Gamma2024.Server.ViewModels
     public class LotModificationVM : LotCreationVM
     {
         public int Id { get; set; }
-
         public new int? IdEncanModifie { get; set; }
         public List<IFormFile> NouvellesPhotos { get; set; } = new List<IFormFile>();
         public List<int> PhotosASupprimer { get; set; } = new List<int>();

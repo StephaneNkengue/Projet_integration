@@ -89,7 +89,10 @@
           </div>
           <div class="d-flex flex-row justify-content-center mb-3">
             <div class="form-group w-80">
-              <router-link to="Inscription" class="text-decoration-none">
+              <router-link
+                :to="{ name: 'Inscription' }"
+                class="text-decoration-none"
+              >
                 <p class="fs-5 text-center fw-bold lienEnTexteNoir">
                   M'inscrire
                 </p>
@@ -154,7 +157,7 @@ export default {
       }
 
       try {
-        const result = await this.$store.dispatch("login", {
+        let result = await this.$store.dispatch("login", {
           emailOuPseudo: this.emailOuPseudo,
           password: this.password,
         });
@@ -170,19 +173,18 @@ export default {
           // Redirection immédiate vers la page d'accueil
           this.$router.push("/");
         } else {
-          if (result.error.element == "password") {
-            this.passwordError = result.error.message;
-          } else if (result.error.element === "lock") {
-            this.messageLockout = result.error.message;
+          if (result.element == "password") {
+            this.passwordError = result.error;
+          } else if (result.element === "lock") {
+            this.messageLockout = result.error;
             setTimeout(() => {
               this.messageLockout = "";
             }, 5000);
           } else {
-            this.emailOuPseudoError = result.error.message;
+            this.emailOuPseudoError = result.error;
           }
         }
       } catch (error) {
-        console.error("Erreur détaillée lors de la connexion:", error);
         this.messageErreur = "Une erreur est survenue lors de la connexion.";
       } finally {
         this.isSubmitting = false;

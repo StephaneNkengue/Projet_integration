@@ -1,3 +1,4 @@
+using Gamma2024.Server.Data;
 using Gamma2024.Server.Services;
 using Gamma2024.Server.ViewModels;
 using Microsoft.AspNetCore.Mvc;
@@ -9,10 +10,12 @@ namespace Gamma2024.Server.Controllers
     public class EncansController : ControllerBase
     {
         private readonly EncanService _encanService;
+        private readonly ApplicationDbContext _context;
 
-        public EncansController(EncanService encanService)
+        public EncansController(EncanService encanService, ApplicationDbContext context)
         {
             _encanService = encanService;
+            _context = context;
         }
 
         [HttpGet("cherchertousencans")]
@@ -30,7 +33,7 @@ namespace Gamma2024.Server.Controllers
         }
 
         [HttpPost("creerEncan")]
-        public async Task<IActionResult> CreerEncan([FromBody] EncanCreerVM vm)
+        public async Task<IActionResult> CreerEncan([FromBody] EncanVM vm)
         {
             if (!ModelState.IsValid)
             {
@@ -45,6 +48,54 @@ namespace Gamma2024.Server.Controllers
             else
             {
                 return BadRequest(new { sucess = false, message = message });
+            }
+        }
+
+        [HttpDelete("supprimerEncan/{numeroEncan}")]
+        public IActionResult SupprimerEncan(int numeroEncan)
+        {
+            var encan = _encanService.GetEncanByNumber(numeroEncan);
+            if (encan == null)
+            {
+                return BadRequest(new { sucess = false, message = "Aucun encan trouvé" });
+            }
+
+            _context.Encans.Remove(encan);
+            _context.SaveChanges();
+
+            return Ok(new { sucess = true, message = "Encan supprimé avec succès" });
+        }
+
+
+
+        [HttpGet("obtenirUnEncan/{idEncan}")]
+        public IActionResult ObtenirEncan(int idEncan)
+        {
+            var encan = _encanService.GetEncanById(idEncan);
+            if (encan == null)
+            {
+                return BadRequest(new { sucess = false, message = "Aucun encan trouvé" });
+            }
+
+            return Ok(encan);
+        }
+
+        [HttpPut("modifierEncan/{id}")]
+        public async Task<IActionResult> Modifier(int id, [FromBody] EncanVM model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var (success, message) = await _encanService.ModifierEncan(id, model);
+            if (success)
+            {
+                return Ok(new { success = true, message = message });
+            }
+            else
+            {
+                return BadRequest(new { success = false, message = message });
             }
         }
 

@@ -49,7 +49,7 @@ namespace Gamma2024.Server.Services
             return encans;
         }
 
-        public async Task<(bool Success, string Message)> CreerEncan(EncanCreerVM vm)
+        public async Task<(bool Success, string Message)> CreerEncan(EncanVM vm)
         {
             var (isValid, errorMessage) = EncanValidation.ValidateEncan(vm);
 
@@ -60,16 +60,16 @@ namespace Gamma2024.Server.Services
 
             var listeEncan = _context.Encans.OrderBy(e => e.NumeroEncan).ToList();
 
-            var dernierEncan = listeEncan.LastOrDefault();
-            if (dernierEncan == null)
+            bool estVide = false;
+            if (listeEncan.Count == 0)
             {
-                return (false, errorMessage);
+                estVide = true;
             }
 
             var encan = new Encan()
             {
                 Id = 0,
-                NumeroEncan = dernierEncan.NumeroEncan + 1,
+                NumeroEncan = estVide ? 1 : listeEncan.LastOrDefault().NumeroEncan + 1,
                 DateDebut = vm.DateDebut,
                 DateFin = vm.DateFin,
                 DateDebutSoireeCloture = vm.DateFin,
@@ -96,6 +96,50 @@ namespace Gamma2024.Server.Services
             }
 
             return (false, "Il n'y a aucun encan à ce numéro.");
+        }
+
+        public Encan GetEncanByNumber(int numero)
+        {
+            return _context.Encans.FirstOrDefault(e => e.NumeroEncan == numero);
+        }
+
+        public Encan GetEncanById(int idEncan)
+        {
+            return _context.Encans.FirstOrDefault(e => e.Id == idEncan);
+        }
+
+        public async Task<(bool success, string message)> ModifierEncan(int id, EncanVM model)
+        {
+            var (isValid, message) = EncanValidation.ValidateEncan(model);
+            if (!isValid)
+            {
+                return (false, message);
+            }
+
+            var encan = await _context.Encans.FindAsync(id);
+            if (encan == null)
+            {
+                return (false, "Encan non trouvé");
+            }
+
+            using var transaction = await _context.Database.BeginTransactionAsync();
+
+            try
+            {
+                encan.DateDebut = model.DateDebut;
+                encan.DateFin = model.DateFin;
+
+
+                await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
+
+                return (true, "Encan modifié avec succès");
+            }
+            catch (Exception ex)
+            {
+                await transaction.RollbackAsync();
+                return (false, $"Une erreur est survenue lors de la modification de l'encan : {ex.Message}");
+            }
         }
         public EncanAffichageVM ChercherEncanParNumero(int numero)
         {
