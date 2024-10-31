@@ -70,7 +70,7 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from "vue";
+import { onMounted, ref, computed } from "vue";
 import { useStore } from "vuex";
 
 const store = useStore();
@@ -103,10 +103,66 @@ const lot = ref({
   ],
 });
 
+// Fonction pour calculer le pas d'enchère en fonction du montant
+const calculerPasEnchere = (montant) => {
+  if (montant <= 199.00) return 10.00;
+  if (montant <= 499.00) return 25.00;
+  if (montant <= 999.00) return 50.00;
+  if (montant <= 1999.00) return 100.00;
+  if (montant <= 4999.00) return 200.00;
+  if (montant <= 9999.00) return 250.00;
+  if (montant <= 19999.00) return 500.00;
+  if (montant <= 49999.00) return 1000.00;
+  if (montant <= 99999.00) return 2000.00;
+  if (montant <= 499999.00) return 5000.00;
+  return 10000.00;
+};
+
+// Calcul du pas d'enchère actuel
+const pasEnchere = computed(() => {
+  return calculerPasEnchere(montantMise.value);
+});
+
+// Mise minimale = mise actuelle + pas d'enchère initial
+const miseMinimale = computed(() => {
+  return lot.value.mise + calculerPasEnchere(lot.value.mise);
+});
+
+// Fonctions d'incrémentation/décrémentation
+const incrementerMise = () => {
+  montantMise.value += calculerPasEnchere(montantMise.value);
+};
+
+const decrementerMise = () => {
+  const nouveauMontant = montantMise.value - calculerPasEnchere(montantMise.value - 0.01);
+  if (nouveauMontant >= miseMinimale.value) {
+    montantMise.value = nouveauMontant;
+  }
+};
+
 onMounted(async () => {
   lot.value = props.lotRecu;
   urlApi.value = await store.state.api.defaults.baseURL.replace("\api", "");
+  // Initialiser le montant de mise au minimum requis
+  montantMise.value = miseMinimale.value;
 });
 </script>
 
-<style scoped></style>
+<style scoped>
+/* ... styles existants ... */
+
+.input-group input[type="number"] {
+  text-align: center;
+}
+
+/* Désactiver les flèches du input number */
+.input-group input[type="number"]::-webkit-inner-spin-button,
+.input-group input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.input-group input[type="number"] {
+  -moz-appearance: textfield;
+}
+</style>
