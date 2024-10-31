@@ -152,15 +152,15 @@
 
                     <div class="form-outline mb-4">
                       <input
-                        v-model="vendeur.adresse.codePostal"
+                        v-model="formattedCodePostal"
                         type="text"
                         id="codePostal"
                         class="form-control form-control-lg"
                         required
+                        maxlength="7"
+                        @input="formatCodePostal"
                       />
-                      <label class="form-label" for="codePostal"
-                        >Code postal</label
-                      >
+                      <label class="form-label" for="codePostal">Code postal</label>
                     </div>
 
                     <div class="form-outline mb-4">
@@ -317,6 +317,39 @@ const submitForm = async () => {
 const resetForm = () => {
   // Réinitialiser le formulaire aux valeurs originales du vendeur
   onMounted();
+};
+
+const formattedCodePostal = computed({
+  get: () => {
+    const code = vendeur.value.adresse.codePostal;
+    if (!code) return '';
+    // Format: "A1A 1A1"
+    const cleanCode = code.replace(/[^A-Za-z0-9]/g, '').toUpperCase();
+    if (cleanCode.length <= 3) {
+      return cleanCode;
+    }
+    return `${cleanCode.slice(0, 3)} ${cleanCode.slice(3)}`;
+  },
+  set: (value) => {
+    // Stocke la valeur sans espace dans le modèle
+    vendeur.value.adresse.codePostal = value.replace(/\s/g, '').toUpperCase();
+  }
+});
+
+const formatCodePostal = (event) => {
+  let value = event.target.value.toUpperCase();
+  // Supprime tous les caractères non alphanumériques
+  value = value.replace(/[^A-Z0-9]/g, '');
+  
+  // Ajoute l'espace après les 3 premiers caractères
+  if (value.length > 3) {
+    value = value.slice(0, 3) + ' ' + value.slice(3);
+  }
+  
+  // Met à jour la valeur dans le champ
+  event.target.value = value;
+  // Met à jour le modèle
+  vendeur.value.adresse.codePostal = value.replace(/\s/g, '');
 };
 </script>
 
