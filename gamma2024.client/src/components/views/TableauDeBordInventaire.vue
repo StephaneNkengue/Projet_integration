@@ -1,268 +1,202 @@
 <template>
-  <div class="d-flex justify-content-between">
-    <div v-if="messageConfirmation" class="alert alert-success">
-      {{ messageConfirmation }}
-    </div>
-    <h2 class="d-flex-1">Liste des lots</h2>
-    <div class="d-flex d-flex-1 align-items-end">
-      <button
-        class="bleuMoyenFond btnSurvolerBleuMoyenFond boutonPersonnalise text-white d-flex-1"
-        type="button"
-        id="ajouterLotButton"
-        @click="redirigerVersCreationLot"
-      >
-        Ajouter un lot
-      </button>
-      <div class="dropdown d-flex-1">
-        <button
-          class="bleuMoyenFond btnSurvolerBleuMoyenFond boutonPersonnalise text-white dropdown-toggle"
-          type="button"
-          id="dropdownMenuButton"
-          data-toggle="dropdown"
-          data-bs-toggle="dropdown"
-          aria-haspopup="true"
-          aria-expanded="false"
-        >
-          Sélectionner les colonnes
-        </button>
-        <ul class="dropdown-menu">
-          <li class="d-flex justify-content-start dropdown-item">
-            <input
-              class="checkboxTous d-flex-1"
-              type="checkbox"
-              id="tousSelectionnerCheckbox"
-              :checked="Object.values(colonnesVisibles).every((v) => v)"
-              @change="toggleToutesColonnes"
-            />
-            <label class="d-flex-1 labelpadding" for="tousSelectionnerCheckbox">
-              Tous Sélectionner
-            </label>
-          </li>
-          <li
-            v-for="(visible, colonne) in colonnesVisibles"
-            :key="colonne"
-            class="d-flex justify-content-start dropdown-item"
-          >
-            <input
-              class="checkboxSeul d-flex-1"
-              type="checkbox"
-              :id="`lot${
-                colonne.charAt(0).toUpperCase() + colonne.slice(1)
-              }Checkbox`"
-              :checked="visible"
-              @change="toggleColonne(colonne)"
-            />
-            <label
-              class="d-flex-1 labelpadding"
-              :for="`lot${
-                colonne.charAt(0).toUpperCase() + colonne.slice(1)
-              }Checkbox`"
-            >
-              {{ colonne.charAt(0).toUpperCase() + colonne.slice(1) }}
-            </label>
-          </li>
-        </ul>
-      </div>
-      <div class="d-flex d-flex-1 me-1 gap-1 align-items-center">
-        <label for="Recherche">Rechercher : </label>
-        <input
-          data-bs-theme="light"
-          type="search"
-          aria-label="Recherche"
-          v-model="rechercheDansListeDeLot"
-        />
-        <div class="dropdown d-flex-1">
-          <button
-            class="bleuMoyenFond btnSurvolerBleuMoyenFond boutonPersonnalise text-white dropdown-toggle"
-            type="button"
-            id="dropdownMenuButton"
-            data-toggle="dropdown"
-            data-bs-toggle="dropdown"
-            aria-haspopup="true"
-            aria-expanded="false"
-          >
-            Sélectionner les colonnes de recherche
-          </button>
-          <ul class="dropdown-menu">
-            <li class="d-flex justify-content-start dropdown-item">
-              <input
-                class="checkboxTousRecherche d-flex-1"
-                type="checkbox"
-                id="tousSelectionnerRechercheCheckbox"
-                :checked="Object.values(colonnesRecherche).every((v) => v)"
-                @change="toggleToutesColonnesRecherche"
-              />
-              <label
-                class="d-flex-1 labelpadding"
-                for="tousSelectionnerRechercheCheckbox"
-              >
-                Tous Sélectionner
-              </label>
-            </li>
-            <li
-              v-for="(visible, colonne) in colonnesRecherche"
-              :key="colonne"
-              class="d-flex justify-content-start dropdown-item"
-            >
-              <input
-                class="checkboxSeulRecherche d-flex-1"
-                type="checkbox"
-                :id="`recherche${
-                  colonne.charAt(0).toUpperCase() + colonne.slice(1)
-                }Checkbox`"
-                :checked="visible"
-                @change="toggleColonneRecherche(colonne)"
-              />
-              <label
-                class="d-flex-1 labelpadding"
-                :for="`recherche${
-                  colonne.charAt(0).toUpperCase() + colonne.slice(1)
-                }Checkbox`"
-              >
-                {{ colonne.charAt(0).toUpperCase() + colonne.slice(1) }}
-              </label>
-            </li>
-          </ul>
+    <div class="d-flex justify-content-between">
+        <div v-if="messageConfirmation" class="alert alert-success">
+        {{ messageConfirmation }}
         </div>
-      </div>
-      <div class="d-flex-1">
-        <div class="d-flex flex-row-reverse w-100 px-4 me-2 gap-2">
-          <button
-            class="d-flex align-items-center text-center rounded btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond"
-            type="button"
-            @click="afficherTousLots"
-            v-bind:disabled="lotsParPage == nbLotsRecus"
-          >
-            Tous
-          </button>
-          <button
-            class="d-flex align-items-center text-center rounded btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond"
-            type="button"
-            @click="afficherLotsParPage(20)"
-            v-bind:disabled="lotsParPage == 20"
-          >
-            20
-          </button>
-          <button
-            class="d-flex align-items-center text-center rounded btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond"
-            type="button"
-            @click="afficherLotsParPage(50)"
-            v-bind:disabled="lotsParPage == 50"
-          >
-            50
-          </button>
-          <button
-            class="d-flex align-items-center text-center rounded btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond"
-            type="button"
-            @click="afficherLotsParPage(100)"
-            v-bind:disabled="lotsParPage == 100"
-          >
-            100
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="margesPourTable">
-    <table class="table table-striped mt-5">
-      <colgroup id="colgroup">
-        <col id="colEncan" />
-        <col id="colNumero" />
-        <col id="colPrixOuverture" />
-        <col id="colValeurMinPourVente" />
-        <col id="colEstimationMin" />
-        <col id="colEstimationMax" />
-        <col id="colCategorie" />
-        <col id="colArtiste" />
-        <col id="colDimensions" />
-        <col id="colDescription" />
-        <col id="colMedium" />
-        <col id="colVendeur" />
-        <col id="colVendu" />
-        <col id="colLivraison" />
-        <col id="colModifier" />
-        <col id="colSupprimer" />
-      </colgroup>
-      <thead>
-        <tr>
-          <th v-if="colonnesVisibles.encan">Encan</th>
-          <th v-if="colonnesVisibles.numero">Lot #</th>
-          <th v-if="colonnesVisibles.prixOuverture">Prix Ouverture</th>
-          <th v-if="colonnesVisibles.valeurMinPourVente">
-            Valeur Min Pour Vente
-          </th>
-          <th v-if="colonnesVisibles.estimationMin">Estimation Min</th>
-          <th v-if="colonnesVisibles.estimationMax">Estimation Max</th>
-          <th v-if="colonnesVisibles.categorie">Catégorie</th>
-          <th v-if="colonnesVisibles.artiste">Artiste</th>
-          <th v-if="colonnesVisibles.dimension">Dimension (en po)</th>
-          <th v-if="colonnesVisibles.description">Description</th>
-          <th v-if="colonnesVisibles.medium">Medium</th>
-          <th v-if="colonnesVisibles.vendeur">Vendeur</th>
-          <th v-if="colonnesVisibles.estVendu">Vendu</th>
-          <th v-if="colonnesVisibles.livraison">Livraison</th>
-          <th v-if="colonnesVisibles.modifier"></th>
-          <th v-if="colonnesVisibles.supprimer"></th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="lot in lotsAffiches" :key="lot.id">
-          <td v-if="colonnesVisibles.encan">{{ lot.numeroEncan }}</td>
-          <td v-if="colonnesVisibles.numero">{{ lot.code }}</td>
-          <td v-if="colonnesVisibles.prixOuverture">{{ lot.prixOuverture }}</td>
-          <td v-if="colonnesVisibles.valeurMinPourVente">
-            {{ lot.prixMinPourVente }}
-          </td>
-          <td v-if="colonnesVisibles.estimationMin">
-            {{ lot.valeurEstimeMin }}
-          </td>
-          <td v-if="colonnesVisibles.estimationMax">
-            {{ lot.valeurEstimeMax }}
-          </td>
-          <td v-if="colonnesVisibles.categorie">{{ lot.categorie }}</td>
-          <td v-if="colonnesVisibles.artiste">{{ lot.artiste }}</td>
-          <td v-if="colonnesVisibles.dimension">{{ lot.dimension }}</td>
-          <td v-if="colonnesVisibles.description">{{ lot.description }}</td>
-          <td v-if="colonnesVisibles.medium">{{ lot.medium }}</td>
-          <td v-if="colonnesVisibles.vendeur">{{ lot.vendeur }}</td>
-          <td v-if="colonnesVisibles.estVendu">
-            <img
-              v-if="lot.estVendu"
-              src="/icons/vendu.png"
-              width="40"
-              height="40"
-            />
-            <img v-else src="/icons/nonvendu.png" width="40" height="40" />
-          </td>
-          <td v-if="colonnesVisibles.livraison">
-            <img
-              v-if="lot.estLivrable"
-              src="/icons/livrable.png"
-              width="40"
-              height="40"
-            />
-            <img v-else src="/icons/nonlivrable.png" width="40" height="40" />
-          </td>
-          <td v-if="colonnesVisibles.modifier">
-            <router-link
-              :to="{ name: 'ModificationLot', params: { id: lot.id } }"
+        <h2 class="d-flex-1">Liste des lots</h2>
+        <div class="d-flex d-flex-1 align-items-end">
+            <button
+                class="bleuMoyenFond btnSurvolerBleuMoyenFond boutonPersonnalise text-white d-flex-1"
+                type="button"
+                id="ajouterLotButton"
+                @click="redirigerVersCreationLot"
             >
-              <img src="/icons/modifier.png" width="30" height="30" />
-            </router-link>
-          </td>
-          <td v-if="colonnesVisibles.supprimer">
-            <img
-              @click="ouvrirBoiteModale(lot.id)"
-              class="curseurpointeur"
-              src="/icons/supprimer.png"
-              width="30"
-              height="30"
-            />
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+                Ajouter un lot
+            </button>
+            <div class="dropdown d-flex-1">
+                <button class="bleuMoyenFond btnSurvolerBleuMoyenFond boutonPersonnalise text-white dropdown-toggle"
+                        type="button"
+                        id="dropdownMenuButton"
+                        data-toggle="dropdown"
+                        data-bs-toggle="dropdown"
+                        aria-haspopup="true"
+                        aria-expanded="false">
+                    Sélectionner les colonnes
+                </button>
+                <ul class="dropdown-menu">
+                    <li class="d-flex justify-content-start dropdown-item">
+                        <input class="checkboxTous d-flex-1"
+                               type="checkbox"
+                               id="tousSelectionnerCheckbox"
+                               v-model="tousSelectionne"
+                               @change="toggleToutesColonnes" />
+                        <label class="d-flex-1 labelpadding"
+                               for="tousSelectionnerCheckbox">
+                            Tous Sélectionner
+                        </label>
+                    </li>
+                    <li v-for="(visible, colonne) in colonnesVisibles" :key="colonne" class="d-flex justify-content-start dropdown-item">
+                        <input class="checkboxSeul d-flex-1"
+                               type="checkbox"
+                               :id="`lot${colonne.charAt(0).toUpperCase() + colonne.slice(1)}Checkbox`"
+                               :checked="visible"
+                               :disabled="tousSelectionne"
+                               @change="toggleColonne(colonne)" />
+                        <label class="d-flex-1 labelpadding" :for="`lot${colonne.charAt(0).toUpperCase() + colonne.slice(1)}Checkbox`">
+                            {{ colonne.charAt(0).toUpperCase() + colonne.slice(1) }}
+                        </label>
+                    </li>
+                </ul>
+            </div>
+            <div class="d-flex d-flex-1 me-1 gap-1 align-items-center">
+                <label for="Recherche">Rechercher : </label>
+                <input data-bs-theme="light"
+                       type="search"
+                       aria-label="Recherche"
+                       v-model="rechercheDansListeDeLot" />
+                <div class="dropdown d-flex-1">
+                    <button class="bleuMoyenFond btnSurvolerBleuMoyenFond boutonPersonnalise text-white dropdown-toggle"
+                            type="button"
+                            id="dropdownMenuButton"
+                            data-toggle="dropdown"
+                            data-bs-toggle="dropdown"
+                            aria-haspopup="true"
+                            aria-expanded="false">
+                        Sélectionner les colonnes de recherche
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li class="d-flex justify-content-start dropdown-item">
+                            <input class="checkboxTousRecherche d-flex-1"
+                                   type="checkbox"
+                                   id="tousSelectionnerRechercheCheckbox"
+                                   :checked="Object.values(colonnesRecherche).every(v => v)"
+                                   @change="toggleToutesColonnesRecherche" />
+                            <label class="d-flex-1 labelpadding"
+                                   for="tousSelectionnerRechercheCheckbox">
+                                Tous Sélectionner
+                            </label>
+                        </li>
+                        <li v-for="(visible, colonne) in colonnesRecherche" :key="colonne" class="d-flex justify-content-start dropdown-item">
+                            <input class="checkboxSeulRecherche d-flex-1"
+                                   type="checkbox"
+                                   :id="`recherche${colonne.charAt(0).toUpperCase() + colonne.slice(1)}Checkbox`"
+                                   :checked="visible"
+                                   @change="toggleColonneRecherche(colonne)" />
+                            <label class="d-flex-1 labelpadding" :for="`recherche${colonne.charAt(0).toUpperCase() + colonne.slice(1)}Checkbox`">
+                                {{ colonne.charAt(0).toUpperCase() + colonne.slice(1) }}
+                            </label>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="d-flex-1">
+                <div class="d-flex flex-row-reverse w-100 px-4 me-2 gap-2">
+                    <button class="d-flex align-items-center text-center rounded btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond"
+                            type="button"
+                            @click="afficherTousLots"
+                            v-bind:disabled="lotsParPage == nbLotsRecus">
+                        Tous
+                    </button>
+                    <button class="d-flex align-items-center text-center rounded btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond"
+                            type="button"
+                            @click="afficherLotsParPage(20)"
+                            v-bind:disabled="lotsParPage == 20">
+                        20
+                    </button>
+                    <button class="d-flex align-items-center text-center rounded btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond"
+                            type="button"
+                            @click="afficherLotsParPage(50)"
+                            v-bind:disabled="lotsParPage == 50">
+                        50
+                    </button>
+                    <button class="d-flex align-items-center text-center rounded btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond"
+                            type="button"
+                            @click="afficherLotsParPage(100)"
+                            v-bind:disabled="lotsParPage == 100">
+                        100
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="margesPourTable">
+        <table class="table table-striped">
+            <colgroup id="colgroup">
+                <col id="colEncan">
+                <col id="colNumero">
+                <col id="colPrixOuverture">
+                <col id="colValeurMinPourVente">
+                <col id="colEstimationMin">
+                <col id="colEstimationMax">
+                <col id="colCategorie">
+                <col id="colArtiste">
+                <col id="colDimensions">
+                <col id="colDescription">
+                <col id="colMedium">
+                <col id="colVendeur">
+                <col id="colVendu">
+                <col id="colLivraison">
+                <col id="colModifier">
+                <col id="colSupprimer">
+            </colgroup>
+            <thead>
+                <tr>
+                    <th v-if="colonnesVisibles.encan">Encan</th>
+                    <th v-if="colonnesVisibles.numero">Lot #</th>
+                    <th v-if="colonnesVisibles.prixOuverture">Prix Ouverture</th>
+                    <th v-if="colonnesVisibles.valeurMinPourVente">Valeur Min Pour Vente</th>
+                    <th v-if="colonnesVisibles.estimationMin">Estimation Min</th>
+                    <th v-if="colonnesVisibles.estimationMax">Estimation Max</th>
+                    <th v-if="colonnesVisibles.categorie">Catégorie</th>
+                    <th v-if="colonnesVisibles.artiste">Artiste</th>
+                    <th v-if="colonnesVisibles.dimension">Dimension (en po)</th>
+                    <th v-if="colonnesVisibles.description">Description</th>
+                    <th v-if="colonnesVisibles.medium">Medium</th>
+                    <th v-if="colonnesVisibles.vendeur">Vendeur</th>
+                    <th v-if="colonnesVisibles.estVendu">Vendu</th>
+                    <th v-if="colonnesVisibles.livraison">Livraison</th>
+                    <th v-if="colonnesVisibles.modifier"></th>
+                    <th v-if="colonnesVisibles.supprimer"></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="lot in lotsAffiches" :key="lot.id">
+                    <td v-if="colonnesVisibles.encan">{{ lot.numeroEncan }}</td>
+                    <td v-if="colonnesVisibles.numero">{{ lot.code }}</td>
+                    <td v-if="colonnesVisibles.prixOuverture">{{ lot.prixOuverture }}</td>
+                    <td v-if="colonnesVisibles.valeurMinPourVente">{{ lot.prixMinPourVente }}</td>
+                    <td v-if="colonnesVisibles.estimationMin">{{ lot.valeurEstimeMin }}</td>
+                    <td v-if="colonnesVisibles.estimationMax">{{ lot.valeurEstimeMax }}</td>
+                    <td v-if="colonnesVisibles.categorie">{{ lot.categorie }}</td>
+                    <td v-if="colonnesVisibles.artiste">{{ lot.artiste }}</td>
+                    <td v-if="colonnesVisibles.dimension">{{ lot.dimension }}</td>
+                    <td v-if="colonnesVisibles.description">{{ lot.description }}</td>
+                    <td v-if="colonnesVisibles.medium">{{ lot.medium }}</td>
+                    <td v-if="colonnesVisibles.vendeur">{{ lot.vendeur }}</td>
+                    <td v-if="colonnesVisibles.estVendu">
+                        <img v-if="lot.estVendu" src="/icons/vendu.png" width="40" height="40" />
+                        <img v-else src="/icons/nonvendu.png" width="40" height="40" />
+                    </td>
+                    <td v-if="colonnesVisibles.livraison">
+                        <img v-if="lot.estLivrable" src="/icons/livrable.png" width="40" height="40" />
+                        <img v-else src="/icons/nonlivrable.png" width="40" height="40" />
+                    </td>
+                    <td v-if="colonnesVisibles.modifier">
+                        <router-link :to="{ name: 'ModificationLot', params: { id: lot.id } }">
+                            <img src="/icons/modifier.png" width="30" height="30" />
+                        </router-link>
+                    </td>
+                    <td v-if="colonnesVisibles.supprimer">
+                        <img @click="ouvrirBoiteModale(lot.id)"
+                             class="curseurpointeur"
+                             src="/icons/supprimer.png"
+                             width="30"
+                             height="30" />
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 
   <!-- Ajout de la pagination en bas -->
   <div class="d-flex flex-row justify-content-center gap-1 flex-wrap p-3">
@@ -360,16 +294,23 @@ const colonnesRecherche = ref({
   medium: true,
 });
 
-const toggleToutesColonnes = () => {
-  const nouvelEtat = !Object.values(colonnesVisibles.value).every((v) => v);
-  Object.keys(colonnesVisibles.value).forEach((key) => {
-    colonnesVisibles.value[key] = nouvelEtat;
-  });
-};
+    const tousSelectionne = ref(true);
 
-const toggleColonne = (colonne) => {
-  colonnesVisibles.value[colonne] = !colonnesVisibles.value[colonne];
-};
+    const toggleToutesColonnes = () => {
+        if (tousSelectionne.value) {
+            // Si on active "Tous Sélectionner"
+            Object.keys(colonnesVisibles.value).forEach((key) => {
+                colonnesVisibles.value[key] = true;
+            });
+        }
+    };
+
+    const toggleColonne = (colonne) => {
+        if (!tousSelectionne.value) {
+            // Modification individuelle possible seulement si "Tous Sélectionner" n'est pas actif
+            colonnesVisibles.value[colonne] = !colonnesVisibles.value[colonne];
+        }
+    };
 
 const toggleToutesColonnesRecherche = () => {
   const nouvelEtat = !Object.values(colonnesRecherche.value).every((v) => v);
