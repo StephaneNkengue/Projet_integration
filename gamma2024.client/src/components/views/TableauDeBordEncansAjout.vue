@@ -153,7 +153,7 @@ const desacDateFinEntre = computed(() => {
 
     return [dateDebutDesac];
   }
-  return null;
+  return [new Date()];
 });
 
 const desacDateDebutEntre = computed(() => {
