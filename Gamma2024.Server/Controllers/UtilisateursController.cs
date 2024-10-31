@@ -264,7 +264,7 @@ namespace Gamma2024.Server.Controllers
                 }
                 else
                 {
-                    return BadRequest();
+                    return BadRequest("Erreur lors de la modification du mot de passe");
                 }
             }
             catch (Exception ex)
