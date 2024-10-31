@@ -113,7 +113,7 @@ const confirmerMise = async () => {
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-              <p>Veuillez vous connecter pour miser</p>
+              <p>Veuillez vous connecter pour miser !</p>
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-primary" data-bs-dismiss="modal" id="btnRedirigerConnexion">
