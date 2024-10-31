@@ -257,6 +257,23 @@ const provinces = [
   "Yukon",
 ];
 
+// Ajoutez cet objet pour mapper les abréviations aux noms complets
+const provinceAbbreviations = {
+  "AB": "Alberta",
+  "BC": "Colombie-Britannique",
+  "PE": "Île-du-Prince-Édouard",
+  "MB": "Manitoba",
+  "NB": "Nouveau-Brunswick",
+  "NS": "Nouvelle-Écosse",
+  "ON": "Ontario",
+  "QC": "Québec",
+  "SK": "Saskatchewan",
+  "NL": "Terre-Neuve-et-Labrador",
+  "NT": "Territoires du Nord-Ouest",
+  "NU": "Nunavut",
+  "YT": "Yukon"
+};
+
 const normalizeString = (str) =>
   str
     .toLowerCase()
@@ -300,7 +317,7 @@ onMounted(async () => {
         numeroCivique: vendeurData.adresse.numeroCivique,
         rue: vendeurData.adresse.rue,
         ville: vendeurData.adresse.ville,
-        province: vendeurData.adresse.province,
+        province: provinceAbbreviations[vendeurData.adresse.province] || vendeurData.adresse.province,
         pays: vendeurData.adresse.pays,
         codePostal: vendeurData.adresse.codePostal,
         appartement: vendeurData.adresse.appartement,
