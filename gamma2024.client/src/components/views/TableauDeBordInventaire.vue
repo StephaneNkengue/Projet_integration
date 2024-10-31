@@ -28,7 +28,7 @@
                         <input class="checkboxTous d-flex-1"
                                type="checkbox"
                                id="tousSelectionnerCheckbox"
-                               :checked="Object.values(colonnesVisibles).every(v => v)"
+                               v-model="tousSelectionne"
                                @change="toggleToutesColonnes" />
                         <label class="d-flex-1 labelpadding"
                                for="tousSelectionnerCheckbox">
@@ -40,6 +40,7 @@
                                type="checkbox"
                                :id="`lot${colonne.charAt(0).toUpperCase() + colonne.slice(1)}Checkbox`"
                                :checked="visible"
+                               :disabled="tousSelectionne"
                                @change="toggleColonne(colonne)" />
                         <label class="d-flex-1 labelpadding" :for="`lot${colonne.charAt(0).toUpperCase() + colonne.slice(1)}Checkbox`">
                             {{ colonne.charAt(0).toUpperCase() + colonne.slice(1) }}
@@ -287,15 +288,22 @@
         medium: true
     });
 
+    const tousSelectionne = ref(true);
+
     const toggleToutesColonnes = () => {
-        const nouvelEtat = !Object.values(colonnesVisibles.value).every(v => v);
-        Object.keys(colonnesVisibles.value).forEach(key => {
-            colonnesVisibles.value[key] = nouvelEtat;
-        });
+        if (tousSelectionne.value) {
+            // Si on active "Tous Sélectionner"
+            Object.keys(colonnesVisibles.value).forEach((key) => {
+                colonnesVisibles.value[key] = true;
+            });
+        }
     };
 
     const toggleColonne = (colonne) => {
-        colonnesVisibles.value[colonne] = !colonnesVisibles.value[colonne];
+        if (!tousSelectionne.value) {
+            // Modification individuelle possible seulement si "Tous Sélectionner" n'est pas actif
+            colonnesVisibles.value[colonne] = !colonnesVisibles.value[colonne];
+        }
     };
 
     const toggleToutesColonnesRecherche = () => {
