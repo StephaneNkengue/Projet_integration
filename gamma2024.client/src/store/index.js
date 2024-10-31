@@ -56,12 +56,10 @@ const store = createStore({
   actions: {
     async login({ commit, state }, userData) {
       try {
-        console.log("Tentative de connexion avec:", userData);
         if (!state.api) {
           throw new Error("API non initialisée");
         }
         const response = await state.api.post("/home/login", userData);
-        console.log("Réponse de l'API:", response);
         if (response.data && response.data.message === "Connexion réussie") {
           commit("setLoggedIn", true);
           commit("setUser", {
@@ -88,8 +86,10 @@ const store = createStore({
           };
         }
       } catch (error) {
+        console.log("catch");
         return {
           success: false,
+          element: error.response.data?.element,
           error:
             error.response?.data?.message ||
             error.message ||
@@ -582,7 +582,6 @@ const store = createStore({
           return { success: false, error: response.data.message };
         }
       } catch (error) {
-        console.error("Erreur lors de la modification de l'encan:", error);
         return {
           success: false,
           error:
@@ -591,6 +590,7 @@ const store = createStore({
         };
       }
     },
+
     async creerEncan({ commit, state }, encanData) {
       try {
         const response = await state.api.post("/encans/creerEncan", encanData);

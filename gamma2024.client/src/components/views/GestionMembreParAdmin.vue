@@ -10,8 +10,8 @@
     />
     <h1 class="text-center mt-5">Liste des membres</h1>
     <table class="table table-striped mt-5 col-md-12 text-center">
-      <thead class="fs-4 fw-bold">
-        <tr class="fs-4">
+      <thead>
+        <tr>
           <th scope="col">Nom</th>
           <th scope="col">Prénom</th>
           <th scope="col">Pseudonyme</th>
@@ -113,5 +113,13 @@ img {
 table,
 input {
   box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.2), 0 3px 5px 0 rgba(0, 0, 0, 0.19);
+}
+
+th {
+  font-size: 18px;
+}
+
+td {
+  font-size: 16px;
 }
 </style>

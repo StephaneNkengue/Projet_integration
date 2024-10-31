@@ -79,9 +79,9 @@
       </div>
     </div>
 
-    <table class="table table-striped mt-3 mx-0 text-center">
-      <thead class="fw-bold">
-        <tr class="fs-4">
+    <table class="table table-striped mt-5 mx-0 text-center">
+      <thead>
+        <tr>
           <th data-field="numeroEncan">Encan</th>
           <th data-field="statut">Statut</th>
           <th data-field="dateDebut">Date de début</th>
@@ -429,5 +429,13 @@ img {
 table,
 input {
   box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.2), 0 3px 5px 0 rgba(0, 0, 0, 0.19);
+}
+
+th {
+  font-size: 18px;
+}
+
+td {
+  font-size: 14px;
 }
 </style>
