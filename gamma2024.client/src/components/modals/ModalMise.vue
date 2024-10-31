@@ -1,23 +1,25 @@
 <template>
-  <div class="modal fade" id="modalMise" tabindex="-1" aria-labelledby="modalMiseLabel" aria-hidden="true">
+  <div class="modal fade" :id="`modalMise_${lot.id}`" tabindex="-1" :aria-labelledby="`modalMiseLabel_${lot.id}`" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="modalMiseLabel">Êtes-vous sûr de faire cette mise?</h5>
+          <h5 class="modal-title" :id="`modalMiseLabel_${lot.id}`">Êtes-vous sûr de faire cette mise?</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <p>valeur : {{ lot.valeurEstimeMin }}$ - {{ lot.valeurEstimeMax }}$</p>
-          <p>mise actuelle : {{ lot.mise }}$</p>
-          <div class="d-flex justify-content-center align-items-center gap-2">
-            <span>votre mise :</span>
-            <button class="btn btn-outline-secondary" @click="decrementerMise" :disabled="montantMise <= miseMinimale">
-              -{{ pasEnchere }}$
-            </button>
-            <span class="fs-5">{{ montantMise }}$</span>
-            <button class="btn btn-outline-secondary" @click="incrementerMise">
-              +{{ pasEnchere }}$
-            </button>
+          <div class="d-flex flex-column gap-2">
+            <p class="mb-0">valeur : {{ lot.valeurEstimeMin }}$ - {{ lot.valeurEstimeMax }}$</p>
+            <p class="mb-0">mise actuelle : {{ lot.mise }}$</p>
+            <div class="d-flex align-items-center gap-2">
+              <span>votre mise :</span>
+              <button class="btn btn-outline-secondary" @click="decrementerMise" :disabled="montantMise <= miseMinimale">
+                -{{ pasEnchere }}$
+              </button>
+              <span class="fs-5">{{ montantMise }}$</span>
+              <button class="btn btn-outline-secondary" @click="incrementerMise">
+                +{{ pasEnchere }}$
+              </button>
+            </div>
           </div>
         </div>
         <div class="modal-footer">
@@ -32,10 +34,10 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, watch } from 'vue';
 import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
-import { Modal } from 'bootstrap';
+import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 
 const props = defineProps({
   lot: {
@@ -43,6 +45,8 @@ const props = defineProps({
     required: true
   }
 });
+
+const emit = defineEmits(['miseConfirmee']);
 
 const store = useStore();
 const router = useRouter();
@@ -106,11 +110,50 @@ const confirmerMise = async () => {
 };
 
 onMounted(() => {
-  modalInstance = new Modal(document.getElementById('modalMise'));
+  const modalElement = document.getElementById(`modalMise_${props.lot.id}`);
+  modalInstance = new bootstrap.Modal(modalElement);
+
+  modalElement.addEventListener('hidden.bs.modal', () => {
+    montantMise.value = miseMinimale.value;
+  });
+
   montantMise.value = miseMinimale.value;
 });
 
+// Ajouter un watch sur les props
+watch(() => props.lot, (newLot) => {
+  console.log("Lot mis à jour:", newLot);
+  // Réinitialiser le montant de mise quand le lot change
+  if (modalInstance) {
+    montantMise.value = miseMinimale.value;
+  }
+}, { deep: true });
+
 defineExpose({
-  show: () => modalInstance.show()
+  show: () => {
+    montantMise.value = miseMinimale.value; // Réinitialiser la mise à l'ouverture
+    modalInstance.show();
+  },
+  hide: () => modalInstance.hide()
 });
-</script> 
+</script>
+
+<style scoped>
+.modal-body {
+  padding: 1.5rem;
+}
+
+.modal-body p {
+  margin-bottom: 0.5rem;
+}
+
+/* Alignement des éléments */
+.modal-body .d-flex {
+  align-items: center;
+}
+
+/* Espacement cohérent */
+.gap-2 {
+  gap: 0.75rem !important;
+}
+</style> 

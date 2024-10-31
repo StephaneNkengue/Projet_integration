@@ -41,6 +41,7 @@
           <button
             type="button"
             class="btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond"
+            @click.prevent="ouvrirModalMise"
           >
             Miser
           </button>
@@ -48,11 +49,18 @@
       </div>
     </div>
   </router-link>
+
+  <ModalMise 
+    ref="modalMise"
+    :lot="lot"
+    @miseConfirmee="onMiseConfirmee"
+  />
 </template>
 
 <script setup>
 import { onMounted, ref } from "vue";
 import { useStore } from "vuex";
+import ModalMise from '@/components/modals/ModalMise.vue';
 
 const store = useStore();
 
@@ -93,6 +101,18 @@ const lot = ref({
             mise.value = lot.value.mise
         }
     })
+
+const modalMise = ref(null);
+
+const ouvrirModalMise = (event) => {
+  event.stopPropagation();
+  modalMise.value.show();
+};
+
+const onMiseConfirmee = (montant) => {
+  mise.value = montant;
+  // Autres actions après une mise réussie...
+};
 
 </script>
 

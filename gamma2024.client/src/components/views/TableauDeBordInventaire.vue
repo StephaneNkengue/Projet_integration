@@ -50,6 +50,7 @@
                 colonne.charAt(0).toUpperCase() + colonne.slice(1)
               }Checkbox`"
               :checked="visible"
+              :disabled="Object.values(colonnesVisibles).every((v) => v)"
               @change="toggleColonne(colonne)"
             />
             <label
@@ -375,6 +376,7 @@ const toggleToutesColonnesRecherche = () => {
   const nouvelEtat = !Object.values(colonnesRecherche.value).every((v) => v);
   Object.keys(colonnesRecherche.value).forEach((key) => {
     colonnesRecherche.value[key] = nouvelEtat;
+    c
   });
 };
 
