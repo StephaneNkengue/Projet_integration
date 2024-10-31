@@ -26,7 +26,8 @@
                                    cancel-text="Annuler"
                                    now-button-label="Aujourd'hui"
                                    :action-row="{ showNow: true }"
-                                   :format-locale="fr" />
+                                   :format-locale="fr"
+                                   :year-range="[new Date().getFullYear(), new Date().getFullYear() + 1000]"/>
                     <div class="invalid-feedback" v-if="v.dateDebut.$error">
                         {{v.dateDebut.$errors[0].$message}}
                     </div>
@@ -40,7 +41,8 @@
                                    :enable-time-picker="true"
                                    select-text="Choisir"
                                    cancel-text="Annuler"
-                                   :format-locale="fr" />
+                                   :format-locale="fr"
+                                   :year-range="[new Date().getFullYear(), new Date().getFullYear() + 1000]" />
                     <div class="invalid-feedback" v-if="v.dateFin.$error">
                         {{v.dateFin.$errors[0].$message}}
                     </div>
