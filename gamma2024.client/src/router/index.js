@@ -25,6 +25,7 @@ import ModificationLot from "@/components/views/ModificationLot.vue";
 import ReinitialisationMotDePasse from "@/components/views/ReinitialisationMotDePasse.vue";
 import TableauDeBordEncans from "@/components/views/TableauDeBordEncans.vue";
 import TableauDeBordEncansAjout from "@/components/views/TableauDeBordEncansAjout.vue";
+import ModificationEncan from "@/components/views/ModificationEncan.vue";
 const routes = [
   {
     path: "/",
@@ -195,6 +196,12 @@ const routes = [
     path: "/tableaudebordencansajout",
     name: "TableauDeBordEncansAjout",
     component: TableauDeBordEncansAjout,
+    meta: { requiresAuth: true, requiredRole: "Administrateur" },
+  },
+  {
+    path: "/ModificationEncan/:id",
+    name: "ModificationEncan",
+    component: ModificationEncan,
     meta: { requiresAuth: true, requiredRole: "Administrateur" },
   },
   {
