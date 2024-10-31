@@ -19,14 +19,25 @@
       <!-- Champ pour ajouter de nouvelles photos -->
       <div class="mb-3">
         <label for="nouvellesPhotos" class="form-label">Ajouter des photos</label>
-        <input type="file" class="form-control" id="nouvellesPhotos" multiple @change="ajouterNouvellesPhotos">
+        <input 
+          type="file" 
+          class="form-control" 
+          id="nouvellesPhotos" 
+          multiple 
+          @change="ajouterNouvellesPhotos"
+          :disabled="!peutAjouterPhotos"
+        >
+        <small class="text-muted">
+          {{ messagePhotosRestantes }}
+        </small>
       </div>
       <!-- Prévisualisation des nouvelles photos -->
       <div v-if="nouvellesPhotos.length > 0" class="mb-3">
         <h4>Nouvelles photos</h4>
         <div class="d-flex flex-wrap">
-          <div v-for="(photo, index) in nouvellesPhotos" :key="index" class="me-2 mb-2">
+          <div v-for="(photo, index) in nouvellesPhotos" :key="index" class="me-2 mb-2 position-relative">
             <img :src="photo.preview" alt="Nouvelle photo" style="width: 100px; height: 100px; object-fit: cover;">
+            <button @click.prevent="supprimerNouvellePhoto(index)" class="btn btn-danger btn-sm position-absolute top-0 end-0">X</button>
           </div>
         </div>
       </div>
@@ -134,6 +145,39 @@ const photosASupprimer = ref([]);
 const message = ref('');
 const erreur = ref('');
 
+const MAX_PHOTOS = 5;
+
+// Calculer le nombre total de photos actuelles et futures
+const nombreTotalPhotos = computed(() => {
+  const photosExistantesNonSupprimees = (lot.value?.photosModifie?.length || 0);
+  const nouvellesPhotosCount = nouvellesPhotos.value.length;
+  return photosExistantesNonSupprimees + nouvellesPhotosCount;
+});
+
+// Calculer le nombre de photos disponibles
+const photosDisponibles = computed(() => {
+  return MAX_PHOTOS - nombreTotalPhotos.value;
+});
+
+// Vérifier si on peut ajouter plus de photos
+const peutAjouterPhotos = computed(() => {
+  return photosDisponibles.value > 0;
+});
+
+// Message pour indiquer combien de photos peuvent encore être ajoutées
+const messagePhotosRestantes = computed(() => {
+  if (photosDisponibles.value <= 0) {
+    return "Nombre maximum de photos atteint (5 photos maximum)";
+  }
+  return `Vous pouvez encore ajouter ${photosDisponibles.value} photo${photosDisponibles.value > 1 ? 's' : ''}`;
+});
+
+// Fonction pour supprimer une nouvelle photo
+const supprimerNouvellePhoto = (index) => {
+  URL.revokeObjectURL(nouvellesPhotos.value[index].preview);
+  nouvellesPhotos.value.splice(index, 1);
+};
+
 onMounted(async () => {
   try {
     lot.value = await store.dispatch('obtenirLot', route.params.id);
@@ -220,13 +264,45 @@ const getImageUrl = computed(() => (url) => {
 
 const ajouterNouvellesPhotos = (event) => {
   const files = event.target.files;
-  for (let i = 0; i < files.length; i++) {
+  const photosRestantes = photosDisponibles.value;
+  
+  if (photosRestantes <= 0) {
+    erreur.value = "Nombre maximum de photos atteint";
+    event.target.value = ''; // Réinitialiser l'input
+    return;
+  }
+
+  // Limiter le nombre de nouvelles photos à ajouter
+  const nombrePhotosAAjouter = Math.min(files.length, photosRestantes);
+
+  for (let i = 0; i < nombrePhotosAAjouter; i++) {
     const file = files[i];
     if (file.type.startsWith('image/')) {
       const preview = URL.createObjectURL(file);
       nouvellesPhotos.value.push({ file, preview });
     }
   }
+
+  // Afficher un message si certaines photos n'ont pas été ajoutées
+  if (files.length > photosRestantes) {
+    message.value = `Seules ${nombrePhotosAAjouter} photo(s) ont été ajoutées pour respecter la limite de 5 photos au total`;
+  }
+
+  // Réinitialiser l'input
+  event.target.value = '';
 };
 </script>
+
+<style scoped>
+.position-relative {
+  position: relative;
+}
+
+.btn-danger.btn-sm {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  border-radius: 0.2rem;
+}
+</style>
 
