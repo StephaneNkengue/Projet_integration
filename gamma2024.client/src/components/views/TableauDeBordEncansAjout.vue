@@ -48,6 +48,7 @@
             cancel-text="Annuler"
             :format-locale="fr"
             :year-range="[new Date().getFullYear(), new Date().getFullYear() + 1000]"
+            :disabled="formData.dateDebut != '' ? disabled : ''"
           />
           <div class="invalid-feedback" v-if="v.dateFin.$error">
             {{ v.dateFin.$errors[0].$message }}
@@ -153,7 +154,7 @@ const desacDateFinEntre = computed(() => {
 
     return [dateDebutDesac];
   }
-  return [new Date()];
+  return null;
 });
 
 const desacDateDebutEntre = computed(() => {
