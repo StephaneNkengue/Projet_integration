@@ -117,19 +117,30 @@
     const chargement = ref(true);
 
     onMounted(async () => {
-        const response = await store.dispatch(
-            "chercherTousLotsParEncan",
-            props.idEncan
-        );
+        try {
+            console.log("ID Encan envoyé:", props.idEncan);
+            const response = await store.dispatch(
+                "chercherTousLotsParEncan",
+                props.idEncan
+            );
+            console.log("Réponse complète:", response);
+            
+            if (response && response.data) {
+                listeLots.value = response.data;
+                nbLotsRecus.value = listeLots.value.length;
+                lotsParPage.value = nbLotsRecus.value;
+                nbPages.value = recalculerNbPages();
 
-        listeLots.value = response.data
-        nbLotsRecus.value = listeLots.value.length
-        lotsParPage.value = nbLotsRecus.value
-        nbPages.value = recalculerNbPages()
-
-        genererListePagination();
-        chercherLotsAAfficher();
-        chargement.value = false;
+                genererListePagination();
+                chercherLotsAAfficher();
+            } else {
+                console.error("Réponse invalide:", response);
+            }
+        } catch (error) {
+            console.error("Erreur lors du chargement des lots:", error);
+        } finally {
+            chargement.value = false;
+        }
     })
 
     watch(pageCourante, () => {

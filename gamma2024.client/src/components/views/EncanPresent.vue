@@ -41,7 +41,9 @@
     onMounted(async () => {
         const response = await store.dispatch("chercherEncanEnCours");
         encan.value = response.data
-        soireeDate.value = formatageDate(encan.value.dateDebutSoireeCloture, true, true)
+        if (encan.value != "") {
+            soireeDate.value = formatageDate(encan.value.dateDebutSoireeCloture, true, true)
+        }
 
         chargement.value = false;
     });

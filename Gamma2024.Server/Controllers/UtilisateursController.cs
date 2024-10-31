@@ -108,6 +108,10 @@ namespace Gamma2024.Server.Controllers
         public async Task<IActionResult> GetClientInfo()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId))
+            {
+                return BadRequest("ID utilisateur non trouvé");
+            }
 
             var user = await _userManager.Users
                 .OfType<ApplicationUser>()
@@ -175,31 +179,30 @@ namespace Gamma2024.Server.Controllers
             }
 
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var user = await _userManager.FindByIdAsync(userId);
+            if (string.IsNullOrEmpty(userId))
+            {
+                return BadRequest("ID utilisateur non trouvé");
+            }
 
+            var user = await _userManager.FindByIdAsync(userId);
             if (user == null)
             {
                 return NotFound("Utilisateur non trouvé.");
             }
 
-            if (avatar != null && avatar.Length > 0)
+            var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "Avatars");
+            var uniqueFileName = Guid.NewGuid().ToString() + "_" + avatar.FileName;
+            var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+            using (var fileStream = new FileStream(filePath, FileMode.Create))
             {
-                var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "Avatars");
-                var uniqueFileName = Guid.NewGuid().ToString() + "_" + avatar.FileName;
-                var filePath = Path.Combine(uploadsFolder, uniqueFileName);
-
-                using (var fileStream = new FileStream(filePath, FileMode.Create))
-                {
-                    await avatar.CopyToAsync(fileStream);
-                }
-
-                user.Avatar = $"/Avatars/{uniqueFileName}";
-                await _userManager.UpdateAsync(user);
-
-                return Ok(new { avatarUrl = user.Avatar });
+                await avatar.CopyToAsync(fileStream);
             }
 
-            return BadRequest("Aucun fichier n'a été envoyé.");
+            user.Avatar = $"/Avatars/{uniqueFileName}";
+            await _userManager.UpdateAsync(user);
+
+            return Ok(new { avatarUrl = user.Avatar });
         }
 
         [HttpGet("verifier-email")]

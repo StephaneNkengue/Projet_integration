@@ -15,6 +15,15 @@
       <h2 class="fs-1 text-center fw-bold pt-4">Connexion</h2>
       <p class="text-center">Se connecter pour continuer</p>
 
+      <!-- Ajoutez cette section pour afficher les messages d'erreur -->
+      <div
+        v-if="messageErreur"
+        class="alert alert-danger text-center"
+        role="alert"
+      >
+        {{ messageErreur }}
+      </div>
+
       <form
         @submit.prevent="connexion"
         class="d-flex flex-column justify-content-start align-items-stretch"
@@ -102,6 +111,7 @@ export default {
       emailOuPseudoError: "",
       passwordError: "",
       messageLockout: "",
+      messageErreur: "",
       isSubmitting: false,
       invalide: false,
     };
@@ -140,7 +150,7 @@ export default {
 
       if (!this.isValide) {
         this.isSubmitting = false;
-        return; // Empêche la soumission si des erreurs sont présentes
+        return;
       }
 
       try {
@@ -149,9 +159,14 @@ export default {
           password: this.password,
         });
         if (result.success) {
-          this.messageSucces = `Connexion réussie en tant que ${result.roles.join(
-            ", "
-          )}`;
+          // Vérifiez la structure de result.roles
+          const rolesString = Array.isArray(result.roles)
+            ? result.roles.join(", ")
+            : result.roles && result.roles
+            ? result.roles.join(", ")
+            : "Rôles non disponibles";
+
+          this.messageSucces = `Connexion réussie en tant que ${rolesString}`;
           // Redirection immédiate vers la page d'accueil
           this.$router.push("/");
         } else {
@@ -168,6 +183,7 @@ export default {
         }
       } catch (error) {
         console.error("Erreur détaillée lors de la connexion:", error);
+        this.messageErreur = "Une erreur est survenue lors de la connexion.";
       } finally {
         this.isSubmitting = false;
       }

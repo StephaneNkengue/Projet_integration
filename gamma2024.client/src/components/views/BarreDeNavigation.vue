@@ -56,60 +56,89 @@
                             </li>
                         </ul>
 
-                        <div class="d-flex justify-content-center gap-3">
-                            <router-link :to="{ name: 'Inscription' }" v-if="!estConnecte">
-                                <button class="btn btn-outline bleuMoyenFond text-white py-0 butttonNavBar btnSurvolerBleuMoyenFond"
-                                        type="button">
-                                    Inscription
-                                </button>
-                            </router-link>
-                            <router-link :to="{ name: 'Connexion' }" v-if="!estConnecte">
-                                <button class="btn btn-outline bleuMoyenFond text-white py-0 butttonNavBar btnSurvolerBleuMoyenFond"
-                                        type="button">
-                                    Connexion
-                                </button>
-                            </router-link>
-                            <div class="collapse navbar-collapse dropdown text-white"
-                                 v-if="estAdmin">
-                                <a class="nav-link dropdown-toggle"
-                                   role="button"
-                                   data-bs-toggle="dropdown"
-                                   aria-expanded="false">
-                                    Tableau de bord
-                                </a>
-                                <ul class="dropdown-menu bleuMarinFond text-center">
-                                    <li>
-                                        <router-link :to="{ name: 'Inventaire' }"
-                                                     class="text-decoration-none">
-                                            <a class="dropdown-item contenuListeDropdown">Inventaire</a>
-                                        </router-link>
-                                    </li>
-                                    <li>
-                                        <router-link :to="{ name: 'Accueil' }"
-                                                     class="text-decoration-none">
-                                            <a class="dropdown-item contenuListeDropdown">Encans</a>
-                                        </router-link>
-                                    </li>
-                                    <li>
-                                        <router-link :to="{ name: 'AffichageVendeurs' }"
-                                                     class="text-decoration-none">
-                                            <a class="dropdown-item contenuListeDropdown">Vendeurs</a>
-                                        </router-link>
-                                    </li>
-                                    <li>
-                                        <router-link :to="{ name: 'Accueil' }"
-                                                     class="text-decoration-none">
-                                            <a class="dropdown-item contenuListeDropdown">Ventes</a>
-                                        </router-link>
-                                    </li>
-                                    <li>
-                                        <router-link :to="{ name: 'GestionMembre' }"
-                                                     class="text-decoration-none">
-                                            <a class="dropdown-item contenuListeDropdown">Profils de membre</a>
-                                        </router-link>
-                                    </li>
-                                </ul>
-                            </div>
+            <div class="d-flex justify-content-center gap-3">
+              <router-link :to="{ name: 'Inscription' }" v-if="!estConnecte">
+                <button
+                  class="btn btn-outline bleuMoyenFond text-white py-0 butttonNavBar btnSurvolerBleuMoyenFond"
+                  type="button"
+                >
+                  Inscription
+                </button>
+              </router-link>
+              <router-link :to="{ name: 'Connexion' }" v-if="!estConnecte">
+                <button
+                  class="btn btn-outline bleuMoyenFond text-white py-0 butttonNavBar btnSurvolerBleuMoyenFond"
+                  type="button"
+                >
+                  Connexion
+                </button>
+              </router-link>
+              <div
+                class="collapse navbar-collapse dropdown text-white"
+                v-if="estAdmin"
+              >
+                <a
+                  class="nav-link dropdown-toggle"
+                  role="button"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                >
+                  Tableau de bord
+                </a>
+                <ul class="dropdown-menu bleuMarinFond text-center">
+                  <li>
+                    <router-link
+                      :to="{ name: 'TableauDeBordInventaire' }"
+                      class="text-decoration-none"
+                    >
+                      <a class="dropdown-item contenuListeDropdown"
+                        >Inventaire</a
+                      >
+                    </router-link>
+                  </li>
+                  <!-- <li>
+                    <router-link to="Inventaire" class="text-decoration-none">
+                      <a class="dropdown-item contenuListeDropdown"
+                        >Inventaire</a
+                      >
+                    </router-link>
+                  </li> -->
+                  <li>
+                    <router-link
+                      :to="{ name: 'TableauDeBordEncans' }"
+                      class="text-decoration-none"
+                    >
+                      <a class="dropdown-item contenuListeDropdown">Encans</a>
+                    </router-link>
+                  </li>
+                  <li>
+                    <router-link
+                      :to="{ name: 'AffichageVendeurs' }"
+                      class="text-decoration-none"
+                    >
+                      <a class="dropdown-item contenuListeDropdown">Vendeurs</a>
+                    </router-link>
+                  </li>
+                  <li>
+                    <router-link
+                      :to="{ name: 'Accueil' }"
+                      class="text-decoration-none"
+                    >
+                      <a class="dropdown-item contenuListeDropdown">Ventes</a>
+                    </router-link>
+                  </li>
+                  <li>
+                    <router-link
+                      :to="{ name: 'GestionMembre' }"
+                      class="text-decoration-none"
+                    >
+                      <a class="dropdown-item contenuListeDropdown"
+                        >Profils de membre</a
+                      >
+                    </router-link>
+                  </li>
+                </ul>
+              </div>
 
                             <a v-if="estConnecte"
                                @click="notification = !notification"

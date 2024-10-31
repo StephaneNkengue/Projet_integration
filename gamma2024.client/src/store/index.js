@@ -4,7 +4,10 @@ import { initApi } from "@/services/api";
 const store = createStore({
     state: {
         api: null,
-        // ... autres états
+        token: null,
+        roles: [],
+        isLoggedIn: false,
+        user: null,
     },
     mutations: {
         setLoggedIn(state, value) {
@@ -20,12 +23,24 @@ const store = createStore({
             }
         },
         setRoles(state, roles) {
-            state.roles = roles;
-            localStorage.setItem("roles", JSON.stringify(roles));
+            console.log("Roles reçus dans setRoles:", roles);
+            if (roles && roles) {
+                state.roles = roles;
+            } else if (Array.isArray(roles)) {
+                state.roles = roles;
+            } else {
+                state.roles = [roles];
+            }
+            console.log("Roles après traitement:", state.roles);
+            localStorage.setItem("roles", JSON.stringify(state.roles));
         },
         setToken(state, token) {
             state.token = token;
-            localStorage.setItem("token", token);
+            if (token) {
+                localStorage.setItem("token", token);
+            } else {
+                localStorage.removeItem("token");
+            }
         },
         SET_API(state, api) {
             state.api = api;
@@ -41,10 +56,12 @@ const store = createStore({
     actions: {
         async login({ commit, state }, userData) {
             try {
+                console.log("Tentative de connexion avec:", userData);
                 if (!state.api) {
                     throw new Error("API non initialisée");
                 }
                 const response = await state.api.post("/home/login", userData);
+                console.log("Réponse de l'API:", response);
                 if (response.data && response.data.message === "Connexion réussie") {
                     commit("setLoggedIn", true);
                     commit("setUser", {
@@ -68,34 +85,6 @@ const store = createStore({
                     return {
                         success: false,
                         error: response.data?.message || "Réponse inattendue du serveur",
-                    };
-                }
-            } catch (error) {
-                return {
-                    success: false,
-                    error: error.response.data || "Erreur de connexion",
-                };
-            }
-        },
-
-        logout({ commit, state }) {
-            commit("setLoggedIn", false);
-            commit("setUser", null);
-            commit("setRoles", []);
-            commit("setToken", null);
-            delete state.api.defaults.headers.common["Authorization"];
-        },
-
-        async creerCompteUtilisateur({ commit, state }, userData) {
-            try {
-                const response = await state.api.post("/utilisateurs/creer", userData);
-                if (response.data.success) {
-                    return { success: true };
-                } else {
-                    return {
-                        success: false,
-                        error:
-                            response.data.message || "Erreur lors de la création du compte",
                     };
                 }
             } catch (error) {
@@ -280,7 +269,84 @@ const store = createStore({
                 throw error;
             }
         },
+        async creerLot({ state }, formData) {
+            try {
+                const response = await state.api.post("/lots/creer", formData, {
+                    headers: {
+                        "Content-Type": "multipart/form-data",
+                    },
+                });
+                return response.data;
+            } catch (error) {
+                console.error("Erreur lors de la création du lot:", error);
+                throw error;
+            }
+        },
 
+        async modifierLot({ state }, { id, lotData }) {
+            try {
+                const response = await state.api.put(`/lots/modifier/${id}`, lotData, {
+                    headers: {
+                        "Content-Type": "multipart/form-data",
+                    },
+                });
+                return response.data;
+            } catch (error) {
+                console.error("Erreur lors de la modification du lot:", error);
+                throw error;
+            }
+        },
+
+        async obtenirTousLots({ state }) {
+            try {
+                const response = await state.api.get("/lots/tous");
+                console.log("Données brutes:", response.data);
+                return response.data || [];
+            } catch (error) {
+                console.error(
+                    "Erreur lors de la récupération de tous les lots:",
+                    error
+                );
+                throw error;
+            }
+        },
+
+        async obtenirLot({ state }, id) {
+            try {
+                const response = await state.api.get(`/lots/${id}`);
+                console.log("Lot reçu:", response.data);
+                return response.data;
+            } catch (error) {
+                console.error("Erreur lors de la récupération du lot:", error);
+                throw error;
+            }
+        },
+
+        async supprimerLot({ state }, id) {
+            try {
+                const response = await state.api.delete(`/lots/supprimer/${id}`);
+                return response.data;
+            } catch (error) {
+                console.error("Erreur lors de la suppression du lot:", error);
+                throw error;
+            }
+        },
+        async obtenirCategories({ state }) {
+            const response = await state.api.get("/lots/categories");
+            return response.data;
+        },
+        async obtenirVendeurs({ state }) {
+            const response = await state.api.get("/lots/vendeurs");
+            return response.data;
+        },
+        async obtenirMediums({ state }) {
+            const response = await state.api.get("/lots/mediums");
+            return response.data;
+        },
+        async obtenirEncans({ state }) {
+            const response = await state.api.get("/lots/encans");
+            return response.data;
+        },
         async ObtenirTousLesMembres({ commit, state }) {
             try {
                 const response = await state.api.get(
@@ -331,7 +397,7 @@ const store = createStore({
                 throw error;
             }
         },
-        async checkAuthStatus({ commit, state }) {
+        async checkAuthStatus({ commit, state, dispatch }) {
             const token = state.token || localStorage.getItem("token");
             console.log("Token trouvé :", token ? "Oui" : "Non");
             if (!token) {
@@ -353,11 +419,12 @@ const store = createStore({
                     `${state.api.defaults.baseURL}/home/check-auth`
                 );
                 const response = await state.api.get("/home/check-auth");
-                console.log("Réponse de check-auth:", response.data);
+                console.log("Réponse complète de check-auth:", response.data);
                 if (response.data.isAuthenticated) {
                     commit("setLoggedIn", true);
                     commit("setUser", response.data.user);
                     commit("setRoles", response.data.roles);
+                    dispatch("forceUpdate");
                 } else {
                     throw new Error("Non authentifié");
                 }
@@ -378,7 +445,8 @@ const store = createStore({
         async logout({ commit, state }) {
             try {
                 // Appel à l'API pour invalider le token côté serveur (optionnel mais recommandé)
-                await state.api.post("/api/home/logout");
+                const response = await state.api.post("/home/logout");
+                console.log("Réponse de la déconnexion:", response);
             } catch (error) {
                 console.error("Erreur lors de la déconnexion côté serveur:", error);
             } finally {
@@ -394,9 +462,9 @@ const store = createStore({
             }
         },
 
-        async fetchListeDeLotsPourAdministrateur({ commit }) {
+        async fetchListeDeLotsPourAdministrateur({ commit, state }) {
             try {
-                const response = await api.get("/lots/chercherTousLots");
+                const response = await state.api.get("/lots/chercherTousLots");
                 console.log("Données reçues de l'API:", response.data); // Pour le débogage
                 // let dataResponse = await response.json();
                 return response.data;
@@ -406,75 +474,51 @@ const store = createStore({
             }
         },
 
-        async initializeStore({ commit, dispatch }) {
-            const api = await initApi(() => store.state.token || localStorage.getItem('token'));
-            commit('SET_API', api);
-            await dispatch('checkAuthStatus');
+        async initializeStore({ commit, state }) {
+            console.log("=== Initialisation du Store ===");
+
+            // Récupérer l'état depuis localStorage
+            const savedIsLoggedIn = localStorage.getItem("isLoggedIn") === "true";
+            const savedToken = localStorage.getItem("token");
+            const savedUser = JSON.parse(localStorage.getItem("user"));
+            const savedRoles = JSON.parse(localStorage.getItem("roles")) || [];
+
+            // Initialiser l'état
+            commit("setLoggedIn", savedIsLoggedIn);
+            commit("setToken", savedToken);
+            commit("setUser", savedUser);
+            commit("setRoles", savedRoles);
+
+            const api = initApi(() => state.token);
+            commit("SET_API", api);
         },
+
         async chercherTousEncansVisibles({ commit, state }) {
             try {
-                const response = await state.api.get("/encans/cherchertousencansvisibles");
-                return response
-            }
-            catch (error) {
-                return "Erreur, veuillez réessayer"
-            }
-        },
-        async chercherEncanParNumero({ commit, state }, numeroEncan) {
-            try {
-                const response = await state.api.get("/encans/chercherencanparnumero/" + numeroEncan);
-                return response
-            }
-            catch (error) {
-                return "Erreur, veuillez réessayer"
-            }
-        },
-        async chercherEncanEnCours({ commit, state }) {
-            try {
-                const response = await state.api.get("/encans/chercherencanencours");
-                return response
-            }
-            catch (error) {
-                return "Erreur, veuillez réessayer"
-            }
-        },
-        async chercherTousLotsParEncan({ commit, state }, idEncan) {
-            try {
                 const response = await state.api.get(
-                    "/lots/cherchertouslotsparencan/" + idEncan
+                    "/encans/cherchertousencansvisibles"
                 );
                 return response;
             } catch (error) {
                 return "Erreur, veuillez réessayer";
             }
         },
-        async chercherDetailsLotParId({ commit, state }, idLot) {
+        async chercherEncanParNumero({ commit, state }, numeroEncan) {
             try {
-                const response = await state.api.get("/lots/chercherDetailsLotParId/" + idLot);
-                return response
-            }
-            catch (error) {
+                const response = await state.api.get(
+                    "/encans/chercherencanparnumero/" + numeroEncan
+                );
+                return response;
+            } catch (error) {
                 return "Erreur, veuillez réessayer";
             }
         },
-
-        async chercherEncansFuturs({ commit, state }) {
+        async chercherEncanEnCours({ commit, state }) {
             try {
-                const response = await state.api.get("/encans/chercherencansfuturs");
-                return response
-            }
-            catch (error) {
-                return "Erreur, veuillez réessayer"
-            }
-        },
-
-        async chercherEncansPasses({ commit, state }) {
-            try {
-                const response = await state.api.get("/encans/chercherencanspasses");
-                return response
-            }
-            catch (error) {
-                return "Erreur, veuillez réessayer"
+                const response = await state.api.get("/encans/chercherencanencours");
+                return response;
+            } catch (error) {
+                return "Erreur, veuillez réessayer";
             }
         },
 
@@ -487,16 +531,122 @@ const store = createStore({
                 return "Erreur, veuillez réessayer"
             }
         },
+
+        async fetchEncanInfo({ commit, state }) {
+            try {
+                const response = await state.api.get("/encans/cherchertousencans");
+                console.log("Données reçues de l'API:", response.data); // Pour le débogage
+
+                return response.data;
+            } catch (error) {
+                console.error("Erreur détaillée:", error.response || error);
+                throw error;
+            }
+        },
+
+        async creerEncan({ commit, state }, encanData) {
+            try {
+                const response = await state.api.post("/encans/creerEncan", encanData);
+                if (response.data.sucess) {
+                    return { success: true, message: response.data.message };
+                } else {
+                    return { success: false, error: response.data.message };
+                }
+            } catch (error) {
+                return {
+                    success: false,
+                    error: error.response.data.message,
+                    details: error.response?.data,
+                };
+            }
+        },
+
+        async mettreAJourEncanPublie({ commit, state }, encanData) {
+            try {
+                const response = await state.api.put(
+                    "/encans/mettreAJourEncanPublie",
+                    encanData
+                );
+                if (response.data.sucess) {
+                    return { success: true, message: response.data.message };
+                } else {
+                    return { success: false, error: response.data.message };
+                }
+            } catch (error) {
+                return {
+                    success: false,
+                    error: error.response.data.message,
+                    details: error.response?.data,
+                };
+            }
+        },
+
+        async chercherTousLotsParEncan({ state }, idEncan) {
+            try {
+                const response = await state.api.get(
+                    `/lots/cherchertouslotsparencan/${idEncan}`
+                );
+
+                console.log("Réponse reçue:", response);
+                return response;
+            } catch (error) {
+                console.error("Erreur détaillée:", {
+                    message: error.message,
+                    status: error.response?.status,
+                    data: error.response?.data,
+                    config: error.config,
+                });
+                throw error;
+            }
+        },
+        async chercherDetailsLotParId({ commit, state }, idLot) {
+            try {
+                const response = await state.api.get(
+                    "/lots/chercherDetailsLotParId/" + idLot
+                );
+                return response;
+            } catch (error) {
+                return "Erreur, veuillez réessayer";
+            }
+        },
+
+        async chercherEncansFuturs({ commit, state }) {
+            try {
+                const response = await state.api.get("/encans/chercherencansfuturs");
+                return response;
+            } catch (error) {
+                return "Erreur, veuillez réessayer";
+            }
+        },
+
+        async chercherEncansPasses({ commit, state }) {
+            try {
+                const response = await state.api.get("/encans/chercherencanspasses");
+                return response;
+            } catch (error) {
+                return "Erreur, veuillez réessayer";
+            }
+        },
+        forceUpdate({ commit }) {
+            commit("refreshUserData");
+        },
     },
     getters: {
-        isAdmin: (state) => state.roles.includes("Administrateur"),
-        isClient: (state) => state.roles.includes("Client"),
+        isAdmin: (state) => {
+            console.log("Rôles dans le getter isAdmin:", state.roles);
+            const result =
+                Array.isArray(state.roles) && state.roles.includes("Administrateur");
+            console.log("L'utilisateur est-il admin ?", result);
+            return result;
+        },
+        isClient: (state) =>
+            Array.isArray(state.roles) && state.roles.includes("Client"),
         currentUser: (state) => state.user,
         username: (state) =>
             state.user ? state.user.pseudonym || state.user.username : "USERNAME",
         avatarUrl: (state) => {
+            console.log("Photo de l'utilisateur brute:", state.user.photo);
             if (state.user && state.user.photo) {
-                console.log("Photo de l'utilisateur brute:", state.user.photo);
                 if (state.user.photo.startsWith("http")) {
                     return state.user.photo;
                 } else {
