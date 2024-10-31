@@ -2,7 +2,7 @@
   <div class="d-flex flex-column justify-content-between">
     <h2 class="d-flex justify-content-center">Ajout d'un encan</h2>
 
-    <transition name="fade">
+    <transition name="fade" class="transit">
       <div v-if="errorMessage" class="alert alert-danger">
         {{ errorMessage }}
       </div>
@@ -131,7 +131,7 @@ const creerEncan = async () => {
 
       setTimeout(() => {
         router.push({ name: "TableauDeBordEncans" });
-      }, 5000);
+      }, 3500);
     } else {
       errorMessage.value = response.error;
       successMessage.value = "";
