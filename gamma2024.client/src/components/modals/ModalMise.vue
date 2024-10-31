@@ -92,20 +92,50 @@ const decrementerMise = () => {
 };
 
 const confirmerMise = async () => {
-  if (!store.state.isLoggedIn) {
-    modalInstance.hide();
-    router.push('/connexion');
-    return;
-  }
+  const response = await store.dispatch('placerMise', {
+    idLot: props.lot.id,
+    montant: montantMise.value
+  });
 
-  try {
-    // TODO: Implémenter l'appel API pour placer la mise
-    console.log(`Nouvelle mise de ${montantMise.value}$ pour le lot ${props.lot.id}`);
-    modalInstance.hide();
-    // Émettre un événement pour informer le parent que la mise a été placée
+  if (response.success) {
     emit('miseConfirmee', montantMise.value);
-  } catch (error) {
-    console.error('Erreur lors de la mise:', error);
+    modalInstance.hide();
+  } else {
+    modalInstance.hide();
+    
+    const modalElement = document.createElement('div');
+    modalElement.innerHTML = `
+      <div class="modal fade" id="modalErreurConnexion" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Connexion requise</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <p>Veuillez vous connecter pour miser</p>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-primary" data-bs-dismiss="modal" id="btnRedirigerConnexion">
+                Se connecter
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(modalElement);
+
+    const modalErreur = new bootstrap.Modal(document.getElementById('modalErreurConnexion'));
+    modalErreur.show();
+
+    document.getElementById('btnRedirigerConnexion').addEventListener('click', () => {
+      router.push('/connexion');
+    });
+
+    document.getElementById('modalErreurConnexion').addEventListener('hidden.bs.modal', () => {
+      document.body.removeChild(modalElement);
+    });
   }
 };
 

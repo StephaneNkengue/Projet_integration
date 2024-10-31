@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
+using Gamma2024.Server.WebSockets;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -104,6 +105,8 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;
 });
 
+builder.Services.AddSingleton<WebSocketHandler>();
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -133,5 +136,12 @@ app.UseStaticFiles(new StaticFileOptions
         Path.Combine(Directory.GetCurrentDirectory(), "wwwroot")),
     RequestPath = ""
 });
+
+var webSocketOptions = new WebSocketOptions
+{
+    KeepAliveInterval = TimeSpan.FromMinutes(2)
+};
+app.UseWebSockets(webSocketOptions);
+app.UseMiddleware<WebSocketMiddleware>();
 
 app.Run();

@@ -2,6 +2,7 @@ using Gamma2024.Server.Data;
 using Gamma2024.Server.Models;
 using Gamma2024.Server.Validations;
 using Gamma2024.Server.ViewModels;
+using Gamma2024.Server.WebSockets;
 using Microsoft.EntityFrameworkCore;
 
 namespace Gamma2024.Server.Services
@@ -10,11 +11,13 @@ namespace Gamma2024.Server.Services
     {
         private readonly ApplicationDbContext _context;
         private readonly IWebHostEnvironment _environment;
+        private readonly WebSocketHandler _webSocketHandler;
 
-        public LotService(ApplicationDbContext context, IWebHostEnvironment environment)
+        public LotService(ApplicationDbContext context, IWebHostEnvironment environment, WebSocketHandler webSocketHandler)
         {
             _context = context;
             _environment = environment;
+            _webSocketHandler = webSocketHandler;
         }
 
         public async Task<IEnumerable<LotAffichageVM>> ObtenirTousLots()
@@ -539,6 +542,52 @@ namespace Gamma2024.Server.Services
                 SeraLivree = lotModification.SeraLivree,
                 Photos = lotModification.PhotosModifie
             };
+        }
+
+        public async Task<(bool success, string message)> PlacerMise(MiseVM mise)
+        {
+            var lot = await _context.Lots
+                .Include(l => l.EncanLots)
+                .ThenInclude(el => el.Encan)
+                .FirstOrDefaultAsync(l => l.Id == mise.IdLot);
+
+            if (lot == null)
+                return (false, "Lot non trouvé");
+
+            var encan = lot.EncanLots.FirstOrDefault()?.Encan;
+            if (encan == null)
+                return (false, "Encan non trouvé");
+
+            if (DateTime.Now > encan.DateFinSoireeCloture)
+                return (false, "L'encan est terminé");
+
+            if (DateTime.Now < encan.DateDebut)
+                return (false, "L'encan n'a pas encore commencé");
+
+            // Vérifier si la mise est valide (conversion explicite de decimal en double)
+            if (lot.Mise.HasValue && mise.Montant <= (decimal)lot.Mise.Value)
+                return (false, "La mise doit être supérieure à la mise actuelle");
+
+            // Conversion explicite de decimal en double
+            lot.Mise = (double)mise.Montant;
+            lot.IdClientMise = mise.UserId; 
+
+            try
+            {
+                await _context.SaveChangesAsync();
+
+                await _webSocketHandler.BroadcastMessage(new {
+                    type = "NOUVELLE_MISE",
+                    idLot = mise.IdLot,
+                    montant = mise.Montant
+                });
+
+                return (true, "Mise placée avec succès");
+            }
+            catch (Exception ex)
+            {
+                return (false, $"Erreur lors de la mise : {ex.Message}");
+            }
         }
     }
 }
