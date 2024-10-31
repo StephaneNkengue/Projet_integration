@@ -1,16 +1,16 @@
 <template>
     <div class="d-flex justify-content-between">
-        <div v-if="messageConfirmation" class="alert alert-success">
-        {{ messageConfirmation }}
-        </div>
         <h2 class="d-flex-1">Liste des lots</h2>
-        <div class="d-flex d-flex-1 align-items-end">
-            <button
-                class="bleuMoyenFond btnSurvolerBleuMoyenFond boutonPersonnalise text-white d-flex-1"
-                type="button"
-                id="ajouterLotButton"
-                @click="redirigerVersCreationLot"
-            >
+        <div v-if="messageConfirmation" class="d-flex-1 alert alert-success py-0">
+            {{ messageConfirmation }}
+        </div>
+    </div>
+    <div class="d-flex justify-content-end">
+        <div class="d-flex d-flex-1 justify-content-end">
+            <button class="bleuMoyenFond btnSurvolerBleuMoyenFond boutonPersonnalise text-white d-flex-1"
+                    type="button"
+                    id="ajouterLotButton"
+                    @click="redirigerVersCreationLot">
                 Ajouter un lot
             </button>
             <div class="dropdown d-flex-1">
@@ -48,7 +48,7 @@
                     </li>
                 </ul>
             </div>
-            <div class="d-flex d-flex-1 me-1 gap-1 align-items-center">
+            <div class="d-flex d-flex-1 me-1 gap-1 px-4 align-items-center">
                 <label for="Recherche">Rechercher : </label>
                 <input data-bs-theme="light"
                        type="search"
@@ -62,58 +62,62 @@
                             data-bs-toggle="dropdown"
                             aria-haspopup="true"
                             aria-expanded="false">
-                        Sélectionner les colonnes de recherche
+                        Recherche Avancée
                     </button>
                     <ul class="dropdown-menu">
                         <li class="d-flex justify-content-start dropdown-item">
                             <input class="checkboxTousRecherche d-flex-1"
                                    type="checkbox"
-                                   id="tousSelectionnerRechercheCheckbox"
-                                   :checked="Object.values(colonnesRecherche).every(v => v)"
-                                   @change="toggleToutesColonnesRecherche" />
-                            <label class="d-flex-1 labelpadding"
-                                   for="tousSelectionnerRechercheCheckbox">
+                                   id="tousSelectionnerCheckboxRecherche"
+                                   checked />
+                            <label class="d-flex-1" for="tousSelectionnerCheckboxRecherche">
                                 Tous Sélectionner
                             </label>
                         </li>
-                        <li v-for="(visible, colonne) in colonnesRecherche" :key="colonne" class="d-flex justify-content-start dropdown-item">
+                        <li v-for="(visible, colonne) in colonnesVisibles"
+                            :key="colonne"
+                            class="d-flex justify-content-start dropdown-item">
                             <input class="checkboxSeulRecherche d-flex-1"
                                    type="checkbox"
-                                   :id="`recherche${colonne.charAt(0).toUpperCase() + colonne.slice(1)}Checkbox`"
-                                   :checked="visible"
-                                   @change="toggleColonneRecherche(colonne)" />
-                            <label class="d-flex-1 labelpadding" :for="`recherche${colonne.charAt(0).toUpperCase() + colonne.slice(1)}Checkbox`">
-                                {{ colonne.charAt(0).toUpperCase() + colonne.slice(1) }}
+                                   :id="`lot${
+                  colonne.charAt(0).toUpperCase() + colonne.slice(1)
+                }CheckboxRecherche`"
+                                   checked
+                                   disabled />
+                            <label class="d-flex-1"
+                                   :for="`lot${colonne.charAt(0).toUpperCase() + colonne.slice(1)}CheckboxRecherche`">
+                                {{(colonne.charAt(0).toUpperCase() + colonne.slice(1)).replace(/([A-Z])/g," $1")}}
                             </label>
                         </li>
                     </ul>
                 </div>
             </div>
+
             <div class="d-flex-1">
                 <div class="d-flex flex-row-reverse w-100 px-4 me-2 gap-2">
-                    <button class="d-flex align-items-center text-center rounded btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond"
+                    <button class="d-flex align-items-center text-center rounded btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
                             type="button"
                             @click="afficherTousLots"
                             v-bind:disabled="lotsParPage == nbLotsRecus">
                         Tous
                     </button>
-                    <button class="d-flex align-items-center text-center rounded btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond"
+                    <button class="d-flex align-items-center text-center rounded btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
                             type="button"
-                            @click="afficherLotsParPage(20)"
-                            v-bind:disabled="lotsParPage == 20">
-                        20
+                            @click="afficherLotsParPage(100)"
+                            v-bind:disabled="lotsParPage == 100">
+                        100
                     </button>
-                    <button class="d-flex align-items-center text-center rounded btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond"
+                    <button class="d-flex align-items-center text-center rounded btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
                             type="button"
                             @click="afficherLotsParPage(50)"
                             v-bind:disabled="lotsParPage == 50">
                         50
                     </button>
-                    <button class="d-flex align-items-center text-center rounded btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond"
+                    <button class="d-flex align-items-center text-center rounded btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
                             type="button"
-                            @click="afficherLotsParPage(100)"
-                            v-bind:disabled="lotsParPage == 100">
-                        100
+                            @click="afficherLotsParPage(20)"
+                            v-bind:disabled="lotsParPage == 20">
+                        20
                     </button>
                 </div>
             </div>
@@ -164,7 +168,10 @@
                     <td v-if="colonnesVisibles.encan">{{ lot.numeroEncan }}</td>
                     <td v-if="colonnesVisibles.numero">{{ lot.code }}</td>
                     <td v-if="colonnesVisibles.prixOuverture">{{ lot.prixOuverture }}</td>
-                    <td v-if="colonnesVisibles.valeurMinPourVente">{{ lot.prixMinPourVente }}</td>
+                    <td v-if="colonnesVisibles.valeurMinPourVente">
+                        <span v-if="lot.prixMinPourVente=='0 $'"></span>
+                        <span v-else>{{ lot.prixMinPourVente }}</span>
+                    </td>
                     <td v-if="colonnesVisibles.estimationMin">{{ lot.valeurEstimeMin }}</td>
                     <td v-if="colonnesVisibles.estimationMax">{{ lot.valeurEstimeMax }}</td>
                     <td v-if="colonnesVisibles.categorie">{{ lot.categorie }}</td>
@@ -181,12 +188,12 @@
                         <img v-if="lot.estLivrable" src="/icons/livrable.png" width="40" height="40" />
                         <img v-else src="/icons/nonlivrable.png" width="40" height="40" />
                     </td>
-                    <td v-if="colonnesVisibles.modifier">
+                    <td>
                         <router-link :to="{ name: 'ModificationLot', params: { id: lot.id } }">
                             <img src="/icons/modifier.png" width="30" height="30" />
                         </router-link>
                     </td>
-                    <td v-if="colonnesVisibles.supprimer">
+                    <td>
                         <img @click="ouvrirBoiteModale(lot.id)"
                              class="curseurpointeur"
                              src="/icons/supprimer.png"
@@ -198,101 +205,89 @@
         </table>
     </div>
 
-  <!-- Ajout de la pagination en bas -->
-  <div class="d-flex flex-row justify-content-center gap-1 flex-wrap p-3">
-    <!-- Bouton Précédent -->
-    <button
-      type="button"
-      class="btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
-      @click="reculerPage"
-      v-bind:disabled="pageCourante == 1"
-    >
-      Précédent
-    </button>
-
-    <!-- Boutons de pages -->
-    <div v-for="item in listePagination">
-      <button
-        type="button"
-        class="btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
-        :pageId="item"
-        @click="changerPage(item)"
-        v-bind:disabled="pageCourante == item || item == '...'"
-      >
-        {{ item }}
-      </button>
-    </div>
-
-    <!-- Bouton Suivant -->
-    <button
-      type="button"
-      class="btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
-      @click="avancerPage"
-      v-bind:disabled="pageCourante == nbPages"
-    >
-      Suivant
-    </button>
-  </div>
-
-  <!-- Modal de confirmation -->
-  <div v-if="lotASupprimer !== null" class="modal-overlay">
-    <div class="modal-content">
-      <p>Êtes-vous sûr de vouloir supprimer ce lot ?</p>
-      <div class="modal-buttons">
-        <button @click="confirmerSuppression" class="btn btn-danger">OK</button>
-        <button @click="annulerSuppression" class="btn btn-secondary">
-          Annuler
+    <!-- Ajout de la pagination en bas -->
+    <div class="d-flex flex-row justify-content-center gap-1 flex-wrap p-3">
+        <!-- Bouton Précédent -->
+        <button type="button"
+                class="btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
+                @click="reculerPage"
+                v-bind:disabled="pageCourante == 1">
+            Précédent
         </button>
-      </div>
+
+        <!-- Boutons de pages -->
+        <div v-for="item in listePagination">
+            <button type="button"
+                    class="btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
+                    :pageId="item"
+                    @click="changerPage(item)"
+                    v-bind:disabled="pageCourante == item || item == '...'">
+                {{ item }}
+            </button>
+        </div>
+
+        <!-- Bouton Suivant -->
+        <button type="button"
+                class="btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
+                @click="avancerPage"
+                v-bind:disabled="pageCourante == nbPages">
+            Suivant
+        </button>
     </div>
-  </div>
+
+    <!-- Modal de confirmation -->
+    <div v-if="lotASupprimer !== null" class="modal-overlay">
+        <div class="modal-content">
+            <p>Êtes-vous sûr de vouloir supprimer ce lot ?</p>
+            <div class="modal-buttons">
+                <button @click="confirmerSuppression" class="btn btn-danger">OK</button>
+                <button @click="annulerSuppression" class="btn btn-secondary">
+                    Annuler
+                </button>
+            </div>
+        </div>
+    </div>
 </template>
 
 <script setup>
-import { onMounted, ref, watch } from "vue";
-import { useStore } from "vuex";
-import { useRouter } from "vue-router";
+    import { onMounted, ref, watch } from "vue";
+    import { useStore } from "vuex";
+    import { useRouter } from "vue-router";
 
-const store = useStore();
-const router = useRouter();
-const lots = ref([]);
-const lotASupprimer = ref(null);
-const messageConfirmation = ref(null);
+    const store = useStore();
+    const router = useRouter();
+    const lots = ref([]);
+    const lotASupprimer = ref(null);
+    const messageConfirmation = ref(null);
 
-// Nouvelles variables pour la pagination et la recherche
-const lotsFiltres = ref([]);
-const rechercheDansListeDeLot = ref("");
-const nbLotsRecus = ref(0);
-const lotsParPage = ref(20); // Valeur par défaut
-const pageCourante = ref(1);
-const lotsAffiches = ref([]);
-const nbPages = ref(1);
-const listePagination = ref([]);
+    // Nouvelles variables pour la pagination et la recherche
+    const lotsFiltres = ref([]);
+    const rechercheDansListeDeLot = ref("");
+    const nbLotsRecus = ref();
+    const lotsParPage = ref();
+    const listePagination = ref([]);
+    const pageCourante = ref(1);
+    const lotsAffiches = ref();
+    const chargement = ref(true);
+    const nbPages = ref();
+    let genererListeDeLotsFiltree = function () { };
 
-const colonnesVisibles = ref({
-  encan: true,
-  numero: true,
-  prixOuverture: true,
-  valeurMinPourVente: true,
-  estimationMin: true,
-  estimationMax: true,
-  categorie: true,
-  artiste: true,
-  dimension: true,
-  description: true,
-  medium: true,
-  vendeur: true,
-  estVendu: true,
-  livraison: true,
-  modifier: true,
-  supprimer: true,
-});
-
-const colonnesRecherche = ref({
-  numero: true,
-  artiste: true,
-  medium: true,
-});
+    const colonnesVisibles = ref({
+        encan: true,
+        numero: true,
+        prixOuverture: true,
+        valeurMinPourVente: true,
+        estimationMin: true,
+        estimationMax: true,
+        categorie: true,
+        artiste: true,
+        dimension: true,
+        description: true,
+        medium: true,
+        vendeur: true,
+        estVendu: true,
+        livraison: true,
+    });
 
     const tousSelectionne = ref(true);
 
@@ -312,313 +307,466 @@ const colonnesRecherche = ref({
         }
     };
 
-const toggleToutesColonnesRecherche = () => {
-  const nouvelEtat = !Object.values(colonnesRecherche.value).every((v) => v);
-  Object.keys(colonnesRecherche.value).forEach((key) => {
-    colonnesRecherche.value[key] = nouvelEtat;
-  });
-};
+    const toggleToutesColonnesRecherche = () => {
+        const nouvelEtat = !Object.values(colonnesRecherche.value).every((v) => v);
+        Object.keys(colonnesRecherche.value).forEach((key) => {
+            colonnesRecherche.value[key] = nouvelEtat;
+        });
+    };
 
-const toggleColonneRecherche = (colonne) => {
-  colonnesRecherche.value[colonne] = !colonnesRecherche.value[colonne];
-};
+    const toggleColonneRecherche = (colonne) => {
+        colonnesRecherche.value[colonne] = !colonnesRecherche.value[colonne];
+    };
 
-const changerNbLotParPage = (nouvLotsParPage) => {
-  lotsParPage.value = nouvLotsParPage;
-  nbPages.value = recalculerNbPages();
-  pageCourante.value = 1;
-  genererListePagination();
-  chercherLotsAAfficher();
-};
+    const changerNbLotParPage = (nouvLotsParPage) => {
+        lotsParPage.value = nouvLotsParPage;
+        nbPages.value = recalculerNbPages();
+        pageCourante.value = 1;
+        genererListePagination();
+        chercherLotsAAfficher();
+    };
 
-const afficherTousLots = () => {
-  lotsParPage.value = nbLotsRecus.value;
-  nbPages.value = recalculerNbPages();
-  pageCourante.value = 1;
-  genererListePagination();
-  chercherLotsAAfficher();
-};
+    const afficherTousLots = () => {
+        lotsParPage.value = nbLotsRecus.value;
+        nbPages.value = recalculerNbPages();
+        pageCourante.value = 1;
+        genererListePagination();
+        chercherLotsAAfficher();
+    };
 
-const reculerPage = ref(function (event) {
-  if (pageCourante.value > 1) {
-    pageCourante.value--;
-    chercherLotsAAfficher(event);
-  }
-});
+    const reculerPage = ref(function (event) {
+        if (pageCourante.value > 1) {
+            pageCourante.value--;
+            chercherLotsAAfficher(event);
+        }
+    });
 
-const avancerPage = ref(function (event) {
-  if (pageCourante.value < nbPages.value) {
-    pageCourante.value++;
-    chercherLotsAAfficher(event);
-  }
-});
+    const avancerPage = ref(function (event) {
+        if (pageCourante.value < nbPages.value) {
+            pageCourante.value++;
+            chercherLotsAAfficher(event);
+        }
+    });
 
-const changerPage = ref(function (numeroPage) {
-  if (numeroPage !== "...") {
-    pageCourante.value = parseInt(numeroPage);
-    chercherLotsAAfficher();
-  }
-});
+    const changerPage = ref(function (numeroPage) {
+        if (numeroPage !== "...") {
+            pageCourante.value = parseInt(numeroPage);
+            chercherLotsAAfficher();
+        }
+    });
 
-function recalculerNbPages() {
-  return Math.ceil(nbLotsRecus.value / lotsParPage.value);
-}
-
-function genererListePagination() {
-  listePagination.value = [];
-  for (let i = 1; i <= nbPages.value; i++) {
-    if (
-      i == 1 ||
-      (i >= pageCourante.value - 1 && i <= pageCourante.value + 1) ||
-      i == nbPages.value
-    ) {
-      listePagination.value.push(i);
-    } else if (
-      listePagination.value[listePagination.value.length - 1] != "..."
-    ) {
-      listePagination.value.push("...");
+    function recalculerNbPages() {
+        return Math.ceil(nbLotsRecus.value / lotsParPage.value);
     }
-  }
-}
 
-function chercherLotsAAfficher(event) {
-  lotsAffiches.value = [];
-  let positionDebut = (pageCourante.value - 1) * lotsParPage.value;
-  let positionFin = pageCourante.value * lotsParPage.value;
-  for (
-    let i = positionDebut;
-    i < positionFin && i < lotsFiltres.value.length;
-    i++
-  ) {
-    lotsAffiches.value.push(lotsFiltres.value[i]);
-  }
-}
+    function genererListePagination() {
+        listePagination.value = [];
+        for (let i = 1; i <= nbPages.value; i++) {
+            if (
+                i == 1 ||
+                (i >= pageCourante.value - 1 && i <= pageCourante.value + 1) ||
+                i == nbPages.value
+            ) {
+                listePagination.value.push(i);
+            } else if (
+                listePagination.value[listePagination.value.length - 1] != "..."
+            ) {
+                listePagination.value.push("...");
+            }
+        }
+    }
 
-onMounted(async () => {
-  try {
-    await initialiseData();
-    setupRechercheAvancee();
-  } catch (error) {
-    console.error("Erreur lors de la récupération des lots:", error);
-  }
-});
+    function chercherLotsAAfficher(event) {
+        lotsAffiches.value = [];
+        let positionDebut = (pageCourante.value - 1) * lotsParPage.value;
+        let positionFin = pageCourante.value * lotsParPage.value;
+        for (
+            let i = positionDebut;
+            i < positionFin && i < lotsFiltres.value.length;
+            i++
+        ) {
+            lotsAffiches.value.push(lotsFiltres.value[i]);
+        }
+    }
 
-async function initialiseData() {
-  const response = await store.dispatch("obtenirTousLots");
-  lots.value = response;
-  lotsFiltres.value = lots.value;
-  nbLotsRecus.value = lotsFiltres.value.length;
-  nbPages.value = recalculerNbPages();
-  genererListePagination();
-  chercherLotsAAfficher();
-}
+    onMounted(async () => {
+        const checkboxQuiSelectionneToutRecherche = document.querySelector(
+            ".checkboxTousRecherche"
+        );
+        const listeDesCheckboxesRecherche = document.querySelectorAll(
+            ".checkboxSeulRecherche"
+        );
 
-function setupRechercheAvancee() {
-  const checkboxQuiSelectionneToutRecherche = document.querySelector(
-    ".checkboxTousRecherche"
-  );
-  const listeDesCheckboxesRecherche = document.querySelectorAll(
-    ".checkboxSeulRecherche"
-  );
+        try {
+            initialiseData();
+        } catch (error) {
+            console.error("Erreur lors de la récupération des lots:", error);
+        }
 
-  if (checkboxQuiSelectionneToutRecherche) {
-    checkboxQuiSelectionneToutRecherche.addEventListener(
-      "change",
-      function (e) {
-        if (this.checked) {
-          listeDesCheckboxesRecherche.forEach((el) => {
-            el.checked = true;
-            el.disabled = true;
-          });
+        listeDesCheckboxesRecherche.forEach((el, index) => {
+            el.addEventListener("click", function (e) {
+                var valeur = rechercheDansListeDeLot.value.toLowerCase();
+                rechercherAvance(valeur);
+            });
+        });
+
+        checkboxQuiSelectionneToutRecherche.addEventListener("change", function (e) {
+            if (this.checked) {
+                listeDesCheckboxesRecherche.forEach((el, index) => {
+                    el.checked = true;
+                    el.disabled = true;
+                });
+            } else {
+                listeDesCheckboxesRecherche.forEach((el) => {
+                    el.disabled = false;
+                    el.checked = false;
+                });
+            }
+            var valeur = rechercheDansListeDeLot.value.toLowerCase();
+            rechercherAvance(valeur);
+        });
+
+        genererListeDeLotsFiltree = function () {
+            var lotsAFiltres = lots.value;
+            lotsFiltres.value = [];
+
+            let rechercheEnMinuscule = rechercheDansListeDeLot.value.toLowerCase();
+            console.log(rechercheEnMinuscule);
+            lotsFiltres.value = lotsAFiltres.filter((lot) => {
+                let dimensions = lot.dimension.split(" x ");
+                if (
+                    listeDesCheckboxesRecherche[0].checked &&
+                    lot.numeroEncan
+                        .toString()
+                        .toLowerCase()
+                        .startsWith(rechercheEnMinuscule)
+                ) {
+                    return true;
+                } else if (
+                    listeDesCheckboxesRecherche[1].checked &&
+                    lot.code.toString().toLowerCase().startsWith(rechercheEnMinuscule)
+                ) {
+                    return true;
+                } else if (
+                    listeDesCheckboxesRecherche[2].checked &&
+                    lot.prixOuverture
+                        .toString()
+                        .toLowerCase()
+                        .startsWith(rechercheEnMinuscule)
+                ) {
+                    return true;
+                } else if (
+                    listeDesCheckboxesRecherche[3].checked &&
+                    lot.prixMinPourVente
+                        .toString()
+                        .toLowerCase()
+                        .startsWith(rechercheEnMinuscule)
+                ) {
+                    return true;
+                } else if (
+                    listeDesCheckboxesRecherche[4].checked &&
+                    lot.valeurEstimeMin
+                        .toString()
+                        .toLowerCase()
+                        .startsWith(rechercheEnMinuscule)
+                ) {
+                    return true;
+                } else if (
+                    listeDesCheckboxesRecherche[5].checked &&
+                    lot.valeurEstimeMax
+                        .toString()
+                        .toLowerCase()
+                        .startsWith(rechercheEnMinuscule)
+                ) {
+                    return true;
+                } else if (
+                    listeDesCheckboxesRecherche[6].checked &&
+                    lot.categorie.toString().toLowerCase().startsWith(rechercheEnMinuscule)
+                ) {
+                    return true;
+                } else if (
+                    listeDesCheckboxesRecherche[7].checked &&
+                    lot.artiste.toString().toLowerCase().startsWith(rechercheEnMinuscule)
+                ) {
+                    return true;
+                } else if (
+                    listeDesCheckboxesRecherche[8].checked &&
+                    dimensions[0].toString().toLowerCase().startsWith(rechercheEnMinuscule)
+                ) {
+                    return true;
+                } else if (
+                    listeDesCheckboxesRecherche[8].checked &&
+                    dimensions[1].toString().toLowerCase().startsWith(rechercheEnMinuscule)
+                ) {
+                    return true;
+                } else if (
+                    listeDesCheckboxesRecherche[9].checked &&
+                    lot.description
+                        .toString()
+                        .toLowerCase()
+                        .startsWith(rechercheEnMinuscule)
+                ) {
+                    return true;
+                } else if (
+                    listeDesCheckboxesRecherche[10].checked &&
+                    lot.medium.toString().toLowerCase().startsWith(rechercheEnMinuscule)
+                ) {
+                    return true;
+                } else if (
+                    listeDesCheckboxesRecherche[11].checked &&
+                    lot.vendeur.toString().toLowerCase().startsWith(rechercheEnMinuscule)
+                ) {
+                    return true;
+                }
+                return false;
+            });
+        };
+
+        let rechercherAvance = function (newValue) {
+            if (newValue == "" || newValue == null) {
+                lotsFiltres.value = lots.value;
+            } else {
+                genererListeDeLotsFiltree();
+            }
+            nbLotsRecus.value = lotsFiltres.value.length;
+            pageCourante.value = 1;
+            nbPages.value = recalculerNbPages();
+            genererListePagination();
+            chercherLotsAAfficher();
+        };
+
+        watch(rechercheDansListeDeLot, (newValue) => {
+            rechercherAvance(newValue);
+        });
+    });
+
+    async function initialiseData() {
+        const response = await store.dispatch("obtenirTousLots");
+        lots.value = response.map((lot) => ({
+            ...lot,
+        }));
+        lotsFiltres.value = lots.value;
+        nbLotsRecus.value = lotsFiltres.value.length;
+        lotsParPage.value = nbLotsRecus.value;
+        nbPages.value = recalculerNbPages();
+
+        genererListePagination();
+
+        chercherLotsAAfficher();
+        chargement.value = false;
+    }
+
+    function setupRechercheAvancee() {
+        const checkboxQuiSelectionneToutRecherche = document.querySelector(
+            ".checkboxTousRecherche"
+        );
+        const listeDesCheckboxesRecherche = document.querySelectorAll(
+            ".checkboxSeulRecherche"
+        );
+
+        if (checkboxQuiSelectionneToutRecherche) {
+            checkboxQuiSelectionneToutRecherche.addEventListener(
+                "change",
+                function (e) {
+                    if (this.checked) {
+                        listeDesCheckboxesRecherche.forEach((el) => {
+                            el.checked = true;
+                            el.disabled = true;
+                        });
+                    } else {
+                        listeDesCheckboxesRecherche.forEach((el) => {
+                            el.disabled = false;
+                            el.checked = false;
+                        });
+                    }
+                    rechercherAvance(rechercheDansListeDeLot.value);
+                }
+            );
+        }
+
+        listeDesCheckboxesRecherche.forEach((el) => {
+            el.addEventListener("click", () => {
+                rechercherAvance(rechercheDansListeDeLot.value);
+            });
+        });
+    }
+
+    // Ajout du watch pour la recherche
+    watch(rechercheDansListeDeLot, (newValue) => {
+        rechercherAvance(newValue);
+    });
+
+    function rechercherAvance(valeur) {
+        if (!valeur) {
+            lotsFiltres.value = lots.value;
         } else {
-          listeDesCheckboxesRecherche.forEach((el) => {
-            el.disabled = false;
-            el.checked = false;
-          });
+            valeur = valeur.toLowerCase();
+            lotsFiltres.value = lots.value.filter((lot) => {
+                return Object.entries(lot).some(([key, value]) => {
+                    if (typeof value === "string" || typeof value === "number") {
+                        return value.toString().toLowerCase().includes(valeur);
+                    }
+                    return false;
+                });
+            });
         }
-        rechercherAvance(rechercheDansListeDeLot.value);
-      }
-    );
-  }
-
-  listeDesCheckboxesRecherche.forEach((el) => {
-    el.addEventListener("click", () => {
-      rechercherAvance(rechercheDansListeDeLot.value);
-    });
-  });
-}
-
-// Ajout du watch pour la recherche
-watch(rechercheDansListeDeLot, (newValue) => {
-  rechercherAvance(newValue);
-});
-
-function rechercherAvance(valeur) {
-  if (!valeur) {
-    lotsFiltres.value = lots.value;
-  } else {
-    valeur = valeur.toLowerCase();
-    lotsFiltres.value = lots.value.filter((lot) => {
-      return Object.entries(lot).some(([key, value]) => {
-        if (typeof value === "string" || typeof value === "number") {
-          return value.toString().toLowerCase().includes(valeur);
-        }
-        return false;
-      });
-    });
-  }
-  nbLotsRecus.value = lotsFiltres.value.length;
-  pageCourante.value = 1;
-  nbPages.value = recalculerNbPages();
-  genererListePagination();
-  chercherLotsAAfficher();
-}
-
-const ouvrirBoiteModale = (id) => {
-  lotASupprimer.value = id;
-};
-
-const confirmerSuppression = async () => {
-  if (lotASupprimer.value !== null) {
-    try {
-      await store.dispatch("supprimerLot", lotASupprimer.value);
-      lots.value = lots.value.filter((lot) => lot.id !== lotASupprimer.value);
-      messageConfirmation.value = "Lot supprimé avec succès.";
-      setTimeout(() => {
-        messageConfirmation.value = null;
-      }, 2000);
-    } catch (error) {
-      console.error("Erreur lors de la suppression du lot:", error);
-    } finally {
-      lotASupprimer.value = null;
+        nbLotsRecus.value = lotsFiltres.value.length;
+        pageCourante.value = 1;
+        nbPages.value = recalculerNbPages();
+        genererListePagination();
+        chercherLotsAAfficher();
     }
-  }
-  await initialiseData();
-};
 
-const annulerSuppression = () => {
-  lotASupprimer.value = null;
-};
+    const ouvrirBoiteModale = (id) => {
+        lotASupprimer.value = id;
+    };
 
-const redirigerVersCreationLot = () => {
-  router.push({ name: "CreationLot" });
-};
+    const confirmerSuppression = async () => {
+        if (lotASupprimer.value !== null) {
+            try {
+                await store.dispatch("supprimerLot", lotASupprimer.value);
+                lots.value = lots.value.filter((lot) => lot.id !== lotASupprimer.value);
+                messageConfirmation.value = "Lot supprimé avec succès.";
+                setTimeout(() => {
+                    messageConfirmation.value = null;
+                }, 2000);
+            } catch (error) {
+                console.error("Erreur lors de la suppression du lot:", error);
+            } finally {
+                lotASupprimer.value = null;
+            }
+        }
+        await initialiseData();
+    };
 
-const afficherLotsParPage = (nbLots) => {
-  changerNbLotParPage(nbLots);
-};
+    const annulerSuppression = () => {
+        lotASupprimer.value = null;
+    };
+
+    const redirigerVersCreationLot = () => {
+        router.push({ name: "CreationLot" });
+    };
+
+    const afficherLotsParPage = (nbLots) => {
+        changerNbLotParPage(nbLots);
+    };
 </script>
 
 <style>
-@import "datatables.net-dt";
+    .boutonPersonnalise {
+        margin: 5px;
+        padding-left: 15px;
+        padding-right: 15px;
+        border: none;
+        border-radius: 5px;
+        font-size: 15px;
+        height: 25px;
+    }
 
-.boutonPersonnalise {
-  margin: 5px;
-  padding-left: 15px;
-  padding-right: 15px;
-  border: none;
-  border-radius: 5px;
-  font-size: 15px;
-  height: 25px;
-}
+    h2 {
+        padding-left: 15px;
+    }
 
-h2 {
-  padding-left: 15px;
-}
+    div label {
+        font-size: 15px;
+    }
 
-li label {
-  font-size: 15px;
-}
+    div input {
+        font-size: 15px;
+    }
 
-.margesPourTable {
-  padding-left: 15px;
-  padding-right: 15px;
-}
+    .margesPourTable {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
 
-th {
-  font-weight: bold;
-  font-size: 13px;
-  text-align: center !important;
-}
+    th {
+        font-weight: bold;
+        font-size: 13px;
+        text-align: center !important;
+    }
 
-li label {
-  font-size: 13px;
-  padding-left: 5px;
-}
+    li label {
+        font-size: 13px;
+        padding-left: 5px;
+    }
 
-.dt-column-title {
-  font-weight: bold;
-}
+    .dt-column-title {
+        font-weight: bold;
+    }
 
-tr:nth-child(even) {
-  background-color: #f8f9fa;
-}
+    tr:nth-child(even) {
+        background-color: #f8f9fa;
+    }
 
-tr:nth-child(odd) {
-  background-color: #e9ecef;
-}
+    tr:nth-child(odd) {
+        background-color: #e9ecef;
+    }
 
-tr:hover {
-  background-color: #d1e7ff;
-}
+    tr:hover {
+        background-color: #d1e7ff;
+    }
 
-.cacher {
-  visibility: collapse;
-}
+    .cacher {
+        visibility: collapse;
+    }
 
-.curseurpointeur {
-  cursor: pointer;
-}
+    .curseurpointeur {
+        cursor: pointer;
+    }
 
-.checkboxTousRecherche,
-.checkboxSeulRecherche,
-.checkboxTous,
-.checkboxSeul {
-  margin-right: 7px;
-}
+    .checkboxTousRecherche,
+    .checkboxSeulRecherche,
+    .checkboxTous,
+    .checkboxSeul {
+        margin-right: 7px;
+    }
 
-td {
-  font-size: 13px;
-  text-align: center !important;
-}
+    td {
+        font-size: 13px;
+        text-align: center !important;
+    }
 </style>
 
 <style scoped>
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
+    .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0, 0, 0, 0.5);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
 
-.modal-content {
-  background-color: white;
-  padding: 20px;
-  border-radius: 5px;
-  text-align: center;
-}
+    .modal-content {
+        background-color: white;
+        padding: 20px;
+        border-radius: 5px;
+        text-align: center;
+    }
 
-.modal-buttons {
-  margin-top: 15px;
-}
+    .modal-buttons {
+        margin-top: 15px;
+    }
 
-.modal-buttons button {
-  margin: 0 10px;
-}
+        .modal-buttons button {
+            margin: 0 10px;
+        }
 
-.alert {
-  margin: 10px 0;
-  padding: 10px;
-  border-radius: 5px;
-}
+    .alert {
+        margin-left: 10px 0;
+        margin-right: 10px 0;
+        padding-left: 10px;
+        padding-right: 10px;
+        border-radius: 5px;
+        height: 30px;
+    }
 
-.alert-success {
-  background-color: #d4edda;
-  color: #155724;
-}
+    .alert-success {
+        background-color: #d4edda;
+        color: #155724;
+    }
 </style>
