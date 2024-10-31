@@ -3,26 +3,28 @@
     <div class="container py-5 h-100">
       <div class="row d-flex justify-content-center align-items-center h-100">
         <div class="col">
-          <div class="card my-4">
-            <div class="row g-0">
-              <div class="col-xl-12">
-                <div class="card-header">
-                  <h1 class="mb-5 mt-2 text-center">Modification du vendeur</h1>
-                </div>
-                <div class="card-body p-md-3 text-black">
-                  <div
-                    v-if="message"
-                    :class="[
-                      'alert',
-                      message.type === 'success'
-                        ? 'alert-success'
-                        : 'alert-danger',
-                    ]"
-                  >
-                    {{ message.text }}
+          <form @submit.prevent="submitForm">
+            <div class="card my-4">
+              <div class="row g-0">
+                <div class="col-xl-12">
+                  <div class="card-header">
+                    <h1 class="mb-5 mt-2 text-center">
+                      Modification du vendeur
+                    </h1>
                   </div>
+                  <div class="card-body p-md-3 text-black">
+                    <div
+                      v-if="message"
+                      :class="[
+                        'alert',
+                        message.type === 'success'
+                          ? 'alert-success'
+                          : 'alert-danger',
+                      ]"
+                    >
+                      {{ message.text }}
+                    </div>
 
-                  <form @submit.prevent="submitForm">
                     <div class="card">
                       <div class="card-header fw-bold fs-5">
                         Informations personnelles
@@ -205,25 +207,25 @@
                         </div>
                       </div>
                     </div>
-                  </form>
-                </div>
-                <div class="card-footer text-body-secondary">
-                  <div class="d-flex justify-content-end pt-3">
-                    <button
-                      type="button"
-                      class="btn btn-light btn-lg"
-                      @click="resetForm"
-                    >
-                      Réinitialiser
-                    </button>
-                    <button type="submit" class="btn btn-custom btn-lg ms-2">
-                      Enregistrer
-                    </button>
+                  </div>
+                  <div class="card-footer text-body-secondary">
+                    <div class="d-flex justify-content-end pt-3">
+                      <button
+                        type="button"
+                        class="btn btn-light btn-lg"
+                        @click="resetForm"
+                      >
+                        Réinitialiser
+                      </button>
+                      <button type="submit" class="btn btn-custom btn-lg ms-2">
+                        Enregistrer
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
+          </form>
         </div>
       </div>
     </div>
@@ -334,6 +336,7 @@ const submitForm = async () => {
         router.push("/affichagevendeurs");
       }, 2000);
     } else {
+      console.log("test 3");
       message.value = { type: "danger", text: result.error };
     }
   } catch (error) {
