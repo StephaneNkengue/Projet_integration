@@ -677,6 +677,17 @@ const store = createStore({
     forceUpdate({ commit }) {
       commit("refreshUserData");
     },
+
+    async reinitialisePassword({ commit, state }) {
+      try {
+        const response = await state.api.get(
+          "/utilisateurs/reinitialiserMotDePasse"
+        );
+        return response;
+      } catch (error) {
+        return "Erreur, veuillez réessayer";
+      }
+    },
   },
   getters: {
     isAdmin: (state) => {
