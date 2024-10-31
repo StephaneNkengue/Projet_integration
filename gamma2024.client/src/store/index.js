@@ -576,11 +576,8 @@ const store = createStore({
           `/encans/modifierEncan/${encanData.id}`,
           encanData
         );
-        if (response.data.success) {
-          return { success: true, message: response.data.message };
-        } else {
-          return { success: false, error: response.data.message };
-        }
+        console.log(response);
+        return response;
       } catch (error) {
         console.error("Erreur lors de la modification de l'encan:", error);
         return {

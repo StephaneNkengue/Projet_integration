@@ -184,17 +184,17 @@ const resetForm = function () {
 const updateEncan = async function () {
   try {
     const result = await store.dispatch("modifierEncan", encanData);
+    console.log(result);
     if (result.success) {
       successMessage.value = result.message;
       setTimeout(() => {
-        errorMessage.value = "";
-        successMessage.value = "";
-      }, 2000);
-      setTimeout(() => {
+        setTimeout(() => {
+          successMessage.value = "";
+        }, 1000);
         router.push({ name: "TableauDeBordEncans" });
-      }, 1000);
+      }, 2000);
     } else {
-      errorMessage.value = result.message;
+      errorMessage.value = result.error;
     }
   } catch (error) {
     console.error("Erreur lors de la modification de l'encan:", error);
