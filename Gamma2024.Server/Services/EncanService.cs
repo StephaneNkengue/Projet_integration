@@ -108,12 +108,12 @@ namespace Gamma2024.Server.Services
             return _context.Encans.FirstOrDefault(e => e.Id == idEncan);
         }
 
-        public async Task<(bool success, object message)> ModifierEncan(int id, EncanVM model)
+        public async Task<(bool success, string message)> ModifierEncan(int id, EncanVM model)
         {
-            var (isValid, errorMessage) = EncanValidation.ValidateEncan(model);
+            var (isValid, message) = EncanValidation.ValidateEncan(model);
             if (!isValid)
             {
-                return (false, errorMessage);
+                return (false, message);
             }
 
             var encan = await _context.Encans.FindAsync(id);

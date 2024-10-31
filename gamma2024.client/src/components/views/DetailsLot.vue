@@ -48,7 +48,7 @@
                     <div class="d-flex justify-content-between align-items-center mt-2 carouselFondIndicators p-1">
 
                         <a class="opacity-100 d-flex align-items-center text-decoration-none" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
-                            <span class="text-black fs-2" aria-hidden="true"><</span>
+                            <span class="text-black fs-2" aria-hidden="true">⮜</span>
                             <span class="visually-hidden">Previous</span>
                         </a>
 
@@ -63,7 +63,7 @@
                         </div>
 
                         <a class="opacity-100 d-flex align-items-center text-decoration-none" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
-                            <span class="text-black fs-2" aria-hidden="true">></span>
+                            <span class="text-black fs-2" aria-hidden="true">⮞</span>
                             <span class="visually-hidden">Next</span>
                         </a>
                     </div>
