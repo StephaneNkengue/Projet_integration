@@ -27,7 +27,7 @@
           <div class="d-flex flex-row justify-content-center mb-3">
             <div class="form-group w-90">
               <label for="confirmMotdepasse" class="fw-bold ms-3"
-                >Mot de passe</label
+                >Nouveau mot de passe</label
               >
               <input
                 type="password"
@@ -44,7 +44,7 @@
           <div class="d-flex flex-row justify-content-center mb-3">
             <div class="form-group w-90">
               <label for="motDePasse" class="fw-bold ms-3"
-                >Confirmer le mot de passe</label
+                >Confirmer le nouveau mot de passe</label
               >
               <input
                 type="password"
