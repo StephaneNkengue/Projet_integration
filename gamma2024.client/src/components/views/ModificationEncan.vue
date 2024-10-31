@@ -2,14 +2,16 @@
   <div class="d-flex flex-column justify-content-between">
     <h2 class="d-flex justify-content-center">Modification de l'encan</h2>
 
-    <div v-if="errorMessage" class="alert alert-danger">
-      {{ errorMessage }}
-    </div>
-    <div v-else>
-      <div v-if="successMessage" class="alert alert-success">
-        {{ successMessage }}
+    <transition name="fade" class="transit">
+      <div v-if="errorMessage" class="alert alert-danger">
+        {{ errorMessage }}
       </div>
-    </div>
+      <div v-else>
+        <div v-if="successMessage" class="alert alert-success">
+          {{ successMessage }}
+        </div>
+      </div>
+    </transition>
 
     <div class="d-flex justify-content-center mt-4">
       <form @submit.prevent="updateEncan" class="text-center">
@@ -184,17 +186,17 @@ const resetForm = function () {
 const updateEncan = async function () {
   try {
     const result = await store.dispatch("modifierEncan", encanData);
-    console.log(result);
+    console.log("resultat dans modifEncan", result);
     if (result.success) {
       successMessage.value = result.message;
       setTimeout(() => {
-        setTimeout(() => {
-          successMessage.value = "";
-        }, 1000);
         router.push({ name: "TableauDeBordEncans" });
-      }, 2000);
+      }, 3000);
     } else {
       errorMessage.value = result.error;
+      setTimeout(() => {
+        errorMessage.value = "";
+      }, 4000);
     }
   } catch (error) {
     console.error("Erreur lors de la modification de l'encan:", error);
@@ -211,5 +213,20 @@ const updateEncan = async function () {
 .bleuNonValide {
   background-color: #5a708a;
   color: white;
+}
+
+.transit {
+  margin: auto;
+  width: 600px;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 3s ease;
+}
+
+.fade-enter,
+.fade-leave-to {
+  opacity: 0;
 }
 </style>

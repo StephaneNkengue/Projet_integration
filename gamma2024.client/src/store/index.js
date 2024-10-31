@@ -576,10 +576,12 @@ const store = createStore({
           `/encans/modifierEncan/${encanData.id}`,
           encanData
         );
-        console.log(response);
-        return response;
+        if (response.data.success) {
+          return { success: true, message: response.data.message };
+        } else {
+          return { success: false, error: response.data.message };
+        }
       } catch (error) {
-        console.error("Erreur lors de la modification de l'encan:", error);
         return {
           success: false,
           error:
@@ -588,6 +590,7 @@ const store = createStore({
         };
       }
     },
+
     async creerEncan({ commit, state }, encanData) {
       try {
         const response = await state.api.post("/encans/creerEncan", encanData);
