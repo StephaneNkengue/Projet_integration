@@ -180,7 +180,7 @@ const resetPassword = async function () {
 
       setTimeout(() => {
         router.push("/connexion");
-      }, 3500);
+      }, 4000);
     } else {
       message.value = { type: "danger", text: response.message };
     }

@@ -684,21 +684,26 @@ const store = createStore({
           "/utilisateurs/reinitialiserMotDePasse",
           resetPasswordData
         );
-        return response;
+        return {
+          success: true,
+          message: response.data,
+        };
       } catch (error) {
         return {
           success: false,
-          message: "Erreur lors de la modification du mot de passe.",
+          message:
+            error.response?.data ||
+            "Erreur lors de la modification du mot de passe.",
         };
       }
     },
   },
   getters: {
     isAdmin: (state) => {
-      console.log("Rôles dans le getter isAdmin:", state.roles);
+      // console.log("Rôles dans le getter isAdmin:", state.roles);
       const result =
         Array.isArray(state.roles) && state.roles.includes("Administrateur");
-      console.log("L'utilisateur est-il admin ?", result);
+      // console.log("L'utilisateur est-il admin ?", result);
       return result;
     },
     isClient: (state) =>
