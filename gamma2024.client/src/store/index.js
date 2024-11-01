@@ -678,14 +678,18 @@ const store = createStore({
       commit("refreshUserData");
     },
 
-    async reinitialisePassword({ commit, state }) {
+    async reinitialisePassword({ commit, state }, resetPasswordData) {
       try {
-        const response = await state.api.get(
-          "/utilisateurs/reinitialiserMotDePasse"
+        const response = await state.api.post(
+          "/Utilisateurs/reinitialiserMotDePasse",
+          resetPasswordData
         );
         return response;
       } catch (error) {
-        return "Erreur, veuillez réessayer";
+        return {
+          success: false,
+          message: "Erreur lors de la modification du mot de passe.",
+        };
       }
     },
   },

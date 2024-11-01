@@ -230,7 +230,7 @@ namespace Gamma2024.Server.Controllers
 
 
         [HttpPost("reinitialiserMotDePasse")]
-        public async Task<IActionResult> ResetPassword(ResetPasswordVM model)
+        public async Task<IActionResult> reinitialiserMotDePasse([FromBody] ResetPasswordVM model)
         {
             if (!ModelState.IsValid)
             {
