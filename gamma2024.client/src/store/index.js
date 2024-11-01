@@ -681,7 +681,7 @@ const store = createStore({
     async reinitialisePassword({ commit, state }, resetPasswordData) {
       try {
         const response = await state.api.post(
-          "/Utilisateurs/reinitialiserMotDePasse",
+          "/utilisateurs/reinitialiserMotDePasse",
           resetPasswordData
         );
         return response;

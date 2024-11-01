@@ -28,50 +28,50 @@
               <label for="email" class="fw-bold ms-3">Adresse courriel</label>
               <input
                 type="text"
-                :class="['form-control', { 'is-invalid': v.emailUser.$error }]"
+                :class="['form-control', { 'is-invalid': v.email.$error }]"
                 id="email"
-                v-model="resetPasswordData.emailUser"
-                @blur="v.emailUser.$touch()"
+                v-model="resetPasswordData.email"
+                @blur="v.email.$touch()"
               />
-              <div class="invalid-feedback" v-if="v.emailUser.$error">
-                {{ v.emailUser.$errors[0].$message }}
+              <div class="invalid-feedback" v-if="v.email.$error">
+                {{ v.email.$errors[0].$message }}
               </div>
             </div>
           </div>
           <div class="d-flex flex-row justify-content-center mb-3">
             <div class="form-group w-90">
-              <label for="confirmMotdepasse" class="fw-bold ms-3"
+              <label for="confirmPassword" class="fw-bold ms-3"
                 >Nouveau mot de passe</label
               >
               <input
                 type="password"
-                :class="['form-control', { 'is-invalid': v.motDePasse.$error }]"
-                id="confirmMotdepasse"
-                v-model="resetPasswordData.motDePasse"
-                @blur="v.motDePasse.$touch()"
+                :class="['form-control', { 'is-invalid': v.password.$error }]"
+                id="confirmPassword"
+                v-model="resetPasswordData.password"
+                @blur="v.password.$touch()"
               />
-              <div class="invalid-feedback" v-if="v.motDePasse.$error">
-                {{ v.motDePasse.$errors[0].$message }}
+              <div class="invalid-feedback" v-if="v.password.$error">
+                {{ v.password.$errors[0].$message }}
               </div>
             </div>
           </div>
           <div class="d-flex flex-row justify-content-center mb-3">
             <div class="form-group w-90">
-              <label for="motDePasse" class="fw-bold ms-3"
+              <label for="password" class="fw-bold ms-3"
                 >Confirmer le nouveau mot de passe</label
               >
               <input
                 type="password"
                 :class="[
                   'form-control',
-                  { 'is-invalid': v.confirmMotDePasse.$error },
+                  { 'is-invalid': v.confirmPassword.$error },
                 ]"
-                id="motDePasse"
-                v-model="resetPasswordData.confirmMotDePasse"
-                @blur="v.confirmMotDePasse.$touch()"
+                id="password"
+                v-model="resetPasswordData.confirmPassword"
+                @blur="v.confirmPassword.$touch()"
               />
-              <div class="invalid-feedback" v-if="v.confirmMotDePasse.$error">
-                {{ v.confirmMotDePasse.$errors[0].$message }}
+              <div class="invalid-feedback" v-if="v.confirmPassword.$error">
+                {{ v.confirmPassword.$errors[0].$message }}
               </div>
             </div>
           </div>
@@ -125,27 +125,27 @@ const messageMinLengthPassword = helpers.withMessage(
 );
 
 let resetPasswordData = reactive({
-  emailUser: "",
-  motDePasse: "",
-  confirmMotDePasse: "",
+  email: "",
+  password: "",
+  confirmPassword: "",
 });
 
 const messageSameAsPassword = helpers.withMessage(
   "Les mots de passe ne correspondent pas.",
-  sameAs(computed(() => resetPasswordData.motDePasse))
+  sameAs(computed(() => resetPasswordData.password))
 );
 
 let rules = computed(() => {
   return {
-    emailUser: {
+    email: {
       required: messageRequis,
       email: messageCourriel,
     },
-    motDePasse: {
+    password: {
       required: messageRequis,
       minLength: messageMinLengthPassword,
     },
-    confirmMotDePasse: {
+    confirmPassword: {
       required: messageRequis,
       sameAsPassword: messageSameAsPassword,
     },
