@@ -678,23 +678,32 @@ const store = createStore({
       commit("refreshUserData");
     },
 
-    async reinitialisePassword({ commit, state }) {
+    async reinitialisePassword({ commit, state }, resetPasswordData) {
       try {
-        const response = await state.api.get(
-          "/utilisateurs/reinitialiserMotDePasse"
+        const response = await state.api.post(
+          "/utilisateurs/reinitialiserMotDePasse",
+          resetPasswordData
         );
-        return response;
+        return {
+          success: true,
+          message: response.data,
+        };
       } catch (error) {
-        return "Erreur, veuillez réessayer";
+        return {
+          success: false,
+          message:
+            error.response?.data ||
+            "Erreur lors de la modification du mot de passe.",
+        };
       }
     },
   },
   getters: {
     isAdmin: (state) => {
-      console.log("Rôles dans le getter isAdmin:", state.roles);
+      // console.log("Rôles dans le getter isAdmin:", state.roles);
       const result =
         Array.isArray(state.roles) && state.roles.includes("Administrateur");
-      console.log("L'utilisateur est-il admin ?", result);
+      // console.log("L'utilisateur est-il admin ?", result);
       return result;
     },
     isClient: (state) =>
