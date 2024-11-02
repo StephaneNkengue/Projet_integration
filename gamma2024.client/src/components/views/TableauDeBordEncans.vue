@@ -29,35 +29,35 @@
     <div class="d-flex justify-content-between">
       <div class="d-flex flex-row w-100 px-4 me-2 gap-2 pt-3">
         <button
-        class="d-flex align-items-center text-center rounded btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
-        @click="changerNbEncanParPage(20)"
-        v-bind:disabled="encansParPage == 20"
-      >
-        20
-      </button>
-      <button
-        class="d-flex align-items-center text-center rounded btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
-        @click="changerNbEncanParPage(50)"
-        v-bind:disabled="encansParPage == 50"
-      >
-        50
-      </button>
-      <button
-        class="d-flex align-items-center text-center rounded btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
-        @click="changerNbEncanParPage(100)"
-        v-bind:disabled="encansParPage == 100"
-      >
-        100
-      </button>
-      <button
-        class="d-flex align-items-center text-center rounded btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
-        type="button"
-        @click="afficherTousEncans"
-        v-bind:disabled="encansParPage == nbEncansRecus"
-      >
-        Tous
-      </button>
-    </div>
+          class="d-flex align-items-center text-center rounded btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
+          @click="changerNbEncanParPage(20)"
+          v-bind:disabled="encansParPage == 20"
+        >
+          20
+        </button>
+        <button
+          class="d-flex align-items-center text-center rounded btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
+          @click="changerNbEncanParPage(50)"
+          v-bind:disabled="encansParPage == 50"
+        >
+          50
+        </button>
+        <button
+          class="d-flex align-items-center text-center rounded btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
+          @click="changerNbEncanParPage(100)"
+          v-bind:disabled="encansParPage == 100"
+        >
+          100
+        </button>
+        <button
+          class="d-flex align-items-center text-center rounded btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
+          type="button"
+          @click="afficherTousEncans"
+          v-bind:disabled="encansParPage == nbEncansRecus"
+        >
+          Tous
+        </button>
+      </div>
 
       <div class="d-flex me-1 gap-1 align-items-center">
         <label for="Recherche">Rechercher: </label>
@@ -197,7 +197,7 @@
 import { onMounted, ref, watch, reactive } from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
-import ConfirmDelete from "@/components/views/BoiteModale/ConfirmDeleteEncan.vue";
+import ConfirmDelete from "@/components/modals/ConfirmDeleteEncan.vue";
 
 const store = useStore();
 const router = useRouter();

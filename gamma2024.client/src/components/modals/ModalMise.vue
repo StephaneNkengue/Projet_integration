@@ -1,30 +1,63 @@
 <template>
-  <div class="modal fade" :id="`modalMise_${lot.id}`" tabindex="-1" :aria-labelledby="`modalMiseLabel_${lot.id}`" aria-hidden="true">
+  <div
+    class="modal fade"
+    :id="`modalMise_${lot.id}`"
+    tabindex="-1"
+    :aria-labelledby="`modalMiseLabel_${lot.id}`"
+    aria-hidden="true"
+  >
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" :id="`modalMiseLabel_${lot.id}`">Êtes-vous sûr de faire cette mise?</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          <h5 class="modal-title" :id="`modalMiseLabel_${lot.id}`">
+            Êtes-vous sûr de faire cette mise?
+          </h5>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
         </div>
         <div class="modal-body">
           <div class="d-flex flex-column gap-2">
-            <p class="mb-0">valeur : {{ lot.valeurEstimeMin }}$ - {{ lot.valeurEstimeMax }}$</p>
+            <p class="mb-0">
+              valeur : {{ lot.valeurEstimeMin }}$ - {{ lot.valeurEstimeMax }}$
+            </p>
             <p class="mb-0">mise actuelle : {{ lot.mise }}$</p>
             <div class="d-flex align-items-center gap-2">
               <span>votre mise :</span>
-              <button class="btn btn-outline-secondary" @click="decrementerMise" :disabled="montantMise <= miseMinimale">
+              <button
+                class="btn btn-outline-secondary"
+                @click="decrementerMise"
+                :disabled="montantMise <= miseMinimale"
+              >
                 -{{ pasEnchere }}$
               </button>
               <span class="fs-5">{{ montantMise }}$</span>
-              <button class="btn btn-outline-secondary" @click="incrementerMise">
+              <button
+                class="btn btn-outline-secondary"
+                @click="incrementerMise"
+              >
                 +{{ pasEnchere }}$
               </button>
             </div>
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-          <button type="button" class="btn btn-primary" @click="confirmerMise" :disabled="!isMiseValide">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            data-bs-dismiss="modal"
+          >
+            Annuler
+          </button>
+          <button
+            type="button"
+            class="btn btn-primary"
+            @click="confirmerMise"
+            :disabled="!isMiseValide"
+          >
             Miser
           </button>
         </div>
@@ -34,19 +67,18 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, watch } from 'vue';
-import { useStore } from 'vuex';
-import { useRouter } from 'vue-router';
-import 'bootstrap/dist/js/bootstrap.bundle.min.js';
+import { ref, computed, onMounted, watch } from "vue";
+import { useStore } from "vuex";
+import { useRouter } from "vue-router";
 
 const props = defineProps({
   lot: {
     type: Object,
-    required: true
-  }
+    required: true,
+  },
 });
 
-const emit = defineEmits(['miseConfirmee']);
+const emit = defineEmits(["miseConfirmee"]);
 
 const store = useStore();
 const router = useRouter();
@@ -55,17 +87,17 @@ let modalInstance = null;
 
 // Fonction pour calculer le pas d'enchère
 const calculerPasEnchere = (valeur) => {
-  if (valeur <= 199.00) return 10.00;
-  if (valeur <= 499.00) return 25.00;
-  if (valeur <= 999.00) return 50.00;
-  if (valeur <= 1999.00) return 100.00;
-  if (valeur <= 4999.00) return 200.00;
-  if (valeur <= 9999.00) return 250.00;
-  if (valeur <= 19999.00) return 500.00;
-  if (valeur <= 49999.00) return 1000.00;
-  if (valeur <= 99999.00) return 2000.00;
-  if (valeur <= 499999.00) return 5000.00;
-  return 10000.00;
+  if (valeur <= 199.0) return 10.0;
+  if (valeur <= 499.0) return 25.0;
+  if (valeur <= 999.0) return 50.0;
+  if (valeur <= 1999.0) return 100.0;
+  if (valeur <= 4999.0) return 200.0;
+  if (valeur <= 9999.0) return 250.0;
+  if (valeur <= 19999.0) return 500.0;
+  if (valeur <= 49999.0) return 1000.0;
+  if (valeur <= 99999.0) return 2000.0;
+  if (valeur <= 499999.0) return 5000.0;
+  return 10000.0;
 };
 
 const pasEnchere = computed(() => {
@@ -92,18 +124,18 @@ const decrementerMise = () => {
 };
 
 const confirmerMise = async () => {
-  const response = await store.dispatch('placerMise', {
+  const response = await store.dispatch("placerMise", {
     idLot: props.lot.id,
-    montant: montantMise.value
+    montant: montantMise.value,
   });
 
   if (response.success) {
-    emit('miseConfirmee', montantMise.value);
+    emit("miseConfirmee", montantMise.value);
     modalInstance.hide();
   } else {
     modalInstance.hide();
-    
-    const modalElement = document.createElement('div');
+
+    const modalElement = document.createElement("div");
     modalElement.innerHTML = `
       <div class="modal fade" id="modalErreurConnexion" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
@@ -126,16 +158,22 @@ const confirmerMise = async () => {
     `;
     document.body.appendChild(modalElement);
 
-    const modalErreur = new bootstrap.Modal(document.getElementById('modalErreurConnexion'));
+    const modalErreur = new bootstrap.Modal(
+      document.getElementById("modalErreurConnexion")
+    );
     modalErreur.show();
 
-    document.getElementById('btnRedirigerConnexion').addEventListener('click', () => {
-      router.push('/connexion');
-    });
+    document
+      .getElementById("btnRedirigerConnexion")
+      .addEventListener("click", () => {
+        router.push("/connexion");
+      });
 
-    document.getElementById('modalErreurConnexion').addEventListener('hidden.bs.modal', () => {
-      document.body.removeChild(modalElement);
-    });
+    document
+      .getElementById("modalErreurConnexion")
+      .addEventListener("hidden.bs.modal", () => {
+        document.body.removeChild(modalElement);
+      });
   }
 };
 
@@ -143,7 +181,7 @@ onMounted(() => {
   const modalElement = document.getElementById(`modalMise_${props.lot.id}`);
   modalInstance = new bootstrap.Modal(modalElement);
 
-  modalElement.addEventListener('hidden.bs.modal', () => {
+  modalElement.addEventListener("hidden.bs.modal", () => {
     montantMise.value = miseMinimale.value;
   });
 
@@ -151,20 +189,24 @@ onMounted(() => {
 });
 
 // Ajouter un watch sur les props
-watch(() => props.lot, (newLot) => {
-  console.log("Lot mis à jour:", newLot);
-  // Réinitialiser le montant de mise quand le lot change
-  if (modalInstance) {
-    montantMise.value = miseMinimale.value;
-  }
-}, { deep: true });
+watch(
+  () => props.lot,
+  (newLot) => {
+    console.log("Lot mis à jour:", newLot);
+    // Réinitialiser le montant de mise quand le lot change
+    if (modalInstance) {
+      montantMise.value = miseMinimale.value;
+    }
+  },
+  { deep: true }
+);
 
 defineExpose({
   show: () => {
     montantMise.value = miseMinimale.value; // Réinitialiser la mise à l'ouverture
     modalInstance.show();
   },
-  hide: () => modalInstance.hide()
+  hide: () => modalInstance.hide(),
 });
 </script>
 
@@ -186,4 +228,4 @@ defineExpose({
 .gap-2 {
   gap: 0.75rem !important;
 }
-</style> 
+</style>
