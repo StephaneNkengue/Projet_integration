@@ -1,15 +1,22 @@
 <template>
   <div class="container mt-5">
     <h1 class="text-center mb-4 fw-bold display-4">Gestion des vendeurs</h1>
-
+    <h3 class="text-center">Rechercher un vendeur</h3>
+    <input
+      v-model="searchQuery"
+      class="form-control row col-10 ms-1"
+      type="search"
+      placeholder="Rechercher un vendeur"
+      aria-label="Search"
+    />
     <router-link
       to="/vendeurcreation"
-      class="btn btn-lg btn-block mb-4 w-100 bleuMarinSecondaireFond text-white"
+      class="btn btn-lg btn-block mb-4 w-100 bleuMarinSecondaireFond text-white mt-5"
     >
       Ajouter un vendeur
     </router-link>
 
-    <table class="table table-striped table-borderless text-center">
+    <table class="table table-striped table-borderless text-center mb-5">
       <thead class="table-dark">
         <tr>
           <th scope="col">#</th>
@@ -21,22 +28,28 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="(vendeur, index) in vendeursAffichage" :key="vendeur.id">
-          <th scope="row">{{ index + 1 }}</th>
-          <td>{{ vendeur.nom }}</td>
-          <td>{{ vendeur.prenom }}</td>
-          <td>{{ vendeur.courriel }}</td>
-          <td>{{ vendeur.telephone }}</td>
+        <tr v-for="(vendeur, index) in filteredVendeurs" :key="vendeur.id">
+          <th scope="row" class="align-middle">{{ index + 1 }}</th>
+          <td class="align-middle">{{ vendeur.nom }}</td>
+          <td class="align-middle">{{ vendeur.prenom }}</td>
+          <td class="align-middle">{{ vendeur.courriel }}</td>
+          <td class="align-middle">{{ vendeur.telephone }}</td>
           <td>
-            <router-link
-              :to="{
-                name: 'vendeurModification',
-                params: { id: vendeur.id.toString() },
-              }"
-              class="text-decoration-none"
-            >
-              <span class="btn-like-field">Modifier</span>
-            </router-link>
+            <button class="btn bleuMarinSecondaireFond px-3 me-3">
+              <router-link
+                :to="{
+                  name: 'vendeurModification',
+                  params: { id: vendeur.id.toString() },
+                }"
+                class="text-decoration-none"
+              >
+                <img
+                  src="/public/icons/Edit_icon.png"
+                  class="img-fluid"
+                  alt="..."
+                />
+              </router-link>
+            </button>
           </td>
         </tr>
       </tbody>
@@ -50,9 +63,10 @@ import { useStore } from "vuex";
 
 const store = useStore();
 const vendeurs = ref(null);
+const searchQuery = ref("");
 
 const vendeursAffichage = computed(() => {
-  if (vendeurs.value && vendeurs.value) {
+  if (vendeurs.value) {
     return vendeurs.value;
   }
   return [];
@@ -65,34 +79,46 @@ onMounted(async () => {
     console.error("Erreur lors de la récupération des vendeurs:", error);
   }
 });
+
+const filteredVendeurs = computed(() => {
+  return vendeursAffichage.value.filter((vendeur) => {
+    const searchLower = searchQuery.value.toLowerCase();
+    return (
+      vendeur.nom.toLowerCase().includes(searchLower) ||
+      vendeur.prenom.toLowerCase().includes(searchLower) ||
+      vendeur.courriel.toLowerCase().includes(searchLower) ||
+      vendeur.telephone.toLowerCase().includes(searchLower)
+    );
+  });
+});
 </script>
 
 <style scoped>
 .bleuMarinSecondaireFond {
-  background-color: #1e3a8a; /* Assurez-vous que cette couleur correspond à celle de votre navbar */
+  background-color: #1e3a8a;
   border-color: #1e3a8a;
 }
 .bleuMarinSecondaireFond:hover {
-  background-color: #4d6dc4; /* Une teinte légèrement plus foncée pour l'effet hover */
+  background-color: #4d6dc4;
   border-color: #1e3a8a;
 }
 
 /* Ajoutez ces styles pour le texte */
 .container {
-  font-family: Arial, sans-serif; /* Utilisez la même police que votre navbar */
+  font-family: Arial, sans-serif;
 }
 
 h1,
 .btn {
-  color: #ffffff; /* Couleur du texte blanc, ajustez si nécessaire */
+  color: #ffffff;
 }
 
 .table {
-  color: #333333; /* Couleur du texte foncé pour le contenu du tableau */
+  color: #333333;
 }
 
 h1 {
-  color: #1e3a8a; /* Assurez-vous que cette couleur est visible sur votre fond */
+  color: #1e3a8a;
 }
 
 table,
@@ -126,8 +152,25 @@ input {
 }
 
 /* Ajustez l'espacement entre les lignes si nécessaire */
-.table-striped tbody tr {
+.table-striped {
   margin-bottom: 3px;
   padding-top: 3px;
+}
+
+img {
+  width: 25px;
+  height: 30px;
+}
+
+th {
+  font-size: 18px;
+}
+
+td {
+  font-size: 16px;
+}
+
+.btn_edit:hover {
+  background-color: #243e5f;
 }
 </style>

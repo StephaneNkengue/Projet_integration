@@ -3,13 +3,13 @@
     <h3 class="text-center">Rechercher un membre</h3>
     <input
       v-model="searchQuery"
-      class="form-control row col-10 ms-4"
+      class="form-control row col-10 ms-1"
       type="search"
       placeholder="Rechercher un membre"
       aria-label="Search"
     />
     <h1 class="text-center mt-5">Liste des membres</h1>
-    <table class="table table-striped mt-5 col-md-12 text-center">
+    <table class="table table-striped mt-5 mb-5 col-md-12 text-center">
       <thead>
         <tr>
           <th scope="col">Nom</th>
@@ -22,18 +22,18 @@
       </thead>
       <tbody class="fs-6">
         <tr v-for="membre in filteredMembres" :key="membre.id">
-          <td>{{ membre.name }}</td>
-          <td>{{ membre.firstName }}</td>
-          <td>{{ membre.userName }}</td>
-          <td>{{ membre.email }}</td>
-          <td>
+          <td class="align-middle">{{ membre.name }}</td>
+          <td class="align-middle">{{ membre.firstName }}</td>
+          <td class="align-middle">{{ membre.userName }}</td>
+          <td class="align-middle">{{ membre.email }}</td>
+          <td class="align-middle">
             <span>
               <button class="btn btn-info" @click="detailsDuMembre(membre.id)">
                 <img src="/images/ice.png" class="img-fluid" alt="..." />
               </button>
             </span>
           </td>
-          <td>
+          <td class="align-middle">
             <span v-if="membre.estBloque">
               <button class="btn btn-danger" @click="debloquerUnMembre(membre)">
                 <img src="/images/Locked.png" class="img-fluid" alt="..." />
@@ -58,7 +58,7 @@ import { useRouter } from "vue-router";
 
 const store = useStore();
 const router = useRouter();
-let tousLesMembres = ref([]);
+let mesMembres = ref([]);
 const searchQuery = ref("");
 
 onMounted(async () => {
@@ -85,7 +85,7 @@ const debloquerUnMembre = async (membre) => {
 
 const updateData = async function () {
   const response = await store.dispatch("ObtenirTousLesMembres");
-  tousLesMembres.value = response.map((membre) => ({
+  mesMembres.value = response.map((membre) => ({
     ...membre,
   }));
 };
@@ -101,6 +101,13 @@ const filteredMembres = computed(() => {
       membre.email.toLowerCase().includes(searchLower)
     );
   });
+});
+
+const tousLesMembres = computed(() => {
+  if (mesMembres.value) {
+    return mesMembres.value;
+  }
+  return [];
 });
 </script>
 

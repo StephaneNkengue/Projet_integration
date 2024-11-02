@@ -172,8 +172,16 @@ namespace Gamma2024.Server.Services
 
         public static string ParseCodePostal(string code)
         {
-            var parts = code.Split(' ');
-            return parts[0] + parts[1];
+            // Nettoyer le code postal de tout espace supplémentaire
+            code = code?.Trim();
+            
+            if (string.IsNullOrEmpty(code))
+            {
+                return string.Empty;
+            }
+
+            // Supprimer tous les espaces du code postal
+            return code.Replace(" ", "").ToUpper();
         }
     }
 }
