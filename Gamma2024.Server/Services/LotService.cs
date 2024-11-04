@@ -589,5 +589,15 @@ namespace Gamma2024.Server.Services
                 return (false, $"Erreur lors de la mise : {ex.Message}");
             }
         }
+
+        public async Task<IEnumerable<int>> GetUserBids(string userId)
+        {
+            var userBids = await _context.Lots
+                .Where(l => l.IdClientMise == userId)
+                .Select(l => l.Id)
+                .ToListAsync();
+            
+            return userBids;
+        }
     }
 }

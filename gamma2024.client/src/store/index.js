@@ -9,7 +9,8 @@ const store = createStore({
     isLoggedIn: false,
     user: null,
     socket: null,
-    lots: []
+    lots: [],
+    userBids: []
   },
   mutations: {
     setLoggedIn(state, value) {
@@ -92,6 +93,14 @@ const store = createStore({
     },
     SET_SOCKET(state, socket) {
       state.socket = socket;
+    },
+    addUserBid(state, lotId) {
+      if (!state.userBids.includes(lotId)) {
+        state.userBids.push(lotId);
+      }
+    },
+    setUserBids(state, bids) {
+      state.userBids = bids;
     }
   },
   actions: {
@@ -719,9 +728,8 @@ const store = createStore({
     forceUpdate({ commit }) {
       commit("refreshUserData");
     },
-    async placerMise({ state }, { idLot, montant }) {
+    async placerMise({ state, commit }, { idLot, montant }) {
       try {
-
         const miseData = {
           idLot: idLot,
           montant: parseFloat(montant),
@@ -729,6 +737,9 @@ const store = createStore({
         };
 
         const response = await state.api.post('/lots/placerMise', miseData);
+        if (response.data.success) {
+          commit('addUserBid', idLot);
+        }
         return { success: true, message: response.data.message };
       } catch (error) {
         console.log("Erreur lors de la mise:", error.response || error);
@@ -755,6 +766,15 @@ const store = createStore({
       };
 
       commit('SET_SOCKET', socket);
+    },
+    async fetchUserBids({ state, commit }) {
+      if (!state.user?.id) return;
+      try {
+        const response = await state.api.get(`/lots/userBids/${state.user.id}`);
+        commit('setUserBids', response.data);
+      } catch (error) {
+        console.error("Erreur lors du chargement des mises:", error);
+      }
     }
   },
   getters: {
@@ -784,6 +804,9 @@ const store = createStore({
       }
       return "/gamma2024.client/public/icons/Avatar.png";
     },
+    hasUserBidOnLot: (state) => (lotId) => {
+      return state.userBids.includes(lotId);
+    }
   },
 });
 

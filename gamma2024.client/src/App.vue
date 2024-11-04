@@ -1,6 +1,16 @@
 <script setup>
     import BarreDeNavigation from './components/views/BarreDeNavigation.vue'
     import PiedDePage from './components/views/PiedDePage.vue'
+    import { onMounted } from 'vue';
+    import { useStore } from 'vuex';
+
+    const store = useStore();
+
+    onMounted(async () => {
+        if (store.state.isLoggedIn) {
+            await store.dispatch('fetchUserBids');
+        }
+    });
 </script>
 
 <template>

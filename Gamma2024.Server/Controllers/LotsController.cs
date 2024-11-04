@@ -174,5 +174,18 @@ namespace Gamma2024.Server.Controllers
                 return BadRequest(new { success = false, message = message });
         }
 
+        [Authorize(Roles = ApplicationRoles.CLIENT)]
+        [HttpGet("userBids/{userId}")]
+        public async Task<IActionResult> GetUserBids(string userId)
+        {
+            if (userId != User.FindFirst(ClaimTypes.NameIdentifier)?.Value)
+            {
+                return Unauthorized();
+            }
+
+            var userBids = await _lotService.GetUserBids(userId);
+            return Ok(userBids);
+        }
+
     }
 }

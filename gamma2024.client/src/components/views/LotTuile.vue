@@ -1,6 +1,7 @@
 <template>
   <router-link
     class="text-decoration-none card d-flex align-self-stretch"
+    :class="{ 'user-bid': hasUserBidOnLot }"
     :to="{ name: 'DetailsLot', params: { idLot: lot.id } }"
   >
     <div class="align-self-stretch">
@@ -132,6 +133,11 @@ const onMiseConfirmee = (montant) => {
   // Autres actions après une mise réussie...
 };
 
+// Ajouter le computed pour vérifier si l'utilisateur a misé
+const hasUserBidOnLot = computed(() => {
+  return store.getters.hasUserBidOnLot(props.lotRecu.id);
+});
+
 </script>
 
 <style scoped>
@@ -141,5 +147,10 @@ const onMiseConfirmee = (montant) => {
 
 .card {
   box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.2), 0 3px 5px 0 rgba(0, 0, 0, 0.19);
+}
+
+.user-bid {
+  border: 2px solid #4CAF50;
+  box-shadow: 0 0 10px rgba(76, 175, 80, 0.3);
 }
 </style>

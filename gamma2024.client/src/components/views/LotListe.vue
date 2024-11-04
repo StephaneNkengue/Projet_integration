@@ -3,7 +3,7 @@
     class="text-decoration-none"
     :to="{ name: 'DetailsLot', params: { idLot: lot.id } }"
   >
-    <div class="card">
+    <div class="card" :class="{ 'user-bid': hasUserBidOnLot }">
       <div class="card-body">
         <div
           class="d-flex flex-md-row flex-column flex-wrap justify-content-between gap-1"
@@ -140,6 +140,15 @@ const onMiseConfirmee = (montant) => {
   lot.value.mise = montant;
   // Autres actions après une mise réussie...
 };
+
+const hasUserBidOnLot = computed(() => {
+  return store.getters.hasUserBidOnLot(props.lotRecu.id);
+});
 </script>
-<style scoped></style>
+<style scoped>
+.user-bid {
+  border: 2px solid #4CAF50;
+  box-shadow: 0 0 10px rgba(76, 175, 80, 0.3);
+}
+</style>
 
