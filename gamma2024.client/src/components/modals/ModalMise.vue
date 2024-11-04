@@ -59,6 +59,10 @@ const userHasBid = computed(() => {
   return store.getters.hasUserBidOnLot(props.lot.id);
 });
 
+const getMiseInitiale = computed(() => {
+  return props.lot.mise ? props.lot.mise : props.lot.prixOuverture;
+});
+
 // Fonction pour calculer le pas d'enchère
 const calculerPasEnchere = (valeur) => {
   if (valeur <= 199.00) return 10.00;
@@ -78,12 +82,14 @@ const pasEnchere = computed(() => {
   return calculerPasEnchere(props.lot.valeurEstimeMin);
 });
 
-const miseMinimale = computed(() => {
-  return (props.lot.mise || 0) + pasEnchere.value;
+const getMiseMinimale = computed(() => {
+  // Si la mise actuelle est 0, utiliser le prix d'ouverture
+  const miseBase = props.lot.mise > 0 ? props.lot.mise : props.lot.prixOuverture;
+  return miseBase + pasEnchere.value;
 });
 
 const isMiseValide = computed(() => {
-  return montantMise.value >= miseMinimale.value;
+  return montantMise.value >= getMiseMinimale.value;
 });
 
 const incrementerMise = () => {
@@ -92,7 +98,7 @@ const incrementerMise = () => {
 
 const decrementerMise = () => {
   const nouveauMontant = montantMise.value - pasEnchere.value;
-  if (nouveauMontant >= miseMinimale.value) {
+  if (nouveauMontant >= getMiseMinimale.value) {
     montantMise.value = nouveauMontant;
   }
 };
@@ -161,12 +167,13 @@ const confirmerMise = async () => {
 onMounted(() => {
   const modalElement = document.getElementById(`modalMise_${props.lot.id}`);
   modalInstance = new bootstrap.Modal(modalElement);
-  montantMise.value = miseMinimale.value;
+  // Initialiser avec la mise minimale calculée
+  montantMise.value = getMiseMinimale.value;
 });
 
 defineExpose({
   show: () => {
-    montantMise.value = miseMinimale.value;
+    montantMise.value = getMiseMinimale.value;
     modalInstance.show();
   },
   hide: () => modalInstance.hide()

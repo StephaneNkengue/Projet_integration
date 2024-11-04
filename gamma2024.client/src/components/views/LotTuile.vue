@@ -74,11 +74,13 @@ const urlApi = ref("/api");
 const lotPourModal = computed(() => ({
   id: props.lotRecu.id,
   numero: props.lotRecu.numero,
+  mise: props.lotRecu.mise,
+  prixOuverture: props.lotRecu.prixOuverture,
+  prixMinPourVente: props.lotRecu.prixMinPourVente,
   description: props.lotRecu.description,
   valeurEstimeMin: props.lotRecu.valeurEstimeMin,
   valeurEstimeMax: props.lotRecu.valeurEstimeMax,
   artiste: props.lotRecu.artiste,
-  mise: props.lotRecu.mise,
   estVendu: props.lotRecu.estVendu,
   dateFinVente: props.lotRecu.dateFinVente,
   estLivrable: props.lotRecu.estLivrable,
@@ -123,7 +125,6 @@ onMounted(async () => {
 
 const ouvrirModalMise = (event) => {
   event.stopPropagation();
-  console.log("Ouverture modal pour lot:", lotPourModal.value);
   modalMise.value.show();
 };
 

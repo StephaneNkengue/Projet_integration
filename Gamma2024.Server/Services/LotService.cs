@@ -322,26 +322,35 @@ namespace Gamma2024.Server.Services
                 var lots = _context.Lots
                     .Include(l => l.EncanLots)
                     .Include(l => l.Photos)
-                    .Where(l => l.EncanLots.Any(el => el.IdEncan == idEncan)) // Modifié ici
+                    .Where(l => l.EncanLots.Any(el => el.IdEncan == idEncan))
                     .Select(l => new LotEncanAffichageVM()
                     {
                         Id = l.Id,
                         Numero = l.Numero,
-                        ValeurEstimeMax = l.ValeurEstimeMax,
-                        ValeurEstimeMin = l.ValeurEstimeMin,
+                        ValeurEstimeMax = (decimal)l.ValeurEstimeMax,
+                        ValeurEstimeMin = (decimal)l.ValeurEstimeMin,
+                        PrixOuverture = (decimal)l.PrixOuverture,
+                        PrixMinPourVente = (decimal)l.PrixMinPourVente,
                         Artiste = l.Artiste,
                         Mise = l.Mise,
                         EstVendu = l.EstVendu,
                         DateFinVente = l.DateFinVente,
-                        Photos = l.Photos,
+                        Photos = l.Photos.ToList(),
                         Description = l.Description,
                         EstLivrable = l.EstLivrable,
                         Hauteur = l.Hauteur,
-                        Largeur = l.Largeur
+                        Largeur = l.Largeur,
+                        IdCategorie = l.IdCategorie,
+                        Categorie = l.Categorie.Nom,
+                        IdMedium = l.IdMedium,
+                        Medium = l.Medium.Type,
+                        IdVendeur = l.IdVendeur.ToString(),
+                        Vendeur = $"{l.Vendeur.Prenom} {l.Vendeur.Nom}",
+                        IdClientMise = l.IdClientMise ?? "",
+                        SeraLivree = l.SeraLivree ?? false
                     })
                     .ToList();
 
-                Console.WriteLine($"Lots trouvés dans le service: {lots.Count}");
                 return lots;
             }
             catch (Exception ex)

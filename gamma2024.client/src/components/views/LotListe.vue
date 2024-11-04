@@ -86,17 +86,19 @@ const urlApi = ref("/api");
 const lotPourModal = computed(() => ({
   id: props.lotRecu.id,
   numero: props.lotRecu.numero,
-  description: props.lotRecu.description,
-  valeurEstimeMin: props.lotRecu.valeurEstimeMin,
-  valeurEstimeMax: props.lotRecu.valeurEstimeMax,
-  artiste: props.lotRecu.artiste,
   mise: props.lotRecu.mise,
+  prixOuverture: props.lotRecu.prixOuverture,
+  prixMinPourVente: props.lotRecu.prixMinPourVente,
+  artiste: props.lotRecu.artiste,
+  hauteur: props.lotRecu.hauteur,
+  largeur: props.lotRecu.largeur,
   estVendu: props.lotRecu.estVendu,
   dateFinVente: props.lotRecu.dateFinVente,
   estLivrable: props.lotRecu.estLivrable,
-  largeur: props.lotRecu.largeur,
-  hauteur: props.lotRecu.hauteur,
-  photos: props.lotRecu.photos
+  valeurEstimeMin: props.lotRecu.valeurEstimeMin,
+  valeurEstimeMax: props.lotRecu.valeurEstimeMax,
+  photos: props.lotRecu.photos,
+  description: props.lotRecu.description,
 }));
 
 // Garder lot comme ref pour le template
