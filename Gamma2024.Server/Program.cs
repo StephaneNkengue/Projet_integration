@@ -3,12 +3,15 @@ using Gamma2024.Server.Interface;
 using Gamma2024.Server.Models;
 using Gamma2024.Server.Services;
 using Gamma2024.Server.Services.Email;
+using Gamma2024.Server.WebSockets;
+using jsreport.AspNetCore;
+using jsreport.Binary;
+using jsreport.Local;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
-using Gamma2024.Server.WebSockets;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -106,6 +109,12 @@ builder.Services.AddSession(options =>
 });
 
 builder.Services.AddSingleton<WebSocketHandler>();
+
+builder.Services.AddJsReport(new LocalReporting()
+    .UseBinary(JsReportBinary.GetBinary())
+    .KillRunningJsReportProcesses()
+    .AsUtility()
+    .Create());
 
 var app = builder.Build();
 
