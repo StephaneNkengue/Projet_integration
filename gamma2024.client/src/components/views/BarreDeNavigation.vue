@@ -191,7 +191,6 @@
         </div>
     </header>
 </template>
-
 <script setup>
     import { computed, watch, ref } from "vue";
     import { useStore } from "vuex";
@@ -256,7 +255,6 @@
         });
     });
 </script>
-
 <style scoped>
     .ms-7 {
         margin-left: 7.9rem;

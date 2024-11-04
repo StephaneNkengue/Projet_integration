@@ -3,6 +3,10 @@ using Gamma2024.Server.Interface;
 using Gamma2024.Server.Models;
 using Gamma2024.Server.Services;
 using Gamma2024.Server.Services.Email;
+using Gamma2024.Server.WebSockets;
+using jsreport.AspNetCore;
+using jsreport.Binary;
+using jsreport.Local;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -103,6 +107,14 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;
 });
 
+builder.Services.AddSingleton<WebSocketHandler>();
+
+builder.Services.AddJsReport(new LocalReporting()
+    .UseBinary(JsReportBinary.GetBinary())
+    .KillRunningJsReportProcesses()
+    .AsUtility()
+    .Create());
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -134,5 +146,12 @@ app.UseStaticFiles();
 //});
 
 app.MapFallbackToFile("index.html");
+
+var webSocketOptions = new WebSocketOptions
+{
+    KeepAliveInterval = TimeSpan.FromMinutes(2)
+};
+app.UseWebSockets(webSocketOptions);
+app.UseMiddleware<WebSocketMiddleware>();
 
 app.Run();

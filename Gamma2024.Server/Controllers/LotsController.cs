@@ -5,6 +5,7 @@ using Gamma2024.Server.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace Gamma2024.Server.Controllers
 {
@@ -144,6 +145,25 @@ namespace Gamma2024.Server.Controllers
             {
                 return null;
             }
+        }
+
+        [Authorize]
+        [HttpPost("placerMise")]
+        public async Task<IActionResult> PlacerMise([FromBody] MiseVM mise)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            // Récupérer l'ID de l'utilisateur connecté
+            mise.UserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(mise.UserId))
+                return Unauthorized();
+
+            var (success, message) = await _lotService.PlacerMise(mise);
+            if (success)
+                return Ok(new { success = true, message = message });
+            else
+                return BadRequest(new { success = false, message = message });
         }
 
     }
