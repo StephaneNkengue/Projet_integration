@@ -37,9 +37,9 @@
     color: #000000;
 }
 
-.lienEnTexteNoir:hover {
-    color: #6c757d;
-}
+    .lienEnTexteNoir:hover {
+        color: #6c757d;
+    }
 
 .imageDeFondEsquise {
     background-image: url('/images/DessinGris.PNG');
@@ -80,4 +80,16 @@
 
 .fs-7 {
     font-size: 0.89rem;
+}
+
+.p-tablist-tab-list {
+    border-bottom-style: solid !important;
+    border-top-style: none !important;
+    border-left-style: none !important;
+    border-right-style: none !important;
+    border-width: 1px !important;
+}
+
+.p-tabpanel {
+    display: contents !important;
 }
