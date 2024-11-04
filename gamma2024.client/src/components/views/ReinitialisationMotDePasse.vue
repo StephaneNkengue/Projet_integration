@@ -1,5 +1,16 @@
 <template>
   <div class="bg-image pt-5 imageDeFondEsquise">
+    <transition name="fade" class="transit">
+      <div
+        v-if="message"
+        :class="[
+          'alert',
+          message.type === 'success' ? 'alert-success' : 'alert-danger',
+        ]"
+      >
+        {{ message.text }}
+      </div>
+    </transition>
     <div
       class="container d-flex flex-column justify-content-start align-items-stretch bg-white bg-opacity-75 cadreBlanc"
     >
@@ -17,44 +28,50 @@
               <label for="email" class="fw-bold ms-3">Adresse courriel</label>
               <input
                 type="text"
-                class="form-control"
+                :class="['form-control', { 'is-invalid': v.email.$error }]"
                 id="email"
-                v-model="emailUser"
-                @blur="v.emailUser.$touch()"
+                v-model="resetPasswordData.email"
+                @blur="v.email.$touch()"
               />
-            </div>
-          </div>
-          <div class="d-flex flex-row justify-content-center mb-3">
-            <div class="form-group w-90">
-              <label for="confirmMotdepasse" class="fw-bold ms-3"
-                >Nouveau mot de passe</label
-              >
-              <input
-                type="password"
-                class="form-control"
-                id="confirmMotdepasse"
-                v-model="motDePasse"
-                @blur="v.motDePasse.$touch()"
-              />
-              <div class="invalid-feedback" v-if="v.motDePasse.$error">
-                {{ v.motDePasse.$errors[0].$message }}
+              <div class="invalid-feedback" v-if="v.email.$error">
+                {{ v.email.$errors[0].$message }}
               </div>
             </div>
           </div>
           <div class="d-flex flex-row justify-content-center mb-3">
             <div class="form-group w-90">
-              <label for="motDePasse" class="fw-bold ms-3"
+              <label for="confirmPassword" class="fw-bold ms-3"
+                >Nouveau mot de passe</label
+              >
+              <input
+                type="password"
+                :class="['form-control', { 'is-invalid': v.password.$error }]"
+                id="confirmPassword"
+                v-model="resetPasswordData.password"
+                @blur="v.password.$touch()"
+              />
+              <div class="invalid-feedback" v-if="v.password.$error">
+                {{ v.password.$errors[0].$message }}
+              </div>
+            </div>
+          </div>
+          <div class="d-flex flex-row justify-content-center mb-3">
+            <div class="form-group w-90">
+              <label for="password" class="fw-bold ms-3"
                 >Confirmer le nouveau mot de passe</label
               >
               <input
                 type="password"
-                class="form-control"
-                id="motDePasse"
-                v-model="confirmMotDePasse"
-                @blur="v.confirmMotDePasse.$touch()"
+                :class="[
+                  'form-control',
+                  { 'is-invalid': v.confirmPassword.$error },
+                ]"
+                id="password"
+                v-model="resetPasswordData.confirmPassword"
+                @blur="v.confirmPassword.$touch()"
               />
-              <div class="invalid-feedback" v-if="v.confirmMotDePasse.$error">
-                {{ v.confirmMotDePasse.$errors[0].$message }}
+              <div class="invalid-feedback" v-if="v.confirmPassword.$error">
+                {{ v.confirmPassword.$errors[0].$message }}
               </div>
             </div>
           </div>
@@ -95,8 +112,7 @@ import { useRouter } from "vue-router";
 const store = useStore();
 const router = useRouter();
 let isSubmitting = ref(false);
-let errorMessage = ref("");
-let successMessage = ref("");
+const message = ref(null);
 const messageRequis = helpers.withMessage("Ce champ est requis.", required);
 const messageCourriel = helpers.withMessage(
   "Veuillez entrer un courriel valide.",
@@ -109,27 +125,27 @@ const messageMinLengthPassword = helpers.withMessage(
 );
 
 let resetPasswordData = reactive({
-  emailUser: "",
-  motDePasse: "",
-  confirmMotDePasse: "",
+  email: "",
+  password: "",
+  confirmPassword: "",
 });
 
 const messageSameAsPassword = helpers.withMessage(
   "Les mots de passe ne correspondent pas.",
-  sameAs(computed(() => resetPasswordData.generalInfo.motDePasse))
+  sameAs(computed(() => resetPasswordData.password))
 );
 
 let rules = computed(() => {
   return {
-    emailUser: {
+    email: {
       required: messageRequis,
       email: messageCourriel,
     },
-    motDePasse: {
+    password: {
       required: messageRequis,
       minLength: messageMinLengthPassword,
     },
-    confirmMotDePasse: {
+    confirmPassword: {
       required: messageRequis,
       sameAsPassword: messageSameAsPassword,
     },
@@ -144,8 +160,13 @@ const resetPassword = async function () {
 
   if (!result) {
     isSubmitting.value = false;
-    errorMessage.value =
-      "Certaines informations du formulaire sont incorrectes";
+    message.value = {
+      type: "danger",
+      text: "Certaines informations du formulaire sont incorrectes",
+    };
+    setTimeout(() => {
+      message.value = null;
+    }, 3500);
     return;
   }
 
@@ -155,20 +176,23 @@ const resetPassword = async function () {
       resetPasswordData
     );
     if (response.success) {
-      successMessage.value = "Mot de passe changé avec succès !";
+      message.value = { type: "success", text: response.message };
 
       setTimeout(() => {
         router.push("/connexion");
-      }, 3500);
+      }, 4000);
     } else {
-      errorMessage.value =
-        response.message ||
-        "Une erreur est survenue lors de la création du compte.";
+      message.value = { type: "danger", text: response.message };
     }
   } catch (error) {
-    errorMessage.value =
-      "Une erreur est survenue lors de la création du compte.";
+    message.value = {
+      type: "danger",
+      text: "Une erreur est survenue lors de la création du compte.",
+    };
   } finally {
+    setTimeout(() => {
+      message.value = null;
+    }, 3500);
     isSubmitting.value = false;
   }
 };
@@ -224,9 +248,15 @@ const resetPassword = async function () {
   margin-bottom: 10px;
 }
 
+.transit {
+  margin: auto;
+  width: 600px;
+  margin-bottom: 15px;
+}
+
 .fade-enter-active,
 .fade-leave-active {
-  transition: opacity 1s ease;
+  transition: opacity 2s ease;
 }
 
 .fade-enter,
