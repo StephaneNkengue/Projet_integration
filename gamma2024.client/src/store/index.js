@@ -17,11 +17,34 @@ const store = createStore({
       localStorage.setItem("isLoggedIn", value);
     },
     setUser(state, user) {
-      state.user = user;
-      if (user) {
-        localStorage.setItem("user", JSON.stringify(user));
-      } else {
-        localStorage.removeItem("user");
+      console.log("Données reçues dans setUser:", user);
+      
+      // S'assurer que toutes les propriétés nécessaires sont présentes
+      state.user = {
+        id: user.id,
+        username: user.username,
+        name: user.name,
+        firstName: user.firstName,
+        email: user.email,
+        phoneNumber: user.phoneNumber,
+        pseudonym: user.pseudonym,
+        photo: user.photo,
+        roles: user.roles,
+        // Informations additionnelles si présentes
+        cardOwnerName: user.cardOwnerName,
+        cardNumber: user.cardNumber,
+        cardExpiryDate: user.cardExpiryDate,
+        civicNumber: user.civicNumber,
+        street: user.street,
+        apartment: user.apartment,
+        city: user.city,
+        province: user.province,
+        country: user.country,
+        postalCode: user.postalCode
+      };
+      
+      if (state.user) {
+        localStorage.setItem("user", JSON.stringify(state.user));
       }
     },
     setRoles(state, roles) {
@@ -39,9 +62,15 @@ const store = createStore({
     setToken(state, token) {
       state.token = token;
       if (token) {
-        localStorage.setItem("token", token);
+        localStorage.setItem('token', token);
+        if (state.api) {
+          state.api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+        }
       } else {
-        localStorage.removeItem("token");
+        localStorage.removeItem('token');
+        if (state.api) {
+          delete state.api.defaults.headers.common['Authorization'];
+        }
       }
     },
     SET_API(state, api) {
@@ -486,7 +515,11 @@ const store = createStore({
     async initializeStore({ commit, state }) {
       console.log("=== Initialisation du Store ===");
 
-      // Récupérer l'état depuis localStorage
+      // Initialiser d'abord l'API
+      const api = initApi(() => state.token);
+      commit("SET_API", api);
+
+      // Ensuite, récupérer l'état depuis localStorage
       const savedIsLoggedIn = localStorage.getItem("isLoggedIn") === "true";
       const savedToken = localStorage.getItem("token");
       const savedUser = JSON.parse(localStorage.getItem("user"));
@@ -494,12 +527,9 @@ const store = createStore({
 
       // Initialiser l'état
       commit("setLoggedIn", savedIsLoggedIn);
-      commit("setToken", savedToken);
       commit("setUser", savedUser);
       commit("setRoles", savedRoles);
-
-      const api = initApi(() => state.token);
-      commit("SET_API", api);
+      commit("setToken", savedToken); // Déplacer setToken après l'initialisation de l'API
     },
 
     async chercherTousEncansVisibles({ commit, state }) {
@@ -689,25 +719,26 @@ const store = createStore({
     forceUpdate({ commit }) {
       commit("refreshUserData");
     },
-    async placerMise({ commit, state }, { idLot, montant }) {
+    async placerMise({ state }, { idLot, montant }) {
       try {
-        const response = await state.api.post('/api/lots/placerMise', {
-          idLot,
-          montant
-        });
-        
-        if (response.data.success) {
-          // Mettre à jour le lot dans le store
-          commit('updateLotMise', { idLot, montant });
-          return { success: true, message: response.data.message };
-        }
-        return { success: false, message: response.data.message };
+
+        const miseData = {
+          idLot: idLot,
+          montant: parseFloat(montant),
+          userId: state.user?.id  
+        };
+
+        const response = await state.api.post('/lots/placerMise', miseData);
+        return { success: true, message: response.data.message };
       } catch (error) {
+        console.log("Erreur lors de la mise:", error.response || error);
         if (error.response?.status === 401) {
-          router.push('/connexion');
-          return { success: false, message: 'Veuillez vous connecter pour miser' };
+          return { success: false, needsAuth: true };
         }
-        return { success: false, message: error.response?.data?.message || 'Erreur lors de la mise' };
+        return { 
+          success: false, 
+          message: error.response?.data?.message || 'Erreur lors de la mise'
+        };
       }
     },
     initWebSocket({ commit }) {

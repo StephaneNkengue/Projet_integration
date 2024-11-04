@@ -35,7 +35,7 @@
         </div>
 
                 <p class="text-center mb-0">Valeur: {{(lot.valeurEstimeMin).toFixed(0)}}$ - {{(lot.valeurEstimeMax).toFixed(0)}}$</p>
-                <p class="text-center mb-0">Mise actuelle: {{mise.toFixed(0)}}$</p>
+                <p class="text-center mb-0">Mise actuelle: {{ lot.mise.toFixed(0) }}$</p>
 
         <div class="d-flex justify-content-around pt-2">
           <button

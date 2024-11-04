@@ -92,19 +92,14 @@ const decrementerMise = () => {
 };
 
 const confirmerMise = async () => {
-  const response = await store.dispatch('placerMise', {
-    idLot: props.lot.id,
-    montant: montantMise.value
-  });
-
-  if (response.success) {
-    emit('miseConfirmee', montantMise.value);
-    modalInstance.hide();
-  } else {
-    modalInstance.hide();
+  if (!store.state.isLoggedIn) {
+    const modalElement = document.getElementById(`modalMise_${props.lot.id}`);
+    const modal = bootstrap.Modal.getInstance(modalElement);
+    modal.hide();
     
-    const modalElement = document.createElement('div');
-    modalElement.innerHTML = `
+    // Créer et afficher la modal d'erreur de connexion
+    const modalErreurElement = document.createElement('div');
+    modalErreurElement.innerHTML = `
       <div class="modal fade" id="modalErreurConnexion" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
           <div class="modal-content">
@@ -124,7 +119,7 @@ const confirmerMise = async () => {
         </div>
       </div>
     `;
-    document.body.appendChild(modalElement);
+    document.body.appendChild(modalErreurElement);
 
     const modalErreur = new bootstrap.Modal(document.getElementById('modalErreurConnexion'));
     modalErreur.show();
@@ -134,8 +129,25 @@ const confirmerMise = async () => {
     });
 
     document.getElementById('modalErreurConnexion').addEventListener('hidden.bs.modal', () => {
-      document.body.removeChild(modalElement);
+      document.body.removeChild(modalErreurElement);
     });
+    
+    return;
+  }
+
+  const response = await store.dispatch('placerMise', {
+    idLot: props.lot.id,
+    montant: montantMise.value
+  });
+
+  if (response.success) {
+    emit('miseConfirmee', montantMise.value);
+    const modalElement = document.getElementById(`modalMise_${props.lot.id}`);
+    const modal = bootstrap.Modal.getInstance(modalElement);
+    modal.hide();
+  } else {
+    // Afficher un message d'erreur à l'utilisateur
+    alert(response.message || 'Erreur lors de la mise');
   }
 };
 

@@ -11,7 +11,6 @@ namespace Gamma2024.Server.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize(Roles = ApplicationRoles.ADMINISTRATEUR)]
     public class LotsController : ControllerBase
     {
         private readonly LotService _lotService;
@@ -23,6 +22,7 @@ namespace Gamma2024.Server.Controllers
             _context = context;
         }
 
+        [Authorize(Roles = ApplicationRoles.ADMINISTRATEUR)]
         [HttpGet("tous")]
         public async Task<ActionResult<IEnumerable<LotAffichageVM>>> ObtenirTousLots()
         {
@@ -30,6 +30,7 @@ namespace Gamma2024.Server.Controllers
             return Ok(lots.ToList());
         }
 
+        [Authorize(Roles = ApplicationRoles.ADMINISTRATEUR)]
         [HttpGet("{id}")]
         public async Task<ActionResult<LotAffichageVM>> ObtenirLot(int id)
         {
@@ -41,6 +42,7 @@ namespace Gamma2024.Server.Controllers
             return Ok(lot);
         }
 
+        [Authorize(Roles = ApplicationRoles.ADMINISTRATEUR)]
         [HttpPost("creer")]
         public async Task<ActionResult<LotAffichageVM>> CreerLot([FromForm] LotCreationVM lotVM)
         {
@@ -57,6 +59,7 @@ namespace Gamma2024.Server.Controllers
             return Ok(new { success = true, message = "Lot crée avec succès" });
         }
 
+        [Authorize(Roles = ApplicationRoles.ADMINISTRATEUR)]
         [HttpPut("modifier/{id}")]
         public async Task<IActionResult> ModifierLot(int id, LotModificationVM lotVM)
         {
@@ -68,6 +71,7 @@ namespace Gamma2024.Server.Controllers
             return Ok(new { success = true, message = "Lot modifié avec succès" });
         }
 
+        [Authorize(Roles = ApplicationRoles.ADMINISTRATEUR)]
         [HttpDelete("supprimer/{id}")]
         public async Task<IActionResult> SupprimerLot(int id)
         {
@@ -79,6 +83,7 @@ namespace Gamma2024.Server.Controllers
             return Ok(new { success = true, message = "Lot supprimé avec succès" });
         }
 
+        [Authorize(Roles = ApplicationRoles.ADMINISTRATEUR)]
         [HttpGet("categories")]
         public async Task<ActionResult<IEnumerable<Categorie>>> ObtenirCategories()
         {
@@ -86,6 +91,7 @@ namespace Gamma2024.Server.Controllers
             return Ok(categories);
         }
 
+        [Authorize(Roles = ApplicationRoles.ADMINISTRATEUR)]
         [HttpGet("vendeurs")]
         public async Task<ActionResult<IEnumerable<Vendeur>>> ObtenirVendeurs()
         {
@@ -93,6 +99,7 @@ namespace Gamma2024.Server.Controllers
             return Ok(vendeurs);
         }
 
+        [Authorize(Roles = ApplicationRoles.ADMINISTRATEUR)]
         [HttpGet("mediums")]
         public async Task<ActionResult<IEnumerable<Medium>>> ObtenirMediums()
         {
@@ -100,6 +107,7 @@ namespace Gamma2024.Server.Controllers
             return Ok(mediums);
         }
 
+        [Authorize(Roles = ApplicationRoles.ADMINISTRATEUR)]
         [HttpGet("encans")]
         public async Task<ActionResult<IEnumerable<Encan>>> ObtenirEncans()
         {
@@ -107,8 +115,8 @@ namespace Gamma2024.Server.Controllers
             return Ok(encans);
         }
 
-        [HttpGet("cherchertouslotsparencan/{idEncan}")]
         [AllowAnonymous]
+        [HttpGet("cherchertouslotsparencan/{idEncan}")]
         public async Task<ActionResult<ICollection<LotEncanAffichageVM>>> ChercherTousLotsParEncan(string idEncan)
         {
             try
@@ -123,16 +131,16 @@ namespace Gamma2024.Server.Controllers
             }
         }
 
-        [HttpGet("chercherTousLots")]
         [AllowAnonymous]
+        [HttpGet("chercherTousLots")]
         public ICollection<LotAffichageAdministrateurVM> ChercherTousLots()
         {
             ICollection<LotAffichageAdministrateurVM> lots = _lotService.ChercherTousLots();
             return lots;
         }
 
-        [HttpGet("chercherDetailsLotParId/{idLot}")]
         [AllowAnonymous]
+        [HttpGet("chercherDetailsLotParId/{idLot}")]
         public LotDetailsVM ChercherDetailsLotParId(string idLot)
         {
             try
@@ -147,7 +155,7 @@ namespace Gamma2024.Server.Controllers
             }
         }
 
-        [Authorize]
+        [Authorize(Roles = ApplicationRoles.CLIENT)]
         [HttpPost("placerMise")]
         public async Task<IActionResult> PlacerMise([FromBody] MiseVM mise)
         {
