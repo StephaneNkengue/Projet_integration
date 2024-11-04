@@ -1,12 +1,13 @@
 using Gamma2024.Server.Data;
 using Microsoft.AspNetCore.Mvc;
 using Stripe;
+using System.Security.Claims;
 
 namespace Gamma2024.Server.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class PaiementController : ControllerBase
+    public class PaiementController : Controller
     {
         private readonly ApplicationDbContext _context;
 
@@ -14,28 +15,40 @@ namespace Gamma2024.Server.Controllers
         {
             _context = context;
         }
-        [HttpGet]
-        public IActionResult Payer(int idFacture)
+
+        [HttpPost]
+        public ActionResult CreerPaymentIntent([FromBody] int idFacture)
         {
             var facture = _context.Factures.FirstOrDefault(f => f.Id == idFacture);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            if (facture == null)
+            if (facture == null || facture.IdClient != userId)
             {
                 return NotFound();
             }
 
+            if (facture.estPaye)
+            {
+                return NoContent();
+            }
+
             var prix = (long)facture.PrixFinal * 100;
 
-            var options = new ChargeCreateOptions
+            var paymentIntentService = new PaymentIntentService();
+            var paymentIntent = paymentIntentService.Create(new PaymentIntentCreateOptions
             {
                 Amount = prix,
                 Currency = "cad",
-                Source = "tok_amex",
-                Description = "Test",
-            };
-            var service = new ChargeService();
-            service.Create(options);
-            return Ok();
+                AutomaticPaymentMethods = new PaymentIntentAutomaticPaymentMethodsOptions
+                {
+                    Enabled = true,
+                },
+            });
+
+            return Json(new
+            {
+                clientSecret = paymentIntent.ClientSecret,
+            });
         }
     }
 }
