@@ -19,7 +19,7 @@
                 </TabList>
                 <TabPanels v-if="voirTabs=='parEncan'">
                     <TabPanel>
-                        <table class="table">
+                        <table class="table table-striped accordion">
                             <thead>
                                 <tr>
                                     <th scope="col">Encan</th>
@@ -28,9 +28,14 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
+                                <tr v-for="facture in listeFacturesParEncan" :key="facture.id" class="accordion-toggle collapsed"
+                                    :id="'accordion'+facture.id"
+                                    data-mdb-collapse-init
+                                    data-mdb-parent="#accordion1"
+                                    href="#collapseOne"
+                                    aria-controls="collapseOne">
                                     <th scope="row">1</th>
-                                    <td>Mark</td>
+                                    <td>{{facture.prenom}} {{facture.nom}}</td>
                                     <td>
                                         <button class="btn btn-info" @click="detailsDuMembre(membre.id)">
                                             <img src="/images/ice.png" class="img-fluid" alt="..." />
@@ -43,12 +48,48 @@
                 </TabPanels>
                 <TabPanels v-if="voirTabs=='parClient'">
                     <TabPanel>
-                        <p class="m-0">bb</p>
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Client</th>
+                                    <th scope="col">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="facture in listeFacturesParClient" :key="facture.id">
+                                    <td>{{facture.prenom}} {{facture.nom}}</td>
+                                    <td>
+                                        <button class="btn btn-info" @click="detailsDuMembre(membre.id)">
+                                            <img src="/images/ice.png" class="img-fluid" alt="..." />
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </TabPanel>
                 </TabPanels>
                 <TabPanels v-if="voirTabs=='parDate'">
                     <TabPanel>
-                        <p class="m-0">cc</p>
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Date</th>
+                                    <th scope="col">Client</th>
+                                    <th scope="col">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="facture in listeFacturesParDate" :key="facture.id">
+                                    <th>{{facture.dateAchat.split("T")[0]}}</th>
+                                    <td>{{facture.prenom}} {{facture.nom}}</td>
+                                    <td>
+                                        <button class="btn btn-info" @click="detailsDuMembre(membre.id)">
+                                            <img src="/images/ice.png" class="img-fluid" alt="..." />
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </TabPanel>
                 </TabPanels>
             </Tabs>
@@ -63,8 +104,13 @@
     import TabPanels from 'primevue/tabpanels';
     import TabPanel from 'primevue/tabpanel';
     import { onMounted, ref } from "vue";
+    import { useStore } from 'vuex';
 
+    const store = useStore();
     const voirTabs = ref("");
+    const listeFacturesParEncan = ref([]);
+    const listeFacturesParClient = ref([]);
+    const listeFacturesParDate = ref([]);
 
     onMounted(async () => {
         voirTabs.value = "parEncan";
@@ -79,6 +125,16 @@
                 this.className += " active";
             });
         }
+
+        try {
+            listeFacturesParEncan.value = await store.dispatch("fetchFactureInfoParEncan");
+            listeFacturesParClient.value = await store.dispatch("fetchFactureInfoParClient");
+            listeFacturesParDate.value = await store.dispatch("fetchFactureInfoParDate");
+        }
+        catch (error) {
+            console.log("Erreur factures" + error);
+        }
+
     });
 </script>
 
@@ -111,15 +167,15 @@
         color: white;
     }
 
-    .p-tab:hover {
-        background-color: #83a0ba;
-        color: white;
-    }
+        .p-tab:hover {
+            background-color: #83a0ba;
+            color: white;
+        }
 
-    .p-tab:not(.p-tab-active):not(.p-disabled):hover{
-        color: white;
-        background-color: #83a0ba;
-    }
+        .p-tab:not(.p-tab-active):not(.p-disabled):hover {
+            color: white;
+            background-color: #83a0ba;
+        }
 
     .active {
         background-color: #1C3755;

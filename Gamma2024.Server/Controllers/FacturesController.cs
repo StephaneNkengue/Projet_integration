@@ -1,6 +1,8 @@
 using Gamma2024.Server.Data;
 using Gamma2024.Server.Interface;
 using Gamma2024.Server.Models;
+using Gamma2024.Server.Services;
+using Gamma2024.Server.ViewModels;
 using jsreport.AspNetCore;
 using jsreport.Types;
 using Microsoft.AspNetCore.Identity;
@@ -9,19 +11,21 @@ using Microsoft.AspNetCore.Mvc;
 namespace Gamma2024.Server.Controllers
 {
     [ApiController]
-    [Route("api/facture")]
+    [Route("api/[controller]")]
     public class FacturesController : Controller
     {
         private readonly IJsReportMVCService _jsReportService;
         private readonly ApplicationDbContext _context;
         private readonly IEmailSender _emailSender;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly FactureService _factureService;
 
-        public FacturesController(IJsReportMVCService jsReportService, ApplicationDbContext context, UserManager<ApplicationUser> userManager)
+        public FacturesController(IJsReportMVCService jsReportService, ApplicationDbContext context, UserManager<ApplicationUser> userManager, FactureService factureService)
         {
             _jsReportService = jsReportService;
             _context = context;
             _userManager = userManager;
+            _factureService = factureService;
         }
 
         [HttpPost("generate")]
@@ -69,6 +73,27 @@ namespace Gamma2024.Server.Controllers
                 return BadRequest("Erreur lors de l'envoi de la facture");
             }
 
+        }
+
+        [HttpGet("chercherFacturesParEncan")]
+        public ICollection<FactureAffichageParEncanVM> ChercherFacturesParEncan()
+        {
+            ICollection<FactureAffichageParEncanVM> factures = _factureService.ChercherFacturesParEncan();
+            return factures;
+        }
+
+        [HttpGet("chercherFacturesParClient")]
+        public ICollection<FactureAffichageParClientVM> ChercherFacturesParClient()
+        {
+            ICollection<FactureAffichageParClientVM> factures = _factureService.ChercherFacturesParClient();
+            return factures;
+        }
+
+        [HttpGet("chercherFacturesParDate")]
+        public ICollection<FactureAffichageParDateVM> ChercherFacturesParDate()
+        {
+            ICollection<FactureAffichageParDateVM> factures = _factureService.ChercherFacturesParDate();
+            return factures;
         }
     }
 }
