@@ -28,9 +28,9 @@
     let elements;
     let stripe;
 
+    initialize()
     onMounted(async () => {
         stripe = Stripe("pk_test_51QFxRwDmrnnrqPfFn5CtjHhvCblvpE3iKzknTreLsdR4tA4eotRBtTBlRKwWJbbwhuqszvIMKTgcILWEskhWYlP900bvv1U1ly");
-        initialize();
 
         document.querySelector("#payment-form").addEventListener("submit", handleSubmit);
     })
@@ -42,7 +42,7 @@
         const appearance = {
             theme: 'stripe',
         };
-        elements = stripe.elements({ appearance, clientSecret });
+        elements = stripe.elements({ appearance, clientSecret, locale: "fr", loader: 'always' });
 
         const paymentElementOptions = {
             layout: "tabs",
@@ -60,7 +60,7 @@
             elements,
             confirmParams: {
                 // Make sure to change this to your payment completion page
-                return_url: "http://localhost:4242/complete.html",
+                return_url: "https://sqlinfocg.cegepgranby.qc.ca/2162067/",
             },
         });
 
@@ -90,10 +90,8 @@
         }, 4000);
     }
 
-    // Show a spinner on payment submission
     function setLoading(isLoading) {
         if (isLoading) {
-            // Disable the button and show a spinner
             document.querySelector("#submit").disabled = true;
             document.querySelector("#spinner").classList.remove("hidden");
             document.querySelector("#button-text").classList.add("hidden");
@@ -102,10 +100,6 @@
             document.querySelector("#spinner").classList.add("hidden");
             document.querySelector("#button-text").classList.remove("hidden");
         }
-    }
-
-    function setDpmCheckerLink(url) {
-        document.querySelector("#dpm-integration-checker").href = url;
     }
 </script>
 
