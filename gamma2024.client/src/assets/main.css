@@ -24,12 +24,16 @@
     background-color: #83a0ba;
 }
 
+.btnSurvolerBleuMoyenFond:enabled {
+    background-color: #83a0ba;
+}
+
 .btnDesactiverBleuMoyenFond:disabled {
     background-color: #617d9a;
 }
 
 .btnSurvolerBleuMoyenFond:focus {
-    background-color: #83a0ba;
+    background-color: #83a0ba !important;
 }
 
 
@@ -37,9 +41,9 @@
     color: #000000;
 }
 
-.lienEnTexteNoir:hover {
-    color: #6c757d;
-}
+    .lienEnTexteNoir:hover {
+        color: #6c757d;
+    }
 
 .imageDeFondEsquise {
     background-image: url('/images/DessinGris.PNG');
