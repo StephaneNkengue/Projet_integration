@@ -22,20 +22,32 @@
         <div class="modal-body">
           <div class="d-flex flex-column gap-3">
             <p class="fs-5 mb-0">lot {{ lot.numero }}</p>
-            <p class="fs-5 mb-0">votre mise : {{ userHasBid ? lot.mise.toFixed(0) + '$' : 'aucune mise' }}</p>
-            
+            <p class="fs-5 mb-0">
+              votre mise :
+              {{ userHasBid ? lot.mise.toFixed(0) + "$" : "aucune mise" }}
+            </p>
+
             <div class="d-flex flex-column gap-2">
               <p class="mb-0">Ma mise maximale à ne pas dépasser :</p>
               <div class="d-flex align-items-center gap-2">
-                <button class="btn btn-outline-secondary" @click="decrementerMise" :disabled="montantMise <= getMiseMinimale">
+                <button
+                  class="btn btn-outline-secondary"
+                  @click="decrementerMise"
+                  :disabled="montantMise <= getMiseMinimale"
+                >
                   -{{ pasEnchere }}$
                 </button>
                 <span class="fs-5">{{ montantMise }}$</span>
-                <button class="btn btn-outline-secondary" @click="incrementerMise">
+                <button
+                  class="btn btn-outline-secondary"
+                  @click="incrementerMise"
+                >
                   +{{ pasEnchere }}$
                 </button>
               </div>
-              <p class="text-muted small">Ajouter le montant maximum souhaité</p>
+              <p class="text-muted small">
+                Ajouter le montant maximum souhaité
+              </p>
             </div>
           </div>
         </div>
@@ -62,10 +74,9 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue';
-import { useStore } from 'vuex';
-import { useRouter } from 'vue-router';
-import 'bootstrap/dist/js/bootstrap.bundle.min.js';
+import { ref, computed, onMounted } from "vue";
+import { useStore } from "vuex";
+import { useRouter } from "vue-router";
 
 const props = defineProps({
   lot: {
@@ -108,7 +119,8 @@ const pasEnchere = computed(() => {
 
 const getMiseMinimale = computed(() => {
   // Si la mise actuelle est 0, utiliser le prix d'ouverture
-  const miseBase = props.lot.mise > 0 ? props.lot.mise : props.lot.prixOuverture;
+  const miseBase =
+    props.lot.mise > 0 ? props.lot.mise : props.lot.prixOuverture;
   return miseBase + pasEnchere.value;
 });
 
@@ -132,9 +144,9 @@ const confirmerMise = async () => {
     const modalElement = document.getElementById(`modalMise_${props.lot.id}`);
     const modal = bootstrap.Modal.getInstance(modalElement);
     modal.hide();
-    
+
     // Créer et afficher la modal d'erreur de connexion
-    const modalErreurElement = document.createElement('div');
+    const modalErreurElement = document.createElement("div");
     modalErreurElement.innerHTML = `
       <div class="modal fade" id="modalErreurConnexion" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
@@ -168,27 +180,29 @@ const confirmerMise = async () => {
         router.push("/connexion");
       });
 
-    document.getElementById('modalErreurConnexion').addEventListener('hidden.bs.modal', () => {
-      document.body.removeChild(modalErreurElement);
-    });
-    
+    document
+      .getElementById("modalErreurConnexion")
+      .addEventListener("hidden.bs.modal", () => {
+        document.body.removeChild(modalErreurElement);
+      });
+
     return;
   }
 
-  const response = await store.dispatch('placerMise', {
+  const response = await store.dispatch("placerMise", {
     idLot: props.lot.id,
-    montant: montantMise.value
+    montant: montantMise.value,
   });
 
   if (response.success) {
     // Afficher un message de confirmation à l'utilisateur
-    alert('Mise confirmée avec succès !');
+    alert("Mise confirmée avec succès !");
     const modalElement = document.getElementById(`modalMise_${props.lot.id}`);
     const modal = bootstrap.Modal.getInstance(modalElement);
     modal.hide();
   } else {
     // Afficher un message d'erreur à l'utilisateur
-    alert(response.message || 'Erreur lors de la mise');
+    alert(response.message || "Erreur lors de la mise");
   }
 };
 

@@ -10,7 +10,7 @@ const store = createStore({
     user: null,
     socket: null,
     lots: [],
-    userBids: []
+    userBids: [],
   },
   mutations: {
     setLoggedIn(state, value) {
@@ -19,7 +19,7 @@ const store = createStore({
     },
     setUser(state, user) {
       console.log("Données reçues dans setUser:", user);
-      
+
       // S'assurer que toutes les propriétés nécessaires sont présentes
       state.user = {
         id: user.id,
@@ -41,9 +41,9 @@ const store = createStore({
         city: user.city,
         province: user.province,
         country: user.country,
-        postalCode: user.postalCode
+        postalCode: user.postalCode,
       };
-      
+
       if (state.user) {
         localStorage.setItem("user", JSON.stringify(state.user));
       }
@@ -63,14 +63,16 @@ const store = createStore({
     setToken(state, token) {
       state.token = token;
       if (token) {
-        localStorage.setItem('token', token);
+        localStorage.setItem("token", token);
         if (state.api) {
-          state.api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+          state.api.defaults.headers.common[
+            "Authorization"
+          ] = `Bearer ${token}`;
         }
       } else {
-        localStorage.removeItem('token');
+        localStorage.removeItem("token");
         if (state.api) {
-          delete state.api.defaults.headers.common['Authorization'];
+          delete state.api.defaults.headers.common["Authorization"];
         }
       }
     },
@@ -86,7 +88,7 @@ const store = createStore({
     },
     updateLotMise(state, { idLot, montant }) {
       // Mettre à jour la mise dans la liste des lots
-      const lot = state.lots.find(l => l.id === idLot);
+      const lot = state.lots.find((l) => l.id === idLot);
       if (lot) {
         lot.mise = montant;
       }
@@ -101,7 +103,7 @@ const store = createStore({
     },
     setUserBids(state, bids) {
       state.userBids = bids;
-    }
+    },
   },
   actions: {
     async login({ commit, state }, userData) {
@@ -728,17 +730,18 @@ const store = createStore({
     forceUpdate({ commit }) {
       commit("refreshUserData");
     },
+
     async placerMise({ state, commit }, { idLot, montant }) {
       try {
         const miseData = {
           idLot: idLot,
           montant: parseFloat(montant),
-          userId: state.user?.id  
+          userId: state.user?.id,
         };
 
-        const response = await state.api.post('/lots/placerMise', miseData);
+        const response = await state.api.post("/lots/placerMise", miseData);
         if (response.data.success) {
-          commit('addUserBid', idLot);
+          commit("addUserBid", idLot);
         }
         return { success: true, message: response.data.message };
       } catch (error) {
@@ -746,57 +749,58 @@ const store = createStore({
         if (error.response?.status === 401) {
           return { success: false, needsAuth: true };
         }
-        return { 
-          success: false, 
-          message: error.response?.data?.message || 'Erreur lors de la mise'
+        return {
+          success: false,
+          message: error.response?.data?.message || "Erreur lors de la mise",
         };
       }
     },
     initWebSocket({ commit }) {
-      const socket = new WebSocket('ws://votre-serveur/ws');
-      
+      const socket = new WebSocket("ws://votre-serveur/ws");
+
       socket.onmessage = (event) => {
         const data = JSON.parse(event.data);
-        if (data.type === 'NOUVELLE_MISE') {
-          commit('updateLotMise', {
+        if (data.type === "NOUVELLE_MISE") {
+          commit("updateLotMise", {
             idLot: data.idLot,
-            montant: data.montant
+            montant: data.montant,
           });
         }
       };
 
-      commit('SET_SOCKET', socket);
+      commit("SET_SOCKET", socket);
     },
+
     async fetchUserBids({ state, commit }) {
       if (!state.user?.id) return;
       try {
         const response = await state.api.get(`/lots/userBids/${state.user.id}`);
-        commit('setUserBids', response.data);
+        commit("setUserBids", response.data);
       } catch (error) {
         console.error("Erreur lors du chargement des mises:", error);
       }
-    }
     },
+
     async reinitialisePassword({ commit, state }, resetPasswordData) {
-        try {
-            const response = await state.api.post(
-                "/utilisateurs/reinitialiserMotDePasse",
-                resetPasswordData
-            );
-            return {
-                success: true,
-                message: response.data,
-            };
-        } catch (error) {
-            return {
-                success: false,
-                message:
-                    error.response?.data ||
-                    "Erreur lors de la modification du mot de passe.",
-            };
-        }
+      try {
+        const response = await state.api.post(
+          "/utilisateurs/reinitialiserMotDePasse",
+          resetPasswordData
+        );
+        return {
+          success: true,
+          message: response.data,
+        };
+      } catch (error) {
+        return {
+          success: false,
+          message:
+            error.response?.data ||
+            "Erreur lors de la modification du mot de passe.",
+        };
+      }
     },
-},
+  },
   getters: {
     isAdmin: (state) => {
       // console.log("Rôles dans le getter isAdmin:", state.roles);
@@ -826,7 +830,7 @@ const store = createStore({
     },
     hasUserBidOnLot: (state) => (lotId) => {
       return state.userBids.includes(lotId);
-    }
+    },
   },
 });
 
