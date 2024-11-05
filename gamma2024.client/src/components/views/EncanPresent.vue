@@ -11,14 +11,14 @@
       <p>Chargement de l'encan en cours...</p>
     </div>
 
-        <div v-if="!chargement" class="w-100">
-            <h5 class="text-center" v-if="encan == ''">
-                Il n'y a présentement aucun encan en cours
-            </h5>
+    <div v-if="!chargement" class="w-100">
+      <h5 class="text-center" v-if="encan == ''">
+        Il n'y a présentement aucun encan en cours
+      </h5>
 
       <div v-else>
         <p class="text-center">
-          Date de debut de la soirée de cloture: {{ soireeDate }}
+          Date de début de la soirée de clotûre: {{ soireeDate }}
         </p>
         <AffichageLots :idEncan="encan.id" />
       </div>

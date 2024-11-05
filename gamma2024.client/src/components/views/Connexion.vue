@@ -65,7 +65,10 @@
           </div>
           <div class="d-flex flex-row justify-content-center mt-4 mb-1">
             <div class="form-group w-80">
-              <router-link to="/" class="text-decoration-none">
+              <router-link
+                :to="{ name: 'ReinitialiserMotDePasse' }"
+                class="text-decoration-none"
+              >
                 <p class="text-center lienEnTexteNoir">
                   J'ai oublié mon Mot de passe
                 </p>

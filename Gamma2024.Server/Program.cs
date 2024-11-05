@@ -6,7 +6,6 @@ using Gamma2024.Server.Services.Email;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 using Gamma2024.Server.WebSockets;
 using System.Text;
@@ -130,12 +129,14 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.UseStaticFiles();
-app.UseStaticFiles(new StaticFileOptions
-{
-    FileProvider = new PhysicalFileProvider(
-        Path.Combine(Directory.GetCurrentDirectory(), "wwwroot")),
-    RequestPath = ""
-});
+//app.UseStaticFiles(new StaticFileOptions
+//{
+//    FileProvider = new PhysicalFileProvider(
+//        Path.Combine(Directory.GetCurrentDirectory(), "wwwroot")),
+//    RequestPath = ""
+//});
+
+app.MapFallbackToFile("index.html");
 
 var webSocketOptions = new WebSocketOptions
 {
