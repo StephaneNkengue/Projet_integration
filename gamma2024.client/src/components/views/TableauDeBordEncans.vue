@@ -197,7 +197,7 @@
 import { onMounted, ref, watch, reactive } from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
-import ConfirmDelete from "@/components/views/BoiteModale/ConfirmDeleteEncan.vue";
+import ConfirmDelete from "@/components/modals/ConfirmDeleteEncan.vue";
 
 const store = useStore();
 const router = useRouter();
