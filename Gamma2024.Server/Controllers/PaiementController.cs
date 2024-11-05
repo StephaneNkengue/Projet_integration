@@ -16,8 +16,8 @@ namespace Gamma2024.Server.Controllers
             _context = context;
         }
 
-        [HttpPost]
-        public ActionResult CreerPaymentIntent([FromBody] int idFacture)
+        [HttpPost("CreerPaymentIntent/{idFacture}")]
+        public ActionResult CreerPaymentIntent(int idFacture)
         {
             var facture = _context.Factures.FirstOrDefault(f => f.Id == idFacture);
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
