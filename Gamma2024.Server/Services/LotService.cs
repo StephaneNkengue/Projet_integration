@@ -529,12 +529,12 @@ namespace Gamma2024.Server.Services
             return new LotAffichageVM
             {
                 Id = lotModification.Id,
-                NumeroEncan = lotModification.NumeroEncan,
-                Code = lotModification.Numero,
-                PrixOuverture = lotModification.PrixOuverture,
-                PrixMinPourVente = lotModification.PrixMinPourVente,
-                ValeurEstimeMin = lotModification.ValeurEstimeMin,
-                ValeurEstimeMax = lotModification.ValeurEstimeMax,
+				NumeroEncan = lotModification.NumeroEncan,
+				Code = lotModification.Numero,
+				PrixOuverture = lotModification.PrixOuverture.ToString("N2") + " $",
+				PrixMinPourVente = lotModification.PrixMinPourVente?.ToString("N2") + " $",
+				ValeurEstimeMin = lotModification.ValeurEstimeMin.ToString("N2") + " $",
+				ValeurEstimeMax = lotModification.ValeurEstimeMax.ToString("N2") + " $",
                 Categorie = lotModification.Categorie,
                 Artiste = lotModification.Artiste,
                 Dimension = $"{lotModification.Hauteur} x {lotModification.Largeur}",

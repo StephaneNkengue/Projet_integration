@@ -103,7 +103,7 @@ const routes = [
   {
     path: "/modificationprofilutilisateur",
     name: "ModificationProfilUtilisateur",
-    component: () => ModificationProfilUtilisateur,
+    component: ModificationProfilUtilisateur,
     meta: { requiresAuth: true, requiredRole: "Client" },
     beforeEnter: async (to, from, next) => {
       if (store.state.isLoggedIn) {
@@ -118,7 +118,7 @@ const routes = [
           next("/error");
         }
       } else {
-        next("/login");
+        next("/connexion");
       }
     },
   },
@@ -224,19 +224,25 @@ router.beforeEach(async (to, from, next) => {
     await store.dispatch("initializeStore");
   }
 
+  await store.dispatch("checkAuthStatus");
+
   const isLoggedIn = store.state.isLoggedIn;
-  const userRoles = store.state.roles;
+  const userRoles = store.state.roles || [];
 
   if (to.meta.requiresAuth && !isLoggedIn) {
-    next("/connexion");
-  } else if (
-    to.meta.requiredRole &&
-    !userRoles.includes(to.meta.requiredRole)
-  ) {
-    next({ name: "AccesNonAutorise" });
-  } else {
-    next();
+    next({ 
+      path: "/connexion",
+      query: { redirect: to.fullPath }
+    });
+    return;
   }
+
+  if (to.meta.requiredRole && !userRoles.includes(to.meta.requiredRole)) {
+    next({ name: "AccesNonAutorise" });
+    return;
+  }
+
+  next();
 });
 
 export default router;
