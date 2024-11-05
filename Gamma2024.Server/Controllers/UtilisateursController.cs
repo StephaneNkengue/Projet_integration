@@ -230,7 +230,7 @@ namespace Gamma2024.Server.Controllers
 
 
         [HttpPost("reinitialiserMotDePasse")]
-        public async Task<IActionResult> ResetPassword(ResetPasswordVM model)
+        public async Task<IActionResult> reinitialiserMotDePasse([FromBody] ResetPasswordVM model)
         {
             if (!ModelState.IsValid)
             {
@@ -247,7 +247,7 @@ namespace Gamma2024.Server.Controllers
                 var user = await _userManager.FindByEmailAsync(model.Email);
                 if (user == null)
                 {
-                    return NotFound("Aucun utilisateur trouvé");
+                    return BadRequest("Aucun utilisateur trouvé");
                 }
 
                 string resetToken = await _userManager.GeneratePasswordResetTokenAsync(user);
@@ -264,7 +264,7 @@ namespace Gamma2024.Server.Controllers
                 }
                 else
                 {
-                    return BadRequest("Le format de mot de passe est incorrect");
+                    return BadRequest("Le mot de passe doit avoir au moins 1 majuscule, 1 minuscule, 1 chiffre et 1 caractère special");
                 }
             }
             catch (Exception ex)
