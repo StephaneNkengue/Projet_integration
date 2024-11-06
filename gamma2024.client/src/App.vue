@@ -10,6 +10,8 @@
         if (store.state.isLoggedIn) {
             await store.dispatch('fetchUserBids');
         }
+        // Initialiser le WebSocket
+        await store.dispatch('initWebSocket');
     });
 </script>
 

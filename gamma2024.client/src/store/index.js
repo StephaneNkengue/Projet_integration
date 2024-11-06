@@ -19,34 +19,32 @@ const store = createStore({
     },
     setUser(state, user) {
       console.log("Données reçues dans setUser:", user);
-      
-      // S'assurer que toutes les propriétés nécessaires sont présentes
-      state.user = {
-        id: user.id,
-        username: user.username,
-        name: user.name,
-        firstName: user.firstName,
-        email: user.email,
-        phoneNumber: user.phoneNumber,
-        pseudonym: user.pseudonym,
-        photo: user.photo,
-        roles: user.roles,
-        // Informations additionnelles si présentes
-        cardOwnerName: user.cardOwnerName,
-        cardNumber: user.cardNumber,
-        cardExpiryDate: user.cardExpiryDate,
-        civicNumber: user.civicNumber,
-        street: user.street,
-        apartment: user.apartment,
-        city: user.city,
-        province: user.province,
-        country: user.country,
-        postalCode: user.postalCode
-      };
-      
-      if (state.user) {
-        localStorage.setItem("user", JSON.stringify(state.user));
+      if (user) {
+        state.user = {
+          id: user.id,
+          username: user.username,
+          name: user.name,
+          firstName: user.firstName,
+          email: user.email,
+          phoneNumber: user.phoneNumber,
+          pseudonym: user.pseudonym,
+          photo: user.photo,
+          roles: user.roles,
+          cardOwnerName: user.cardOwnerName,
+          cardNumber: user.cardNumber,
+          cardExpiryDate: user.cardExpiryDate,
+          civicNumber: user.civicNumber,
+          street: user.street,
+          apartment: user.apartment,
+          city: user.city,
+          province: user.province,
+          country: user.country,
+          postalCode: user.postalCode
+        };
+      } else {
+        state.user = null;
       }
+      localStorage.setItem("user", JSON.stringify(state.user));
     },
     setRoles(state, roles) {
       console.log("Roles reçus dans setRoles:", roles);
@@ -85,11 +83,14 @@ const store = createStore({
       state.userDataVersion = (state.userDataVersion || 0) + 1;
     },
     updateLotMise(state, { idLot, montant }) {
-      // Mettre à jour la mise dans la liste des lots
-      const lot = state.lots.find(l => l.id === idLot);
+      // Mettre à jour la mise dans la liste des lots si elle existe
+      const lot = state.lots?.find(l => l.id === idLot);
       if (lot) {
         lot.mise = montant;
       }
+      
+      // Forcer une mise à jour des composants
+      state.userDataVersion = (state.userDataVersion || 0) + 1;
     },
     SET_SOCKET(state, socket) {
       state.socket = socket;
@@ -752,17 +753,29 @@ const store = createStore({
         };
       }
     },
-    initWebSocket({ commit }) {
-      const socket = new WebSocket('ws://votre-serveur/ws');
+    async initWebSocket({ commit, state }) {
+      // Utiliser la même base URL que l'API, mais en ws:// au lieu de http://
+      const wsUrl = state.api.defaults.baseURL.replace('http://', 'ws://').replace('/api', '/ws');
+      const socket = new WebSocket(wsUrl);
+      
+      socket.onopen = () => {
+        console.log('WebSocket connecté');
+      };
       
       socket.onmessage = (event) => {
         const data = JSON.parse(event.data);
+        console.log('Message WebSocket reçu:', data);
+        
         if (data.type === 'NOUVELLE_MISE') {
           commit('updateLotMise', {
             idLot: data.idLot,
             montant: data.montant
           });
         }
+      };
+
+      socket.onerror = (error) => {
+        console.error('Erreur WebSocket:', error);
       };
 
       commit('SET_SOCKET', socket);
@@ -775,7 +788,6 @@ const store = createStore({
       } catch (error) {
         console.error("Erreur lors du chargement des mises:", error);
       }
-    }
     },
     async reinitialisePassword({ commit, state }, resetPasswordData) {
         try {

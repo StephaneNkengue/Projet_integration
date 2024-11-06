@@ -72,7 +72,7 @@
   />
 </template>
 <script setup>
-import { onMounted, ref, computed } from "vue";
+import { onMounted, ref, computed} from "vue";
 import { useStore } from "vuex";
 import ModalMise from '@/components/modals/ModalMise.vue';
 
@@ -138,9 +138,17 @@ const ouvrirModalMise = (event) => {
   modalMise.value.show();
 };
 
-const onMiseConfirmee = (montant) => {
+const onMiseConfirmee = async (montant) => {
   lot.value.mise = montant;
-  // Autres actions après une mise réussie...
+  
+  try {
+    const response = await store.dispatch('chercherDetailsLotParId', lot.value.id);
+    if (response && response.data) {
+      lot.value = response.data;
+    }
+  } catch (error) {
+    console.error("Erreur lors du rechargement des données du lot:", error);
+  }
 };
 
 const hasUserBidOnLot = computed(() => {

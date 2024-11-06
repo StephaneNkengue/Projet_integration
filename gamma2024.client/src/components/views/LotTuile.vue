@@ -128,10 +128,19 @@ const ouvrirModalMise = (event) => {
   modalMise.value.show();
 };
 
-const onMiseConfirmee = (montant) => {
-  mise.value = montant;
+const onMiseConfirmee = async (montant) => {
   lot.value.mise = montant;
-  // Autres actions après une mise réussie...
+  mise.value = montant;
+  
+  try {
+    const response = await store.dispatch('chercherDetailsLotParId', lot.value.id);
+    if (response && response.data) {
+      lot.value = response.data;
+      mise.value = response.data.mise;
+    }
+  } catch (error) {
+    console.error("Erreur lors du rechargement des données du lot:", error);
+  }
 };
 
 // Ajouter le computed pour vérifier si l'utilisateur a misé
