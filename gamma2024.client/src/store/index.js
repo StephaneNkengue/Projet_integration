@@ -61,14 +61,16 @@ const store = createStore({
     setToken(state, token) {
       state.token = token;
       if (token) {
-        localStorage.setItem('token', token);
+        localStorage.setItem("token", token);
         if (state.api) {
-          state.api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+          state.api.defaults.headers.common[
+            "Authorization"
+          ] = `Bearer ${token}`;
         }
       } else {
-        localStorage.removeItem('token');
+        localStorage.removeItem("token");
         if (state.api) {
-          delete state.api.defaults.headers.common['Authorization'];
+          delete state.api.defaults.headers.common["Authorization"];
         }
       }
     },
@@ -753,6 +755,7 @@ const store = createStore({
     forceUpdate({ commit }) {
       commit("refreshUserData");
     },
+
     async placerMise({ state, commit }, { idLot, montant }) {
       try {
         const miseData = {
@@ -823,33 +826,35 @@ const store = createStore({
         console.error('Erreur lors de l\'initialisation du WebSocket:', error);
       }
     },
+
     async fetchUserBids({ state, commit }) {
       if (!state.user?.id) return;
       try {
         const response = await state.api.get(`/lots/userBids/${state.user.id}`);
-        commit('setUserBids', response.data);
+        commit("setUserBids", response.data);
       } catch (error) {
         console.error("Erreur lors du chargement des mises:", error);
       }
     },
+
     async reinitialisePassword({ commit, state }, resetPasswordData) {
-        try {
-            const response = await state.api.post(
-                "/utilisateurs/reinitialiserMotDePasse",
-                resetPasswordData
-            );
-            return {
-                success: true,
-                message: response.data,
-            };
-        } catch (error) {
-            return {
-                success: false,
-                message:
-                    error.response?.data ||
-                    "Erreur lors de la modification du mot de passe.",
-            };
-        }
+      try {
+        const response = await state.api.post(
+          "/utilisateurs/reinitialiserMotDePasse",
+          resetPasswordData
+        );
+        return {
+          success: true,
+          message: response.data,
+        };
+      } catch (error) {
+        return {
+          success: false,
+          message:
+            error.response?.data ||
+            "Erreur lors de la modification du mot de passe.",
+        };
+      }
     },
     async creerCompteUtilisateur({ commit, state }, formData) {
       try {

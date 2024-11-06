@@ -27,15 +27,24 @@
             <div class="d-flex flex-column gap-2">
               <p class="mb-0">Ma mise maximale à ne pas dépasser :</p>
               <div class="d-flex align-items-center gap-2">
-                <button class="btn btn-outline-secondary" @click="decrementerMise" :disabled="montantMise <= getMiseMinimale">
+                <button
+                  class="btn btn-outline-secondary"
+                  @click="decrementerMise"
+                  :disabled="montantMise <= getMiseMinimale"
+                >
                   -{{ pasEnchere }}$
                 </button>
                 <span class="fs-5">{{ montantMise }}$</span>
-                <button class="btn btn-outline-secondary" @click="incrementerMise">
+                <button
+                  class="btn btn-outline-secondary"
+                  @click="incrementerMise"
+                >
                   +{{ pasEnchere }}$
                 </button>
               </div>
-              <p class="text-muted small">Ajouter le montant maximum souhaité</p>
+              <p class="text-muted small">
+                Ajouter le montant maximum souhaité
+              </p>
             </div>
           </div>
         </div>
@@ -108,7 +117,8 @@ const pasEnchere = computed(() => {
 
 const getMiseMinimale = computed(() => {
   // Si la mise actuelle est 0, utiliser le prix d'ouverture
-  const miseBase = props.lot.mise > 0 ? props.lot.mise : props.lot.prixOuverture;
+  const miseBase =
+    props.lot.mise > 0 ? props.lot.mise : props.lot.prixOuverture;
   return miseBase + pasEnchere.value;
 });
 
