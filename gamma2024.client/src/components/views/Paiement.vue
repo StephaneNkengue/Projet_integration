@@ -30,7 +30,7 @@
 
     initialize()
     onMounted(async () => {
-        stripe = Stripe("pk_test_51QFxRwDmrnnrqPfFn5CtjHhvCblvpE3iKzknTreLsdR4tA4eotRBtTBlRKwWJbbwhuqszvIMKTgcILWEskhWYlP900bvv1U1ly");
+        stripe = Stripe(import.meta.env.VITE_STRIPE_PK);
 
         document.querySelector("#payment-form").addEventListener("submit", handleSubmit);
     })
