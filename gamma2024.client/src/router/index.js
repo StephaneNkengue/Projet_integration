@@ -92,6 +92,7 @@ const routes = [
         path: "/tousleslots",
         name: "TousLesLots",
         component: TousLesLots,
+        meta: { requiresAuth: false },
     },
     {
         path: "/detailslot/:idLot",

@@ -104,11 +104,9 @@
 
     const store = useStore();
 
-    const props = defineProps({
-        idEncan: Number,
-    });
-
     const listeLots = ref([]);
+    const lots = ref([]);
+    const lotsFiltres = ref([]);
     const nbLotsRecus = ref();
     const lotsParPage = ref();
     const listePagination = ref([]);
@@ -120,29 +118,27 @@
 
     onMounted(async () => {
         try {
-            const response = await store.dispatch(
-                "chercherTousLotsParEncan",
-                props.idEncan
-            );
-            console.log("Réponse complète:", response);
-
-            if (response && response.data) {
-                listeLots.value = response.data;
-                nbLotsRecus.value = listeLots.value.length;
-                lotsParPage.value = nbLotsRecus.value;
-                nbPages.value = recalculerNbPages();
-
-                genererListePagination();
-                chercherLotsAAfficher();
-            } else {
-                console.error("Réponse invalide:", response);
-            }
+            initialiseData();
         } catch (error) {
-            console.error("Erreur lors du chargement des lots:", error);
-        } finally {
-            chargement.value = false;
+            console.error("Erreur lors de la récupération des lots:", error);
         }
     });
+
+    async function initialiseData() {
+        const response = await store.dispatch("obtenirTousLots");
+        lots.value = response.map((lot) => ({
+            ...lot,
+        }));
+        lotsFiltres.value = lots.value;
+        nbLotsRecus.value = lotsFiltres.value.length;
+        lotsParPage.value = nbLotsRecus.value;
+        nbPages.value = recalculerNbPages();
+
+        genererListePagination();
+
+        chercherLotsAAfficher();
+        chargement.value = false;
+    }
 
     watch(pageCourante, () => {
         genererListePagination();
@@ -222,10 +218,10 @@
 
         for (
             let i = positionDebut;
-            i < positionFin && i < listeLots.value.length;
+            i < positionFin && i < lotsFiltres.value.length;
             i++
         ) {
-            lotsAffiche.value.push(listeLots.value[i]);
+            lotsAffiche.value.push(lotsFiltres.value[i]);
         }
     }
 </script>
