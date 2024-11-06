@@ -9,7 +9,7 @@ const store = createStore({
     isLoggedIn: false,
     user: null,
     socket: null,
-    lots: [],
+    lots: {},
     userBids: []
   },
   mutations: {
@@ -82,15 +82,24 @@ const store = createStore({
       // Cette mutation ne fait rien, mais force la mise à jour des getters
       state.userDataVersion = (state.userDataVersion || 0) + 1;
     },
-    updateLotMise(state, { idLot, montant }) {
-      // Mettre à jour la mise dans la liste des lots si elle existe
-      const lot = state.lots?.find(l => l.id === idLot);
-      if (lot) {
-        lot.mise = montant;
-      }
+    updateLotMise(state, { idLot, montant, userId }) {
+      console.log('Mise à jour du lot:', idLot, 'avec montant:', montant);
       
-      // Forcer une mise à jour des composants
-      state.userDataVersion = (state.userDataVersion || 0) + 1;
+      if (!state.lots[idLot]) {
+        // Créer un nouveau lot si non existant
+        state.lots[idLot] = {
+          id: idLot,
+          mise: montant,
+          idClientMise: userId
+        };
+      } else {
+        // Mettre à jour le lot existant
+        state.lots[idLot] = {
+          ...state.lots[idLot],
+          mise: montant,
+          idClientMise: userId
+        };
+      }
     },
     SET_SOCKET(state, socket) {
       state.socket = socket;
@@ -102,6 +111,21 @@ const store = createStore({
     },
     setUserBids(state, bids) {
       state.userBids = bids;
+    },
+    setLots(state, lots) {
+      // Convertir le tableau en objet avec les IDs comme clés
+      state.lots = lots.reduce((acc, lot) => {
+        acc[lot.id] = {
+          ...lot,
+          mise: lot.mise || lot.prixOuverture || 0
+        };
+        return acc;
+      }, {});
+      console.log('Lots initialisés dans le store:', state.lots);
+    },
+    refreshLots(state) {
+      // Forcer la réactivité en créant une nouvelle référence
+      state.lots = [...state.lots];
     }
   },
   actions: {
@@ -734,51 +758,70 @@ const store = createStore({
         const miseData = {
           idLot: idLot,
           montant: parseFloat(montant),
-          userId: state.user?.id  
+          userId: state.user?.id
         };
 
         const response = await state.api.post('/lots/placerMise', miseData);
-        if (response.data.success) {
-          commit('addUserBid', idLot);
-        }
-        return { success: true, message: response.data.message };
+        return response.data;  // Le serveur renvoie déjà { success, message }
+        
       } catch (error) {
-        console.log("Erreur lors de la mise:", error.response || error);
-        if (error.response?.status === 401) {
-          return { success: false, needsAuth: true };
-        }
+        console.error('Erreur lors de la mise:', error);
+        // Extraire le message d'erreur de la réponse
+        const errorMessage = error.response?.data?.message || "Erreur lors de la mise";
         return { 
           success: false, 
-          message: error.response?.data?.message || 'Erreur lors de la mise'
+          message: errorMessage
         };
       }
     },
-    async initWebSocket({ commit, state }) {
-      // Utiliser la même base URL que l'API, mais en ws:// au lieu de http://
-      const wsUrl = state.api.defaults.baseURL.replace('http://', 'ws://').replace('/api', '/ws');
-      const socket = new WebSocket(wsUrl);
-      
-      socket.onopen = () => {
-        console.log('WebSocket connecté');
-      };
-      
-      socket.onmessage = (event) => {
-        const data = JSON.parse(event.data);
-        console.log('Message WebSocket reçu:', data);
-        
-        if (data.type === 'NOUVELLE_MISE') {
-          commit('updateLotMise', {
-            idLot: data.idLot,
-            montant: data.montant
-          });
+    async initWebSocket({ commit, state, dispatch }) {
+      try {
+        // Fermer l'ancienne connexion si elle existe
+        if (state.socket) {
+          state.socket.close();
         }
-      };
 
-      socket.onerror = (error) => {
-        console.error('Erreur WebSocket:', error);
-      };
+        const wsUrl = state.api.defaults.baseURL
+          .replace('http://', 'ws://')
+          .replace('/api', '/ws');
+        
+        const socket = new WebSocket(wsUrl);
 
-      commit('SET_SOCKET', socket);
+        socket.onopen = () => {
+          console.log('WebSocket connecté');
+        };
+
+        socket.onmessage = (event) => {
+          const data = JSON.parse(event.data);
+          console.log('Message WebSocket reçu:', data);
+          
+          if (data.type === 'NOUVELLE_MISE') {
+            // S'assurer que les valeurs sont du bon type
+            commit('updateLotMise', {
+              idLot: parseInt(data.idLot),
+              montant: parseFloat(data.montant),
+              userId: data.userId
+            });
+          }
+        };
+
+        socket.onerror = (error) => {
+          console.error('Erreur WebSocket:', error);
+        };
+
+        socket.onclose = () => {
+          console.log('WebSocket déconnecté');
+          // Tenter de se reconnecter après un délai
+          setTimeout(() => {
+            console.log('Tentative de reconnexion WebSocket...');
+            dispatch('initWebSocket');
+          }, 5000);
+        };
+
+        commit('SET_SOCKET', socket);
+      } catch (error) {
+        console.error('Erreur lors de l\'initialisation du WebSocket:', error);
+      }
     },
     async fetchUserBids({ state, commit }) {
       if (!state.user?.id) return;
@@ -807,6 +850,29 @@ const store = createStore({
                     "Erreur lors de la modification du mot de passe.",
             };
         }
+    },
+    async creerCompteUtilisateur({ commit, state }, formData) {
+      try {
+        const response = await state.api.post("/utilisateurs/creer", formData);
+        
+        if (response.data.success) {
+          return {
+            success: true,
+            message: response.data.message
+          };
+        } else {
+          return {
+            success: false,
+            message: response.data.message
+          };
+        }
+      } catch (error) {
+        console.error("Erreur lors de la création du compte:", error);
+        return {
+          success: false,
+          message: error.response?.data?.message || "Une erreur est survenue lors de la création du compte"
+        };
+      }
     },
 },
   getters: {
@@ -838,6 +904,12 @@ const store = createStore({
     },
     hasUserBidOnLot: (state) => (lotId) => {
       return state.userBids.includes(lotId);
+    },
+    getLot: (state) => (id) => {
+      return state.lots[id] || null;
+    },
+    getAllLots: (state) => {
+      return Object.values(state.lots);
     }
   },
 });

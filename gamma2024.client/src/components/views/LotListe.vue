@@ -12,8 +12,8 @@
             class="d-flex flex-column justify-content-center align-items-center"
           >
             <img
-              v-bind:src="urlApi + lot.photos[0].lien"
-              height="150"
+              :src="urlImage"
+              class="img-fluid my-2 col-8 col-sm-10 col-md-12"
               alt="Image du lot"
             />
           </div>
@@ -31,9 +31,12 @@
               Valeur: {{ lot.valeurEstimeMin.toFixed(0) }}$ -
               {{ lot.valeurEstimeMax.toFixed(0) }}$
             </p>
-            <p class="text-center mb-0">
-              Mise actuelle: {{ lot.mise.toFixed(0) }}$
-            </p>
+            <div class="mise-actuelle" v-if="estMontantValide(miseActuelle)">
+              {{ formatMontant(miseActuelle) }}$
+            </div>
+            <div class="mise-actuelle" v-else>
+              0.00$
+            </div>
           </div>
           <div
             class="d-flex align-self-center gap-1 flex-column flex-md-row align-items-center"
@@ -72,7 +75,7 @@
   />
 </template>
 <script setup>
-import { onMounted, ref, computed} from "vue";
+import { onMounted, ref, computed, watch } from "vue";
 import { useStore } from "vuex";
 import ModalMise from '@/components/modals/ModalMise.vue';
 
@@ -154,6 +157,39 @@ const onMiseConfirmee = async (montant) => {
 const hasUserBidOnLot = computed(() => {
   return store.getters.hasUserBidOnLot(props.lotRecu.id);
 });
+
+const miseActuelle = computed(() => {
+  const lot = store.getters.getLot(props.lotRecu.id);
+  if (lot?.mise !== undefined) {
+    return lot.mise;
+  }
+  return props.lotRecu.mise || props.lotRecu.prixOuverture || 0;
+});
+
+const formatMontant = (montant) => {
+  const valeur = Number(montant);
+  return isNaN(valeur) ? '0.00' : valeur.toFixed(2);
+};
+
+const estMontantValide = (montant) => {
+  return montant !== undefined && montant !== null && !isNaN(Number(montant));
+};
+
+const urlImage = computed(() => {
+  const lotStore = store.getters.getLot(props.lotRecu.id);
+  if (lotStore?.photos?.[0]?.lien) {
+    return urlApi.value + lotStore.photos[0].lien;
+  }
+  return urlApi.value + props.lotRecu.photos[0].lien;
+});
+
+// Ajouter le watch pour surveiller les changements dans le store
+watch(() => store.state.lots, (newLots) => {
+  const lotActuel = store.getters.getLot(props.lotRecu.id);
+  if (lotActuel) {
+    lot.value = lotActuel;
+  }
+}, { deep: true });
 </script>
 <style scoped>
 .user-bid {

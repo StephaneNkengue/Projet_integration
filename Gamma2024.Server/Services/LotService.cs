@@ -599,7 +599,8 @@ namespace Gamma2024.Server.Services
                 {
                     type = "NOUVELLE_MISE",
                     idLot = mise.IdLot,
-                    montant = mise.Montant
+                    montant = mise.Montant,
+                    userId = mise.UserId
                 });
 
                 return (true, "Mise placée avec succès");

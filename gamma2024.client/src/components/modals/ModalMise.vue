@@ -22,7 +22,7 @@
         <div class="modal-body">
           <div class="d-flex flex-column gap-3">
             <p class="fs-5 mb-0">lot {{ lot.numero }}</p>
-            <p class="fs-5 mb-0">votre mise : {{ userHasBid ? lot.mise.toFixed(0) + '$' : 'aucune mise' }}</p>
+            <p class="fs-5 mb-0">votre mise : {{ affichageMiseActuelle }}</p>
             
             <div class="d-flex flex-column gap-2">
               <p class="mb-0">Ma mise maximale à ne pas dépasser :</p>
@@ -62,7 +62,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, h } from 'vue';
+import { ref, computed, onMounted, h, defineEmits, watch } from 'vue';
 import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
 import { toast } from 'vue3-toastify';
@@ -89,23 +89,21 @@ const getMiseInitiale = computed(() => {
   return props.lot.mise ? props.lot.mise : props.lot.prixOuverture;
 });
 
-// Fonction pour calculer le pas d'enchère
-const calculerPasEnchere = (valeur) => {
-  if (valeur <= 199.0) return 10.0;
-  if (valeur <= 499.0) return 25.0;
-  if (valeur <= 999.0) return 50.0;
-  if (valeur <= 1999.0) return 100.0;
-  if (valeur <= 4999.0) return 200.0;
-  if (valeur <= 9999.0) return 250.0;
-  if (valeur <= 19999.0) return 500.0;
-  if (valeur <= 49999.0) return 1000.0;
-  if (valeur <= 99999.0) return 2000.0;
-  if (valeur <= 499999.0) return 5000.0;
-  return 10000.0;
-};
+// Ajout des computed properties pour le montant initial et le pas
+const montantInitial = computed(() => {
+  // Récupérer la mise actuelle du lot depuis le store, peu importe qui a misé
+  const lotStore = store.getters.getLot(props.lot.id);
+  return lotStore?.mise || props.lot.mise || props.lot.prixOuverture || 0;
+});
 
 const pasEnchere = computed(() => {
-  return calculerPasEnchere(props.lot.valeurEstimeMin);
+  const miseActuelle = props.lot?.mise || 0;
+  // Définir les paliers pour le pas d'enchère
+  if (miseActuelle < 100) return 5;
+  if (miseActuelle < 500) return 25;
+  if (miseActuelle < 1000) return 50;
+  if (miseActuelle < 5000) return 100;
+  return 250;
 });
 
 const getMiseMinimale = computed(() => {
@@ -124,64 +122,42 @@ const incrementerMise = () => {
 
 const decrementerMise = () => {
   const nouveauMontant = montantMise.value - pasEnchere.value;
-  if (nouveauMontant >= getMiseMinimale.value) {
+  if (nouveauMontant >= montantInitial.value + pasEnchere.value) {
     montantMise.value = nouveauMontant;
   }
 };
 
 const confirmerMise = async () => {
-  if (!store.state.isLoggedIn) {
-    router.push('/connexion');
-    return;
-  }
+  try {
+    const response = await store.dispatch('placerMise', {
+      idLot: props.lot.id,
+      montant: montantMise.value
+    });
 
-  const response = await store.dispatch('placerMise', {
-    idLot: props.lot.id,
-    montant: montantMise.value
-  });
-
-  if (response.success) {
-    // Remplacer l'alert par un toast
-    toast.success(
-      h(ToastContent, {
-        title: "Mise placée avec succès !",
-        description: `Votre mise de ${montantMise.value}$ a été enregistrée pour le lot ${props.lot.numero}`,
-      }),
-      {
-        position: toast.POSITION.TOP_CENTER,
-        autoClose: 3000,
-        pauseOnFocusLoss: false,
-        theme: "dark",
-        toastStyle: {
-          backgroundColor: "#052445",
-          color: "#fff",
-        },
-      }
-    );
-
-    const modalElement = document.getElementById(`modalMise_${props.lot.id}`);
-    const modal = bootstrap.Modal.getInstance(modalElement);
-    modal.hide();
-    
-    // Émettre l'événement pour mettre à jour le parent
-    emit('miseConfirmee', montantMise.value);
-  } else {
-    // Gérer l'erreur avec un toast d'erreur
+    if (response.success) {
+      // Fermer le modal
+      modalInstance.hide();
+      
+      // Émettre l'événement
+      emit('miseConfirmee', montantMise.value);
+      
+      // Forcer la mise à jour du montant pour la prochaine ouverture
+      props.lot.mise = montantMise.value;
+      
+      // Afficher le toast de succès
+      toast.success(
+        h(ToastContent, {
+          title: "Succès",
+          description: "Votre mise a été placée avec succès",
+        })
+      );
+    }
+  } catch (error) {
     toast.error(
       h(ToastContent, {
         title: "Erreur",
-        description: response.message || 'Erreur lors de la mise',
-      }),
-      {
-        position: toast.POSITION.TOP_CENTER,
-        autoClose: 3000,
-        pauseOnFocusLoss: false,
-        theme: "dark",
-        toastStyle: {
-          backgroundColor: "#dc3545",
-          color: "#fff",
-        },
-      }
+        description: error.message || "Erreur lors de la mise",
+      })
     );
   }
 };
@@ -190,15 +166,35 @@ onMounted(() => {
   const modalElement = document.getElementById(`modalMise_${props.lot.id}`);
   modalInstance = new bootstrap.Modal(modalElement);
   // Initialiser avec la mise minimale calculée
-  montantMise.value = getMiseMinimale.value;
+  montantMise.value = montantInitial.value + pasEnchere.value;
 });
 
 defineExpose({
   show: () => {
-    montantMise.value = getMiseMinimale.value;
+    const miseActuelle = montantInitial.value;
+    montantMise.value = miseActuelle + pasEnchere.value;
     modalInstance.show();
   },
   hide: () => modalInstance.hide(),
+});
+
+// Ajouter un watch pour surveiller les changements de mise
+watch(() => props.lot.mise, (newMise) => {
+  if (newMise) {
+    montantMise.value = newMise + pasEnchere.value;
+  }
+});
+
+// Définir les émissions au début du script
+const emit = defineEmits(['miseConfirmee']);
+
+// L'affichage de "votre mise" reste conditionnel à l'utilisateur actuel
+const affichageMiseActuelle = computed(() => {
+  return hasUserBidOnLot.value ? `${props.lot.mise}$` : 'aucune mise';
+});
+
+const hasUserBidOnLot = computed(() => {
+  return store.getters.hasUserBidOnLot(props.lot.id);
 });
 </script>
 

@@ -29,14 +29,14 @@
 
         <div class="row justify-content-around align-items-middle">
           <img
-            v-bind:src="urlApi + lot.photos[0].lien"
+            :src="urlImage"
             class="img-fluid my-2 col-8 col-sm-10 col-md-12"
             alt="Image du lot"
           />
         </div>
 
                 <p class="text-center mb-0">Valeur: {{(lot.valeurEstimeMin).toFixed(0)}}$ - {{(lot.valeurEstimeMax).toFixed(0)}}$</p>
-                <p class="text-center mb-0">Mise actuelle: {{ lot.mise.toFixed(0) }}$</p>
+                <p class="text-center mb-0">Mise actuelle: {{ miseActuelle.toFixed(0) }}$</p>
 
         <div class="d-flex justify-content-around pt-2">
           <button
@@ -59,7 +59,7 @@
 </template>
 
 <script setup>
-import { onMounted, ref, computed } from "vue";
+import { onMounted, ref, computed, watch } from "vue";
 import { useStore } from "vuex";
 import ModalMise from '@/components/modals/ModalMise.vue';
 
@@ -147,6 +147,40 @@ const onMiseConfirmee = async (montant) => {
 const hasUserBidOnLot = computed(() => {
   return store.getters.hasUserBidOnLot(props.lotRecu.id);
 });
+
+const miseActuelle = computed(() => {
+  const lot = store.getters.getLot(props.lotRecu.id);
+  if (lot?.mise !== undefined) {
+    return lot.mise;
+  }
+  return props.lotRecu.mise || props.lotRecu.prixOuverture || 0;
+});
+
+const formatMontant = (montant) => {
+  const valeur = Number(montant);
+  return isNaN(valeur) ? '0.00' : valeur.toFixed(2);
+};
+
+const urlImage = computed(() => {
+  const lotStore = store.getters.getLot(props.lotRecu.id);
+  if (lotStore?.photos?.[0]?.lien) {
+    return urlApi.value + lotStore.photos[0].lien;
+  }
+  return urlApi.value + props.lotRecu.photos[0].lien;
+});
+
+// Surveiller les changements dans le store
+watch(() => store.state.lots, (newLots) => {
+  const lotActuel = store.getters.getLot(props.lotRecu.id);
+  if (lotActuel) {
+    lot.value = lotActuel;
+  }
+}, { deep: true });
+
+// Ajouter une méthode pour vérifier si le montant est valide
+const estMontantValide = (montant) => {
+  return montant !== undefined && montant !== null && !isNaN(Number(montant));
+};
 
 </script>
 
