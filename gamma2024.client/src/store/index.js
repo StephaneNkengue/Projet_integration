@@ -757,6 +757,17 @@ const store = createStore({
                 throw error;
             }
         },
+
+        async creerPaymentIntent({ state }, idFacture) {
+            try {
+                const response = await state.api.post(
+                    "/paiement/creerPaymentIntent/" + idFacture
+                );
+                return response;
+            } catch (error) {
+                return "Erreur, veuillez réessayer";
+            }
+        }
     },
     getters: {
         isAdmin: (state) => {

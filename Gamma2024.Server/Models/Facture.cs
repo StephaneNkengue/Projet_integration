@@ -40,6 +40,7 @@ namespace Gamma2024.Server.Models
         public Adresse Adresse { get; set; } = null!;
         public Charite? Charite { get; set; }
         public ApplicationUser Client { get; set; } = null!;
+        public bool estPaye { get; set; } = false;
 
         public void CalculerFacture()
         {
