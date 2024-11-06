@@ -184,6 +184,7 @@
                                     <input class="checkboxTousRecherche d-flex-1"
                                            type="checkbox"
                                            id="tousSelectionnerCheckboxRecherche"
+                                           @change="comportementTousSelectionnerRecherche"
                                            checked />
                                     <label class="d-flex-1"
                                            for="tousSelectionnerCheckboxRecherche">
@@ -231,6 +232,7 @@
                                     <input class="checkboxTousRecherche d-flex-1"
                                            type="checkbox"
                                            id="tousSelectionnerCheckboxRecherche"
+                                           @change="comportementTousSelectionnerRecherche"
                                            checked />
                                     <label class="d-flex-1"
                                            for="tousSelectionnerCheckboxRecherche">
@@ -385,41 +387,24 @@
         this.$router.push({ path: "/resultatsrecherchelots", query: {} });
     }
 
-    watch(route.name, () => {
-        ajouterComportementDesCheckboxesDeRecherche();
-    })
-
-    function ajouterComportementDesCheckboxesDeRecherche(e) {
-        const checkboxQuiSelectionneToutRecherche = document.querySelector(
+    function comportementTousSelectionnerRecherche() {
+        var CheckboxeToutSelectionnerRecherche = document.querySelector(
             ".checkboxTousRecherche"
         );
-        const listeDesCheckboxesRecherche = document.querySelectorAll(
+        var listeDesCheckboxesRecherche = document.querySelectorAll(
             ".checkboxSeulRecherche"
         );
 
-        if (
-            route.name == "Acceuil" ||
-            route.name == "Encan" ||
-            route.name == "TousLesEncans" ||
-            route.name == "EncansPasses" ||
-            route.name == "EncansFuturs"
-        ) {
-            checkboxQuiSelectionneToutRecherche.addEventListener(
-                "change",
-                function (e) {
-                    if (this.checked) {
-                        listeDesCheckboxesRecherche.forEach((el, index) => {
-                            el.checked = true;
-                            el.disabled = true;
-                        });
-                    } else {
-                        listeDesCheckboxesRecherche.forEach((el) => {
-                            el.disabled = false;
-                            el.checked = false;
-                        });
-                    }
-                }
-            );
+        if ((CheckboxeToutSelectionnerRecherche).checked) {
+            listeDesCheckboxesRecherche.forEach((el, index) => {
+                el.checked = true;
+                el.disabled = true;
+            })
+        } else if (!(CheckboxeToutSelectionnerRecherche).checked) {
+            listeDesCheckboxesRecherche.forEach((el) => {
+                el.disabled = false;
+                el.checked = false;
+            });
         }
     }
 
@@ -437,7 +422,6 @@
         document.querySelectorAll(".dropdown-toggle").forEach((dropdownToggle) => {
             new bootstrap.Dropdown(dropdownToggle);
         });
-        ajouterComportementDesCheckboxesDeRecherche();
     });
 </script>
 
