@@ -75,24 +75,10 @@ namespace Gamma2024.Server.Controllers
 
         }
 
-        [HttpGet("chercherFacturesParEncan")]
-        public ICollection<FactureAffichageParEncanVM> ChercherFacturesParEncan()
+        [HttpGet("chercherFactures")]
+        public ICollection<FactureAffichageVM> ChercherFactures()
         {
-            ICollection<FactureAffichageParEncanVM> factures = _factureService.ChercherFacturesParEncan();
-            return factures;
-        }
-
-        [HttpGet("chercherFacturesParClient")]
-        public ICollection<FactureAffichageParClientVM> ChercherFacturesParClient()
-        {
-            ICollection<FactureAffichageParClientVM> factures = _factureService.ChercherFacturesParClient();
-            return factures;
-        }
-
-        [HttpGet("chercherFacturesParDate")]
-        public ICollection<FactureAffichageParDateVM> ChercherFacturesParDate()
-        {
-            ICollection<FactureAffichageParDateVM> factures = _factureService.ChercherFacturesParDate();
+            ICollection<FactureAffichageVM> factures = _factureService.ChercherFactures();
             return factures;
         }
     }

@@ -12,15 +12,17 @@ namespace Gamma2024.Server.Services
             _context = context;
         }
 
-        public ICollection<FactureAffichageParEncanVM> ChercherFacturesParEncan()
+        public ICollection<FactureAffichageVM> ChercherFactures()
         {
-            var factures = _context.Factures.Select(f => new FactureAffichageParEncanVM()
+            var factures = _context.Factures.Select(f => new FactureAffichageVM()
             {
+                Id = f.Id,
                 IdClient = f.IdClient,
+                DateAchat = f.DateAchat,
                 Lots = f.Lots,
             }).ToList();
 
-            foreach (FactureAffichageParEncanVM facture in factures)
+            foreach (FactureAffichageVM facture in factures)
             {
                 var client = _context.Users.FirstOrDefault(c => c.Id == facture.IdClient);
                 facture.Nom = client.Name;
@@ -28,41 +30,6 @@ namespace Gamma2024.Server.Services
             }
 
             return factures;
-        }
-
-        public ICollection<FactureAffichageParClientVM> ChercherFacturesParClient()
-        {
-            var factures = _context.Factures.Select(f => new FactureAffichageParClientVM()
-            {
-                IdClient = f.IdClient
-            }).ToList();
-
-            foreach (FactureAffichageParClientVM facture in factures)
-            {
-                var client = _context.Users.FirstOrDefault(c => c.Id == facture.IdClient);
-                facture.Nom = client.Name;
-                facture.Prenom = client.FirstName;
-            }
-
-            return factures.OrderBy(f => f.Prenom).ToList();
-        }
-
-        public ICollection<FactureAffichageParDateVM> ChercherFacturesParDate()
-        {
-            var factures = _context.Factures.Select(f => new FactureAffichageParDateVM()
-            {
-                IdClient = f.IdClient,
-                DateAchat = f.DateAchat
-            }).ToList();
-
-            foreach (FactureAffichageParDateVM facture in factures)
-            {
-                var client = _context.Users.FirstOrDefault(c => c.Id == facture.IdClient);
-                facture.Nom = client.Name;
-                facture.Prenom = client.FirstName;
-            }
-
-            return factures.OrderBy(f => f.DateAchat).ToList();
         }
     }
 }

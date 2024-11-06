@@ -1,140 +1,75 @@
 <template>
-    <div class="d-flex flex-column justify-content-between">
-        <div class="d-flex justify-content-between">
-            <h2 class="d-flex-1">Liste des ventes</h2>
-        </div>
-
-        <div class="d-flex flex-row-reverse me-1 gap-1 align-items-center">
-
-            <input data-bs-theme="light"
-                   type="search"
-                   aria-label="Recherche" /><label for="Recherche">Rechercher: </label>
-        </div>
-        <div class="card cardtest">
-            <Tabs value="0">
-                <TabList>
-                    <Tab class="tab" @click="voirTabs='parEncan'">Par encan</Tab>
-                    <Tab class="tab" @click="voirTabs='parClient'">Par client</Tab>
-                    <Tab class="tab" @click="voirTabs='parDate'">Par date</Tab>
-                </TabList>
-                <TabPanels v-if="voirTabs=='parEncan'">
-                    <TabPanel>
-                        <table class="table table-striped accordion">
-                            <thead>
-                                <tr>
-                                    <th scope="col">Encan</th>
-                                    <th scope="col">Client</th>
-                                    <th scope="col">Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr v-for="facture in listeFacturesParEncan" :key="facture.id" class="accordion-toggle collapsed"
-                                    :id="'accordion'+facture.id"
-                                    data-mdb-collapse-init
-                                    data-mdb-parent="#accordion1"
-                                    href="#collapseOne"
-                                    aria-controls="collapseOne">
-                                    <th scope="row">1</th>
-                                    <td>{{facture.prenom}} {{facture.nom}}</td>
-                                    <td>
-                                        <button class="btn btn-info" @click="detailsDuMembre(membre.id)">
-                                            <img src="/images/ice.png" class="img-fluid" alt="..." />
-                                        </button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </TabPanel>
-                </TabPanels>
-                <TabPanels v-if="voirTabs=='parClient'">
-                    <TabPanel>
-                        <table class="table table-striped">
-                            <thead>
-                                <tr>
-                                    <th scope="col">Client</th>
-                                    <th scope="col">Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr v-for="facture in listeFacturesParClient" :key="facture.id">
-                                    <td>{{facture.prenom}} {{facture.nom}}</td>
-                                    <td>
-                                        <button class="btn btn-info" @click="detailsDuMembre(membre.id)">
-                                            <img src="/images/ice.png" class="img-fluid" alt="..." />
-                                        </button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </TabPanel>
-                </TabPanels>
-                <TabPanels v-if="voirTabs=='parDate'">
-                    <TabPanel>
-                        <table class="table table-striped">
-                            <thead>
-                                <tr>
-                                    <th scope="col">Date</th>
-                                    <th scope="col">Client</th>
-                                    <th scope="col">Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr v-for="facture in listeFacturesParDate" :key="facture.id">
-                                    <th>{{facture.dateAchat.split("T")[0]}}</th>
-                                    <td>{{facture.prenom}} {{facture.nom}}</td>
-                                    <td>
-                                        <button class="btn btn-info" @click="detailsDuMembre(membre.id)">
-                                            <img src="/images/ice.png" class="img-fluid" alt="..." />
-                                        </button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </TabPanel>
-                </TabPanels>
-            </Tabs>
-        </div>
+    <div class="container mt-5">
+        <h3 class="text-center">Rechercher une vente</h3>
+        <input v-model="searchQuery"
+               class="form-control row col-10 ms-1"
+               type="search"
+               placeholder="Rechercher une vente"
+               aria-label="Search" />
+        <h1 class="text-center mt-5">Liste des ventes</h1>
+        <table class="table table-striped mt-5 mb-5 col-md-12 text-center">
+            <thead>
+                <tr>
+                    <th scope="col">Encan</th>
+                    <th scope="col">Date</th>
+                    <th scope="col">Client</th>
+                    <th scope="col">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="facture in filteredVentes" :key="facture.id" data-bs-toggle="modal" :data-bs-target="'#'+facture.id">
+                    <td scope="row">1</td>
+                    <td>{{facture.dateAchat.split("T")[0]}}</td>
+                    <td>{{facture.prenom}} {{facture.nom}}</td>
+                    <td>
+                        <button class="btn btn-info">
+                            <img src="/images/ice.png" class="img-fluid" alt="..." />
+                        </button>
+                    </td>
+                    <DetailsAchats :f="facture" />
+                </tr>
+            </tbody>
+        </table>
     </div>
 </template>
 
 <script setup>
-    import Tabs from 'primevue/tabs';
-    import TabList from 'primevue/tablist';
-    import Tab from 'primevue/tab';
-    import TabPanels from 'primevue/tabpanels';
-    import TabPanel from 'primevue/tabpanel';
-    import { onMounted, ref } from "vue";
+    import { computed, onMounted, ref } from "vue";
     import { useStore } from 'vuex';
+    import DetailsAchats from "../modals/DetailsAchats.vue";
 
     const store = useStore();
-    const voirTabs = ref("");
-    const listeFacturesParEncan = ref([]);
-    const listeFacturesParClient = ref([]);
-    const listeFacturesParDate = ref([]);
+    const listeFactures = ref([]);
+    const searchQuery = ref("");
 
     onMounted(async () => {
-        voirTabs.value = "parEncan";
-
-        var btns = document.getElementsByClassName("tab");
-        for (var i = 0; i < btns.length; i++) {
-            btns[0].className += " active";
-
-            btns[i].addEventListener("click", function () {
-                var current = document.getElementsByClassName("active");
-                current[0].className = current[0].className.replace(" active", "");
-                this.className += " active";
-            });
-        }
-
         try {
-            listeFacturesParEncan.value = await store.dispatch("fetchFactureInfoParEncan");
-            listeFacturesParClient.value = await store.dispatch("fetchFactureInfoParClient");
-            listeFacturesParDate.value = await store.dispatch("fetchFactureInfoParDate");
+            listeFactures.value = await store.dispatch("fetchFactureInfo");
+            console.log("test" + listeFactures.value);
         }
         catch (error) {
             console.log("Erreur factures" + error);
         }
 
+    });
+
+    const tousLesVentes = computed(() => {
+        if (listeFactures.value) {
+            return listeFactures.value;
+        }
+        return [];
+    });
+
+
+    const filteredVentes = computed(() => {
+        return tousLesVentes.value.filter((vente) => {
+            const searchLower = searchQuery.value.toLowerCase();
+            return (
+                vente.dateAchat.toLowerCase().includes(searchLower) ||
+                vente.prenom.toLowerCase().includes(searchLower) ||
+                vente.nom.toLowerCase().includes(searchLower)
+            );
+        });
     });
 </script>
 
@@ -155,38 +90,5 @@
 
     td {
         font-size: 16px;
-    }
-
-    .p-tab {
-        text-align: center;
-        border-radius: 10px 10px 0px 0px;
-        width: 100px;
-        margin-right: 1px;
-        border: none;
-        background-color: #5A708A;
-        color: white;
-    }
-
-        .p-tab:hover {
-            background-color: #83a0ba;
-            color: white;
-        }
-
-        .p-tab:not(.p-tab-active):not(.p-disabled):hover {
-            color: white;
-            background-color: #83a0ba;
-        }
-
-    .active {
-        background-color: #1C3755;
-    }
-
-    .cardtest {
-        --bs-card-border-color: none;
-        margin: 10px;
-    }
-
-    table {
-        box-shadow: none;
     }
 </style>

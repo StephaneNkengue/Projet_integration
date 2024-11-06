@@ -746,33 +746,9 @@ const store = createStore({
             }
         },
 
-        async fetchFactureInfoParEncan({ commit, state }) {
+        async fetchFactureInfo({ commit, state }) {
             try {
-                const response = await state.api.get("/factures/chercherFacturesParEncan");
-                console.log("Données reçues de l'API:", response.data); // Pour le débogage
-
-                return response.data;
-            } catch (error) {
-                console.error("Erreur détaillée:", error.response || error);
-                throw error;
-            }
-        },
-
-        async fetchFactureInfoParClient({ commit, state }) {
-            try {
-                const response = await state.api.get("/factures/chercherFacturesParClient");
-                console.log("Données reçues de l'API:", response.data); // Pour le débogage
-
-                return response.data;
-            } catch (error) {
-                console.error("Erreur détaillée:", error.response || error);
-                throw error;
-            }
-        },
-
-        async fetchFactureInfoParDate({ commit, state }) {
-            try {
-                const response = await state.api.get("/factures/chercherFacturesParDate");
+                const response = await state.api.get("/factures/chercherFactures");
                 console.log("Données reçues de l'API:", response.data); // Pour le débogage
 
                 return response.data;
