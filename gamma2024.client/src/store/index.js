@@ -123,34 +123,36 @@ const store = createStore({
             state.userBids = bids;
         },
         setLots(state, lots) {
-            state.lots = lots.reduce((acc, lot) => {
-                acc[lot.id] = {
+            // Convertir le tableau en objet indexé par id
+            const lotsObj = {};
+            lots.forEach(lot => {
+                // Conserver l'état userHasBid s'il existe déjà
+                const existingLot = state.lots[lot.id];
+                lotsObj[lot.id] = {
                     ...lot,
-                    mise: lot.mise || 0
+                    userHasBid: existingLot ? existingLot.userHasBid : false
                 };
-                return acc;
-            }, {});
-            console.log('Lots initialisés dans le store:', state.lots);
+            });
+            state.lots = lotsObj;
         },
         refreshLots(state) {
             // Forcer la réactivité en créant une nouvelle référence
             state.lots = [...state.lots];
         },
         updateLotsWithUserBids(state, userBids) {
-            if (!state.lots) return;
+            if (!state.lots || !userBids) return;
             
-            // Convertir l'objet lots en un nouvel objet avec les mises à jour
-            const updatedLots = {};
-            Object.entries(state.lots).forEach(([id, lot]) => {
-                const userBid = userBids.find(bid => bid.lotId === parseInt(id));
-                updatedLots[id] = {
-                    ...lot,
-                    userHasBid: !!userBid,
-                    mise: userBid ? userBid.montant : lot.mise
-                };
+            // Mettre à jour les lots avec les informations de mise
+            Object.keys(state.lots).forEach(lotId => {
+                const userBid = userBids.find(bid => bid.lotId === parseInt(lotId));
+                if (userBid) {
+                    state.lots[lotId] = {
+                        ...state.lots[lotId],
+                        userHasBid: true,
+                        mise: userBid.montant
+                    };
+                }
             });
-            
-            state.lots = updatedLots;
         },
         clearUserBids(state) {
             state.userBids = [];

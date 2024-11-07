@@ -250,6 +250,11 @@ const chargerLots = async () => {
       store.commit('setLots', response.data);
       listeLots.value = response.data;
       nbLotsRecus.value = response.data.length;
+      
+      // Charger les mises de l'utilisateur si connecté
+      if (store.state.isLoggedIn) {
+        await store.dispatch("fetchUserBids");
+      }
     }
   } catch (error) {
     console.error("Erreur lors du chargement des lots:", error);
