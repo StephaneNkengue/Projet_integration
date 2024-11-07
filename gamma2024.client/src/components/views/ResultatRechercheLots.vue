@@ -1,9 +1,4 @@
 <template>
-    <div class="d-flex flex-column align-items-center pb-3">
-        <h1>
-            Tous les lots
-        </h1>
-    </div>
     <div class="d-flex gap-2 w-100" v-if="chargement">
         <div class="spinner-border" role="status">
             <span class="visually-hidden">Chargement des lots...</span>
@@ -105,9 +100,11 @@
     import LotTuile from "@/components/views/LotTuile.vue";
     import LotListe from "@/components/views/LotListe.vue";
     import { ref, watch, onMounted } from "vue";
+    import { useRouter, useRoute } from "vue-router";
     import { useStore } from "vuex";
 
     const store = useStore();
+    const router = useRouter();
 
     const listeLots = ref([]);
     const lots = ref([]);
@@ -229,6 +226,9 @@
             lotsAffiche.value.push(lotsFiltres.value[i]);
         }
     }
+
+    //const informationsDeRecherche = JSON.parse(props.router.query.data);
+
 </script>
 
 <style scoped></style>

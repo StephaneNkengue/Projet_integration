@@ -27,6 +27,8 @@ import ReinitialisationMotDePasse from "@/components/views/ReinitialisationMotDe
 import TableauDeBordEncans from "@/components/views/TableauDeBordEncans.vue";
 import TableauDeBordEncansAjout from "@/components/views/TableauDeBordEncansAjout.vue";
 import ModificationEncan from "@/components/views/ModificationEncan.vue";
+import ResultatRechercheLots from "@/components/views/ResultatRechercheLots.vue";
+import ResultatRechercheEncans from "@/components/views/ResultatRechercheEncans.vue";
 const routes = [
     {
         path: "/",
@@ -215,6 +217,18 @@ const routes = [
         path: "/ReinitialiserMotDePasse",
         name: "ReinitialiserMotDePasse",
         component: ReinitialisationMotDePasse,
+    },
+    {
+        path: "/resultatrecherchelots",
+        name: "ResultatRechercheLots",
+        component: ResultatRechercheLots,
+        meta: { requiresAuth: false },
+    },
+    {
+        path: "/resultatrechercheencans",
+        name: "ResultatRechercheEncans",
+        component: ResultatRechercheEncans,
+        meta: { requiresAuth: false },
     },
 ];
 

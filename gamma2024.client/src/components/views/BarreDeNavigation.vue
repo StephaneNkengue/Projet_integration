@@ -399,8 +399,8 @@
                 .checked,
             medium: document.getElementById("lotMediumCheckboxRecherche").checked,
         };
-        this.$router.push({
-            path: "/resultatsrecherchelots",
+        router.push({
+            path: "/resultatrecherchelots",
             query: { data: JSON.stringify(informationsDeRecherche) },
         });
     }
@@ -411,7 +411,10 @@
             numero: document.getElementById("lotNumeroCheckboxRecherche").checked,
             date: document.getElementById("lotDateCheckboxRecherche").checked,
         };
-        this.$router.push({ path: "/resultatsrechercheencans", query: { data: JSON.stringify(informationsDeRecherche) } });
+        router.push({
+            path: "/resultatrechercheencans",
+            query: { data: JSON.stringify(informationsDeRecherche) },
+        });
     }
 
     function comportementTousSelectionnerRecherche() {
