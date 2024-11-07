@@ -8,6 +8,9 @@ const store = createStore({
     roles: [],
     isLoggedIn: false,
     user: null,
+    socket: null,
+    lots: {},
+    userBids: []
   },
   mutations: {
     setLoggedIn(state, value) {
@@ -15,12 +18,33 @@ const store = createStore({
       localStorage.setItem("isLoggedIn", value);
     },
     setUser(state, user) {
-      state.user = user;
+      console.log("Données reçues dans setUser:", user);
       if (user) {
-        localStorage.setItem("user", JSON.stringify(user));
+        state.user = {
+          id: user.id,
+          username: user.username,
+          name: user.name,
+          firstName: user.firstName,
+          email: user.email,
+          phoneNumber: user.phoneNumber,
+          pseudonym: user.pseudonym,
+          photo: user.photo,
+          roles: user.roles,
+          cardOwnerName: user.cardOwnerName,
+          cardNumber: user.cardNumber,
+          cardExpiryDate: user.cardExpiryDate,
+          civicNumber: user.civicNumber,
+          street: user.street,
+          apartment: user.apartment,
+          city: user.city,
+          province: user.province,
+          country: user.country,
+          postalCode: user.postalCode
+        };
       } else {
-        localStorage.removeItem("user");
+        state.user = null;
       }
+      localStorage.setItem("user", JSON.stringify(state.user));
     },
     setRoles(state, roles) {
       console.log("Roles reçus dans setRoles:", roles);
@@ -38,8 +62,16 @@ const store = createStore({
       state.token = token;
       if (token) {
         localStorage.setItem("token", token);
+        if (state.api) {
+          state.api.defaults.headers.common[
+            "Authorization"
+          ] = `Bearer ${token}`;
+        }
       } else {
         localStorage.removeItem("token");
+        if (state.api) {
+          delete state.api.defaults.headers.common["Authorization"];
+        }
       }
     },
     SET_API(state, api) {
@@ -52,6 +84,50 @@ const store = createStore({
       // Cette mutation ne fait rien, mais force la mise à jour des getters
       state.userDataVersion = (state.userDataVersion || 0) + 1;
     },
+    updateLotMise(state, { idLot, montant, userId }) {
+      console.log('Mise à jour du lot:', idLot, 'avec montant:', montant);
+      
+      if (!state.lots[idLot]) {
+        // Créer un nouveau lot si non existant
+        state.lots[idLot] = {
+          id: idLot,
+          mise: montant,
+          idClientMise: userId
+        };
+      } else {
+        // Mettre à jour le lot existant
+        state.lots[idLot] = {
+          ...state.lots[idLot],
+          mise: montant,
+          idClientMise: userId
+        };
+      }
+    },
+    SET_SOCKET(state, socket) {
+      state.socket = socket;
+    },
+    addUserBid(state, lotId) {
+      if (!state.userBids.includes(lotId)) {
+        state.userBids.push(lotId);
+      }
+    },
+    setUserBids(state, bids) {
+      state.userBids = bids;
+    },
+    setLots(state, lots) {
+      state.lots = lots.reduce((acc, lot) => {
+        acc[lot.id] = {
+          ...lot,
+          mise: lot.mise || 0
+        };
+        return acc;
+      }, {});
+      console.log('Lots initialisés dans le store:', state.lots);
+    },
+    refreshLots(state) {
+      // Forcer la réactivité en créant une nouvelle référence
+      state.lots = [...state.lots];
+    }
   },
   actions: {
     async login({ commit, state }, userData) {
@@ -474,7 +550,11 @@ const store = createStore({
     async initializeStore({ commit, state }) {
       console.log("=== Initialisation du Store ===");
 
-      // Récupérer l'état depuis localStorage
+      // Initialiser d'abord l'API
+      const api = initApi(() => state.token);
+      commit("SET_API", api);
+
+      // Ensuite, récupérer l'état depuis localStorage
       const savedIsLoggedIn = localStorage.getItem("isLoggedIn") === "true";
       const savedToken = localStorage.getItem("token");
       const savedUser = JSON.parse(localStorage.getItem("user"));
@@ -482,12 +562,9 @@ const store = createStore({
 
       // Initialiser l'état
       commit("setLoggedIn", savedIsLoggedIn);
-      commit("setToken", savedToken);
       commit("setUser", savedUser);
       commit("setRoles", savedRoles);
-
-      const api = initApi(() => state.token);
-      commit("SET_API", api);
+      commit("setToken", savedToken); // Déplacer setToken après l'initialisation de l'API
     },
 
     async chercherTousEncansVisibles({ commit, state }) {
@@ -678,6 +755,96 @@ const store = createStore({
       commit("refreshUserData");
     },
 
+    async placerMise({ state, commit, dispatch }, { idLot, montant }) {
+      try {
+        const miseData = {
+          idLot: idLot,
+          montant: parseFloat(montant),
+          userId: state.user?.id
+        };
+
+        const response = await state.api.post('/lots/placerMise', miseData);
+        
+        if (response.data.success) {
+          commit('addUserBid', idLot);
+          commit('updateLotMise', {
+            idLot: idLot,
+            montant: montant,
+            userId: state.user.id
+          });
+          await dispatch('fetchUserBids');
+        }
+        
+        return response.data;
+      } catch (error) {
+        console.error('Erreur lors de la mise:', error);
+        const errorMessage = error.response?.data?.message || "Erreur lors de la mise";
+        return { 
+          success: false, 
+          message: errorMessage
+        };
+      }
+    },
+    async initWebSocket({ commit, state, dispatch }) {
+      try {
+        // Fermer l'ancienne connexion si elle existe
+        if (state.socket) {
+          state.socket.close();
+        }
+
+        const wsUrl = state.api.defaults.baseURL
+          .replace('http://', 'ws://')
+          .replace('/api', '/ws');
+        
+        const socket = new WebSocket(wsUrl);
+
+        socket.onopen = () => {
+          console.log('WebSocket connecté');
+        };
+
+        socket.onmessage = (event) => {
+          const data = JSON.parse(event.data);
+          console.log('Message WebSocket reçu:', data);
+          
+          if (data.type === 'NOUVELLE_MISE') {
+            // S'assurer que les valeurs sont du bon type
+            commit('updateLotMise', {
+              idLot: parseInt(data.idLot),
+              montant: parseFloat(data.montant),
+              userId: data.userId
+            });
+          }
+        };
+
+        socket.onerror = (error) => {
+          console.error('Erreur WebSocket:', error);
+        };
+
+        socket.onclose = () => {
+          console.log('WebSocket déconnecté');
+          // Tenter de se reconnecter après un délai
+          setTimeout(() => {
+            console.log('Tentative de reconnexion WebSocket...');
+            dispatch('initWebSocket');
+          }, 5000);
+        };
+
+        commit('SET_SOCKET', socket);
+      } catch (error) {
+        console.error('Erreur lors de l\'initialisation du WebSocket:', error);
+      }
+    },
+
+    async fetchUserBids({ state, commit }) {
+      if (!state.user?.id) return;
+      try {
+        const response = await state.api.get(`/lots/userBids/${state.user.id}`);
+        commit("setUserBids", response.data);
+      } catch (error) {
+        console.error("Erreur lors du chargement des mises:", error);
+      }
+    },
+
     async reinitialisePassword({ commit, state }, resetPasswordData) {
       try {
         const response = await state.api.post(
@@ -697,7 +864,30 @@ const store = createStore({
         };
       }
     },
-  },
+    async creerCompteUtilisateur({ commit, state }, formData) {
+      try {
+        const response = await state.api.post("/utilisateurs/creer", formData);
+        
+        if (response.data.success) {
+          return {
+            success: true,
+            message: response.data.message
+          };
+        } else {
+          return {
+            success: false,
+            message: response.data.message
+          };
+        }
+      } catch (error) {
+        console.error("Erreur lors de la création du compte:", error);
+        return {
+          success: false,
+          message: error.response?.data?.message || "Une erreur est survenue lors de la création du compte"
+        };
+      }
+    },
+},
   getters: {
     isAdmin: (state) => {
       // console.log("Rôles dans le getter isAdmin:", state.roles);
@@ -725,6 +915,15 @@ const store = createStore({
       }
       return "/gamma2024.client/public/icons/Avatar.png";
     },
+    hasUserBidOnLot: (state) => (lotId) => {
+      return state.userBids.includes(lotId);
+    },
+    getLot: (state) => (id) => {
+      return state.lots[id] || null;
+    },
+    getAllLots: (state) => {
+      return Object.values(state.lots);
+    }
   },
 });
 
