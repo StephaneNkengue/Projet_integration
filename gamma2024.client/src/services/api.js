@@ -24,6 +24,18 @@ export const initApi = (getToken) => {
     }
   );
 
+  api.interceptors.response.use(
+    (response) => {
+      return response;
+    },
+    (error) => {
+      if (error.response && error.response.status === 400) {
+        return Promise.reject(error);
+      }
+      return Promise.reject(error);
+    }
+  );
+
   return api;
 };
 

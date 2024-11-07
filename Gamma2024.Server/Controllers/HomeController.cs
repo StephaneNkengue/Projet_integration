@@ -73,7 +73,10 @@ namespace Gamma2024.Server.Controllers
                     username = user.UserName,
                     name = user.Name,
                     firstName = user.FirstName,
-                    photo = user.Avatar // Assurez-vous que ce champ est inclus
+                    photo = user.Avatar,
+                    email = user.Email,
+                    phoneNumber = user.PhoneNumber,
+                    pseudonym = user.UserName
                 });
             }
             else

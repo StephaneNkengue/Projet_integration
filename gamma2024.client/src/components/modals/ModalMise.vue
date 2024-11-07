@@ -20,27 +20,31 @@
           ></button>
         </div>
         <div class="modal-body">
-          <div class="d-flex flex-column gap-2">
-            <p class="mb-0">
-              valeur : {{ lot.valeurEstimeMin }}$ - {{ lot.valeurEstimeMax }}$
-            </p>
-            <p class="mb-0">mise actuelle : {{ lot.mise }}$</p>
-            <div class="d-flex align-items-center gap-2">
-              <span>votre mise :</span>
-              <button
-                class="btn btn-outline-secondary"
-                @click="decrementerMise"
-                :disabled="montantMise <= miseMinimale"
-              >
-                -{{ pasEnchere }}$
-              </button>
-              <span class="fs-5">{{ montantMise }}$</span>
-              <button
-                class="btn btn-outline-secondary"
-                @click="incrementerMise"
-              >
-                +{{ pasEnchere }}$
-              </button>
+          <div class="d-flex flex-column gap-3">
+            <p class="fs-5 mb-0">lot {{ lot.numero }}</p>
+            <p class="fs-5 mb-0">votre mise : {{ affichageMiseActuelle }}</p>
+
+            <div class="d-flex flex-column gap-2">
+              <p class="mb-0">Ma mise maximale à ne pas dépasser :</p>
+              <div class="d-flex align-items-center gap-2">
+                <button
+                  class="btn btn-outline-secondary"
+                  @click="decrementerMise"
+                  :disabled="montantMise <= getMiseMinimale"
+                >
+                  -{{ pasEnchere }}$
+                </button>
+                <span class="fs-5">{{ montantMise }}$</span>
+                <button
+                  class="btn btn-outline-secondary"
+                  @click="incrementerMise"
+                >
+                  +{{ pasEnchere }}$
+                </button>
+              </div>
+              <p class="text-muted small">
+                Ajouter le montant maximum souhaité
+              </p>
             </div>
           </div>
         </div>
@@ -67,9 +71,11 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, watch } from "vue";
+import { ref, computed, onMounted, h, defineEmits, watch } from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
+import { toast } from "vue3-toastify";
+import ToastContent from "../Toast/toastConfirm.vue";
 
 const props = defineProps({
   lot: {
@@ -78,38 +84,45 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits(["miseConfirmee"]);
-
 const store = useStore();
 const router = useRouter();
 const montantMise = ref(0);
 let modalInstance = null;
 
-// Fonction pour calculer le pas d'enchère
-const calculerPasEnchere = (valeur) => {
-  if (valeur <= 199.0) return 10.0;
-  if (valeur <= 499.0) return 25.0;
-  if (valeur <= 999.0) return 50.0;
-  if (valeur <= 1999.0) return 100.0;
-  if (valeur <= 4999.0) return 200.0;
-  if (valeur <= 9999.0) return 250.0;
-  if (valeur <= 19999.0) return 500.0;
-  if (valeur <= 49999.0) return 1000.0;
-  if (valeur <= 99999.0) return 2000.0;
-  if (valeur <= 499999.0) return 5000.0;
-  return 10000.0;
-};
-
-const pasEnchere = computed(() => {
-  return calculerPasEnchere(props.lot.valeurEstimeMin);
+const userHasBid = computed(() => {
+  return store.getters.hasUserBidOnLot(props.lot.id);
 });
 
-const miseMinimale = computed(() => {
-  return (props.lot.mise || 0) + pasEnchere.value;
+const getMiseInitiale = computed(() => {
+  return props.lot.mise ? props.lot.mise : props.lot.prixOuverture;
+});
+
+// Ajout des computed properties pour le montant initial et le pas
+const montantInitial = computed(() => {
+  // Récupérer la mise actuelle du lot depuis le store, peu importe qui a misé
+  const lotStore = store.getters.getLot(props.lot.id);
+  return lotStore?.mise || props.lot.mise || props.lot.prixOuverture || 0;
+});
+
+const pasEnchere = computed(() => {
+  const miseActuelle = props.lot?.mise || 0;
+  // Définir les paliers pour le pas d'enchère
+  if (miseActuelle < 100) return 5;
+  if (miseActuelle < 500) return 25;
+  if (miseActuelle < 1000) return 50;
+  if (miseActuelle < 5000) return 100;
+  return 250;
+});
+
+const getMiseMinimale = computed(() => {
+  // Si la mise actuelle est 0, utiliser le prix d'ouverture
+  const miseBase =
+    props.lot.mise > 0 ? props.lot.mise : props.lot.prixOuverture;
+  return miseBase + pasEnchere.value;
 });
 
 const isMiseValide = computed(() => {
-  return montantMise.value >= miseMinimale.value;
+  return montantMise.value >= getMiseMinimale.value;
 });
 
 const incrementerMise = () => {
@@ -118,95 +131,92 @@ const incrementerMise = () => {
 
 const decrementerMise = () => {
   const nouveauMontant = montantMise.value - pasEnchere.value;
-  if (nouveauMontant >= miseMinimale.value) {
+  if (nouveauMontant >= montantInitial.value + pasEnchere.value) {
     montantMise.value = nouveauMontant;
   }
 };
 
 const confirmerMise = async () => {
-  const response = await store.dispatch("placerMise", {
-    idLot: props.lot.id,
-    montant: montantMise.value,
-  });
+  try {
+    const response = await store.dispatch("placerMise", {
+      idLot: props.lot.id,
+      montant: montantMise.value,
+    });
 
-  if (response.success) {
-    emit("miseConfirmee", montantMise.value);
-    modalInstance.hide();
-  } else {
-    modalInstance.hide();
+    if (response.success) {
+      // Fermer le modal
+      modalInstance.hide();
 
-    const modalElement = document.createElement("div");
-    modalElement.innerHTML = `
-      <div class="modal fade" id="modalErreurConnexion" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title">Connexion requise</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-              <p>Veuillez vous connecter pour miser !</p>
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-primary" data-bs-dismiss="modal" id="btnRedirigerConnexion">
-                Se connecter
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    `;
-    document.body.appendChild(modalElement);
+      // Émettre l'événement
+      emit("miseConfirmee", montantMise.value);
 
-    const modalErreur = new bootstrap.Modal(
-      document.getElementById("modalErreurConnexion")
+      // Forcer la mise à jour du montant pour la prochaine ouverture
+      props.lot.mise = montantMise.value;
+
+      // Afficher le toast de succès
+      toast.success(
+        h(ToastContent, {
+          title: "Succès",
+          description: "Votre mise a été placée avec succès",
+        })
+      );
+    }
+  } catch (error) {
+    toast.error(
+      h(ToastContent, {
+        title: "Erreur",
+        description: error.message || "Erreur lors de la mise",
+      })
     );
-    modalErreur.show();
-
-    document
-      .getElementById("btnRedirigerConnexion")
-      .addEventListener("click", () => {
-        router.push("/connexion");
-      });
-
-    document
-      .getElementById("modalErreurConnexion")
-      .addEventListener("hidden.bs.modal", () => {
-        document.body.removeChild(modalElement);
-      });
   }
 };
 
 onMounted(() => {
   const modalElement = document.getElementById(`modalMise_${props.lot.id}`);
   modalInstance = new bootstrap.Modal(modalElement);
-
-  modalElement.addEventListener("hidden.bs.modal", () => {
-    montantMise.value = miseMinimale.value;
-  });
-
-  montantMise.value = miseMinimale.value;
+  // Même logique que pour show()
+  if (!props.lot.mise) {
+    montantMise.value = props.lot.prixOuverture;
+  } else {
+    montantMise.value = montantInitial.value + pasEnchere.value;
+  }
 });
-
-// Ajouter un watch sur les props
-watch(
-  () => props.lot,
-  (newLot) => {
-    console.log("Lot mis à jour:", newLot);
-    // Réinitialiser le montant de mise quand le lot change
-    if (modalInstance) {
-      montantMise.value = miseMinimale.value;
-    }
-  },
-  { deep: true }
-);
 
 defineExpose({
   show: () => {
-    montantMise.value = miseMinimale.value; // Réinitialiser la mise à l'ouverture
+    // Si aucune mise n'a été faite, utiliser le prix d'ouverture directement
+    if (!props.lot.mise) {
+      montantMise.value = props.lot.prixOuverture;
+    } else {
+      // S'il y a déjà une mise, ajouter le pas d'enchère
+      const miseActuelle = montantInitial.value;
+      montantMise.value = miseActuelle + pasEnchere.value;
+    }
     modalInstance.show();
   },
   hide: () => modalInstance.hide(),
+});
+
+// Ajouter un watch pour surveiller les changements de mise
+watch(
+  () => props.lot.mise,
+  (newMise) => {
+    if (newMise) {
+      montantMise.value = newMise + pasEnchere.value;
+    }
+  }
+);
+
+// Définir les émissions au début du script
+const emit = defineEmits(["miseConfirmee"]);
+
+// L'affichage de "votre mise" reste conditionnel à l'utilisateur actuel
+const affichageMiseActuelle = computed(() => {
+  return hasUserBidOnLot.value ? `${props.lot.mise}$` : "aucune mise";
+});
+
+const hasUserBidOnLot = computed(() => {
+  return store.getters.hasUserBidOnLot(props.lot.id);
 });
 </script>
 
@@ -215,16 +225,10 @@ defineExpose({
   padding: 1.5rem;
 }
 
-.modal-body p {
-  margin-bottom: 0.5rem;
+.gap-3 {
+  gap: 1rem !important;
 }
 
-/* Alignement des éléments */
-.modal-body .d-flex {
-  align-items: center;
-}
-
-/* Espacement cohérent */
 .gap-2 {
   gap: 0.75rem !important;
 }
