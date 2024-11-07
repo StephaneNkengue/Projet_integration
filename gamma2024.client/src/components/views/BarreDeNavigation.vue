@@ -56,7 +56,7 @@
                             </li>
                         </ul>
 
-                        <div class="d-flex justify-content-center gap-3 mb-2 mb-lg-0">
+                        <div class="d-flex justify-content-center gap-3 mb-2 mb-lg-0 flex-row align-items-center justify-content-center">
                             <router-link :to="{ name: 'Inscription' }" v-if="!estConnecte">
                                 <button class="btn btn-outline bleuMoyenFond text-white py-0 butttonNavBar btnSurvolerBleuMoyenFond"
                                         type="button">
@@ -69,7 +69,7 @@
                                     Connexion
                                 </button>
                             </router-link>
-                            <div class="collapse navbar-collapse dropdown text-white"
+                            <div class="dropdown text-white"
                                  v-if="estAdmin">
                                 <a class="nav-link dropdown-toggle"
                                    role="button"
