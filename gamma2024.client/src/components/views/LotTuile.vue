@@ -42,7 +42,7 @@
           <button
             type="button"
             class="btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond"
-            @click.prevent="ouvrirModalMise"
+            @click.prevent="handleMiseClick"
             v-if="!isAdmin"
           >
             Miser
@@ -63,8 +63,11 @@
 import { onMounted, ref, computed, watch } from "vue";
 import { useStore } from "vuex";
 import ModalMise from '@/components/modals/ModalMise.vue';
+import { toast } from 'vue3-toastify';
+import { useRouter } from 'vue-router';
 
 const store = useStore();
+const router = useRouter();
 const props = defineProps({
   lotRecu: Object
 });
@@ -191,6 +194,31 @@ watch(() => store.state.lots, () => {
 }, { immediate: true, deep: true });
 
 const isAdmin = computed(() => store.getters.isAdmin);
+const isLoggedIn = computed(() => store.state.isLoggedIn);
+
+const handleMiseClick = (event) => {
+  if (!isLoggedIn.value) {
+    toast.info("Veuillez vous connecter pour pouvoir miser", {
+      position: "top-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: false, // Changé à false
+      pauseOnHover: true,
+      draggable: true,
+      theme: "colored",
+      style: {
+        fontSize: '16px',
+        padding: '15px'
+      },
+      onClose: () => {
+        // Redirection après la fermeture du toast
+        router.push('/connexion');
+      }
+    });
+    return;
+  }
+  ouvrirModalMise(event);
+};
 
 </script>
 
