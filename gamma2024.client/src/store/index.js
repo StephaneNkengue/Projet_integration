@@ -16,6 +16,14 @@ const store = createStore({
         setLoggedIn(state, value) {
             state.isLoggedIn = value;
             localStorage.setItem("isLoggedIn", value);
+            if (!value) {
+                state.userBids = [];
+                if (state.lots) {
+                    Object.values(state.lots).forEach(lot => {
+                        lot.userHasBid = false;
+                    });
+                }
+            }
         },
         setUser(state, user) {
             console.log("Données reçues dans setUser:", user);
@@ -127,7 +135,31 @@ const store = createStore({
         refreshLots(state) {
             // Forcer la réactivité en créant une nouvelle référence
             state.lots = [...state.lots];
-        }
+        },
+        updateLotsWithUserBids(state, userBids) {
+            if (!state.lots) return;
+            
+            // Convertir l'objet lots en un nouvel objet avec les mises à jour
+            const updatedLots = {};
+            Object.entries(state.lots).forEach(([id, lot]) => {
+                const userBid = userBids.find(bid => bid.lotId === parseInt(id));
+                updatedLots[id] = {
+                    ...lot,
+                    userHasBid: !!userBid,
+                    mise: userBid ? userBid.montant : lot.mise
+                };
+            });
+            
+            state.lots = updatedLots;
+        },
+        clearUserBids(state) {
+            state.userBids = [];
+            if (state.lots) {
+                Object.values(state.lots).forEach(lot => {
+                    lot.userHasBid = false;
+                });
+            }
+        },
     },
     actions: {
         async login({ commit, state }, userData) {
@@ -497,6 +529,7 @@ const store = createStore({
                     commit("setLoggedIn", true);
                     commit("setUser", response.data.user);
                     commit("setRoles", response.data.roles);
+                    await dispatch("fetchUserBids");
                     dispatch("forceUpdate");
                 } else {
                     throw new Error("Non authentifié");
@@ -840,6 +873,7 @@ const store = createStore({
             try {
                 const response = await state.api.get(`/lots/userBids/${state.user.id}`);
                 commit("setUserBids", response.data);
+                commit("updateLotsWithUserBids", response.data);
             } catch (error) {
                 console.error("Erreur lors du chargement des mises:", error);
             }

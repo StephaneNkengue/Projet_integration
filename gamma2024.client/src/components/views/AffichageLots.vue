@@ -261,6 +261,17 @@ const chargerLots = async () => {
 onMounted(() => {
   chargerLots();
 });
+
+// Ajouter ce computed
+const isLoggedIn = computed(() => store.state.isLoggedIn);
+
+// Ajouter ce watch pour recharger les lots quand l'utilisateur se connecte
+watch(isLoggedIn, async (newValue) => {
+    if (newValue) {
+        await store.dispatch("fetchUserBids");
+        await chargerLots();
+    }
+});
 </script>
 
 <style scoped></style>

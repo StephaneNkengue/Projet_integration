@@ -60,180 +60,171 @@
 </template>
 
 <script setup>
-import { onMounted, ref, computed, watch } from "vue";
-import { useStore } from "vuex";
-import ModalMise from '@/components/modals/ModalMise.vue';
+import { ref, computed, watch, onMounted } from 'vue';
+import { useStore } from 'vuex';
 import { toast } from 'vue3-toastify';
 import { useRouter } from 'vue-router';
+import ModalMise from '@/components/modals/ModalMise.vue';
 
 const store = useStore();
 const router = useRouter();
-const props = defineProps({
-  lotRecu: Object
-});
-
-const urlApi = ref("/api");
-
-// Créer un objet computed pour le lot à passer au modal
-const lotPourModal = computed(() => ({
-  id: props.lotRecu.id,
-  numero: props.lotRecu.numero,
-  mise: props.lotRecu.mise,
-  prixOuverture: props.lotRecu.prixOuverture,
-  prixMinPourVente: props.lotRecu.prixMinPourVente,
-  description: props.lotRecu.description,
-  valeurEstimeMin: props.lotRecu.valeurEstimeMin,
-  valeurEstimeMax: props.lotRecu.valeurEstimeMax,
-  artiste: props.lotRecu.artiste,
-  estVendu: props.lotRecu.estVendu,
-  dateFinVente: props.lotRecu.dateFinVente,
-  estLivrable: props.lotRecu.estLivrable,
-  largeur: props.lotRecu.largeur,
-  hauteur: props.lotRecu.hauteur,
-  photos: props.lotRecu.photos
-}));
-
-const mise = ref(0);
-const lot = ref({
-  id: 0,
-  numero: "",
-  description: "",
-  valeurEstimeMin: 0,
-  valeurEstimeMax: 0,
-  artiste: " ",
-  mise: 0,
-  estVendu: true,
-  dateFinVente: "",
-  estLivrable: true,
-  largeur: 0,
-  hauteur: 0,
-  photos: [
-    {
-      id: 0,
-      lien: "",
-      idLot: 0,
-      lot: null,
-    },
-  ],
-});
-
+const urlApi = ref("");
 const modalMise = ref(null);
 
-onMounted(async () => {
-  lot.value = props.lotRecu;
-  urlApi.value = await store.state.api.defaults.baseURL.replace("\api", "");
-  if (lot.value.mise != null) {
-    mise.value = lot.value.mise;
-  }
+// Définir les props en premier
+const props = defineProps({
+    lotRecu: {
+        type: Object,
+        required: true
+    }
 });
 
-const ouvrirModalMise = (event) => {
-  event.stopPropagation();
-  modalMise.value.show();
-};
+// Initialiser lot après props
+const lot = ref(props.lotRecu || {});
+const mise = ref(0);
 
-const onMiseConfirmee = async (montant) => {
-  lot.value.mise = montant;
-  mise.value = montant;
-  
-  try {
-    const response = await store.dispatch('chercherDetailsLotParId', lot.value.id);
-    if (response && response.data) {
-      lot.value = response.data;
-      mise.value = response.data.mise;
-    }
-  } catch (error) {
-    console.error("Erreur lors du rechargement des données du lot:", error);
-  }
-};
-
-// Ajouter le computed pour vérifier si l'utilisateur a misé
+// Computed properties
+const isLoggedIn = computed(() => store.state.isLoggedIn);
+const isAdmin = computed(() => store.getters.isAdmin);
 const isUserHighestBidder = computed(() => {
-  const lotActuel = store.getters.getLot(props.lotRecu.id);
-  return store.getters.hasUserBidOnLot(props.lotRecu.id) && lotActuel?.mise === miseActuelle.value;
+    const lotActuel = store.getters.getLot(props.lotRecu.id);
+    return store.getters.hasUserBidOnLot(props.lotRecu.id) && lotActuel?.mise === miseActuelle.value;
 });
 
 const miseActuelle = computed(() => {
-  const lot = store.getters.getLot(props.lotRecu.id);
-  if (lot?.mise !== undefined) {
-    return lot.mise;
-  }
-  return props.lotRecu.mise || 0;
+    const lot = store.getters.getLot(props.lotRecu.id);
+    if (lot?.mise !== undefined) {
+        return lot.mise;
+    }
+    return props.lotRecu.mise || 0;
 });
 
 const formatMontant = (montant) => {
-  const valeur = Number(montant);
-  return isNaN(valeur) ? '0.00' : valeur.toFixed(2);
+    const valeur = Number(montant);
+    return isNaN(valeur) ? '0.00' : valeur.toFixed(2);
 };
 
 const urlImage = computed(() => {
-  const lotStore = store.getters.getLot(props.lotRecu.id);
-  if (lotStore?.photos?.[0]?.lien) {
-    return urlApi.value + lotStore.photos[0].lien;
-  }
-  return urlApi.value + props.lotRecu.photos[0].lien;
+    const lotStore = store.getters.getLot(props.lotRecu.id);
+    if (lotStore?.photos?.[0]?.lien) {
+        return urlApi.value + lotStore.photos[0].lien;
+    }
+    return urlApi.value + props.lotRecu.photos[0].lien;
 });
 
 // Surveiller les changements dans le store
 watch(() => store.state.lots, (newLots) => {
-  const lotActuel = store.getters.getLot(props.lotRecu.id);
-  if (lotActuel) {
-    lot.value = lotActuel;
-  }
+    const lotActuel = store.getters.getLot(props.lotRecu.id);
+    if (lotActuel) {
+        lot.value = lotActuel;
+    }
 }, { deep: true });
 
 // Ajouter une méthode pour vérifier si le montant est valide
 const estMontantValide = (montant) => {
-  return montant !== undefined && montant !== null && !isNaN(Number(montant));
+    return montant !== undefined && montant !== null && !isNaN(Number(montant));
 };
 
 // Ajouter un watch pour mettre à jour immédiatement
 watch(() => store.state.lots, () => {
-  // Force la réévaluation du computed
-  isUserHighestBidder.value;
+    // Force la réévaluation du computed
+    isUserHighestBidder.value;
 }, { immediate: true, deep: true });
 
-const isAdmin = computed(() => store.getters.isAdmin);
-const isLoggedIn = computed(() => store.state.isLoggedIn);
+// Déplacer le watch de isLoggedIn après sa définition
+watch(isLoggedIn, (newValue) => {
+    if (!newValue) {
+        const lotActuel = store.getters.getLot(props.lotRecu.id);
+        if (lotActuel) {
+            lot.value = lotActuel;
+        }
+    }
+});
+
+onMounted(async () => {
+    urlApi.value = await store.state.api.defaults.baseURL.replace("\api", "");
+    if (lot.value.mise != null) {
+        mise.value = lot.value.mise;
+    }
+});
+
+const ouvrirModalMise = (event) => {
+    event.stopPropagation();
+    modalMise.value.show();
+};
+
+const onMiseConfirmee = async (montant) => {
+    lot.value.mise = montant;
+    mise.value = montant;
+    
+    try {
+        const response = await store.dispatch('chercherDetailsLotParId', lot.value.id);
+        if (response && response.data) {
+            lot.value = response.data;
+            mise.value = response.data.mise;
+        }
+    } catch (error) {
+        console.error("Erreur lors du rechargement des données du lot:", error);
+    }
+};
+
+// Créer un objet computed pour le lot à passer au modal
+const lotPourModal = computed(() => ({
+    id: props.lotRecu.id,
+    numero: props.lotRecu.numero,
+    mise: props.lotRecu.mise,
+    prixOuverture: props.lotRecu.prixOuverture,
+    prixMinPourVente: props.lotRecu.prixMinPourVente,
+    description: props.lotRecu.description,
+    valeurEstimeMin: props.lotRecu.valeurEstimeMin,
+    valeurEstimeMax: props.lotRecu.valeurEstimeMax,
+    artiste: props.lotRecu.artiste,
+    estVendu: props.lotRecu.estVendu,
+    dateFinVente: props.lotRecu.dateFinVente,
+    estLivrable: props.lotRecu.estLivrable,
+    largeur: props.lotRecu.largeur,
+    hauteur: props.lotRecu.hauteur,
+    photos: props.lotRecu.photos
+}));
 
 const handleMiseClick = (event) => {
-  if (!isLoggedIn.value) {
-    toast.info("Veuillez vous connecter pour pouvoir miser", {
-      position: "top-right",
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: false, // Changé à false
-      pauseOnHover: true,
-      draggable: true,
-      theme: "colored",
-      style: {
-        fontSize: '16px',
-        padding: '15px'
-      },
-      onClose: () => {
-        // Redirection après la fermeture du toast
-        router.push('/connexion');
-      }
-    });
-    return;
-  }
-  ouvrirModalMise(event);
+    if (!isLoggedIn.value) {
+        toast.info("Veuillez vous connecter pour pouvoir miser", {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: false, // Changé à false
+            pauseOnHover: true,
+            draggable: true,
+            theme: "colored",
+            style: {
+                fontSize: '16px',
+                padding: '15px'
+            },
+            onClose: () => {
+                // Redirection après la fermeture du toast
+                router.push('/connexion');
+            }
+        });
+        return;
+    }
+    ouvrirModalMise(event);
 };
 
 </script>
 
 <style scoped>
 .fs-7 {
-  font-size: 0.89rem;
+    font-size: 0.89rem;
 }
 
 .card {
-  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.2), 0 3px 5px 0 rgba(0, 0, 0, 0.19);
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.2), 0 3px 5px 0 rgba(0, 0, 0, 0.19);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .user-bid {
-  border: 2px solid #4CAF50 !important;
-  box-shadow: 0 0 10px rgba(76, 175, 80, 0.3) !important;
+    border: 2px solid #4CAF50 !important;
+    box-shadow: 0 0 10px rgba(76, 175, 80, 0.3) !important;
 }
 </style>

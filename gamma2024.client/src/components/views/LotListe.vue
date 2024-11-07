@@ -134,10 +134,7 @@ const lot = ref({
 
 const modalMise = ref(null);
 
-onMounted(async () => {
-  lot.value = props.lotRecu;
-  urlApi.value = await store.state.api.defaults.baseURL.replace("\api", "");
-});
+
 
 const ouvrirModalMise = (event) => {
   event.stopPropagation();
@@ -228,6 +225,23 @@ const handleMiseClick = (event) => {
   }
   ouvrirModalMise(event);
 };
+
+// Ajouter ce watch pour réagir aux changements de l'état de connexion
+watch(isLoggedIn, (newValue) => {
+    if (!newValue) {
+        // Forcer la mise à jour de l'état du lot quand l'utilisateur se déconnecte
+        const lotActuel = store.getters.getLot(props.lotRecu.id);
+        if (lotActuel) {
+            lot.value = lotActuel;
+        }
+    }
+});
+
+onMounted(async () => {
+  lot.value = props.lotRecu;
+  urlApi.value = await store.state.api.defaults.baseURL.replace("\api", "");
+});
+
 </script>
 <style scoped>
 .card {
