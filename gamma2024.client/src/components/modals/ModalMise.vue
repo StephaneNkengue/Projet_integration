@@ -23,7 +23,7 @@
           <div class="d-flex flex-column gap-3">
             <p class="fs-5 mb-0">lot {{ lot.numero }}</p>
             <p class="fs-5 mb-0">votre mise : {{ affichageMiseActuelle }}</p>
-            
+
             <div class="d-flex flex-column gap-2">
               <p class="mb-0">Ma mise maximale à ne pas dépasser :</p>
               <div class="d-flex align-items-center gap-2">
@@ -71,12 +71,11 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, h, defineEmits, watch } from 'vue';
-import { useStore } from 'vuex';
-import { useRouter } from 'vue-router';
-import { toast } from 'vue3-toastify';
-import ToastContent from '../Toast/toastConfirm.vue';
-import 'bootstrap/dist/js/bootstrap.bundle.min.js';
+import { ref, computed, onMounted, h, defineEmits, watch } from "vue";
+import { useStore } from "vuex";
+import { useRouter } from "vue-router";
+import { toast } from "vue3-toastify";
+import ToastContent from "../Toast/toastConfirm.vue";
 
 const props = defineProps({
   lot: {
@@ -139,21 +138,21 @@ const decrementerMise = () => {
 
 const confirmerMise = async () => {
   try {
-    const response = await store.dispatch('placerMise', {
+    const response = await store.dispatch("placerMise", {
       idLot: props.lot.id,
-      montant: montantMise.value
+      montant: montantMise.value,
     });
 
     if (response.success) {
       // Fermer le modal
       modalInstance.hide();
-      
+
       // Émettre l'événement
-      emit('miseConfirmee', montantMise.value);
-      
+      emit("miseConfirmee", montantMise.value);
+
       // Forcer la mise à jour du montant pour la prochaine ouverture
       props.lot.mise = montantMise.value;
-      
+
       // Afficher le toast de succès
       toast.success(
         h(ToastContent, {
@@ -199,14 +198,17 @@ defineExpose({
 });
 
 // Ajouter un watch pour surveiller les changements de mise
-watch(() => props.lot.mise, (newMise) => {
-  if (newMise) {
-    montantMise.value = newMise + pasEnchere.value;
+watch(
+  () => props.lot.mise,
+  (newMise) => {
+    if (newMise) {
+      montantMise.value = newMise + pasEnchere.value;
+    }
   }
-});
+);
 
 // Définir les émissions au début du script
-const emit = defineEmits(['miseConfirmee']);
+const emit = defineEmits(["miseConfirmee"]);
 
 // L'affichage de "votre mise" reste conditionnel à l'utilisateur actuel
 const affichageMiseActuelle = computed(() => {
