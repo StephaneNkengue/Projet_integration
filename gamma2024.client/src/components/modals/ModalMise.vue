@@ -175,14 +175,24 @@ const confirmerMise = async () => {
 onMounted(() => {
   const modalElement = document.getElementById(`modalMise_${props.lot.id}`);
   modalInstance = new bootstrap.Modal(modalElement);
-  // Initialiser avec la mise minimale calculée
-  montantMise.value = montantInitial.value + pasEnchere.value;
+  // Même logique que pour show()
+  if (!props.lot.mise) {
+    montantMise.value = props.lot.prixOuverture;
+  } else {
+    montantMise.value = montantInitial.value + pasEnchere.value;
+  }
 });
 
 defineExpose({
   show: () => {
-    const miseActuelle = montantInitial.value;
-    montantMise.value = miseActuelle + pasEnchere.value;
+    // Si aucune mise n'a été faite, utiliser le prix d'ouverture directement
+    if (!props.lot.mise) {
+      montantMise.value = props.lot.prixOuverture;
+    } else {
+      // S'il y a déjà une mise, ajouter le pas d'enchère
+      const miseActuelle = montantInitial.value;
+      montantMise.value = miseActuelle + pasEnchere.value;
+    }
     modalInstance.show();
   },
   hide: () => modalInstance.hide(),

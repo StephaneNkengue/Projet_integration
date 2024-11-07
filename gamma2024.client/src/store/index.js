@@ -115,11 +115,10 @@ const store = createStore({
       state.userBids = bids;
     },
     setLots(state, lots) {
-      // Convertir le tableau en objet avec les IDs comme clés
       state.lots = lots.reduce((acc, lot) => {
         acc[lot.id] = {
           ...lot,
-          mise: lot.mise || lot.prixOuverture || 0
+          mise: lot.mise || 0
         };
         return acc;
       }, {});
@@ -756,7 +755,7 @@ const store = createStore({
       commit("refreshUserData");
     },
 
-    async placerMise({ state, commit }, { idLot, montant }) {
+    async placerMise({ state, commit, dispatch }, { idLot, montant }) {
       try {
         const miseData = {
           idLot: idLot,
@@ -765,11 +764,20 @@ const store = createStore({
         };
 
         const response = await state.api.post('/lots/placerMise', miseData);
-        return response.data;  // Le serveur renvoie déjà { success, message }
         
+        if (response.data.success) {
+          commit('addUserBid', idLot);
+          commit('updateLotMise', {
+            idLot: idLot,
+            montant: montant,
+            userId: state.user.id
+          });
+          await dispatch('fetchUserBids');
+        }
+        
+        return response.data;
       } catch (error) {
         console.error('Erreur lors de la mise:', error);
-        // Extraire le message d'erreur de la réponse
         const errorMessage = error.response?.data?.message || "Erreur lors de la mise";
         return { 
           success: false, 

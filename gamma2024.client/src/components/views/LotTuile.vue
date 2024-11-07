@@ -153,7 +153,7 @@ const miseActuelle = computed(() => {
   if (lot?.mise !== undefined) {
     return lot.mise;
   }
-  return props.lotRecu.mise || props.lotRecu.prixOuverture || 0;
+  return props.lotRecu.mise || 0;
 });
 
 const formatMontant = (montant) => {
