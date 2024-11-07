@@ -210,11 +210,18 @@ const emit = defineEmits(['miseConfirmee']);
 
 // L'affichage de "votre mise" reste conditionnel à l'utilisateur actuel
 const affichageMiseActuelle = computed(() => {
-  return hasUserBidOnLot.value ? `${props.lot.mise}$` : 'aucune mise';
+  const mise = store.getters.getLot(props.lot.id).mise;
+  return mise ? `${mise}$` : 'aucune mise';
 });
 
 const hasUserBidOnLot = computed(() => {
   return store.getters.hasUserBidOnLot(props.lot.id);
+});
+
+watch(() => store.getters.getLot(props.lot.id).mise, (newMise) => {
+  if (newMise !== undefined) {
+    props.lot.mise = newMise;
+  }
 });
 </script>
 
