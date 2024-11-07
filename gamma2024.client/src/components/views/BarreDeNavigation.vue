@@ -69,6 +69,7 @@
                                     Connexion
                                 </button>
                             </router-link>
+
                             <div class="dropdown text-white"
                                  v-if="estAdmin">
                                 <a class="nav-link dropdown-toggle"
@@ -111,25 +112,29 @@
                                 </ul>
                             </div>
 
-                            <a v-if="estConnecte"
-                               @click="notification = !notification"
-                               class="d-flex align-items-center">
-                                <img src="/icons/IconeCloche.png"
-                                     alt="Icon cloche"
-                                     height="25" />
-                            </a>
-
-                            <div class="d-flex flex-column position-absolute top-100 start-79 dropdown-menu bleuMarinSecondaireFond"
-                                 v-if="notification">
-                                <router-link v-for="index in 5"
-                                             :key="index"
-                                             :to="{ name: 'Accueil' }"
-                                             class="text-decoration-none text-white d-flex align-items-center gap-3">
-                                    <a class="dropdown-item text-white btnSurvolerBleuMoyenFond"
-                                       @click="notification = false">
-                                        test
-                                    </a>
-                                </router-link>
+                            <div class="dropdown text-white"
+                                 v-if="estConnecte && !estAdmin">
+                                <a class="nav-link"
+                                   role="button"
+                                   data-bs-toggle="dropdown"
+                                   aria-expanded="false"
+                                   @click="notification = !notification">
+                                    <img src="/icons/IconeCloche.png"
+                                         alt="Icon cloche"
+                                         height="25" />
+                                </a>
+                                <ul class="dropdown-menu bleuMarinFond text-center">
+                                    <li v-for="index in 5"
+                                        :key="index">
+                                        <router-link :to="{ name: 'Accueil' }"
+                                                     class="text-decoration-none text-white d-flex align-items-center gap-3">
+                                            <a class="dropdown-item text-white btnSurvolerBleuMoyenFond"
+                                               @click="notification = false">
+                                                test
+                                            </a>
+                                        </router-link>
+                                    </li>
+                                </ul>
                             </div>
                             <div class="dropdown text-white"
                                  v-if="estConnecte">
