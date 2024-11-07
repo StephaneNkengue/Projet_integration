@@ -8,6 +8,8 @@ const store = createStore({
         roles: [],
         isLoggedIn: false,
         user: null,
+        socket: null,
+        lots: []
     },
     mutations: {
         setLoggedIn(state, value) {
@@ -52,6 +54,16 @@ const store = createStore({
             // Cette mutation ne fait rien, mais force la mise à jour des getters
             state.userDataVersion = (state.userDataVersion || 0) + 1;
         },
+        updateLotMise(state, { idLot, montant }) {
+            // Mettre à jour la mise dans la liste des lots
+            const lot = state.lots.find(l => l.id === idLot);
+            if (lot) {
+                lot.mise = montant;
+            }
+        },
+        SET_SOCKET(state, socket) {
+            state.socket = socket;
+        }
     },
     actions: {
         async login({ commit, state }, userData) {
@@ -677,6 +689,42 @@ const store = createStore({
         forceUpdate({ commit }) {
             commit("refreshUserData");
         },
+        async placerMise({ commit, state }, { idLot, montant }) {
+            try {
+                const response = await state.api.post('/api/lots/placerMise', {
+                    idLot,
+                    montant
+                });
+
+                if (response.data.success) {
+                    // Mettre à jour le lot dans le store
+                    commit('updateLotMise', { idLot, montant });
+                    return { success: true, message: response.data.message };
+                }
+                return { success: false, message: response.data.message };
+            } catch (error) {
+                if (error.response?.status === 401) {
+                    router.push('/connexion');
+                    return { success: false, message: 'Veuillez vous connecter pour miser' };
+                }
+                return { success: false, message: error.response?.data?.message || 'Erreur lors de la mise' };
+            }
+        },
+        initWebSocket({ commit }) {
+            const socket = new WebSocket('ws://votre-serveur/ws');
+
+            socket.onmessage = (event) => {
+                const data = JSON.parse(event.data);
+                if (data.type === 'NOUVELLE_MISE') {
+                    commit('updateLotMise', {
+                        idLot: data.idLot,
+                        montant: data.montant
+                    });
+                }
+            };
+
+            commit('SET_SOCKET', socket);
+        },
 
         async reinitialisePassword({ commit, state }, resetPasswordData) {
             try {
@@ -695,6 +743,18 @@ const store = createStore({
                         error.response?.data ||
                         "Erreur lors de la modification du mot de passe.",
                 };
+            }
+        },
+
+        async fetchFactureInfo({ commit, state }) {
+            try {
+                const response = await state.api.get("/factures/chercherFactures");
+                console.log("Données reçues de l'API:", response.data); // Pour le débogage
+
+                return response.data;
+            } catch (error) {
+                console.error("Erreur détaillée:", error.response || error);
+                throw error;
             }
         },
 
