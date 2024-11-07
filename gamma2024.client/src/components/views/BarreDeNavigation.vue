@@ -334,7 +334,6 @@
         dimension: true,
         description: true,
         medium: true,
-        vendeur: true,
     });
 
     const colonnesDeCriteresEncans = ref({
@@ -380,11 +379,39 @@
     }
 
     async function rechercheAvanceeLots() {
-        this.$router.push({ path: "/resultatsrecherchelots", query: {} });
+        var informationsDeRecherche = {
+            stringDeRecherche: document.querySelector("#rechercheInput").value,
+            encan: document.getElementById("lotEncanCheckboxRecherche").checked,
+            numero: document.getElementById("lotNumeroCheckboxRecherche").checked,
+            prixOuverture: document.getElementById("lotPrixOuvertureCheckboxRecherche")
+                .checked,
+            valeurMinPourVente: document.getElementById(
+                "lotValeurMinPourVenteCheckboxRecherche"
+            ).checked,
+            estimationMin: document.getElementById("lotEstimationMinCheckboxRecherche")
+                .checked,
+            estimationMax: document.getElementById("lotEstimationMaxCheckboxRecherche")
+                .checked,
+            categorie: document.getElementById("lotCategorieCheckboxRecherche").checked,
+            artiste: document.getElementById("lotArtisteCheckboxRecherche").checked,
+            dimension: document.getElementById("lotDimensionCheckboxRecherche").checked,
+            description: document.getElementById("lotDescriptionCheckboxRecherche")
+                .checked,
+            medium: document.getElementById("lotMediumCheckboxRecherche").checked,
+        };
+        this.$router.push({
+            path: "/resultatsrecherchelots",
+            query: { data: JSON.stringify(informationsDeRecherche) },
+        });
     }
 
     async function rechercheAvanceeEncans() {
-        this.$router.push({ path: "/resultatsrecherchelots", query: {} });
+        var informationsDeRecherche = {
+            stringDeRecherche: document.querySelector("#rechercheInput").value,
+            numero: document.getElementById("lotNumeroCheckboxRecherche").checked,
+            date: document.getElementById("lotDateCheckboxRecherche").checked,
+        };
+        this.$router.push({ path: "/resultatsrechercheencans", query: { data: JSON.stringify(informationsDeRecherche) } });
     }
 
     function comportementTousSelectionnerRecherche() {
@@ -395,12 +422,12 @@
             ".checkboxSeulRecherche"
         );
 
-        if ((CheckboxeToutSelectionnerRecherche).checked) {
+        if (CheckboxeToutSelectionnerRecherche.checked) {
             listeDesCheckboxesRecherche.forEach((el, index) => {
                 el.checked = true;
                 el.disabled = true;
-            })
-        } else if (!(CheckboxeToutSelectionnerRecherche).checked) {
+            });
+        } else if (!CheckboxeToutSelectionnerRecherche.checked) {
             listeDesCheckboxesRecherche.forEach((el) => {
                 el.disabled = false;
                 el.checked = false;

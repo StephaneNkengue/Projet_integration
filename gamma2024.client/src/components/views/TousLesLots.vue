@@ -125,8 +125,8 @@
     });
 
     async function initialiseData() {
-        const response = await store.dispatch("obtenirTousLots");
-        lots.value = response.map((lot) => ({
+        const response = await store.dispatch("chercherTousLotsRecherche");
+        lots.value = response.data.map((lot) => ({
             ...lot,
         }));
         lotsFiltres.value = lots.value;

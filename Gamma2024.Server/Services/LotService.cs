@@ -311,6 +311,40 @@ namespace Gamma2024.Server.Services
 			}
 		}
 
+		public ICollection<LotEncanAffichageVM> ChercherTousLotsRecherche()
+		{
+			try
+			{
+				var lots = _context.Lots
+					.Include(l => l.EncanLots)
+					.Include(l => l.Photos)
+					.Select(l => new LotEncanAffichageVM()
+					{
+						Id = l.Id,
+						Numero = l.Numero,
+						ValeurEstimeMax = l.ValeurEstimeMax,
+						ValeurEstimeMin = l.ValeurEstimeMin,
+						Artiste = l.Artiste,
+						Mise = l.Mise,
+						EstVendu = l.EstVendu,
+						DateFinVente = l.DateFinVente,
+						Photos = l.Photos,
+						Description = l.Description,
+						EstLivrable = l.EstLivrable,
+						Hauteur = l.Hauteur,
+						Largeur = l.Largeur
+					})
+					.ToList();
+
+				Console.WriteLine($"Lots trouvés dans le service: {lots.Count}");
+				return lots;
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine($"Erreur dans le service: {ex.Message}");
+				throw;
+			}
+		}
 
 		public ICollection<LotEncanAffichageVM> ChercherTousLotsParEncan(int idEncan)
 		{
