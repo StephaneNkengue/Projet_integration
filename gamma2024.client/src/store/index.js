@@ -10,7 +10,8 @@ const store = createStore({
         user: null,
         socket: null,
         lots: {},
-        userBids: []
+        userBids: [],
+        userOutbidLots: []
     },
     mutations: {
         setLoggedIn(state, value) {
@@ -145,11 +146,15 @@ const store = createStore({
             // Mettre à jour les lots avec les informations de mise
             Object.keys(state.lots).forEach(lotId => {
                 const userBid = userBids.find(bid => bid.lotId === parseInt(lotId));
+                const lot = state.lots[lotId];
+                
                 if (userBid) {
+                    // L'utilisateur a misé sur ce lot
+                    const isHighestBidder = userBid.montant === lot.mise;
                     state.lots[lotId] = {
-                        ...state.lots[lotId],
+                        ...lot,
                         userHasBid: true,
-                        mise: userBid.montant
+                        isOutbid: !isHighestBidder && userBid.montant < lot.mise
                     };
                 }
             });

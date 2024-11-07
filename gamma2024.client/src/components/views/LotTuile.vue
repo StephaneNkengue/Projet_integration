@@ -1,7 +1,10 @@
 <template>
   <router-link
     class="text-decoration-none card d-flex align-self-stretch"
-    :class="{ 'user-bid': isUserHighestBidder }"
+    :class="{
+      'user-bid': isUserHighestBidder,
+      'user-outbid': isUserOutbid
+    }"
     :to="{ name: 'DetailsLot', params: { idLot: lot.id } }"
   >
     <div class="align-self-stretch">
@@ -211,6 +214,12 @@ const handleMiseClick = (event) => {
     ouvrirModalMise(event);
 };
 
+// Ajouter ce computed
+const isUserOutbid = computed(() => {
+    const lotActuel = store.getters.getLot(props.lotRecu.id);
+    return store.getters.hasUserBidOnLot(props.lotRecu.id) && !isUserHighestBidder.value;
+});
+
 </script>
 
 <style scoped>
@@ -226,5 +235,10 @@ const handleMiseClick = (event) => {
 .user-bid {
     border: 2px solid #4CAF50 !important;
     box-shadow: 0 0 10px rgba(76, 175, 80, 0.3) !important;
+}
+
+.user-outbid {
+    border: 2px solid #FF0000 !important;
+    box-shadow: 0 0 10px rgba(255, 0, 0, 0.3) !important;
 }
 </style>

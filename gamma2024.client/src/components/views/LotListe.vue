@@ -3,7 +3,10 @@
     class="text-decoration-none"
     :to="{ name: 'DetailsLot', params: { idLot: lot.id } }"
   >
-    <div class="card" :class="{ 'user-bid': isUserHighestBidder }">
+    <div class="card" :class="{
+      'user-bid': isUserHighestBidder,
+      'user-outbid': isUserOutbid
+    }">
       <div class="card-body">
         <div
           class="d-flex flex-md-row flex-column flex-wrap justify-content-between gap-1"
@@ -242,6 +245,11 @@ onMounted(async () => {
   urlApi.value = await store.state.api.defaults.baseURL.replace("\api", "");
 });
 
+const isUserOutbid = computed(() => {
+    const lotActuel = store.getters.getLot(props.lotRecu.id);
+    return store.getters.hasUserBidOnLot(props.lotRecu.id) && !isUserHighestBidder.value;
+});
+
 </script>
 <style scoped>
 .card {
@@ -251,6 +259,11 @@ onMounted(async () => {
 .user-bid {
   border: 2px solid #4CAF50 !important;
   box-shadow: 0 0 10px rgba(76, 175, 80, 0.3) !important;
+}
+
+.user-outbid {
+  border: 2px solid #FF0000 !important;
+  box-shadow: 0 0 10px rgba(255, 0, 0, 0.3) !important;
 }
 </style>
 
