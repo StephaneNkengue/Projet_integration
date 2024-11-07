@@ -3,7 +3,6 @@ using MailKit.Net.Smtp;
 using MailKit.Security;
 using Microsoft.Extensions.Options;
 using MimeKit;
-using MimeKit.Text;
 
 namespace Gamma2024.Server.Services.Email
 {
@@ -15,13 +14,21 @@ namespace Gamma2024.Server.Services.Email
         {
             _options = options.Value;
         }
-        public void Send(string to, string subject, string html, string? from = null)
+        public void Send(string to, string subject, string html, byte[]? attachment = null, string? attachmentName = null, string? from = null)
         {
             var email = new MimeMessage();
             email.From.Add(MailboxAddress.Parse(from ?? _options.From));
             email.To.Add(MailboxAddress.Parse(to));
             email.Subject = subject;
-            email.Body = new TextPart(TextFormat.Html) { Text = html };
+
+            var bodyBuilder = new BodyBuilder { HtmlBody = html };
+
+            if (attachment != null && !string.IsNullOrEmpty(attachmentName))
+            {
+                bodyBuilder.Attachments.Add(attachmentName, attachment);
+            }
+
+            email.Body = bodyBuilder.ToMessageBody();
 
 
             // sendemail

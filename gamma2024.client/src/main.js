@@ -12,16 +12,16 @@ import VueDatePicker from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
 
 async function initApp() {
-  await store.dispatch("initializeStore");
+    await store.dispatch("initializeStore");
 
-  const app = createApp(App);
-  app.component("VueDatePicker", VueDatePicker);
-  app.use(store).use(router).use(PrimeVue).use(Toast);
-  app.component("InputMask", InputMask);
-  await router.isReady();
-  app.mount("#app");
+    const app = createApp(App);
+    app.component("VueDatePicker", VueDatePicker);
+    app.use(store).use(router).use(PrimeVue, { theme: 'none' }).use(Toast);
+    app.component("InputMask", InputMask);
+    await router.isReady();
+    app.mount("#app");
 }
 
 initApp().catch((error) =>
-  console.error("Erreur lors de l'initialisation de l'app:", error)
+    console.error("Erreur lors de l'initialisation de l'app:", error)
 );

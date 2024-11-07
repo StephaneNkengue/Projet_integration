@@ -3,11 +3,15 @@ using Gamma2024.Server.Interface;
 using Gamma2024.Server.Models;
 using Gamma2024.Server.Services;
 using Gamma2024.Server.Services.Email;
+using Gamma2024.Server.WebSockets;
+using jsreport.AspNetCore;
+using jsreport.Binary;
+using jsreport.Local;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using Gamma2024.Server.WebSockets;
+using Stripe;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -47,6 +51,7 @@ builder.Services.AddScoped<EncanService>();
 builder.Services.AddScoped<VendeurService>();
 builder.Services.AddScoped<AdministrateurService>();
 builder.Services.AddScoped<LotService>();
+builder.Services.AddScoped<FactureService>();
 
 builder.Services.Configure<EmailConfiguration>(
     builder.Configuration.GetSection("EmailConfiguration"));
@@ -106,6 +111,12 @@ builder.Services.AddSession(options =>
 
 builder.Services.AddSingleton<WebSocketHandler>();
 
+builder.Services.AddJsReport(new LocalReporting()
+    .UseBinary(JsReportBinary.GetBinary())
+    .KillRunningJsReportProcesses()
+    .AsUtility()
+    .Create());
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -123,6 +134,7 @@ else
 
 app.UseHttpsRedirection();
 app.UseRouting();
+StripeConfiguration.ApiKey = builder.Configuration["Stripe:SecretKey"];
 app.UseAuthentication();
 app.UseAuthorization();
 
