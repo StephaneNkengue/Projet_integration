@@ -17,7 +17,7 @@
                 </tr>
             </thead>
             <tr v-for="facture in filteredVentes" :key="facture.id" data-bs-toggle="modal" :data-bs-target="'#'+facture.id">
-                <td scope="row">1</td>
+                <td scope="row">{{facture.encan}}</td>
                 <td>{{facture.dateAchat.split("T")[0]}}</td>
                 <td>{{facture.prenom}} {{facture.nom}}</td>
                 <td>
