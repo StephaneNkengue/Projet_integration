@@ -1,4 +1,8 @@
 <template>
+    <div class="d-flex flex-column align-items-center pb-3">
+        <h1>Résultat de la recherche de lots</h1>
+    </div>
+
     <div class="d-flex gap-2 w-100" v-if="chargement">
         <div class="spinner-border" role="status">
             <span class="visually-hidden">Chargement des lots...</span>
@@ -7,14 +11,10 @@
     </div>
 
     <div v-else class="w-100">
-
-        <h5 class="text-center" v-if="nbLotsRecus == 0">
-            Aucun lot trouvé
-        </h5>
+        <h5 class="text-center" v-if="nbLotsRecus == 0">Aucun lot trouvé</h5>
 
         <div v-else class="d-flex flex-column align-items-center">
-
-            <div class="d-flex flex-row-reverse w-100 px-4 me-2 gap-2 ">
+            <div class="d-flex flex-row-reverse w-100 px-4 me-2 gap-2">
                 <button class="rounded bleuMoyenFond btn btnSurvolerBleuMoyenFond"
                         v-if="!siTuile"
                         @click="changerTypeAffichage('tuile')">
@@ -25,7 +25,9 @@
                 <button class="rounded bleuMoyenFond btn btnSurvolerBleuMoyenFond"
                         v-else
                         @click="changerTypeAffichage('liste')">
-                    <img src="/icons/IconListe.png" alt="Affichage en liste" height="25" />
+                    <img src="/icons/IconListe.png"
+                         alt="Affichage en liste"
+                         height="25" />
                 </button>
                 <button class="d-flex align-items-center text-center rounded btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
                         type="button"
@@ -90,9 +92,7 @@
                     ⮞
                 </button>
             </div>
-
         </div>
-
     </div>
 </template>
 
@@ -105,6 +105,7 @@
 
     const store = useStore();
     const router = useRouter();
+    const route = useRoute();
 
     const listeLots = ref([]);
     const lots = ref([]);
@@ -117,12 +118,11 @@
     const lotsAffiche = ref();
     const nbPages = ref();
     const chargement = ref(true);
-
+    let genererListeDeLotsFiltree = function () { };
     onMounted(async () => {
         try {
             initialiseData();
         } catch (error) {
-            console.error("Erreur lors de la récupération des lots:", error);
         }
     });
 
@@ -131,7 +131,7 @@
         lots.value = response.data.map((lot) => ({
             ...lot,
         }));
-        lotsFiltres.value = lots.value;
+        genererListeDeLotsFiltree();
         nbLotsRecus.value = lotsFiltres.value.length;
         lotsParPage.value = nbLotsRecus.value;
         nbPages.value = recalculerNbPages();
@@ -141,6 +141,74 @@
         chercherLotsAAfficher();
         chargement.value = false;
     }
+
+    genererListeDeLotsFiltree = function () {
+        var lotsAFiltres = lots.value;
+        lotsFiltres.value = [];
+        let rechercheEnMinuscule = route.query.stringDeRecherche
+            .toString()
+            .toLowerCase();
+        lotsFiltres.value = lotsAFiltres.filter((lot) => {
+            if (
+                route.query.encan &&
+                lot.numeroEncan.toString().toLowerCase().startsWith(rechercheEnMinuscule)
+            ) {
+                return true;
+            } else if (
+                route.query.numero &&
+                lot.numero.toString().toLowerCase().startsWith(rechercheEnMinuscule)
+            ) {
+                return true;
+            } else if (
+                route.query.estimationMin &&
+                lot.valeurEstimeMin
+                    .toString()
+                    .toLowerCase()
+                    .startsWith(rechercheEnMinuscule)
+            ) {
+                return true;
+            } else if (
+                route.query.estimationMax &&
+                lot.valeurEstimeMax
+                    .toString()
+                    .toLowerCase()
+                    .startsWith(rechercheEnMinuscule)
+            ) {
+                return true;
+            } else if (
+                route.query.categorie &&
+                lot.categorie.toString().toLowerCase().startsWith(rechercheEnMinuscule)
+            ) {
+                return true;
+            } else if (
+                route.query.artiste &&
+                lot.artiste.toString().toLowerCase().startsWith(rechercheEnMinuscule)
+            ) {
+                return true;
+            } else if (
+                route.query.dimension &&
+                lot.hauteur.toString().toLowerCase().startsWith(rechercheEnMinuscule)
+            ) {
+                return true;
+            } else if (
+                route.query.dimension &&
+                lot.largeur.toString().toLowerCase().startsWith(rechercheEnMinuscule)
+            ) {
+                return true;
+            } else if (
+                route.query.description &&
+                lot.description.toString().toLowerCase().startsWith(rechercheEnMinuscule)
+            ) {
+                return true;
+            } else if (
+                route.query.medium &&
+                lot.medium.toString().toLowerCase().startsWith(rechercheEnMinuscule)
+            ) {
+                return true;
+            }
+            return false;
+        });
+    };
 
     watch(pageCourante, () => {
         genererListePagination();
@@ -226,9 +294,6 @@
             lotsAffiche.value.push(lotsFiltres.value[i]);
         }
     }
-
-    //const informationsDeRecherche = JSON.parse(props.router.query.data);
-
 </script>
 
 <style scoped></style>

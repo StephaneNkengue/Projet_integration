@@ -175,11 +175,21 @@
                         <div class="d-flex input-group mt-1" v-if="activationRecherche">
                             <button class="btn btn-outline bleuMoyenFond text-white butttonNavBar py-0 btnSurvolerBleuMoyenFond dropdown-toggle"
                                     data-bs-toggle="dropdown"
-                                    v-if="$route.name == 'EncanPresent' || $route.name == 'Encan'">
+                                    v-if="
+                  $route.name == 'EncanPresent' ||
+                  $route.name == 'Encan' ||
+                  $route.name == 'TousLesLots' ||
+                  $route.name == 'ResultatRechercheLots'
+                ">
                                 Recherche Avancée
                             </button>
                             <ul class="dropdown-menu"
-                                v-if="$route.name == 'EncanPresent' || $route.name == 'Encan'">
+                                v-if="
+                  $route.name == 'EncanPresent' ||
+                  $route.name == 'Encan' ||
+                  $route.name == 'TousLesLots' ||
+                  $route.name == 'ResultatRechercheLots'
+                ">
                                 <li class="d-flex justify-content-start dropdown-item">
                                     <input class="checkboxTousRecherche d-flex-1"
                                            type="checkbox"
@@ -269,9 +279,14 @@
                                    aria-label="Search"
                                    v-model="stringDeRecherche" />
                             <button class="btn bleuMoyenFond me-3 text-white butttonNavBar py-0 btnSurvolerBleuMoyenFond"
-                                    v-if="$route.name == 'EncanPresent' || $route.name == 'Encan'"
+                                    v-if="
+                  $route.name == 'EncanPresent' ||
+                  $route.name == 'Encan' ||
+                  $route.name == 'TousLesLots' ||
+                  $route.name == 'ResultatRechercheLots'
+                "
                                     type="submit"
-                                    @click="rechercheAvanceeLots">
+                                    @click.prevent="rechercheAvanceeLots">
                                 Rechercher
                             </button>
                             <button class="btn bleuMoyenFond me-3 text-white butttonNavBar py-0 btnSurvolerBleuMoyenFond"
@@ -281,13 +296,13 @@
                   $route.name == 'EncansFuturs'
                 "
                                     type="submit"
-                                    @click="rechercheAvanceeEncans">
+                                    @click.prevent="rechercheAvanceeEncans">
                                 Rechercher
                             </button>
                             <button class="btn bleuMoyenFond me-3 text-white butttonNavBar py-0 btnSurvolerBleuMoyenFond"
                                     v-else
                                     type="submit"
-                                    @click="rechercheSimple">
+                                    @click.prevent="rechercheSimple">
                                 Rechercher
                             </button>
                         </div>
@@ -324,8 +339,6 @@
     const colonnesDeCriteresLots = ref({
         encan: true,
         numero: true,
-        prixOuverture: true,
-        valeurMinPourVente: true,
         estimationMin: true,
         estimationMax: true,
         categorie: true,
@@ -378,41 +391,38 @@
     }
 
     async function rechercheAvanceeLots() {
-        var informationsDeRecherche = {
-            stringDeRecherche: document.querySelector("#rechercheInput").value,
-            encan: document.getElementById("lotEncanCheckboxRecherche").checked,
-            numero: document.getElementById("lotNumeroCheckboxRecherche").checked,
-            prixOuverture: document.getElementById("lotPrixOuvertureCheckboxRecherche")
-                .checked,
-            valeurMinPourVente: document.getElementById(
-                "lotValeurMinPourVenteCheckboxRecherche"
-            ).checked,
-            estimationMin: document.getElementById("lotEstimationMinCheckboxRecherche")
-                .checked,
-            estimationMax: document.getElementById("lotEstimationMaxCheckboxRecherche")
-                .checked,
-            categorie: document.getElementById("lotCategorieCheckboxRecherche").checked,
-            artiste: document.getElementById("lotArtisteCheckboxRecherche").checked,
-            dimension: document.getElementById("lotDimensionCheckboxRecherche").checked,
-            description: document.getElementById("lotDescriptionCheckboxRecherche")
-                .checked,
-            medium: document.getElementById("lotMediumCheckboxRecherche").checked,
-        };
         router.push({
             path: "/resultatrecherchelots",
-            query: { data: JSON.stringify(informationsDeRecherche) },
+            query: {
+                stringDeRecherche: document.querySelector("#rechercheInput").value,
+                encan: document.getElementById("lotEncanCheckboxRecherche").checked,
+                numero: document.getElementById("lotNumeroCheckboxRecherche").checked,
+                estimationMin: document.getElementById(
+                    "lotEstimationMinCheckboxRecherche"
+                ).checked,
+                estimationMax: document.getElementById(
+                    "lotEstimationMaxCheckboxRecherche"
+                ).checked,
+                categorie: document.getElementById("lotCategorieCheckboxRecherche")
+                    .checked,
+                artiste: document.getElementById("lotArtisteCheckboxRecherche").checked,
+                dimension: document.getElementById("lotDimensionCheckboxRecherche")
+                    .checked,
+                description: document.getElementById("lotDescriptionCheckboxRecherche")
+                    .checked,
+                medium: document.getElementById("lotMediumCheckboxRecherche").checked,
+            },
         });
     }
 
     async function rechercheAvanceeEncans() {
-        var informationsDeRecherche = {
-            stringDeRecherche: document.querySelector("#rechercheInput").value,
-            numero: document.getElementById("lotNumeroCheckboxRecherche").checked,
-            date: document.getElementById("lotDateCheckboxRecherche").checked,
-        };
         router.push({
             path: "/resultatrechercheencans",
-            query: { data: JSON.stringify(informationsDeRecherche) },
+            query: {
+                stringDeRecherche: document.querySelector("#rechercheInput").value,
+                numero: document.getElementById("lotNumeroCheckboxRecherche").checked,
+                date: document.getElementById("lotDateCheckboxRecherche").checked,
+            },
         });
     }
 

@@ -28,7 +28,7 @@ import TableauDeBordEncans from "@/components/views/TableauDeBordEncans.vue";
 import TableauDeBordEncansAjout from "@/components/views/TableauDeBordEncansAjout.vue";
 import ModificationEncan from "@/components/views/ModificationEncan.vue";
 import Paiement from "@/components/views/Paiement.vue";
-import TableauDeBordVentes from '@/components/views/TableauDeBordVentes.vue';
+import TableauDeBordVentes from "@/components/views/TableauDeBordVentes.vue";
 import ResultatRechercheLots from "@/components/views/ResultatRechercheLots.vue";
 import ResultatRechercheEncans from "@/components/views/ResultatRechercheEncans.vue";
 const routes = [
@@ -220,7 +220,7 @@ const routes = [
         component: Paiement,
         props: true,
         meta: {
-            requiresAuth: false
+            requiresAuth: false,
         },
     },
     {
@@ -239,6 +239,12 @@ const routes = [
         path: "/resultatrechercheencans",
         name: "ResultatRechercheEncans",
         component: ResultatRechercheEncans,
+        meta: { requiresAuth: false },
+    },
+    {
+        path: "/tousleslots",
+        name: "TousLesLots",
+        component: TousLesLots,
         meta: { requiresAuth: false },
     },
 ];
