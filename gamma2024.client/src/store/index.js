@@ -910,7 +910,7 @@ const store = createStore({
             return "Erreur, veuillez réessayer";
         }
     }
-},
+,
     getters: {
     isAdmin: (state) => {
         // console.log("Rôles dans le getter isAdmin:", state.roles);
@@ -946,9 +946,9 @@ const store = createStore({
     },
     getAllLots: (state) => {
         return Object.values(state.lots);
+        }
     }
-},
-});
+  });
 
 // Initialiser le store immédiatement
 store.dispatch("initializeStore");
