@@ -16,19 +16,17 @@
                     <th scope="col">Action</th>
                 </tr>
             </thead>
-            <tbody>
-                <tr v-for="facture in filteredVentes" :key="facture.id" data-bs-toggle="modal" :data-bs-target="'#'+facture.id">
-                    <td scope="row">1</td>
-                    <td>{{facture.dateAchat.split("T")[0]}}</td>
-                    <td>{{facture.prenom}} {{facture.nom}}</td>
-                    <td>
-                        <button class="btn btn-info">
-                            <img src="/images/ice.png" class="img-fluid" alt="..." />
-                        </button>
-                    </td>
-                    <DetailsAchats :f="facture" />
-                </tr>
-            </tbody>
+            <tr v-for="facture in filteredVentes" :key="facture.id" data-bs-toggle="modal" :data-bs-target="'#'+facture.id">
+                <td scope="row">1</td>
+                <td>{{facture.dateAchat.split("T")[0]}}</td>
+                <td>{{facture.prenom}} {{facture.nom}}</td>
+                <td>
+                    <button class="btn btn-info">
+                        <img src="/images/ice.png" class="img-fluid" alt="..." />
+                    </button>
+                </td>
+                <DetailsAchats :f="facture" />
+            </tr>
         </table>
     </div>
 </template>
@@ -90,5 +88,9 @@
 
     td {
         font-size: 16px;
+    }
+
+    .btn{
+        background-color: #0dcaf0;
     }
 </style>
