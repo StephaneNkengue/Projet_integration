@@ -70,7 +70,7 @@
                                 </button>
                             </router-link>
 
-                            <div class="dropdown text-white"
+                            <div class="dropdown text-white align-self-stretch justify-content-center align-items-center d-flex"
                                  v-if="estAdmin">
                                 <a class="nav-link dropdown-toggle"
                                    role="button"
@@ -112,9 +112,9 @@
                                 </ul>
                             </div>
 
-                            <div class="dropdown text-white"
+                            <div class="dropdown text-white align-self-stretch justify-content-center align-items-center d-flex"
                                  v-if="estConnecte && !estAdmin">
-                                <a class="nav-link"
+                                <a class="nav-link d-flex align-items-center justify-content-center"
                                    role="button"
                                    data-bs-toggle="dropdown"
                                    aria-expanded="false"
