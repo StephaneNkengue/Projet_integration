@@ -3,7 +3,7 @@
     class="text-decoration-none"
     :to="{ name: 'DetailsLot', params: { idLot: lot.id } }"
   >
-    <div class="card" :class="{ 'user-bid': hasUserBidOnLot }">
+    <div class="card" :class="{ 'user-bid': isUserHighestBidder }">
       <div class="card-body">
         <div
           class="d-flex flex-md-row flex-column flex-wrap justify-content-between gap-1"
@@ -45,6 +45,7 @@
               type="button"
               class="btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond"
               @click.stop.prevent="ouvrirModalMise"
+              v-if="!isAdmin"
             >
               Miser
             </button>
@@ -154,8 +155,9 @@ const onMiseConfirmee = async (montant) => {
   }
 };
 
-const hasUserBidOnLot = computed(() => {
-  return store.getters.hasUserBidOnLot(props.lotRecu.id);
+const isUserHighestBidder = computed(() => {
+  const lotActuel = store.getters.getLot(props.lotRecu.id);
+  return store.getters.hasUserBidOnLot(props.lotRecu.id) && lotActuel?.mise === miseActuelle.value;
 });
 
 const miseActuelle = computed(() => {
@@ -190,11 +192,23 @@ watch(() => store.state.lots, (newLots) => {
     lot.value = lotActuel;
   }
 }, { deep: true });
+
+// Ajouter un watch pour mettre à jour immédiatement
+watch(() => store.state.lots, () => {
+  // Force la réévaluation du computed
+  isUserHighestBidder.value;
+}, { immediate: true, deep: true });
+
+const isAdmin = computed(() => store.getters.isAdmin);
 </script>
 <style scoped>
+.card {
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
 .user-bid {
-  border: 2px solid #4CAF50;
-  box-shadow: 0 0 10px rgba(76, 175, 80, 0.3);
+  border: 2px solid #4CAF50 !important;
+  box-shadow: 0 0 10px rgba(76, 175, 80, 0.3) !important;
 }
 </style>
 

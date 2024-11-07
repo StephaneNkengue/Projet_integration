@@ -26,6 +26,8 @@
         <PiedDePage />
     </footer>
 
+    <Toaster position="top-right" />
+
 </template>
 
 <script>

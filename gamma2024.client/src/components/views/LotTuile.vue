@@ -1,7 +1,7 @@
 <template>
   <router-link
     class="text-decoration-none card d-flex align-self-stretch"
-    :class="{ 'user-bid': hasUserBidOnLot }"
+    :class="{ 'user-bid': isUserHighestBidder }"
     :to="{ name: 'DetailsLot', params: { idLot: lot.id } }"
   >
     <div class="align-self-stretch">
@@ -43,6 +43,7 @@
             type="button"
             class="btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond"
             @click.prevent="ouvrirModalMise"
+            v-if="!isAdmin"
           >
             Miser
           </button>
@@ -144,8 +145,9 @@ const onMiseConfirmee = async (montant) => {
 };
 
 // Ajouter le computed pour vérifier si l'utilisateur a misé
-const hasUserBidOnLot = computed(() => {
-  return store.getters.hasUserBidOnLot(props.lotRecu.id);
+const isUserHighestBidder = computed(() => {
+  const lotActuel = store.getters.getLot(props.lotRecu.id);
+  return store.getters.hasUserBidOnLot(props.lotRecu.id) && lotActuel?.mise === miseActuelle.value;
 });
 
 const miseActuelle = computed(() => {
@@ -182,6 +184,14 @@ const estMontantValide = (montant) => {
   return montant !== undefined && montant !== null && !isNaN(Number(montant));
 };
 
+// Ajouter un watch pour mettre à jour immédiatement
+watch(() => store.state.lots, () => {
+  // Force la réévaluation du computed
+  isUserHighestBidder.value;
+}, { immediate: true, deep: true });
+
+const isAdmin = computed(() => store.getters.isAdmin);
+
 </script>
 
 <style scoped>
@@ -191,10 +201,11 @@ const estMontantValide = (montant) => {
 
 .card {
   box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.2), 0 3px 5px 0 rgba(0, 0, 0, 0.19);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .user-bid {
-  border: 2px solid #4CAF50;
-  box-shadow: 0 0 10px rgba(76, 175, 80, 0.3);
+  border: 2px solid #4CAF50 !important;
+  box-shadow: 0 0 10px rgba(76, 175, 80, 0.3) !important;
 }
 </style>
