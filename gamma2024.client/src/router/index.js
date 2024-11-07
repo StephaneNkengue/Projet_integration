@@ -27,6 +27,8 @@ import ReinitialisationMotDePasse from "@/components/views/ReinitialisationMotDe
 import TableauDeBordEncans from "@/components/views/TableauDeBordEncans.vue";
 import TableauDeBordEncansAjout from "@/components/views/TableauDeBordEncansAjout.vue";
 import ModificationEncan from "@/components/views/ModificationEncan.vue";
+import Paiement from "@/components/views/Paiement.vue";
+import TableauDeBordVentes from '@/components/views/TableauDeBordVentes.vue';
 import ResultatRechercheLots from "@/components/views/ResultatRechercheLots.vue";
 import ResultatRechercheEncans from "@/components/views/ResultatRechercheEncans.vue";
 const routes = [
@@ -88,12 +90,6 @@ const routes = [
         path: "/encanspasses",
         name: "EncansPasses",
         component: EncansPasses,
-        meta: { requiresAuth: false },
-    },
-    {
-        path: "/tousleslots",
-        name: "TousLesLots",
-        component: TousLesLots,
         meta: { requiresAuth: false },
     },
     {
@@ -217,6 +213,21 @@ const routes = [
         path: "/ReinitialiserMotDePasse",
         name: "ReinitialiserMotDePasse",
         component: ReinitialisationMotDePasse,
+    },
+    {
+        path: "/Paiement/:idFacture",
+        name: "Paiement",
+        component: Paiement,
+        props: true,
+        meta: {
+            requiresAuth: false
+        },
+    },
+    {
+        path: "/tableaudebordventes",
+        name: "TableauDeBordVentes",
+        component: TableauDeBordVentes,
+        meta: { requiresAuth: true, requiredRole: "Administrateur" },
     },
     {
         path: "/resultatrecherchelots",

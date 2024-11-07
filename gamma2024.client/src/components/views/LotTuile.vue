@@ -41,6 +41,7 @@
           <button
             type="button"
             class="btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond"
+            @click.prevent="ouvrirModalMise"
           >
             Miser
           </button>
@@ -48,20 +49,44 @@
       </div>
     </div>
   </router-link>
+
+  <ModalMise 
+    ref="modalMise"
+    :lot="lotPourModal"
+    @miseConfirmee="onMiseConfirmee"
+  />
 </template>
 
 <script setup>
-import { onMounted, ref } from "vue";
+import { onMounted, ref, computed } from "vue";
 import { useStore } from "vuex";
+import ModalMise from '@/components/modals/ModalMise.vue';
 
 const store = useStore();
-
-    const props = defineProps({
-        lotRecu: Object
-    })
-    const mise = ref(0)
+const props = defineProps({
+  lotRecu: Object
+});
 
 const urlApi = ref("/api");
+
+// Créer un objet computed pour le lot à passer au modal
+const lotPourModal = computed(() => ({
+  id: props.lotRecu.id,
+  numero: props.lotRecu.numero,
+  description: props.lotRecu.description,
+  valeurEstimeMin: props.lotRecu.valeurEstimeMin,
+  valeurEstimeMax: props.lotRecu.valeurEstimeMax,
+  artiste: props.lotRecu.artiste,
+  mise: props.lotRecu.mise,
+  estVendu: props.lotRecu.estVendu,
+  dateFinVente: props.lotRecu.dateFinVente,
+  estLivrable: props.lotRecu.estLivrable,
+  largeur: props.lotRecu.largeur,
+  hauteur: props.lotRecu.hauteur,
+  photos: props.lotRecu.photos
+}));
+
+const mise = ref(0);
 const lot = ref({
   id: 0,
   numero: "",
@@ -85,14 +110,27 @@ const lot = ref({
   ],
 });
 
-    onMounted(async () => {
-        lot.value = props.lotRecu
-        urlApi.value = await store.state.api.defaults.baseURL.replace("\api", "")
+const modalMise = ref(null);
 
-        if (lot.value.mise != null) {
-            mise.value = lot.value.mise
-        }
-    })
+onMounted(async () => {
+  lot.value = props.lotRecu;
+  urlApi.value = await store.state.api.defaults.baseURL.replace("\api", "");
+  if (lot.value.mise != null) {
+    mise.value = lot.value.mise;
+  }
+});
+
+const ouvrirModalMise = (event) => {
+  event.stopPropagation();
+  console.log("Ouverture modal pour lot:", lotPourModal.value);
+  modalMise.value.show();
+};
+
+const onMiseConfirmee = (montant) => {
+  mise.value = montant;
+  lot.value.mise = montant;
+  // Autres actions après une mise réussie...
+};
 
 </script>
 

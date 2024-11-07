@@ -104,7 +104,7 @@
                                         </router-link>
                                     </li>
                                     <li>
-                                        <router-link :to="{ name: 'Accueil' }"
+                                        <router-link :to="{ name: 'TableauDeBordVentes' }"
                                                      class="text-decoration-none">
                                             <a class="dropdown-item contenuListeDropdown">Ventes</a>
                                         </router-link>
@@ -303,7 +303,6 @@
         </div>
     </header>
 </template>
-
 <script setup>
     import { computed, watch, ref } from "vue";
     import { useStore } from "vuex";
@@ -454,7 +453,6 @@
         });
     });
 </script>
-
 <style scoped>
     .ms-7 {
         margin-left: 7.9rem;
