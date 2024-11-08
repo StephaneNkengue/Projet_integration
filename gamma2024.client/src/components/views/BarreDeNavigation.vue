@@ -56,7 +56,7 @@
                             </li>
                         </ul>
 
-                        <div class="d-flex justify-content-center gap-3 mb-2 mb-lg-0">
+                        <div class="d-flex justify-content-center gap-3 mb-2 mb-lg-0 flex-row align-items-center justify-content-center">
                             <router-link :to="{ name: 'Inscription' }" v-if="!estConnecte">
                                 <button class="btn btn-outline bleuMoyenFond text-white py-0 butttonNavBar btnSurvolerBleuMoyenFond"
                                         type="button">
@@ -69,7 +69,8 @@
                                     Connexion
                                 </button>
                             </router-link>
-                            <div class="collapse navbar-collapse dropdown text-white"
+
+                            <div class="dropdown text-white align-self-stretch justify-content-center align-items-center d-flex"
                                  v-if="estAdmin">
                                 <a class="nav-link dropdown-toggle"
                                    role="button"
@@ -111,52 +112,62 @@
                                 </ul>
                             </div>
 
-                            <a v-if="estConnecte"
-                               @click="notification = !notification"
-                               class="d-flex align-items-center">
-                                <img src="/icons/IconeCloche.png"
-                                     alt="Icon cloche"
-                                     height="25" />
-                            </a>
-
-                            <div class="d-flex flex-column position-absolute top-100 start-79 dropdown-menu bleuMarinSecondaireFond"
-                                 v-if="notification">
-                                <router-link v-for="index in 5"
-                                             :key="index"
-                                             :to="{ name: 'Accueil' }"
-                                             class="text-decoration-none text-white d-flex align-items-center gap-3">
-                                    <a class="dropdown-item text-white btnSurvolerBleuMoyenFond"
-                                       @click="notification = false">
-                                        test
-                                    </a>
-                                </router-link>
-                            </div>
-
-                            <div class="d-flex flex-column position-absolute top-100 end-0 dropdown-menu bleuMarinSecondaireFond"
-                                 v-if="estConnecte && activationDropdownProfil">
-                                <router-link v-if="estClient"
-                                             :to="{ name: 'ModificationProfilUtilisateur' }"
-                                             class="text-decoration-none text-white d-flex align-items-center gap-3">
-                                    <a class="dropdown-item text-white btnSurvolerBleuMoyenFond"
-                                       @click="activationDropdownProfil = false">
-                                        Profil
-                                    </a>
-                                </router-link>
-                                <a class="dropdown-item text-danger btnSurvolerBleuMoyenFond fw-bold"
-                                   href="#"
-                                   @click.prevent="deconnecter">
-                                    Déconnexion
+                            <div class="dropdown text-white align-self-stretch justify-content-center align-items-center d-flex"
+                                 v-if="estConnecte && !estAdmin">
+                                <a class="nav-link d-flex align-items-center justify-content-center"
+                                   role="button"
+                                   data-bs-toggle="dropdown"
+                                   aria-expanded="false"
+                                   @click="notification = !notification">
+                                    <img src="/icons/IconeCloche.png"
+                                         alt="Icon cloche"
+                                         height="25" />
                                 </a>
+                                <ul class="dropdown-menu bleuMarinFond text-center">
+                                    <li v-for="index in 5"
+                                        :key="index">
+                                        <router-link :to="{ name: 'Accueil' }"
+                                                     class="text-decoration-none text-white d-flex align-items-center gap-3">
+                                            <a class="dropdown-item text-white btnSurvolerBleuMoyenFond"
+                                               @click="notification = false">
+                                                test
+                                            </a>
+                                        </router-link>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="dropdown text-white"
+                                 v-if="estConnecte">
+                                <a class="nav-link d-flex align-items-center"
+                                   role="button"
+                                   data-bs-toggle="dropdown"
+                                   aria-expanded="false">
+                                    <p class="m-0 me-1">{{ username }}</p>
+                                    <img :src="avatarUrl"
+                                         alt="Avatar"
+                                         class="imgProfile rounded-circle" />
+                                </a>
+                                <ul class="dropdown-menu bleuMarinFond text-center end-0 top-100">
+                                    <li>
+                                        <router-link v-if="estClient"
+                                                     :to="{ name: 'ModificationProfilUtilisateur' }"
+                                                     class="text-decoration-none text-white d-flex align-items-center gap-3">
+                                            <a class="dropdown-item text-white btnSurvolerBleuMoyenFond"
+                                               @click="activationDropdownProfil = false">
+                                                Profil
+                                            </a>
+                                        </router-link>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item text-danger btnSurvolerBleuMoyenFond fw-bold"
+                                           href="#"
+                                           @click.prevent="deconnecter">
+                                            Déconnexion
+                                        </a>
+                                    </li>
+                                </ul>
                             </div>
 
-                            <a @click="activationDropdownProfil = !activationDropdownProfil"
-                               class="d-flex text-decoration-none text-white align-items-center gap-3"
-                               v-if="estConnecte">
-                                <p class="m-0">{{ username }}</p>
-                                <img :src="avatarUrl"
-                                     alt="Avatar"
-                                     class="imgProfile rounded-circle" />
-                            </a>
                         </div>
                     </div>
                 </div>
