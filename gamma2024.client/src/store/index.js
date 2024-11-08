@@ -905,7 +905,6 @@ const store = createStore({
                 };
             }
         },
-
         async fetchFactureInfo({ commit, state }) {
             try {
                 const response = await state.api.get("/factures/chercherFactures");
@@ -917,16 +916,6 @@ const store = createStore({
                 throw error;
             }
         },
-        async reinitialisePassword({ commit, state }) {
-            try {
-                const response = await state.api.get(
-                    "/utilisateurs/reinitialiserMotDePasse"
-                );
-                return response;
-            } catch (error) {
-                return "Erreur, veuillez réessayer";
-            }
-        },
         async creerPaymentIntent({ state }, idFacture) {
             try {
                 const response = await state.api.post(
@@ -936,8 +925,9 @@ const store = createStore({
             } catch (error) {
                 return "Erreur, veuillez réessayer";
             }
-        }
+        },
     },
+
     getters: {
         isAdmin: (state) => {
             // console.log("Rôles dans le getter isAdmin:", state.roles);
@@ -971,7 +961,6 @@ const store = createStore({
         getLot: (state) => (id) => {
             return state.lots[id] || null;
         },
-
         getAllLots: (state) => {
             return Object.values(state.lots);
         }
