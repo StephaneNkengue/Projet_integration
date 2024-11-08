@@ -150,17 +150,17 @@
             .toLowerCase();
         lotsFiltres.value = lotsAFiltres.filter((lot) => {
             if (
-                route.query.encan &&
+                route.query.encan == 'true' &&
                 lot.numeroEncan.toString().toLowerCase().startsWith(rechercheEnMinuscule)
             ) {
                 return true;
             } else if (
-                route.query.numero &&
+                route.query.numero == 'true' &&
                 lot.numero.toString().toLowerCase().startsWith(rechercheEnMinuscule)
             ) {
                 return true;
             } else if (
-                route.query.estimationMin &&
+                route.query.estimationMin == 'true' &&
                 lot.valeurEstimeMin
                     .toString()
                     .toLowerCase()
@@ -168,7 +168,7 @@
             ) {
                 return true;
             } else if (
-                route.query.estimationMax &&
+                route.query.estimationMax == 'true' &&
                 lot.valeurEstimeMax
                     .toString()
                     .toLowerCase()
@@ -176,32 +176,32 @@
             ) {
                 return true;
             } else if (
-                route.query.categorie &&
+                route.query.categorie == 'true' &&
                 lot.categorie.toString().toLowerCase().startsWith(rechercheEnMinuscule)
             ) {
                 return true;
             } else if (
-                route.query.artiste &&
+                route.query.artiste == 'true' &&
                 lot.artiste.toString().toLowerCase().startsWith(rechercheEnMinuscule)
             ) {
                 return true;
             } else if (
-                route.query.dimension &&
+                route.query.dimension == 'true' &&
                 lot.hauteur.toString().toLowerCase().startsWith(rechercheEnMinuscule)
             ) {
                 return true;
             } else if (
-                route.query.dimension &&
+                route.query.dimension == 'true' &&
                 lot.largeur.toString().toLowerCase().startsWith(rechercheEnMinuscule)
             ) {
                 return true;
             } else if (
-                route.query.description &&
+                route.query.description == 'true' &&
                 lot.description.toString().toLowerCase().startsWith(rechercheEnMinuscule)
             ) {
                 return true;
             } else if (
-                route.query.medium &&
+                route.query.medium == 'true' &&
                 lot.medium.toString().toLowerCase().startsWith(rechercheEnMinuscule)
             ) {
                 return true;
