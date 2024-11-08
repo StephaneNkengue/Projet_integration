@@ -181,7 +181,7 @@
                   $route.name == 'TousLesLots' ||
                   $route.name == 'ResultatRechercheLots'
                 ">
-                                Recherche Avancée
+                                Critères des lots
                             </button>
                             <ul class="dropdown-menu"
                                 v-if="
@@ -230,7 +230,7 @@
                   $route.name == 'EncansPasses' ||
                   $route.name == 'EncansFuturs'
                 ">
-                                Recherche Avancée
+                                Critères d'encans
                             </button>
                             <ul class="dropdown-menu"
                                 v-if="
@@ -287,7 +287,7 @@
                 "
                                     type="submit"
                                     @click.prevent="rechercheAvanceeLots">
-                                Rechercher
+                                Rechercher dans les lots
                             </button>
                             <button class="btn bleuMoyenFond me-3 text-white butttonNavBar py-0 btnSurvolerBleuMoyenFond"
                                     v-else-if="
@@ -297,7 +297,7 @@
                 "
                                     type="submit"
                                     @click.prevent="rechercheAvanceeEncans">
-                                Rechercher
+                                Rechercher dans les encans
                             </button>
                             <button class="btn bleuMoyenFond me-3 text-white butttonNavBar py-0 btnSurvolerBleuMoyenFond"
                                     v-else
