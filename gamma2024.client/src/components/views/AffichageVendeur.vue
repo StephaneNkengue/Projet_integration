@@ -7,7 +7,7 @@
                type="search"
                placeholder="Rechercher un vendeur"
                aria-label="Search" />
-        <router-link to="/vendeurcreation"
+        <router-link :to="{ name: 'VendeurCreation'}"
                      class="btn btn-lg btn-block mb-4 w-100 bleuMarinSecondaireFond text-white mt-5">
             Ajouter un vendeur
         </router-link>
