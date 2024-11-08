@@ -16,11 +16,11 @@ namespace Gamma2024.Server.Controllers
         private readonly LotService _lotService;
         private readonly ApplicationDbContext _context;
 
-        public LotsController(LotService lotService, ApplicationDbContext context)
-        {
-            _lotService = lotService;
-            _context = context;
-        }
+		public LotsController(LotService lotService, ApplicationDbContext context)
+		{
+			_lotService = lotService;
+			_context = context;
+		}
 
         [Authorize(Roles = ApplicationRoles.ADMINISTRATEUR)]
         [HttpGet("tous")]
@@ -51,13 +51,13 @@ namespace Gamma2024.Server.Controllers
                 lotVM.Photos = Request.Form.Files.ToList();
             }
 
-            var resultat = await _lotService.CreerLot(lotVM);
-            if (!resultat.Success)
-            {
-                return BadRequest(resultat.Message);
-            }
-            return Ok(new { success = true, message = "Lot crée avec succès" });
-        }
+			var resultat = await _lotService.CreerLot(lotVM);
+			if (!resultat.Success)
+			{
+				return BadRequest(resultat.Message);
+			}
+			return Ok(new { success = true, message = "Lot crée avec succès" });
+		}
 
         [Authorize(Roles = ApplicationRoles.ADMINISTRATEUR)]
         [HttpPut("modifier/{id}")]
@@ -115,21 +115,36 @@ namespace Gamma2024.Server.Controllers
             return Ok(encans);
         }
 
-        [AllowAnonymous]
-        [HttpGet("cherchertouslotsparencan/{idEncan}")]
-        public async Task<ActionResult<ICollection<LotEncanAffichageVM>>> ChercherTousLotsParEncan(string idEncan)
-        {
-            try
-            {
-                var idEncanInt = int.Parse(idEncan);
-                var lots = _lotService.ChercherTousLotsParEncan(idEncanInt);
-                return Ok(lots);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest($"Erreur: {ex.Message}");
-            }
-        }
+		[HttpGet("cherchertouslotsrecherche")]
+		[AllowAnonymous]
+		public async Task<ActionResult<ICollection<LotEncanAffichageVM>>> ChercherTousLotsRecherche()
+		{
+			try
+			{
+				var lots = _lotService.ChercherTousLotsRecherche();
+				return Ok(lots);
+			}
+			catch (Exception ex)
+			{
+				return BadRequest($"Erreur: {ex.Message}");
+			}
+		}
+
+		[HttpGet("cherchertouslotsparencan/{idEncan}")]
+		[AllowAnonymous]
+		public async Task<ActionResult<ICollection<LotEncanAffichageVM>>> ChercherTousLotsParEncan(string idEncan)
+		{
+			try
+			{
+				var idEncanInt = int.Parse(idEncan);
+				var lots = _lotService.ChercherTousLotsParEncan(idEncanInt);
+				return Ok(lots);
+			}
+			catch (Exception ex)
+			{
+				return BadRequest($"Erreur: {ex.Message}");
+			}
+		}
 
         [AllowAnonymous]
         [HttpGet("chercherTousLots")]

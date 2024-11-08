@@ -705,6 +705,24 @@ const store = createStore({
             }
         },
 
+        async chercherTousLotsRecherche({ state }) {
+            try {
+                const response = await state.api.get(
+                    `/lots/cherchertouslotsrecherche`
+                );
+
+                console.log("Réponse reçue:", response);
+                return response;
+            } catch (error) {
+                console.error("Erreur détaillée:", {
+                    message: error.message,
+                    status: error.response?.status,
+                    data: error.response?.data,
+                    config: error.config,
+                });
+                throw error;
+            }
+        },
         async chercherTousLotsParEncan({ state }, idEncan) {
             try {
                 const response = await state.api.get(
