@@ -97,10 +97,10 @@
 </template>
 
 <script setup>
-    import LotTuile from "@/components/views/LotTuile.vue";
-    import LotListe from "@/components/views/LotListe.vue";
-    import { ref, watch, onMounted } from "vue";
-    import { useStore } from "vuex";
+import LotTuile from "@/components/views/LotTuile.vue";
+import LotListe from "@/components/views/LotListe.vue";
+import { ref, watch, onMounted, computed } from "vue";
+import { useStore } from "vuex";
 
     const store = useStore();
 
@@ -118,20 +118,32 @@
     const nbPages = ref();
     const chargement = ref(true);
 
-    onMounted(async () => {
-        try {
-            console.log("ID Encan envoyé:", props.idEncan);
-            const response = await store.dispatch(
-                "chercherTousLotsParEncan",
-                props.idEncan
-            );
-            console.log("Réponse complète:", response);
+// Ajouter un computed pour les lots du store
+const storeLots = computed(() => store.state.lots);
 
-            if (response && response.data) {
-                listeLots.value = response.data;
-                nbLotsRecus.value = listeLots.value.length;
-                lotsParPage.value = nbLotsRecus.value;
-                nbPages.value = recalculerNbPages();
+// Surveiller les changements dans le store
+watch(storeLots, () => {
+  // Mettre à jour la liste des lots affichés si nécessaire
+  if (storeLots.value.length > 0) {
+    listeLots.value = storeLots.value;
+    chercherLotsAAfficher();
+  }
+}, { deep: true });
+
+onMounted(async () => {
+  try {
+    console.log("ID Encan envoyé:", props.idEncan);
+    const response = await store.dispatch(
+      "chercherTousLotsParEncan",
+      props.idEncan
+    );
+    console.log("Réponse complète:", response);
+
+    if (response && response.data) {
+      listeLots.value = response.data;
+      nbLotsRecus.value = listeLots.value.length;
+      lotsParPage.value = nbLotsRecus.value;
+      nbPages.value = recalculerNbPages();
 
                 genererListePagination();
                 chercherLotsAAfficher();
@@ -221,14 +233,34 @@
         let positionDebut = (pageCourante.value - 1) * lotsParPage.value;
         let positionFin = pageCourante.value * lotsParPage.value;
 
-        for (
-            let i = positionDebut;
-            i < positionFin && i < listeLots.value.length;
-            i++
-        ) {
-            lotsAffiche.value.push(listeLots.value[i]);
-        }
+  for (
+    let i = positionDebut;
+    i < positionFin && i < listeLots.value.length;
+    i++
+  ) {
+    lotsAffiche.value.push(listeLots.value[i]);
+  }
+}
+
+const chargerLots = async () => {
+  try {
+    const response = await store.dispatch("chercherTousLotsParEncan", props.idEncan);
+    if (response?.data) {
+      console.log('Lots reçus:', response.data);
+      store.commit('setLots', response.data);
+      listeLots.value = response.data;
+      nbLotsRecus.value = response.data.length;
     }
+  } catch (error) {
+    console.error("Erreur lors du chargement des lots:", error);
+  }
+  chargement.value = false;
+};
+
+// Appeler chargerLots au montage du composant
+onMounted(() => {
+  chargerLots();
+});
 </script>
 
 <style scoped></style>
