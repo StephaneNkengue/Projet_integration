@@ -124,28 +124,29 @@ namespace Gamma2024.Server.Controllers
                 return NotFound("Utilisateur non trouvé.");
             }
 
-            var clientInfo = new UpdateClientInfoVM
+            var clientInfo = new
             {
-                Name = user.Name,
-                FirstName = user.FirstName,
-                Email = user.Email,
-                PhoneNumber = user.PhoneNumber,
-                Pseudonym = user.UserName,
-                CardOwnerName = user.CarteCredits.FirstOrDefault()?.Nom,
-                CardNumber = user.CarteCredits.FirstOrDefault()?.Numero,
-                CardExpiryDate = user.CarteCredits.Any()
+                id = user.Id,
+                username = user.UserName,
+                name = user.Name,
+                firstName = user.FirstName,
+                email = user.Email,
+                phoneNumber = user.PhoneNumber,
+                pseudonym = user.UserName,
+                photo = string.IsNullOrEmpty(user.Avatar) ? "/Avatars/default.png" : user.Avatar,
+                roles = await _userManager.GetRolesAsync(user),
+                cardOwnerName = user.CarteCredits.FirstOrDefault()?.Nom,
+                cardNumber = user.CarteCredits.FirstOrDefault()?.Numero,
+                cardExpiryDate = user.CarteCredits.Any()
                     ? $"{user.CarteCredits.First().MoisExpiration:D2}/{user.CarteCredits.First().AnneeExpiration % 100:D2}"
                     : null,
-                CivicNumber = user.Adresses.FirstOrDefault()?.Numero.ToString(),
-                Street = user.Adresses.FirstOrDefault()?.Rue,
-                Apartment = user.Adresses.FirstOrDefault()?.Appartement,
-                City = user.Adresses.FirstOrDefault()?.Ville,
-                Province = user.Adresses.FirstOrDefault()?.Province,
-                Country = user.Adresses.FirstOrDefault()?.Pays,
-                PostalCode = user.Adresses.FirstOrDefault()?.CodePostal,
-                Photo = string.IsNullOrEmpty(user.Avatar)
-                    ? "/Avatars/default.png"
-                    : $"{user.Avatar}"
+                civicNumber = user.Adresses.FirstOrDefault()?.Numero.ToString(),
+                street = user.Adresses.FirstOrDefault()?.Rue,
+                apartment = user.Adresses.FirstOrDefault()?.Appartement,
+                city = user.Adresses.FirstOrDefault()?.Ville,
+                province = user.Adresses.FirstOrDefault()?.Province,
+                country = user.Adresses.FirstOrDefault()?.Pays,
+                postalCode = user.Adresses.FirstOrDefault()?.CodePostal
             };
 
             return Ok(clientInfo);

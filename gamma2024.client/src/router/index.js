@@ -27,6 +27,7 @@ import TableauDeBordEncans from "@/components/views/TableauDeBordEncans.vue";
 import TableauDeBordEncansAjout from "@/components/views/TableauDeBordEncansAjout.vue";
 import ModificationEncan from "@/components/views/ModificationEncan.vue";
 import Paiement from "@/components/views/Paiement.vue";
+import TableauDeBordVentes from '@/components/views/TableauDeBordVentes.vue';
 const routes = [
     {
         path: "/",
@@ -218,7 +219,13 @@ const routes = [
         meta: {
             requiresAuth: false
         },
-    }
+    },
+    {
+        path: "/tableaudebordventes",
+        name: "TableauDeBordVentes",
+        component: TableauDeBordVentes,
+        meta: { requiresAuth: true, requiredRole: "Administrateur" },
+    },
 ];
 
 const router = createRouter({
