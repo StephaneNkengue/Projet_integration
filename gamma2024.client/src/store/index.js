@@ -887,68 +887,67 @@ const store = createStore({
                 };
             }
         },
-    },
-    async fetchFactureInfo({ commit, state }) {
-        try {
-            const response = await state.api.get("/factures/chercherFactures");
-            console.log("Données reçues de l'API:", response.data); // Pour le débogage
+        async fetchFactureInfo({ commit, state }) {
+            try {
+                const response = await state.api.get("/factures/chercherFactures");
+                console.log("Données reçues de l'API:", response.data); // Pour le débogage
 
-            return response.data;
-        } catch (error) {
-            console.error("Erreur détaillée:", error.response || error);
-            throw error;
-        }
-    },
-
-    async creerPaymentIntent({ state }, idFacture) {
-        try {
-            const response = await state.api.post(
-                "/paiement/creerPaymentIntent/" + idFacture
-            );
-            return response;
-        } catch (error) {
-            return "Erreur, veuillez réessayer";
-        }
-    }
-,
-    getters: {
-    isAdmin: (state) => {
-        // console.log("Rôles dans le getter isAdmin:", state.roles);
-        const result =
-            Array.isArray(state.roles) && state.roles.includes("Administrateur");
-        // console.log("L'utilisateur est-il admin ?", result);
-        return result;
-    },
-    isClient: (state) =>
-        Array.isArray(state.roles) && state.roles.includes("Client"),
-    currentUser: (state) => state.user,
-    username: (state) =>
-        state.user ? state.user.pseudonym || state.user.username : "USERNAME",
-    avatarUrl: (state) => {
-        console.log("Photo de l'utilisateur brute:", state.user.photo);
-        if (state.user && state.user.photo) {
-            if (state.user.photo.startsWith("http")) {
-                return state.user.photo;
-            } else {
-                const baseUrl = state.api.defaults.baseURL.replace("/api", "");
-                const fullUrl = new URL(state.user.photo, baseUrl).href;
-                console.log("URL complète de l'avatar:", fullUrl);
-                return fullUrl;
+                return response.data;
+            } catch (error) {
+                console.error("Erreur détaillée:", error.response || error);
+                throw error;
             }
-        }
-        return "/gamma2024.client/public/icons/Avatar.png";
+        },
+        async creerPaymentIntent({ state }, idFacture) {
+            try {
+                const response = await state.api.post(
+                    "/paiement/creerPaymentIntent/" + idFacture
+                );
+                return response;
+            } catch (error) {
+                return "Erreur, veuillez réessayer";
+            }
+        },
     },
-    hasUserBidOnLot: (state) => (lotId) => {
-        return state.userBids.includes(lotId);
-    },
-    getLot: (state) => (id) => {
-        return state.lots[id] || null;
-    },
-    getAllLots: (state) => {
-        return Object.values(state.lots);
+
+    getters: {
+        isAdmin: (state) => {
+            // console.log("Rôles dans le getter isAdmin:", state.roles);
+            const result =
+                Array.isArray(state.roles) && state.roles.includes("Administrateur");
+            // console.log("L'utilisateur est-il admin ?", result);
+            return result;
+        },
+        isClient: (state) =>
+            Array.isArray(state.roles) && state.roles.includes("Client"),
+        currentUser: (state) => state.user,
+        username: (state) =>
+            state.user ? state.user.pseudonym || state.user.username : "USERNAME",
+        avatarUrl: (state) => {
+            console.log("Photo de l'utilisateur brute:", state.user.photo);
+            if (state.user && state.user.photo) {
+                if (state.user.photo.startsWith("http")) {
+                    return state.user.photo;
+                } else {
+                    const baseUrl = state.api.defaults.baseURL.replace("/api", "");
+                    const fullUrl = new URL(state.user.photo, baseUrl).href;
+                    console.log("URL complète de l'avatar:", fullUrl);
+                    return fullUrl;
+                }
+            }
+            return "/gamma2024.client/public/icons/Avatar.png";
+        },
+        hasUserBidOnLot: (state) => (lotId) => {
+            return state.userBids.includes(lotId);
+        },
+        getLot: (state) => (id) => {
+            return state.lots[id] || null;
+        },
+        getAllLots: (state) => {
+            return Object.values(state.lots);
         }
     }
-  });
+});
 
 // Initialiser le store immédiatement
 store.dispatch("initializeStore");
