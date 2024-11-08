@@ -58,6 +58,10 @@
 		</None>
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="jsreport\" />
+	</ItemGroup>
+
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
 		<Exec Command="xcopy &quot;$(ProjectDir)wwwroot/Images&quot; &quot;$(ProjectDir)..\Gamma.Seeder/Images&quot; /S /Y /I" />
 	</Target>

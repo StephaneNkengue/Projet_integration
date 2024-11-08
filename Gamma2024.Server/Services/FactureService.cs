@@ -27,6 +27,18 @@ namespace Gamma2024.Server.Services
                 var client = _context.Users.FirstOrDefault(c => c.Id == facture.IdClient);
                 facture.Nom = client.Name;
                 facture.Prenom = client.FirstName;
+
+                var numerosEncans = _context.Factures.Where(f => f.Id == facture.Id)
+                                                     .SelectMany(f => f.Lots)
+                                                     .SelectMany(l => l.EncanLots)
+                                                     .Select(el => el.Encan.NumeroEncan)
+                                                     .Distinct()
+                                                     .ToList();
+
+                foreach (var numero in numerosEncans)
+                {
+                    facture.Encan = numero.ToString();
+                }
             }
 
             return factures;
