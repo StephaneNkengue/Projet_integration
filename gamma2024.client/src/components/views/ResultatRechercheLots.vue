@@ -99,7 +99,7 @@
 <script setup>
     import LotTuile from "@/components/views/LotTuile.vue";
     import LotListe from "@/components/views/LotListe.vue";
-    import { ref, watch, onMounted } from "vue";
+    import { computed, ref, watch, onMounted } from "vue";
     import { useRouter, useRoute } from "vue-router";
     import { useStore } from "vuex";
 
@@ -119,12 +119,16 @@
     const nbPages = ref();
     const chargement = ref(true);
     let genererListeDeLotsFiltree = function () { };
+
     onMounted(async () => {
         try {
             initialiseData();
         } catch (error) {
         }
     });
+
+    const queryChangement = computed(() => route.query)
+    watch(queryChangement, initialiseData)
 
     async function initialiseData() {
         const response = await store.dispatch("chercherTousLotsRecherche");
