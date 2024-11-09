@@ -225,8 +225,8 @@ namespace Gamma2024.Server.Data
                 Avatar = "avatars/default.png",
                 PhoneNumber = "466-666-6666",
                 ConcurrencyStamp = "f1f3de20-69b9-491d-bc82-b484b44cd47f",
-                PasswordHash = "AQAAAAIAAYagAAAAEImrQqIdpN3WKyTx0Ys/9QQXVKT5jTAyfxsPYj6ljA7MwE8U/IWotqFi5RT5o5V7VQ=="
-
+                PasswordHash = "AQAAAAIAAYagAAAAEImrQqIdpN3WKyTx0Ys/9QQXVKT5jTAyfxsPYj6ljA7MwE8U/IWotqFi5RT5o5V7VQ==",
+                StripeCustomer = ""
             };
             //clientUser.PasswordHash = passwordHasher.HashPassword(clientUser, "MotDePasseClient123!");
 
@@ -245,7 +245,8 @@ namespace Gamma2024.Server.Data
                 Avatar = "avatars/default.png",
                 PhoneNumber = "455-555-5555",
                 ConcurrencyStamp = "ff176598-423c-4557-bfc4-48e928f579e9",
-                PasswordHash = "AQAAAAIAAYagAAAAEBCLhDAVClAVnNnHmZ3ahe6KYsdJa/tTtcmHC64QlZsy07wt7VRMIl+nfrP0UJ8oKw=="
+                PasswordHash = "AQAAAAIAAYagAAAAEBCLhDAVClAVnNnHmZ3ahe6KYsdJa/tTtcmHC64QlZsy07wt7VRMIl+nfrP0UJ8oKw==",
+                StripeCustomer = ""
             };
             //adminUser.PasswordHash = passwordHasher.HashPassword(adminUser, "MotDePasseAdmin123!");
 
