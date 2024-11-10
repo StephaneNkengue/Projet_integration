@@ -1,6 +1,9 @@
 using Gamma2024.Server.Data;
+using Gamma2024.Server.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Stripe;
 using System.Security.Claims;
 
@@ -11,10 +14,12 @@ namespace Gamma2024.Server.Controllers
     public class PaiementController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public PaiementController(ApplicationDbContext context)
+        public PaiementController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         [HttpPost("CreerPaymentIntent/{idFacture}")]
@@ -54,19 +59,32 @@ namespace Gamma2024.Server.Controllers
 
         [Authorize(Roles = "Client")]
         [HttpPost("CreerSetupIntent")]
-        public ActionResult CreerSetupIntent()
+        public async Task<ActionResult> CreerSetupIntent()
         {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (string.IsNullOrEmpty(userId))
+            {
+                return BadRequest("ID utilisateur non trouvé");
+            }
+
+            var user = await _userManager.Users
+                .OfType<ApplicationUser>()
+                .Include(u => u.Adresses.Where(a => a.EstDomicile))
+                .Include(u => u.CarteCredits)
+                .FirstOrDefaultAsync(u => u.Id == userId);
+
             var options = new SetupIntentCreateOptions
             {
-                PaymentMethodTypes = new List<string> { "card" },
+                Customer = user.StripeCustomer,
+                AutomaticPaymentMethods = new SetupIntentAutomaticPaymentMethodsOptions
+                {
+                    Enabled = true,
+                },
             };
             var service = new SetupIntentService();
-            var setup = service.Create(options);
-
-            return Json(new
-            {
-                clientSecret = setup.ClientSecret,
-            });
+            SetupIntent intent = service.Create(options);
+            return Ok(new { clientSecret = intent.ClientSecret });
         }
     }
 }
