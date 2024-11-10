@@ -27,7 +27,7 @@ import ReinitialisationMotDePasse from "@/components/views/ReinitialisationMotDe
 import TableauDeBordEncans from "@/components/views/TableauDeBordEncans.vue";
 import TableauDeBordEncansAjout from "@/components/views/TableauDeBordEncansAjout.vue";
 import ModificationEncan from "@/components/views/ModificationEncan.vue";
-import Paiement from "@/components/views/Paiement.vue";
+import EnregistrerCarte from "@/components/views/EnregistrerCarte.vue";
 import TableauDeBordVentes from "@/components/views/TableauDeBordVentes.vue";
 import ResultatRechercheLots from "@/components/views/ResultatRechercheLots.vue";
 import ResultatRechercheEncans from "@/components/views/ResultatRechercheEncans.vue";
@@ -215,12 +215,13 @@ const routes = [
         component: ReinitialisationMotDePasse,
     },
     {
-        path: "/Paiement/:idFacture",
-        name: "Paiement",
-        component: Paiement,
+        path: "/paiement/enregistrercarte",
+        name: "EnregistrerCarte",
+        component: EnregistrerCarte,
         props: true,
         meta: {
-            requiresAuth: false,
+            requiresAuth: true,
+            requiredRole: "Client"
         },
     },
     {
