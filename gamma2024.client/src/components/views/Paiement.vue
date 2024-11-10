@@ -1,15 +1,18 @@
 <template>
     <div class="d-flex w-100 justify-content-center flex-column align-items-center">
-        <h1>Paiement</h1>
+        <h1>Enregistrer votre carte</h1>
 
         <div class="row w-100">
             <form id="payment-form">
+                <div class="d-flex align-items-center justify-content-center gap-3" v-if="chargement">
+                    <div class="spinner-border" role="status">
+                    </div>Chargement...
+                </div>
                 <div id="payment-element">
                     <!--Stripe.js injects the Payment Element-->
                 </div>
-                <button id="submit" class="btn btn-outline bleuMoyenFond text-white py-0 butttonNavBar btnSurvolerBleuMoyenFond">
-                    <div class="spinner hidden" id="spinner"></div>
-                    <span id="button-text">Pay now</span>
+                <button id="submit" class="btn btn-outline bleuMoyenFond text-white  btnSurvolerBleuMoyenFond my-2">
+                    <span id="button-text">Enregistrer</span>
                 </button>
                 <div id="payment-message" class="hidden"></div>
             </form>
@@ -18,7 +21,7 @@
 </template>
 
 <script setup>
-    import { onMounted } from "vue"
+    import { onMounted, ref } from "vue"
     import { useStore } from "vuex"
 
     const store = useStore();
@@ -27,16 +30,17 @@
     });
     let elements;
     let stripe;
+    const chargement = ref(true);
 
-    initialize()
     onMounted(async () => {
         stripe = Stripe(import.meta.env.VITE_STRIPE_PK);
+        initialize()
 
         document.querySelector("#payment-form").addEventListener("submit", handleSubmit);
     })
 
     async function initialize() {
-        const response = await store.dispatch("creerPaymentIntent", props.idFacture)
+        const response = await store.dispatch("creerSetupIntent")
         const clientSecret = response.data.clientSecret;
 
         const appearance = {
@@ -50,13 +54,14 @@
 
         const paymentElement = elements.create("payment", paymentElementOptions);
         paymentElement.mount("#payment-element");
+        chargement.value = false
     }
 
     async function handleSubmit(e) {
         e.preventDefault();
         setLoading(true);
 
-        const { error } = await stripe.confirmPayment({
+        const { error } = await stripe.confirmSetup({
             elements,
             confirmParams: {
                 // Make sure to change this to your payment completion page
