@@ -1,4 +1,5 @@
 using Gamma2024.Server.Data;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Stripe;
 using System.Security.Claims;
@@ -48,6 +49,23 @@ namespace Gamma2024.Server.Controllers
             return Json(new
             {
                 clientSecret = paymentIntent.ClientSecret,
+            });
+        }
+
+        [Authorize(Roles = "Client")]
+        [HttpPost("CreerSetupIntent")]
+        public ActionResult CreerSetupIntent()
+        {
+            var options = new SetupIntentCreateOptions
+            {
+                PaymentMethodTypes = new List<string> { "card" },
+            };
+            var service = new SetupIntentService();
+            var setup = service.Create(options);
+
+            return Json(new
+            {
+                clientSecret = setup.ClientSecret,
             });
         }
     }
