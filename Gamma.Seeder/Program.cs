@@ -43,15 +43,6 @@ var utilisateurs = System.IO.File.ReadAllLines("CSV/Acheteurs.csv", System.Text.
                         .ToApplicationUser()
                         .Select(u =>
                         {
-                            u.CarteCredits = new CarteCredit[]
-                            {
-                                new() {
-                                AnneeExpiration=(DateTime.Now.Year)+2,
-                                MoisExpiration=DateTime.Now.Month,
-                                Nom = u.FirstName + " " + u.Name,
-                                Numero="4242424242424242"
-                                }
-                            };
                             var stripeCustomer = customers.Data.Find(c => c.Email.Equals(u.Email));
 
                             if (stripeCustomer != null)
