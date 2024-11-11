@@ -9,10 +9,14 @@
 		<SpaRoot>..\gamma2024.client</SpaRoot>
 		<SpaProxyLaunchCommand>npm run dev</SpaProxyLaunchCommand>
 		<SpaProxyServerUrl>https://localhost:5173</SpaProxyServerUrl>
+		<Configurations>Debug;Release;Staging</Configurations>
 	</PropertyGroup>
 
 	<ItemGroup>
 		<PackageReference Include="datatables.net-dt" Version="2.1.7" />
+		<PackageReference Include="jsreport.AspNetCore" Version="3.8.1" />
+		<PackageReference Include="jsreport.Binary" Version="4.4.0" />
+		<PackageReference Include="jsreport.Local" Version="3.8.2" />
 		<PackageReference Include="mailkit" Version="4.7.1.1" />
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.8" />
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.Negotiate" Version="8.0.1" />
@@ -38,6 +42,7 @@
 		</PackageReference>
 		<PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
 		<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.4" />
+		<PackageReference Include="Stripe.net" Version="47.0.0" />
 		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
 	</ItemGroup>
 
@@ -48,9 +53,17 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <None Update="Avatars\default.png">
-	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-	  </None>
+		<None Update="Avatars\default.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
 	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="jsreport\" />
+	</ItemGroup>
+
+	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
+		<Exec Command="xcopy &quot;$(ProjectDir)wwwroot/Images&quot; &quot;$(ProjectDir)..\Gamma.Seeder/Images&quot; /S /Y /I" />
+	</Target>
 
 </Project>
