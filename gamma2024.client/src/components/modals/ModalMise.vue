@@ -24,49 +24,58 @@
             <p class="fs-5 mb-0">lot {{ lot?.numero }}</p>
             <p class="fs-5 mb-0">votre mise : {{ affichageMiseActuelle }}</p>
 
-                        <div class="d-flex flex-column gap-2">
-                            <p class="mb-0">Ma mise maximale à ne pas dépasser :</p>
-                            <div class="d-flex align-items-center gap-2">
-                                <button class="btn btn-outline-secondary"
-                                        @click="decrementerMise"
-                                        :disabled="montantMise <= getMiseMinimale">
-                                    -{{ pasEnchere }}$
-                                </button>
-                                <span class="fs-5">{{ montantMise }}$</span>
-                                <button class="btn btn-outline-secondary"
-                                        @click="incrementerMise">
-                                    +{{ pasEnchere }}$
-                                </button>
-                            </div>
-                            <p class="text-muted small">
-                                Ajouter le montant maximum souhaité
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button"
-                            class="btn btn-secondary"
-                            data-bs-dismiss="modal">
-                        Annuler
-                    </button>
-                    <button type="button"
-                            class="btn btn-primary"
-                            @click="confirmerMise"
-                            :disabled="!isMiseValide">
-                        Miser
-                    </button>
-                </div>
+            <div class="d-flex flex-column gap-2">
+              <p class="mb-0">Ma mise maximale à ne pas dépasser :</p>
+              <div class="d-flex align-items-center gap-2">
+                <button
+                  class="btn btn-outline-secondary"
+                  @click="decrementerMise"
+                  :disabled="montantMise <= getMiseMinimale"
+                >
+                  -{{ pasEnchere }}$
+                </button>
+                <span class="fs-5">{{ montantMise }}$</span>
+                <button
+                  class="btn btn-outline-secondary"
+                  @click="incrementerMise"
+                >
+                  +{{ pasEnchere }}$
+                </button>
+              </div>
+              <p class="text-muted small">
+                Ajouter le montant maximum souhaité
+              </p>
             </div>
+          </div>
         </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            data-bs-dismiss="modal"
+          >
+            Annuler
+          </button>
+          <button
+            type="button"
+            class="btn btn-primary"
+            @click="confirmerMise"
+            :disabled="!isMiseValide"
+          >
+            Miser
+          </button>
+        </div>
+      </div>
     </div>
+  </div>
 </template>
 
 <script setup>
-import { ref, watch, onMounted, computed, nextTick } from "vue";
+import { ref, watch, onMounted, computed, nextTick, h } from "vue";
 import { Modal } from "bootstrap";
 import { useStore } from "vuex";
 import { toast } from "vue3-toastify";
+import ToastContent from "../Toast/toastConfirm.vue";
 
 const store = useStore();
 const modalInstance = ref(null);
@@ -131,26 +140,26 @@ const confirmerMise = async () => {
       modalInstance.value.hide();
       emit("miseConfirmee", montantMise.value);
 
-                // Forcer la mise à jour du montant pour la prochaine ouverture
-                props.lot.mise = montantMise.value;
+      // Forcer la mise à jour du montant pour la prochaine ouverture
+      props.lot.mise = montantMise.value;
 
-                // Afficher le toast de succès
-                toast.success(
-                    h(ToastContent, {
-                        title: "Succès",
-                        description: "Votre mise a été placée avec succès",
-                    })
-                );
-            }
-        } catch (error) {
-            toast.error(
-                h(ToastContent, {
-                    title: "Erreur",
-                    description: error.message || "Erreur lors de la mise",
-                })
-            );
-        }
-    };
+      // Afficher le toast de succès
+      toast.success(
+        h(ToastContent, {
+          title: "Succès",
+          description: "Votre mise a été placée avec succès",
+        })
+      );
+    }
+  } catch (error) {
+    toast.error(
+      h(ToastContent, {
+        title: "Erreur",
+        description: error.message || "Erreur lors de la mise",
+      })
+    );
+  }
+};
 
 // Initialisation du montant de la mise
 watch(
@@ -229,15 +238,15 @@ const emit = defineEmits(["miseConfirmee"]);
 </script>
 
 <style scoped>
-    .modal-body {
-        padding: 1.5rem;
-    }
+.modal-body {
+  padding: 1.5rem;
+}
 
-    .gap-3 {
-        gap: 1rem !important;
-    }
+.gap-3 {
+  gap: 1rem !important;
+}
 
-    .gap-2 {
-        gap: 0.75rem !important;
-    }
+.gap-2 {
+  gap: 0.75rem !important;
+}
 </style>
