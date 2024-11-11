@@ -28,7 +28,17 @@ while (customersTemp.Data.Count == 100)
     customersTemp = customerService.List(new CustomerListOptions { Limit = 100, StartingAfter = customers.Data.Last().Id });
 }
 
+var usersExistants = context.Users.ToList();
 
+foreach (var user in usersExistants)
+{
+    if (user.StripeCustomer.IsNullOrEmpty())
+    {
+        var customer = customerService.Create(new CustomerCreateOptions { Email = user.Email, Name = user.FirstName + " " + user.Name, Description = user.UserName });
+        user.StripeCustomer = customer.Id;
+        context.Update(user);
+    }
+}
 
 Console.WriteLine("Début du seed...");
 
