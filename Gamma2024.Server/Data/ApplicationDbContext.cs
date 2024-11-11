@@ -19,7 +19,6 @@ namespace Gamma2024.Server.Data
         public DbSet<Photo> Photos { get; set; } = default!;
         public DbSet<Facture> Factures { get; set; } = default!;
         public DbSet<Vendeur> Vendeurs { get; set; } = default!;
-        public DbSet<CarteCredit> CartesCredits { get; set; } = default!;
         public DbSet<Adresse> Adresses { get; set; } = default!;
         public DbSet<Medium> Mediums { get; set; } = default!;
         public DbSet<Charite> Charites { get; set; } = default!;
@@ -43,12 +42,6 @@ namespace Gamma2024.Server.Data
                 .HasMany(au => au.Adresses)
                 .WithOne(a => a.ApplicationUser)
                 .HasForeignKey(a => a.IdApplicationUser)
-                .OnDelete(DeleteBehavior.NoAction);
-
-            builder.Entity<ApplicationUser>()
-                .HasMany(au => au.CarteCredits)
-                .WithOne(cc => cc.ApplicationUser)
-                .HasForeignKey(cc => cc.IdApplicationUser)
                 .OnDelete(DeleteBehavior.NoAction);
 
             // Vendeur
@@ -123,14 +116,6 @@ namespace Gamma2024.Server.Data
                 .WithOne(l => l.Medium)
                 .HasForeignKey(l => l.IdMedium)
                 .OnDelete(DeleteBehavior.Restrict);
-
-
-            // CarteCredit
-            builder.Entity<CarteCredit>()
-                .HasOne(cc => cc.ApplicationUser)
-                .WithMany(c => c.CarteCredits)
-                .HasForeignKey(cc => cc.IdApplicationUser)
-                .OnDelete(DeleteBehavior.NoAction);
         }
 
         private void CreateRolesAndUsers(ModelBuilder builder)
@@ -186,27 +171,6 @@ namespace Gamma2024.Server.Data
                     EstDomicile = true,
                 }
             );
-
-            builder.Entity<CarteCredit>().HasData(
-                new CarteCredit
-                {
-                    Id = 1,
-                    AnneeExpiration = (DateTime.Now.Year + 1),
-                    IdApplicationUser = adminId,
-                    Nom = "Admin Admin",
-                    MoisExpiration = 12,
-                    Numero = "5555555555554444"
-                },
-                new CarteCredit
-                {
-                    Id = 2,
-                    AnneeExpiration = (DateTime.Now.Year + 2),
-                    IdApplicationUser = clientId,
-                    Nom = "Jean Dupont",
-                    MoisExpiration = 12,
-                    Numero = "4242424242424242"
-                }
-            ); ;
 
             // Création de l'administrateur et du client
             var passwordHasher = new PasswordHasher<ApplicationUser>();
