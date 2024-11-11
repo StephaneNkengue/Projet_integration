@@ -62,32 +62,6 @@ namespace Gamma2024.Server.Validations
                 return (false, "Les mots de passe ne correspondent pas.");
             }
 
-            if (model.CarteCredit == null)
-            {
-                return (false, "Les informations de carte de crédit sont manquantes.");
-            }
-
-            if (string.IsNullOrWhiteSpace(model.CarteCredit.NomProprio))
-            {
-                return (false, "Le nom du propriétaire de la carte est obligatoire.");
-            }
-
-            if (string.IsNullOrWhiteSpace(model.CarteCredit.NumeroCarte) || !IsValidCreditCardNumber(model.CarteCredit.NumeroCarte))
-            {
-                return (false, "Le numéro de carte de crédit est invalide ou manquant.");
-            }
-
-            if (string.IsNullOrWhiteSpace(model.CarteCredit.DateExpiration))
-            {
-                return (false, "La date d'expiration de la carte est manquante.");
-            }
-
-            var (isValidExpiration, _, _) = ValidateAndParseExpirationDate(model.CarteCredit.DateExpiration);
-            if (!isValidExpiration)
-            {
-                return (false, "La date d'expiration de la carte est invalide ou expirée.");
-            }
-
             if (model.Adresse == null)
             {
                 return (false, "Les informations d'adresse sont manquantes.");
@@ -166,27 +140,6 @@ namespace Gamma2024.Server.Validations
             if (!Regex.IsMatch(model.Pseudonym, "^[a-zA-Z0-9_]+$"))
             {
                 return (false, "Le pseudo ne peut contenir que des lettres, des chiffres et des underscores.");
-            }
-
-            if (string.IsNullOrWhiteSpace(model.CardOwnerName))
-            {
-                return (false, "Le nom du propriétaire de la carte est obligatoire.");
-            }
-
-            if (string.IsNullOrWhiteSpace(model.CardNumber) || !IsValidCreditCardNumber(model.CardNumber))
-            {
-                return (false, "Le numéro de carte de crédit est invalide ou manquant.");
-            }
-
-            if (string.IsNullOrWhiteSpace(model.CardExpiryDate))
-            {
-                return (false, "La date d'expiration de la carte est manquante.");
-            }
-
-            var (isValidExpiration, _, _) = ValidateAndParseExpirationDate(model.CardExpiryDate);
-            if (!isValidExpiration)
-            {
-                return (false, "La date d'expiration de la carte est invalide ou expirée.");
             }
 
             if (string.IsNullOrWhiteSpace(model.CivicNumber))
@@ -269,34 +222,6 @@ namespace Gamma2024.Server.Validations
             return Regex.IsMatch(postalCode,
                 @"^[ABCEGHJKLMNPRSTVXYabceghjklmnprstvwxyz]\d[ABCEGHJKLMNPRSTVWXYZabceghjklmnprstvwxyz][ -]?\d[ABCEGHJKLMNPRSTVWXYZabceghjklmnprstvwxyz]\d$",
                 RegexOptions.IgnoreCase);
-        }
-
-        public static (bool IsValid, int Mois, int Annee) ValidateAndParseExpirationDate(string expirationDate)
-        {
-            if (!Regex.IsMatch(expirationDate, @"^(0[1-9]|1[0-2])\/([0-9]{2})$"))
-            {
-                return (false, 0, 0);
-            }
-
-            var parts = expirationDate.Split('/');
-            int mois = int.Parse(parts[0]);
-            int annee = int.Parse(parts[1]) + 2000; // Convertir '26' en '2026'
-
-            var dateExpiration = new DateTime(annee, mois, 1).AddMonths(1).AddDays(-1);
-            var debutMoisProchain = DateTime.Today.AddDays(1 - DateTime.Today.Day).AddMonths(1);
-
-            if (dateExpiration < debutMoisProchain)
-            {
-                return (false, 0, 0);
-            }
-
-            // Vérifier que l'année n'est pas trop loin dans le futur (par exemple, pas plus de 10 ans)
-            if (annee > DateTime.Today.Year + 10)
-            {
-                return (false, 0, 0);
-            }
-
-            return (true, mois, annee);
         }
     }
 }
