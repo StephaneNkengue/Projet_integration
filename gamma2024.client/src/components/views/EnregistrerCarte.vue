@@ -11,7 +11,8 @@
                 <div id="payment-element">
                     <!--Stripe.js injects the Payment Element-->
                 </div>
-                <button id="submit" class="btn btn-outline bleuMoyenFond text-white  btnSurvolerBleuMoyenFond my-2">
+                <button id="submit" class="btn btn-outline bleuMoyenFond text-white btnSurvolerBleuMoyenFond my-2">
+                    <div class="spinner-grow d-none" id="spinner"></div>
                     <span id="button-text">Enregistrer</span>
                 </button>
                 <div id="payment-message" class="hidden"></div>
@@ -97,15 +98,16 @@
 
     function setLoading(isLoading) {
         if (isLoading) {
-            document.querySelector("#submit").disabled = true;
-            document.querySelector("#spinner").classList.remove("hidden");
-            document.querySelector("#button-text").classList.add("hidden");
+            document.querySelector("#submit").classList.add("disabled")
+            document.querySelector("#spinner").classList.remove("d-none");
+            document.querySelector("#button-text").classList.add("d-none");
         } else {
-            document.querySelector("#submit").disabled = false;
-            document.querySelector("#spinner").classList.add("hidden");
-            document.querySelector("#button-text").classList.remove("hidden");
+            document.querySelector("#submit").classList.remove("disabled");
+            document.querySelector("#spinner").classList.add("d-none");
+            document.querySelector("#button-text").classList.remove("d-none");
         }
     }
 </script>
 
-<style scoped></style>
+<style scoped>
+</style>
