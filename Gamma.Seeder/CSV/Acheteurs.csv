@@ -1,0 +1,56 @@
+Nom;Prénom;Pseudonyme;Adresse;Téléphone;Courriel
+Audet;Maxime;MaxAud;7890 Avenue Dufresne, Saguenay, QC, G7H 6T8;581-555-3457;maxime.audet@email.com
+Beaulieu;Mélanie;MelB;1234 Rue de la Montagne, Laval, QC, H7E 4K7;514-555-6789;melanie.beaulieu@email.com
+Bélanger;Mathieu;MatB;2567 Rue du Collège, Chicoutimi, QC, G7J 4A3;819-555-1234;mathieu.belanger@email.com
+Bernier;Jonathan;JonBern;456 Rue Wellington, Shawinigan, QC, G9N 1R6;819-555-2345;jonathan.bernier@email.com
+Blais;Danielle;DaniBlais;987 Rue de l'Église, Montréal, QC, H3B 1G9;514-555-4532;danielle.blais@email.com
+Boivin;Sophie;SophBoi;908 Boulevard de la Chaudière, Lévis, QC, G6V 7L8;581-555-3456;sophie.boivin@email.com
+Bouchard;Sophie;SophStyle;450 Rue Cartier, Laval, QC, H7N 3V1;819-555-3456;sophie.bouchard@email.com
+Boucher;Antoine;TonyBouch;7890 Rue Papineau, Longueuil, QC, J4K 5L3;450-555-5678;antoine.boucher@email.com
+Caron;David;DaveC;9876 Rue Saint-Paul, Lévis, QC, G6V 3A9;819-555-8901;david.caron@email.com
+Carrier;Simon;SimCar;4567 Boulevard de la Capitale, Québec, QC, G1K 6T4;819-555-2345;simon.carrier@email.com
+Cloutier;Laurence;LauClout;8907 Rue Gamelin, Longueuil, QC, J4K 4B2;450-555-1236;laurence.cloutier@email.com
+Cormier;Simon;SimCorm;4567 Rue de l'Hôpital, Laval, QC, H7N 5X2;438-555-3412;simon.cormier@email.com
+Côté;Isabelle;IsaCool;345 Boulevard des Laurentides, Longueuil, QC, J4H 3S9;418-555-4567;isabelle.cote@email.com
+Desjardins;Alexandre;AlexJardin;9800 Rue Saint-Denis, Montréal, QC, H2X 3K4;418-555-5678;alexandre.desjardins@email.com
+Desrosiers;Philippe;PhilDes;902 Boulevard Laurier, Gatineau, QC, J8T 6K9;613-555-8765;philippe.desrosiers@email.com
+Dubé;Valérie;ValDub;123 Rue Beaubien, Sherbrooke, QC, J1H 5P4;819-555-7890;valerie.dube@email.com
+Dubois;Laurent;LauDub;2300 Rue Papineau, Drummondville, QC, J2C 2X1;514-555-2345;laurent.dubois@email.com
+Fournier;Amélie;FouraAme;1987 Rue Cartier, Laval, QC, H7N 4M5;418-555-3456;amelie.fournier@email.com
+Gagnon;Luc;LeGagnant;2345 Rue Saint-Hubert, Montréal, QC, H2L 3Y8;418-555-1234;luc.gagnon@email.com
+Garneau;Nicolas;NicoGar;9089 Avenue du Mont-Royal, Gatineau, QC, J8P 4V3;613-555-7689;nicolas.garneau@email.com
+Gauthier;Marc;Gauty;5675 Avenue Laurier, Saguenay, QC, G7H 5A7;514-555-7890;marc.gauthier@email.com
+Gervais;Chantal;ChanGerv;4567 Rue Laurier, Saguenay, QC, G7H 2P6;581-555-4567;chantal.gervais@email.com
+Girard;Julie;JulG;876 Rue King Ouest, Sherbrooke, QC, J1H 1E5;514-555-3456;julie.girard@email.com
+Gosselin;Francis;FranGoss;321 Boulevard des Laurentides, Laval, QC, H7N 4M7;450-555-7865;francis.gosselin@email.com
+Laforest;Benoît;BenLaf;1235 Rue de la Couronne, Lévis, QC, G6V 7H9;418-555-3210;benoit.laforest@email.com
+Lambert;Hugo;HugoLam;5678 Rue Cartier, Laval, QC, H7K 2V1;438-555-1234;hugo.lambert@email.com
+Lapointe;Chantal;ChanLa;560 Rue Wellington, Sherbrooke, QC, J1H 2M2;819-555-7890;chantal.lapointe@email.com
+Laroche;Émile;EmilRoche;345 Rue des Érables, Chicoutimi, QC, G7J 1K2;581-555-5678;emile.laroche@email.com
+Lavoie;Jacques;JackLavo;1290 Rue Notre-Dame, Trois-Rivières, QC, G9A 3W6;418-555-6789;jacques.lavoie@email.com
+Leduc;Marc;LeducM;6789 Avenue des Pins, Gatineau, QC, J8X 3Y2;613-555-0989;marc.leduc@email.com
+Lefebvre;Étienne;LefBest;123 Rue Sainte-Catherine, Sherbrooke, QC, J1H 1M1;819-555-9876;etienne.lefebvre@email.com
+Lemieux;Marie-Claude;MCLe;4321 Rue Berri, Saguenay, QC, G7K 1T2;418-555-1234;marieclaude.lemieux@email.com
+Lemoine;Claire;ClaireLemo;3456 Avenue du Parc, Montréal, QC, H2V 4G1;514-555-2345;claire.lemoine@email.com
+Lépine;Florence;FloLep;2340 Rue des Saules, Sherbrooke, QC, J1H 5G1;819-555-4356;florence.lepine@email.com
+Lévesque;Denis;DenL;3457 Boulevard René-Lévesque, Québec, QC, G1R 2H9;819-555-4567;denis.levesque@email.com
+Martel;Claude;ClaudeM;2300 Rue Laurier, Montréal, QC, H2V 3H1;514-555-4567;claude.martel@email.com
+Martineau;Julie;JulMart;890 Rue Sainte-Foy, Québec, QC, G1V 4H1;418-555-7899;julie.martineau@email.com
+Mercier;Alain;AlMerc;7895 Boulevard Sainte-Anne, Lévis, QC, G6V 6J3;418-555-8901;alain.mercier@email.com
+Michaud;Pascale;PascMichaud;9087 Rue Notre-Dame, Lévis, QC, G6V 4S3;418-555-9876;pascale.michaud@email.com
+Morin;Catherine;CatMo;321 Rue King, Drummondville, QC, J2C 1R1;819-555-5678;catherine.morin@email.com
+Ouellet;Nathalie;NatOue;1456 Rue King Est, Sherbrooke, QC, J1G 1B5;819-555-5678;nathalie.ouellet@email.com
+Paquette;Nicolas;NicoPaquet;1234 Rue Masson, Trois-Rivières, QC, G9A 3Y2;819-555-4321;nicolas.paquette@email.com
+Parent;Pierre;ParP;789 Boulevard Saint-Joseph, Gatineau, QC, J8Y 3Z5;418-555-6789;pierre.parent@email.com
+Pelletier;Émilie;MiliPel;467 Boulevard Charest, Québec, QC, G1N 2H1;514-555-8901;emilie.pelletier@email.com
+Pelletier;Louise;LouPel;234 Boulevard René-Lévesque, Québec, QC, G1S 2B6;418-555-7654;louise.pelletier@email.com
+Proulx;Mathieu;MatProulx;2345 Avenue de l’Université, Montréal, QC, H3C 1V9;514-555-1122;mathieu.proulx@email.com
+Richard;Michel;MikeRich;6789 Rue du Lac, Québec, QC, G1K 4L5;418-555-6543;michel.richard@email.com
+Robitaille;Catherine;CathRobi;6780 Rue Hochelaga, Montréal, QC, H1V 3P5;514-555-5432;catherine.robitaille@email.com
+Rousseau;Caroline;Carou;1200 Rue des Laurentides, Longueuil, QC, J4H 5K8;514-555-7890;caroline.rousseau@email.com
+Roy;Paul;RoyP;678 Rue Saint-Jean, Lévis, QC, G6V 4B3;418-555-6789;paul.roy@email.com
+Simard;Francis;SimFranc;1090 Rue Saint-Vallier, Shawinigan, QC, G9N 2L8;418-555-2345;francis.simard@email.com
+Tremblay;Marie;MarTrem;890 Boulevard René-Lévesque, Québec, QC, G1R 5B1;514-555-5678;marie.tremblay@email.com
+Tremblay;Amélie;AmelTrem;7890 Rue King, Sherbrooke, QC, J1H 3W4;819-555-9870;amelie.tremblay@email.com
+Trudel;Carole;CaroTru;678 Boulevard Henri-Bourassa, Drummondville, QC, J2C 3K6;819-555-0987;carole.trudel@email.com
+Vézina;Claire;ClaireVez;1234 Rue des Seigneurs, Trois-Rivières, QC, G9A 5S1;819-555-5678;claire.vezina@email.com

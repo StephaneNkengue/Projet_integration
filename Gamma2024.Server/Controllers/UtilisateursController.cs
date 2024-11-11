@@ -108,6 +108,10 @@ namespace Gamma2024.Server.Controllers
         public async Task<IActionResult> GetClientInfo()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId))
+            {
+                return BadRequest("ID utilisateur non trouvé");
+            }
 
             var user = await _userManager.Users
                 .OfType<ApplicationUser>()
@@ -120,28 +124,29 @@ namespace Gamma2024.Server.Controllers
                 return NotFound("Utilisateur non trouvé.");
             }
 
-            var clientInfo = new UpdateClientInfoVM
+            var clientInfo = new
             {
-                Name = user.Name,
-                FirstName = user.FirstName,
-                Email = user.Email,
-                PhoneNumber = user.PhoneNumber,
-                Pseudonym = user.UserName,
-                CardOwnerName = user.CarteCredits.FirstOrDefault()?.Nom,
-                CardNumber = user.CarteCredits.FirstOrDefault()?.Numero,
-                CardExpiryDate = user.CarteCredits.Any()
+                id = user.Id,
+                username = user.UserName,
+                name = user.Name,
+                firstName = user.FirstName,
+                email = user.Email,
+                phoneNumber = user.PhoneNumber,
+                pseudonym = user.UserName,
+                photo = string.IsNullOrEmpty(user.Avatar) ? "/Avatars/default.png" : user.Avatar,
+                roles = await _userManager.GetRolesAsync(user),
+                cardOwnerName = user.CarteCredits.FirstOrDefault()?.Nom,
+                cardNumber = user.CarteCredits.FirstOrDefault()?.Numero,
+                cardExpiryDate = user.CarteCredits.Any()
                     ? $"{user.CarteCredits.First().MoisExpiration:D2}/{user.CarteCredits.First().AnneeExpiration % 100:D2}"
                     : null,
-                CivicNumber = user.Adresses.FirstOrDefault()?.Numero.ToString(),
-                Street = user.Adresses.FirstOrDefault()?.Rue,
-                Apartment = user.Adresses.FirstOrDefault()?.Appartement,
-                City = user.Adresses.FirstOrDefault()?.Ville,
-                Province = user.Adresses.FirstOrDefault()?.Province,
-                Country = user.Adresses.FirstOrDefault()?.Pays,
-                PostalCode = user.Adresses.FirstOrDefault()?.CodePostal,
-                Photo = string.IsNullOrEmpty(user.Avatar)
-                    ? "/Avatars/default.png"
-                    : $"/Avatars/{user.Avatar}"
+                civicNumber = user.Adresses.FirstOrDefault()?.Numero.ToString(),
+                street = user.Adresses.FirstOrDefault()?.Rue,
+                apartment = user.Adresses.FirstOrDefault()?.Appartement,
+                city = user.Adresses.FirstOrDefault()?.Ville,
+                province = user.Adresses.FirstOrDefault()?.Province,
+                country = user.Adresses.FirstOrDefault()?.Pays,
+                postalCode = user.Adresses.FirstOrDefault()?.CodePostal
             };
 
             return Ok(clientInfo);
@@ -175,31 +180,30 @@ namespace Gamma2024.Server.Controllers
             }
 
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var user = await _userManager.FindByIdAsync(userId);
+            if (string.IsNullOrEmpty(userId))
+            {
+                return BadRequest("ID utilisateur non trouvé");
+            }
 
+            var user = await _userManager.FindByIdAsync(userId);
             if (user == null)
             {
                 return NotFound("Utilisateur non trouvé.");
             }
 
-            if (avatar != null && avatar.Length > 0)
+            var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "Avatars");
+            var uniqueFileName = Guid.NewGuid().ToString() + "_" + avatar.FileName;
+            var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+            using (var fileStream = new FileStream(filePath, FileMode.Create))
             {
-                var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "Avatars");
-                var uniqueFileName = Guid.NewGuid().ToString() + "_" + avatar.FileName;
-                var filePath = Path.Combine(uploadsFolder, uniqueFileName);
-
-                using (var fileStream = new FileStream(filePath, FileMode.Create))
-                {
-                    await avatar.CopyToAsync(fileStream);
-                }
-
-                user.Avatar = uniqueFileName;
-                await _userManager.UpdateAsync(user);
-
-                return Ok(new { avatarUrl = $"/Avatars/{uniqueFileName}" });
+                await avatar.CopyToAsync(fileStream);
             }
 
-            return BadRequest("Aucun fichier n'a été envoyé.");
+            user.Avatar = $"/Avatars/{uniqueFileName}";
+            await _userManager.UpdateAsync(user);
+
+            return Ok(new { avatarUrl = user.Avatar });
         }
 
         [HttpGet("verifier-email")]
@@ -222,6 +226,52 @@ namespace Gamma2024.Server.Controllers
             var utilisateurExistant = await _userManager.FindByNameAsync(pseudo);
             var disponible = utilisateurExistant == null;
             return Ok(new { disponible = disponible });
+        }
+
+
+
+        [HttpPost("reinitialiserMotDePasse")]
+        public async Task<IActionResult> reinitialiserMotDePasse([FromBody] ResetPasswordVM model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            try
+            {
+                if (model is null)
+                {
+                    return BadRequest("Aucune donnée envoyé");
+                }
+
+                var user = await _userManager.FindByEmailAsync(model.Email);
+                if (user == null)
+                {
+                    return BadRequest("Aucun utilisateur trouvé");
+                }
+
+                string resetToken = await _userManager.GeneratePasswordResetTokenAsync(user);
+                if (string.IsNullOrEmpty(resetToken))
+                {
+                    return BadRequest("Erreur lors de la génération du token");
+                }
+
+                var result = await _userManager.ResetPasswordAsync(user, resetToken, model.Password);
+
+                if (result.Succeeded)
+                {
+                    return Ok("Mot de passe changé avec succès");
+                }
+                else
+                {
+                    return BadRequest("Le mot de passe doit avoir au moins 1 majuscule, 1 minuscule, 1 chiffre et 1 caractère special");
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
         }
     }
 

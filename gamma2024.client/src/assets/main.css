@@ -24,9 +24,18 @@
     background-color: #83a0ba;
 }
 
+.btnSurvolerBleuMoyenFond:enabled {
+    background-color: #83a0ba;
+}
+
 .btnDesactiverBleuMoyenFond:disabled {
     background-color: #617d9a;
 }
+
+.btnSurvolerBleuMoyenFond:focus {
+    background-color: #83a0ba !important;
+}
+
 
 .lienEnTexteNoir {
     color: #000000;
@@ -37,7 +46,7 @@
     }
 
 .imageDeFondEsquise {
-    background-image: url('/public/images/DessinGris.PNG');
+    background-image: url('/images/DessinGris.PNG');
     background-size: cover;
     background-position: 0px -100px;
     background-attachment: fixed;
@@ -67,4 +76,12 @@
 .butttonNavBar {
     height: 25px;
     font-size: 15px;
+}
+
+.btnClick:focus {
+    background-color: #5A708A;
+}
+
+.fs-7 {
+    font-size: 0.89rem;
 }

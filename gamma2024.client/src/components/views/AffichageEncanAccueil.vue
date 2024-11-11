@@ -1,44 +1,80 @@
 <template>
-    <div class="d-flex flex-column align-items-center contourDiv px-5 pb-3 pt-3">
-        <h3>Encan {{titre}}</h3>
+  <div class="d-flex flex-column align-items-center contourDiv px-5 pb-3 pt-3">
+    <h3>Encan {{ titre }}</h3>
 
-        <div class="bleuMoyenFond p-5 my-4 d-flex flex-column align-items-center">
-            <h4>Encan #</h4>
-            <p class="fs-6 mb-0">Encan d'oeuvres d'art</p>
+        <div class="bleuMoyenFond p-5 my-4 d-flex flex-column align-items-center" role="button" @click="voirEncan()">
+            <div v-if="chargement">
+                <div class="spinner-border" role="status">
+                    <span class="sr-only"></span>
+                </div>
+            </div>
+            <div v-else>
+                <h4 v-if="encan != ''">Encan {{encan.numeroEncan}}</h4>
+                <h4 v-else>Aucun encan trouvée</h4>
+            </div>
         </div>
 
-        <router-link to="/" class="text-decoration-none" v-if="type!=0">
-            <p class="text-black"> Voir les encans {{titre}}s -></p>
-        </router-link>
+        <a class="text-decoration-none" v-if="type!=0" @click="voirEncans()">
+            <p class="text-black" role="button"> Voir les encans {{titre}}s ⮞</p>
+        </a>
     </div>
 </template>
 
 <script setup>
-    import { ref } from 'vue'
+import { ref, onMounted } from "vue";
+import { useStore } from "vuex";
+import { useRouter } from "vue-router";
 
+const store = useStore();
+const props = defineProps({
+  type: Number,
+});
+const router = useRouter();
 
-    const props = defineProps({
-        type: Number,
-    });
+const encan = ref("");
+const titre = ref("");
+const voirEncan = ref(function () {});
+const voirEncans = ref(function () {});
+const chargement = ref(true);
 
-    const titre = typeEncan()
+if (props.type == 0) {
+  titre.value = "présent";
+} else if (props.type == -1) {
+  titre.value = "passé";
+} else {
+  titre.value = "futur";
+}
 
-    function typeEncan() {
-        if (props.type == 0) {
+onMounted(async () => {
+  if (props.type == 0) {
+    const response = await store.dispatch("chercherEncanEnCours");
+    encan.value = response.data;
 
-            return ref("présent")
+            if (encan.value != '') {
+                voirEncan.value = function () { router.push({ name: 'EncanPresent' }) }
+            }
         }
         else if (props.type == -1) {
+            const response = await store.dispatch("chercherEncansPasses");
+            voirEncans.value = function () { router.push({ name: 'EncansPasses' }) }
 
-            return ref("passé")
+            if (response.data != '') {
+                encan.value = response.data[0]
+                voirEncan.value = function () { router.push({ name: 'Encan', params: { numeroEncan: encan.value.numeroEncan } }) }
+            }
         }
         else {
+            const response = await store.dispatch("chercherEncansFuturs");
+            voirEncans.value = function () { router.push({ name: 'EncansFuturs' }) }
 
-            return ref("futur")
+            if (response.data != '') {
+                encan.value = response.data[0]
+                voirEncan.value = function () { router.push({ name: 'Encan', params: { numeroEncan: encan.value.numeroEncan } }) }
+            }
         }
-    }
 
+  chargement.value = false;
+});
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>

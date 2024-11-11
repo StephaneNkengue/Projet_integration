@@ -1,12 +1,22 @@
 <script setup>
     import BarreDeNavigation from './components/views/BarreDeNavigation.vue'
     import PiedDePage from './components/views/PiedDePage.vue'
+    import { onMounted } from 'vue';
+    import { useStore } from 'vuex';
+
+    const store = useStore();
+
+    onMounted(async () => {
+        if (store.state.isLoggedIn) {
+            await store.dispatch('fetchUserBids');
+        }
+        // Initialiser le WebSocket
+        await store.dispatch('initWebSocket');
+    });
 </script>
 
 <template>
-    <header>
-        <BarreDeNavigation />
-    </header>
+    <BarreDeNavigation />
 
     <main class="mh-100 flex-grow-1">
         <router-view></router-view>

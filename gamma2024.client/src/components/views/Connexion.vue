@@ -1,10 +1,25 @@
 <template>
-    <div class="bg-image pt-5 imageDeFondEsquise">
+    <div class="bg-image pt-5 imageDeFondEsquise h-100">
+        <transition name="fade">
+            <div v-if="messageLockout"
+                 class="container lockMessage alert alert-warning"
+                 role="alert">
+                {{ messageLockout }}
+            </div>
+        </transition>
         <div class="container d-flex flex-column justify-content-start align-items-stretch bg-white bg-opacity-75 cadreBlanc">
             <h2 class="fs-1 text-center fw-bold pt-4">Connexion</h2>
             <p class="text-center">Se connecter pour continuer</p>
 
-            <form @submit.prevent="connexion" class="d-flex flex-column justify-content-start align-items-stretch">
+            <!-- Ajoutez cette section pour afficher les messages d'erreur -->
+            <div v-if="messageErreur"
+                 class="alert alert-danger text-center"
+                 role="alert">
+                {{ messageErreur }}
+            </div>
+
+            <form @submit.prevent="connexion"
+                  class="d-flex flex-column justify-content-start align-items-stretch">
                 <div class="px-4 py-2 mb-4">
                     <div class="d-flex flex-row justify-content-center mb-3">
                         <div class="form-group w-90">
@@ -15,7 +30,9 @@
                                    v-model="emailOuPseudo"
                                    @input="validateEmailOuPseudo"
                                    :class="{ 'is-invalid': emailOuPseudoError }" />
-                            <div v-if="emailOuPseudoError" class="invalid-feedback">{{ emailOuPseudoError }}</div>
+                            <div v-if="emailOuPseudoError" class="invalid-feedback">
+                                {{ emailOuPseudoError }}
+                            </div>
                         </div>
                     </div>
                     <div class="d-flex flex-row justify-content-center mb-3">
@@ -27,30 +44,44 @@
                                    v-model="password"
                                    @input="validatePassword"
                                    :class="{ 'is-invalid': passwordError }" />
-                            <div v-if="passwordError" class="invalid-feedback">{{ passwordError }}</div>
+                            <div v-if="passwordError" class="invalid-feedback">
+                                {{ passwordError }}
+                            </div>
                         </div>
                     </div>
                     <div class="d-flex flex-row justify-content-center mt-4 mb-1">
                         <div class="form-group w-80">
-                            <router-link to="/" class="text-decoration-none">
-                                <p class="text-center lienEnTexteNoir">J'ai oublié mon Mot de passe</p>
+                            <router-link :to="{ name: 'ReinitialiserMotDePasse' }"
+                                         class="text-decoration-none">
+                                <p class="text-center lienEnTexteNoir">
+                                    J'ai oublié mon Mot de passe
+                                </p>
                             </router-link>
                         </div>
                     </div>
                     <div class="d-flex flex-row justify-content-center mb-2">
-                            <button class="btn btnSurvolerBleuMoyenFond rounded-pill px-5 bleuMoyenFond text-white" @click="connexion">Connexion</button>
+                        <button :disabled="isSubmitting"
+                                class="btn bleuNonValide rounded-pill px-5 text-white"
+                                @click="connexion">
+                            <span v-if="isSubmitting"
+                                  class="spinner-grow spinner-grow-sm"
+                                  role="status"
+                                  aria-hidden="true"></span>
+                            Connexion
+                        </button>
                     </div>
                     <div class="d-flex flex-row justify-content-center mb-3">
                         <div class="form-group w-80">
-                            <router-link to="Inscription" class="text-decoration-none">
-                                <p class="fs-5 text-center fw-bold lienEnTexteNoir">M'inscrire</p>
+                            <router-link :to="{ name: 'Inscription' }"
+                                         class="text-decoration-none">
+                                <p class="fs-5 text-center fw-bold lienEnTexteNoir">
+                                    M'inscrire
+                                </p>
                             </router-link>
                         </div>
                     </div>
-
                 </div>
             </form>
-
         </div>
     </div>
 </template>
@@ -59,51 +90,89 @@
     export default {
         data() {
             return {
-                emailOuPseudo: '',
-                password: '',
-                emailOuPseudoError: '',
-                passwordError: '',
-                messageErreur: '',
-                messageSucces: ''
-            }
+                emailOuPseudo: "",
+                password: "",
+                emailOuPseudoError: "",
+                passwordError: "",
+                messageLockout: "",
+                messageErreur: "",
+                isSubmitting: false,
+                invalide: false,
+            };
         },
+
+        computed: {
+            isValide() {
+                if (this.emailOuPseudo.trim() !== "" && this.password.trim() !== "") {
+                    return true;
+                }
+                return false;
+            },
+        },
+
         methods: {
             validateEmailOuPseudo() {
-                // Validation logic here
+                if (this.emailOuPseudo.trim() === "") {
+                    this.emailOuPseudoError =
+                        "L'email ou le pseudonyme est requis pour la connexion";
+                    return;
+                }
+                this.emailOuPseudoError = "";
             },
             validatePassword() {
-                // Validation logic here
+                if (this.password.trim() === "") {
+                    this.passwordError = "Le mot de passe est requis pour la connexion";
+                    return;
+                }
+                this.passwordError = "";
             },
+
             async connexion() {
+                this.isSubmitting = true;
                 this.validateEmailOuPseudo();
                 this.validatePassword();
 
-                if (this.emailOuPseudoError || this.passwordError) {
-                    return; // Empêche la soumission si des erreurs sont présentes
+                if (!this.isValide) {
+                    this.isSubmitting = false;
+                    return;
                 }
 
                 try {
-                    console.log('Tentative de connexion avec:', { emailOuPseudo: this.emailOuPseudo, password: this.password });
-                    const result = await this.$store.dispatch('login', {
-                        email: this.emailOuPseudo,
-                        password: this.password
+                    let result = await this.$store.dispatch("login", {
+                        emailOuPseudo: this.emailOuPseudo,
+                        password: this.password,
                     });
                     if (result.success) {
-                        this.messageSucces = `Connexion réussie en tant que ${result.roles.join(', ')}`;
-                        console.log('Utilisateur connecté:', this.$store.state.user);
-                        console.log('Rôles:', this.$store.state.roles);
+                        // Vérifiez la structure de result.roles
+                        const rolesString = Array.isArray(result.roles)
+                            ? result.roles.join(", ")
+                            : result.roles && result.roles
+                                ? result.roles.join(", ")
+                                : "Rôles non disponibles";
+
+                        this.messageSucces = `Connexion réussie en tant que ${rolesString}`;
                         // Redirection immédiate vers la page d'accueil
-                        this.$router.push('/');
+                        this.$router.push("/");
                     } else {
-                        this.messageErreur = 'Échec de la connexion: ' + result.error;
+                        if (result.element == "password") {
+                            this.passwordError = result.error;
+                        } else if (result.element === "lock") {
+                            this.messageLockout = result.error;
+                            setTimeout(() => {
+                                this.messageLockout = "";
+                            }, 5000);
+                        } else {
+                            this.emailOuPseudoError = result.error;
+                        }
                     }
                 } catch (error) {
-                    console.error("Erreur détaillée lors de la connexion:", error);
-                    this.messageErreur = "Erreur lors de la connexion: " + error;
+                    this.messageErreur = "Une erreur est survenue lors de la connexion.";
+                } finally {
+                    this.isSubmitting = false;
                 }
-            }
-        }
-    }
+            },
+        },
+    };
 </script>
 
 <style scoped>
@@ -114,7 +183,7 @@
     }
 
     .imageDeFondEsquise {
-        background-image: url('/public/images/DessinGris.PNG');
+        background-image: url("/public/images/DessinGris.PNG");
         background-size: cover;
         background-position: 0px -100px;
         background-attachment: fixed;
@@ -130,6 +199,15 @@
         width: 90%;
     }
 
+    .bleuNonValide {
+        background-color: #052445;
+        color: white;
+    }
+
+        .bleuNonValide:hover {
+            background-color: #5a708a;
+        }
+
     .text-danger {
         font-size: 0.875rem;
     }
@@ -138,5 +216,22 @@
         display: block;
         color: #dc3545;
         font-size: 0.875rem;
+    }
+
+    .lockMessage {
+        margin: auto;
+        width: 35%;
+        text-align: center;
+        margin-bottom: 10px;
+    }
+
+    .fade-enter-active,
+    .fade-leave-active {
+        transition: opacity 1s ease;
+    }
+
+    .fade-enter,
+    .fade-leave-to {
+        opacity: 0;
     }
 </style>

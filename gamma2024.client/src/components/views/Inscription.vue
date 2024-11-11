@@ -1,5 +1,5 @@
 <template>
-    <div class="bg-image py-5 imageDeFondEsquise">
+    <div class="bg-image py-5 imageDeFondEsquise h-100">
         <div class="container d-flex flex-column justify-content-start align-items-stretch container col-md-6 bg-white bg-opacity-75 cadreBlanc px-5">
             <h2 class="fs-1 text-center fw-bold mt-5">Inscription</h2>
             <p class="text-center">Obtenir un compte membre</p>
@@ -31,27 +31,34 @@
                                                 <label for="nom">Nom</label>
                                                 <input type="text"
                                                        v-model="formData.generalInfo.nom"
-                                                       :class="['form-control', { 'is-invalid': v.generalInfo.nom.$error }]"
+                                                       :class="[
+                            'form-control',
+                            { 'is-invalid': v.generalInfo.nom.$error },
+                          ]"
                                                        id="nom"
                                                        placeholder="John"
                                                        @blur="v.generalInfo.nom.$touch()" />
-                                                <div class="invalid-feedback" v-if="v.generalInfo.nom.$error">
+                                                <div class="invalid-feedback"
+                                                     v-if="v.generalInfo.nom.$error">
                                                     {{ v.generalInfo.nom.$errors[0].$message }}
                                                 </div>
                                             </div>
                                         </div>
-
 
                                         <div class="col col-md-6 col-12">
                                             <div class="form-group">
                                                 <label for="prenom">Prénom</label>
                                                 <input type="text"
                                                        v-model="formData.generalInfo.prenom"
-                                                       :class="['form-control', { 'is-invalid': v.generalInfo.prenom.$error }]"
+                                                       :class="[
+                            'form-control',
+                            { 'is-invalid': v.generalInfo.prenom.$error },
+                          ]"
                                                        id="prenom"
                                                        placeholder="Doe"
                                                        @blur="v.generalInfo.prenom.$touch()" />
-                                                <div class="invalid-feedback" v-if="v.generalInfo.prenom.$error">
+                                                <div class="invalid-feedback"
+                                                     v-if="v.generalInfo.prenom.$error">
                                                     {{ v.generalInfo.prenom.$errors[0].$message }}
                                                 </div>
                                             </div>
@@ -65,18 +72,28 @@
                                                 <input type="email"
                                                        placeholder="johndoe@gmail.com"
                                                        v-model="formData.generalInfo.courriel"
-                                                       :class="['form-control', { 'is-invalid': v.generalInfo.courriel.$error || (!emailDisponible && emailVerifie), 'is-valid': emailDisponible && emailVerifie }]"
+                                                       :class="[
+                            'form-control',
+                            {
+                              'is-invalid':
+                                v.generalInfo.courriel.$error ||
+                                (!emailDisponible && emailVerifie),
+                              'is-valid': emailDisponible && emailVerifie,
+                            },
+                          ]"
                                                        id="courriel"
-                                                       @blur="v.generalInfo.courriel.$touch(); verifierEmail()"
+                                                       @blur="
+                            v.generalInfo.courriel.$touch();
+                            verifierEmail();
+                          "
                                                        @input="emailVerifie = false" />
-                                                <div class="invalid-feedback" v-if="v.generalInfo.courriel.$error">
+                                                <div class="invalid-feedback"
+                                                     v-if="v.generalInfo.courriel.$error">
                                                     {{ v.generalInfo.courriel.$errors[0].$message }}
                                                 </div>
-                                                <div class="invalid-feedback" v-if="!emailDisponible && emailVerifie">
+                                                <div class="invalid-feedback"
+                                                     v-if="!emailDisponible && emailVerifie">
                                                     Cette adresse email est déjà utilisée.
-                                                </div>
-                                                <div class="valid-feedback" v-if="emailDisponible && emailVerifie">
-                                                    Cette adresse email est disponible.
                                                 </div>
                                             </div>
                                         </div>
@@ -89,10 +106,14 @@
                                                                placeholder="(999) 999-9999"
                                                                mask="(999) 999-9999"
                                                                v-model="formData.generalInfo.telephone"
-                                                               :class="['form-control', { 'is-invalid': v.generalInfo.telephone.$error }]"
+                                                               :class="[
+                              'form-control',
+                              { 'is-invalid': v.generalInfo.telephone.$error },
+                            ]"
                                                                id="telephone"
                                                                @blur="v.generalInfo.telephone.$touch()" />
-                                                    <div class="invalid-feedback" v-if="v.generalInfo.telephone.$error">
+                                                    <div class="invalid-feedback"
+                                                         v-if="v.generalInfo.telephone.$error">
                                                         {{ v.generalInfo.telephone.$errors[0].$message }}
                                                     </div>
                                                 </div>
@@ -106,18 +127,31 @@
                                                 <label for="pseudonyme">Pseudonyme</label>
                                                 <input type="text"
                                                        v-model="formData.generalInfo.pseudo"
-                                                       :class="['form-control', { 'is-invalid': v.generalInfo.pseudo.$error || (!pseudoDisponible && pseudoVerifie) }]"
+                                                       :class="[
+                            'form-control',
+                            {
+                              'is-invalid':
+                                v.generalInfo.pseudo.$error ||
+                                (!pseudoDisponible && pseudoVerifie),
+                            },
+                          ]"
                                                        id="pseudonyme"
                                                        placeholder="johnDoe45"
-                                                       @blur="v.generalInfo.pseudo.$touch(); verifierPseudo()"
+                                                       @blur="
+                            v.generalInfo.pseudo.$touch();
+                            verifierPseudo();
+                          "
                                                        @input="pseudoVerifie = false" />
-                                                <div class="invalid-feedback" v-if="v.generalInfo.pseudo.$error">
+                                                <div class="invalid-feedback"
+                                                     v-if="v.generalInfo.pseudo.$error">
                                                     {{ v.generalInfo.pseudo.$errors[0].$message }}
                                                 </div>
-                                                <div class="invalid-feedback" v-if="!pseudoDisponible && pseudoVerifie">
-                                                    Ce pseudonyme est déjà utilisé.
+                                                <div class="invalid-feedback"
+                                                     v-if="!pseudoDisponible && pseudoVerifie">
+                                                    Le pseudonyme est valide.
                                                 </div>
-                                                <div class="valid-feedback" v-if="pseudoDisponible && pseudoVerifie">
+                                                <div class="valid-feedback"
+                                                     v-if="pseudoDisponible && pseudoVerifie">
                                                     Ce pseudonyme est disponible.
                                                 </div>
                                             </div>
@@ -130,10 +164,14 @@
                                                 <label for="motDePasse">Mot de passe</label>
                                                 <input type="password"
                                                        v-model="formData.generalInfo.motDePasse"
-                                                       :class="['form-control', { 'is-invalid': v.generalInfo.motDePasse.$error }]"
+                                                       :class="[
+                            'form-control',
+                            { 'is-invalid': v.generalInfo.motDePasse.$error },
+                          ]"
                                                        id="motDePasse"
                                                        @blur="v.generalInfo.motDePasse.$touch()" />
-                                                <div class="invalid-feedback" v-if="v.generalInfo.motDePasse.$error">
+                                                <div class="invalid-feedback"
+                                                     v-if="v.generalInfo.motDePasse.$error">
                                                     {{ v.generalInfo.motDePasse.$errors[0].$message }}
                                                 </div>
                                             </div>
@@ -144,11 +182,20 @@
                                                 <label for="confirmMotPasse">Confirmation de mot de passe</label>
                                                 <input type="password"
                                                        v-model="formData.generalInfo.confirmMotPasse"
-                                                       :class="['form-control', { 'is-invalid': v.generalInfo.confirmMotPasse.$error }]"
+                                                       :class="[
+                            'form-control',
+                            {
+                              'is-invalid':
+                                v.generalInfo.confirmMotPasse.$error,
+                            },
+                          ]"
                                                        id="confirmMotPasse"
                                                        @blur="v.generalInfo.confirmMotPasse.$touch()" />
-                                                <div class="invalid-feedback" v-if="v.generalInfo.confirmMotPasse.$error">
-                                                    {{ v.generalInfo.confirmMotPasse.$errors[0].$message }}
+                                                <div class="invalid-feedback"
+                                                     v-if="v.generalInfo.confirmMotPasse.$error">
+                                                    {{
+                            v.generalInfo.confirmMotPasse.$errors[0].$message
+                                                    }}
                                                 </div>
                                             </div>
                                         </div>
@@ -159,7 +206,7 @@
                                     <button type="button"
                                             :class="[
                       state1 ? 'bleuValide' : 'bleuNonValide',
-                      'btn rounded-pill px-5 me-4'
+                      'btn rounded-pill px-5 me-4',
                     ]"
                                             :disabled="state1"
                                             @click="allerAuSuivantPrecedent(2)">
@@ -178,7 +225,6 @@
 
                             <StepPanel v-if="activeIndex === 2" value="2">
                                 <div class="container px-4 py-2">
-
                                     <div class="row mb-3 justify-content-around">
                                         <div class="col col-md-12">
                                             <div class="form-group">
@@ -186,10 +232,14 @@
                                                 <input type="text"
                                                        v-model="formData.carteCredit.nomProprio"
                                                        placeholder="John Doe"
-                                                       :class="['form-control', { 'is-invalid': v.carteCredit.nomProprio.$error }]"
+                                                       :class="[
+                            'form-control',
+                            { 'is-invalid': v.carteCredit.nomProprio.$error },
+                          ]"
                                                        id="nomPropio"
                                                        @blur="v.carteCredit.nomProprio.$touch()" />
-                                                <div class="invalid-feedback" v-if="v.carteCredit.nomProprio.$error">
+                                                <div class="invalid-feedback"
+                                                     v-if="v.carteCredit.nomProprio.$error">
                                                     {{ v.carteCredit.nomProprio.$errors[0].$message }}
                                                 </div>
                                             </div>
@@ -205,10 +255,16 @@
                                                                v-model="formData.carteCredit.numeroCarte"
                                                                mask="9999 9999 9999 9999"
                                                                placeholder="4444 4444 4444 4444"
-                                                               :class="['form-control', { 'is-invalid': v.carteCredit.numeroCarte.$error }]"
+                                                               :class="[
+                              'form-control',
+                              {
+                                'is-invalid': v.carteCredit.numeroCarte.$error,
+                              },
+                            ]"
                                                                id="numeroCarte"
                                                                @blur="v.carteCredit.numeroCarte.$touch()" />
-                                                    <div class="invalid-feedback" v-if="v.carteCredit.numeroCarte.$error">
+                                                    <div class="invalid-feedback"
+                                                         v-if="v.carteCredit.numeroCarte.$error">
                                                         {{ v.carteCredit.numeroCarte.$errors[0].$message }}
                                                     </div>
                                                 </div>
@@ -223,11 +279,20 @@
                                                                mask="99/99"
                                                                placeholder="MM/YY"
                                                                v-model="formData.carteCredit.dateExpiration"
-                                                               :class="['form-control', { 'is-invalid': v.carteCredit.dateExpiration.$error }]"
+                                                               :class="[
+                              'form-control',
+                              {
+                                'is-invalid':
+                                  v.carteCredit.dateExpiration.$error,
+                              },
+                            ]"
                                                                id="dateExpiration"
                                                                @blur="v.carteCredit.dateExpiration.$touch()" />
-                                                    <div class="invalid-feedback" v-if="v.carteCredit.dateExpiration.$error">
-                                                        {{ v.carteCredit.dateExpiration.$errors[0].$message }}
+                                                    <div class="invalid-feedback"
+                                                         v-if="v.carteCredit.dateExpiration.$error">
+                                                        {{
+                              v.carteCredit.dateExpiration.$errors[0].$message
+                                                        }}
                                                     </div>
                                                 </div>
                                             </div>
@@ -243,7 +308,8 @@
                                     <button type="button"
                                             :class="[
                       state2 ? 'bleuValide' : 'bleuNonValide',
-                      classeActiveBouton, 'btn'
+                      classeActiveBouton,
+                      'btn',
                     ]"
                                             :disabled="state2"
                                             @click="allerAuSuivantPrecedent(3)">
@@ -261,7 +327,6 @@
 
                             <StepPanel v-if="activeIndex === 3">
                                 <div class="container px-4 py-2">
-
                                     <div class="row mb-3 justify-content-around">
                                         <div class="col col-md-6 col-12">
                                             <div class="form-group">
@@ -269,10 +334,14 @@
                                                 <input type="text"
                                                        v-model="formData.adresse.numeroCivique"
                                                        placeholder="1"
-                                                       :class="['form-control', { 'is-invalid': v.adresse.numeroCivique.$error }]"
+                                                       :class="[
+                            'form-control',
+                            { 'is-invalid': v.adresse.numeroCivique.$error },
+                          ]"
                                                        id="numeroCivique"
                                                        @blur="v.adresse.numeroCivique.$touch()" />
-                                                <div class="invalid-feedback" v-if="v.adresse.numeroCivique.$error">
+                                                <div class="invalid-feedback"
+                                                     v-if="v.adresse.numeroCivique.$error">
                                                     {{ v.adresse.numeroCivique.$errors[0].$message }}
                                                 </div>
                                             </div>
@@ -283,10 +352,14 @@
                                                 <input type="text"
                                                        v-model="formData.adresse.rue"
                                                        placeholder="Saint Jacques"
-                                                       :class="['form-control', { 'is-invalid': v.adresse.rue.$error }]"
+                                                       :class="[
+                            'form-control',
+                            { 'is-invalid': v.adresse.rue.$error },
+                          ]"
                                                        id="rue"
                                                        @blur="v.adresse.rue.$touch()" />
-                                                <div class="invalid-feedback" v-if="v.adresse.rue.$error">
+                                                <div class="invalid-feedback"
+                                                     v-if="v.adresse.rue.$error">
                                                     {{ v.adresse.rue.$errors[0].$message }}
                                                 </div>
                                             </div>
@@ -310,10 +383,14 @@
                                                 <input type="text"
                                                        placeholder="Granby"
                                                        v-model="formData.adresse.ville"
-                                                       :class="['form-control', { 'is-invalid': v.adresse.ville.$error }]"
+                                                       :class="[
+                            'form-control',
+                            { 'is-invalid': v.adresse.ville.$error },
+                          ]"
                                                        id="ville"
                                                        @blur="v.adresse.ville.$touch()" />
-                                                <div class="invalid-feedback" v-if="v.adresse.ville.$error">
+                                                <div class="invalid-feedback"
+                                                     v-if="v.adresse.ville.$error">
                                                     {{ v.adresse.ville.$errors[0].$message }}
                                                 </div>
                                             </div>
@@ -327,17 +404,23 @@
                                                 <select id="province"
                                                         name="province"
                                                         v-model="formData.adresse.province"
-                                                        :class="['form-control', { 'is-invalid': v.adresse.province.$error }]"
+                                                        :class="[
+                            'form-control',
+                            { 'is-invalid': v.adresse.province.$error },
+                          ]"
                                                         @blur="v.adresse.province.$touch()"
                                                         placeholder="Sélectionnez une province">
                                                     <option value="" disabled selected>
                                                         Sélectionner une province
                                                     </option>
-                                                    <option v-for="province in provinces" :value="province.value">
+                                                    <option v-for="province in provinces"
+                                                            :key="province.value"
+                                                            :value="province.value">
                                                         {{ province.text }}
                                                     </option>
                                                 </select>
-                                                <div class="invalid-feedback" v-if="v.adresse.province.$error">
+                                                <div class="invalid-feedback"
+                                                     v-if="v.adresse.province.$error">
                                                     {{ v.adresse.province.$errors[0].$message }}
                                                 </div>
                                             </div>
@@ -360,12 +443,16 @@
                                                 <div class="input-wrapper">
                                                     <inputMask type="text"
                                                                v-model="formData.adresse.codePostal"
-                                                               :class="['form-control', { 'is-invalid': v.adresse.codePostal.$error }]"
+                                                               :class="[
+                              'form-control',
+                              { 'is-invalid': v.adresse.codePostal.$error },
+                            ]"
                                                                id="postalCode"
                                                                mask="a9a 9a9"
                                                                placeholder="A1A 2B2"
                                                                @blur="v.adresse.codePostal.$touch()" />
-                                                    <div class="invalid-feedback" v-if="v.adresse.codePostal.$error">
+                                                    <div class="invalid-feedback"
+                                                         v-if="v.adresse.codePostal.$error">
                                                         {{ v.adresse.codePostal.$errors[0].$message }}
                                                     </div>
                                                 </div>
@@ -381,11 +468,16 @@
                                     </button>
 
                                     <button type="submit"
-                                            :disabled="stateFinal"
+                                            :disabled="stateFinal || isSubmitting"
                                             :class="[
                       stateFinal ? 'bleuValide' : 'bleuNonValide',
-                      classeActiveBouton, 'btn'
+                      classeActiveBouton,
+                      'btn',
                     ]">
+                                        <span v-if="isSubmitting"
+                                              class="spinner-grow spinner-grow-sm"
+                                              role="status"
+                                              aria-hidden="true"></span>
                                         Créer le compte
                                     </button>
                                 </div>
@@ -403,22 +495,28 @@
     import Stepper from "primevue/stepper";
     import StepItem from "primevue/stepitem";
     import Step from "primevue/step";
-    import InputMask from 'primevue/inputmask';
+    import InputMask from "primevue/inputmask";
     import StepPanel from "primevue/steppanel";
-    import { h } from 'vue';
+    import { h } from "vue";
     import { useVuelidate } from "@vuelidate/core";
-    import ToastContent from '../Toast/toastConfirm.vue'
-    import { required, email, helpers, sameAs, minLength, maxLength } from "@vuelidate/validators";
-    import { useStore } from 'vuex';
-    import { toast } from 'vue3-toastify';
-    import { useRouter } from 'vue-router';
-
+    import ToastContent from "../Toast/toastConfirm.vue";
+    import {
+        required,
+        email,
+        helpers,
+        sameAs,
+        minLength,
+        maxLength,
+    } from "@vuelidate/validators";
+    import { useStore } from "vuex";
+    import { toast } from "vue3-toastify";
+    import { useRouter } from "vue-router";
 
     const store = useStore();
     const router = useRouter();
 
-    const errorMessage = ref('');
-    const successMessage = ref('');
+    const errorMessage = ref("");
+    const successMessage = ref("");
 
     const activeIndex = ref(1);
     const messageRequis = helpers.withMessage("Ce champ est requis.", required);
@@ -427,7 +525,7 @@
         email
     );
 
-    const messageMinLength = helpers.withMessage(
+    const messageMinLengthPassword = helpers.withMessage(
         "Le mot de passe doit contenir au moins 8 caractères, minimum 1 majuscule, 1 minuscule, 1 chiffre et 1 caractère spécial.",
         minLength(8)
     );
@@ -442,22 +540,21 @@
         maxLength(20)
     );
 
-
     const provinces = ref([
-        { text: 'Alberta', value: 'AB' },
-        { text: 'Colombie-Britannique', value: 'BC' },
-        { text: 'Manitoba', value: 'MB' },
-        { text: 'Nouveau-Brunswick', value: 'NB' },
-        { text: 'Terre-Neuve-et-Labrador', value: 'NL' },
-        { text: 'Nouvelle-Écosse', value: 'NS' },
-        { text: 'Ontario', value: 'ON' },
-        { text: 'Île-du-Prince-Édouard', value: 'PE' },
-        { text: 'Québec', value: 'QC' },
-        { text: 'Saskatchewan', value: 'SK' },
-        { text: 'Territoires du Nord-Ouest', value: 'NT' },
-        { text: 'Nunavut', value: 'NU' },
-        { text: 'Yukon', value: 'YT' }
-    ])
+        { text: "Alberta", value: "AB" },
+        { text: "Colombie-Britannique", value: "BC" },
+        { text: "Manitoba", value: "MB" },
+        { text: "Nouveau-Brunswick", value: "NB" },
+        { text: "Terre-Neuve-et-Labrador", value: "NL" },
+        { text: "Nouvelle-Écosse", value: "NS" },
+        { text: "Ontario", value: "ON" },
+        { text: "Île-du-Prince-Édouard", value: "PE" },
+        { text: "Québec", value: "QC" },
+        { text: "Saskatchewan", value: "SK" },
+        { text: "Territoires du Nord-Ouest", value: "NT" },
+        { text: "Nunavut", value: "NU" },
+        { text: "Yukon", value: "YT" },
+    ]);
 
     //objet qui contient tous les champs remplis correctement
     let formData = reactive({
@@ -486,8 +583,6 @@
         },
     });
 
-
-
     const messageSameAsPassword = helpers.withMessage(
         "Les mots de passe ne correspondent pas.",
         sameAs(computed(() => formData.generalInfo.motDePasse))
@@ -506,7 +601,7 @@
                 prenom: { required: messageRequis },
                 courriel: {
                     required: messageRequis,
-                    email: messageCourriel
+                    email: messageCourriel,
                 },
                 telephone: { required: messageRequis },
                 pseudo: {
@@ -517,13 +612,18 @@
                             return pseudoDisponible.value;
                         }
                         return true;
-                    }
+                    },
+                    minLength: messageMinLengthPseudo,
+                    maxLength: messageMaxLengthPseudo,
                 },
-                motDePasse: { required: messageRequis },
+                motDePasse: {
+                    required: messageRequis,
+                    minLength: messageMinLengthPassword,
+                },
                 confirmMotPasse: {
                     required: messageRequis,
-                    sameAsPassword: messageSameAsPassword
-                }
+                    sameAsPassword: messageSameAsPassword,
+                },
             },
             carteCredit: {
                 nomProprio: { required: messageRequis },
@@ -545,6 +645,7 @@
     const v = useVuelidate(rules, formData);
     const info = useVuelidate(rules.value.generalInfo, formData.generalInfo);
     const carte = useVuelidate(rules.value.carteCredit, formData.carteCredit);
+    const isSubmitting = ref(false);
 
     const classeActiveBouton = ref("btn rounded-pill px-5 me-4");
 
@@ -564,12 +665,14 @@
         activeIndex.value = stepIndex;
     }
 
-    
     const verifierPseudo = async () => {
         if (formData.generalInfo.pseudo.length > 0) {
             try {
                 pseudoVerifie.value = false;
-                pseudoDisponible.value = await store.dispatch('verifierPseudonyme', formData.generalInfo.pseudo);
+                pseudoDisponible.value = await store.dispatch(
+                    "verifierPseudonyme",
+                    formData.generalInfo.pseudo
+                );
                 pseudoVerifie.value = true;
             } catch (error) {
                 console.error("Erreur lors de la vérification du pseudonyme:", error);
@@ -579,67 +682,78 @@
         }
     };
 
-    
-
     const verifierEmail = async () => {
-    if (formData.generalInfo.courriel.length > 0 && !v.value.generalInfo.courriel.$error) {
-        try {
-            emailVerifie.value = false;
-            const emailEstDisponible = await store.dispatch('verifierEmail', formData.generalInfo.courriel);
-            emailDisponible.value = emailEstDisponible;
-            emailVerifie.value = true;
-        } catch (error) {
-            console.error("Erreur lors de la vérification de l'email:", error);
-            emailDisponible.value = false;
-            emailVerifie.value = true;
+        if (
+            formData.generalInfo.courriel.length > 0 &&
+            !v.value.generalInfo.courriel.$error
+        ) {
+            try {
+                emailVerifie.value = false;
+                const emailEstDisponible = await store.dispatch(
+                    "verifierEmail",
+                    formData.generalInfo.courriel
+                );
+                emailDisponible.value = emailEstDisponible;
+                emailVerifie.value = true;
+            } catch (error) {
+                console.error("Erreur lors de la vérification de l'email:", error);
+                emailDisponible.value = false;
+                emailVerifie.value = true;
+            }
         }
-    }
     };
 
     const submitForm = async () => {
         const result = await v.value.$validate();
+        isSubmitting.value = true;
 
         if (!result) {
-            errorMessage.value = "Certaines informations du formulaire sont incorrectes";
+            isSubmitting.value = false;
+            errorMessage.value =
+                "Certaines informations du formulaire sont incorrectes";
             return;
         }
 
         try {
-            const response = await store.dispatch('creerCompteUtilisateur', formData);
+            const response = await store.dispatch("creerCompteUtilisateur", formData);
             if (response.success) {
-                successMessage.value = "Compte crée avec succès !"
+                successMessage.value = "Compte crée avec succès !";
                 toast.success(
                     h(ToastContent, {
-                        title: 'Compte créé avec succès !',
-                        description: "Veuillez confirmer votre courriel afin d'activer votre compte",
+                        title: "Compte créé avec succès !",
+                        description:
+                            "Veuillez confirmer votre courriel afin d'activer votre compte",
                     }),
                     {
                         position: toast.POSITION.TOP_CENTER,
                         autoClose: 3000,
                         pauseOnFocusLoss: false,
-                        theme: 'dark',
+                        theme: "dark",
                         toastStyle: {
-                            backgroundColor: '#052445',
-                            color: '#fff',
+                            backgroundColor: "#052445",
+                            color: "#fff",
                         },
                     }
                 );
 
                 setTimeout(() => {
-                    router.push('/connexion');
+                    router.push("/connexion");
                 }, 4000);
             } else {
-                errorMessage.value = response.message || "Une erreur est survenue lors de la création du compte.";
+                errorMessage.value =
+                    response.message ||
+                    "Une erreur est survenue lors de la création du compte.";
             }
         } catch (error) {
-            errorMessage.value = "Une erreur est survenue lors de la création du compte.";
+            errorMessage.value =
+                "Une erreur est survenue lors de la création du compte.";
+        } finally {
+            isSubmitting.value = false;
         }
     };
-
 </script>
 
 <style scoped>
-
     label {
         font-weight: bolder;
         margin-left: 15px;
@@ -739,5 +853,3 @@
         box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
     }
 </style>
-
-

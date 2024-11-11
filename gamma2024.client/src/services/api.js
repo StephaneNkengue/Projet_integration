@@ -1,45 +1,42 @@
-import axios from 'axios';
+import axios from "axios";
 
-const apiUrls = [
-    'https://localhost:7206/api',
-    'http://localhost:5121/api',
-    'http://localhost:5122/api',
-    'https://sqlinfo.cegepgranby.qc.ca/2135621/api'
-];
+export const initApi = (getToken) => {
+  const api = axios.create({
+    baseURL: `${import.meta.env.VITE_API_URL}${import.meta.env.VITE_BASE_URL}`,
+    withCredentials: true,
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+  });
 
-let workingBaseURL = null;
-
-async function findWorkingApi() {
-    for (const baseURL of apiUrls) {
-        try {
-            const response = await axios.get(`${baseURL}/health`, { 
-                timeout: 5000,
-                withCredentials: true
-            });
-            if (response.status === 200) {
-                console.log(`API accessible sur : ${baseURL}`);
-                return baseURL;
-            }
-        } catch (error) {
-            console.log(`Échec de connexion à ${baseURL}:`, error.message);
-        }
+  // Intercepteur pour les requêtes
+  api.interceptors.request.use(
+    (config) => {
+      const token = getToken();
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+      }
+      return config;
+    },
+    (error) => {
+      return Promise.reject(error);
     }
-    throw new Error("Impossible de se connecter à l'API sur toutes les URLs testées");
-}
+  );
 
-const api = axios.create({
-    withCredentials: true
-});
+  api.interceptors.response.use(
+    (response) => {
+      return response;
+    },
+    (error) => {
+      if (error.response && error.response.status === 400) {
+        return Promise.reject(error);
+      }
+      return Promise.reject(error);
+    }
+  );
 
-// Supprimez l'intercepteur qui utilise store ici
+  return api;
+};
 
-findWorkingApi()
-    .then(baseURL => {
-        api.defaults.baseURL = baseURL;
-    })
-    .catch(error => {
-        console.error(error);
-        api.defaults.baseURL = 'http://localhost:5122/api';
-    });
-
-export default api;
+export default { initApi };
