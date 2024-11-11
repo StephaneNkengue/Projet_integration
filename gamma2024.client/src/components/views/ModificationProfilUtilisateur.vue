@@ -208,83 +208,6 @@
             </div>
           </div>
 
-          <!-- Informations de carte de crédit -->
-          <div class="card my-5">
-            <div class="card-header">Carte de crédit</div>
-            <div class="card-body">
-              <div class="row mt-3">
-                <div class="col-md-12">
-                  <label for="nomPropio">Nom du propriétaire de la carte</label>
-                  <input
-                    type="text"
-                    v-model="formData.carteCredit.nomProprio"
-                    id="nomPropio"
-                    @blur="v.carteCredit.nomProprio.$touch()"
-                    :class="[
-                      'form-control',
-                      { 'is-invalid': v.carteCredit.nomProprio.$error },
-                    ]"
-                  />
-                  <div
-                    class="invalid-feedback"
-                    v-if="v.carteCredit.nomProprio.$error"
-                  >
-                    {{ v.carteCredit.nomProprio.$errors[0].$message }}
-                  </div>
-                </div>
-              </div>
-              <div class="row mt-3">
-                <div class="col-md-6">
-                  <label for="numeroCarte">Numéro de la carte</label>
-                  <div class="input-wrapper">
-                    <InputMask
-                      type="text"
-                      mask="9999 9999 9999 9999"
-                      :class="[
-                        'form-control',
-                        { 'is-invalid': v.carteCredit.numeroCarte.$error },
-                      ]"
-                      id="numeroCarte"
-                      v-model="formData.carteCredit.numeroCarte"
-                      @blur="v.carteCredit.numeroCarte.$touch()"
-                    />
-                  </div>
-                  <div
-                    class="invalid-feedback"
-                    v-if="v.carteCredit.numeroCarte.$error"
-                  >
-                    {{ v.carteCredit.numeroCarte.$errors[0].$message }}
-                  </div>
-                </div>
-                <div class="col-md-6">
-                  <label for="dateExpiration">Date d'expiration</label>
-                  <div class="input-wrapper">
-                    <InputMask
-                      type="text"
-                      mask="99/99"
-                      :class="[
-                        'form-control',
-                        {
-                          'is-invalid': v.carteCredit.dateExpiration.$error,
-                        },
-                      ]"
-                      placeholder="MM/YY"
-                      id="dateExpiration"
-                      @blur="v.carteCredit.dateExpiration.$touch()"
-                      v-model="formData.carteCredit.dateExpiration"
-                    />
-                    <div
-                      class="invalid-feedback"
-                      v-if="v.carteCredit.dateExpiration.$error"
-                    >
-                      {{ v.carteCredit.dateExpiration.$errors[0].$message }}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
           <!-- Informations d'adresse -->
           <div class="card my-5">
             <div class="card-header">Adresse</div>
@@ -518,11 +441,6 @@ let formData = reactive({
     newPassword: "",
     confirmNewPassword: "",
   },
-  carteCredit: {
-    nomProprio: "",
-    numeroCarte: "",
-    dateExpiration: "",
-  },
   adresse: {
     numeroCivique: "",
     rue: "",
@@ -564,11 +482,6 @@ let rules = computed(() => {
             value === formData.generalInfo.newPassword
         ),
       },
-    },
-    carteCredit: {
-      nomProprio: { required: messageRequis },
-      numeroCarte: { required: messageRequis },
-      dateExpiration: { required: messageRequis },
     },
     adresse: {
       numeroCivique: { required: messageRequis },
@@ -618,11 +531,6 @@ const updateFormData = () => {
     formData.generalInfo.currentPassword = ""; // Généralement laissé vide pour des raisons de sécurité
     formData.generalInfo.newPassword = ""; // Généralement laissé vide pour des raisons de sécurité
     formData.generalInfo.confirmNewPassword = ""; // Généralement laissé vide pour des raisons de sécurité
-
-    // Carte de crédit
-    formData.carteCredit.nomProprio = clientInfo.value.cardOwnerName || "";
-    formData.carteCredit.numeroCarte = clientInfo.value.cardNumber || "";
-    formData.carteCredit.dateExpiration = clientInfo.value.cardExpiryDate || "";
 
     // Adresse
     formData.adresse.numeroCivique = clientInfo.value.civicNumber || "";
@@ -737,7 +645,6 @@ const isFormValid = computed(() => {
     !v.value.generalInfo.courriel.$invalid &&
     !v.value.generalInfo.telephone.$invalid &&
     !v.value.generalInfo.pseudo.$invalid &&
-    !v.value.carteCredit.$invalid &&
     !v.value.adresse.$invalid;
 
   return otherFieldsValid && passwordFieldsValid && formDataChanged.value;
@@ -799,9 +706,6 @@ const submitForm = async () => {
         NewPassword: formData.generalInfo.newPassword || undefined,
         ConfirmNewPassword:
           formData.generalInfo.confirmNewPassword || undefined,
-        CardOwnerName: formData.carteCredit.nomProprio,
-        CardNumber: formData.carteCredit.numeroCarte,
-        CardExpiryDate: formData.carteCredit.dateExpiration,
         CivicNumber: formData.adresse.numeroCivique,
         Street: formData.adresse.rue,
         Apartment: formData.adresse.appartement,
