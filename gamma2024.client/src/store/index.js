@@ -752,11 +752,29 @@ const store = createStore({
       }
     },
 
-    async chercherTousLotsParEncan({ state }, idEncan) {
-      try {
-        const response = await state.api.get(
-          `/lots/cherchertouslotsparencan/${idEncan}`
-        );
+        async chercherTousLotsRecherche({ state }) {
+            try {
+                const response = await state.api.get(
+                    `/lots/cherchertouslotsrecherche`
+                );
+
+                console.log("Réponse reçue:", response);
+                return response;
+            } catch (error) {
+                console.error("Erreur détaillée:", {
+                    message: error.message,
+                    status: error.response?.status,
+                    data: error.response?.data,
+                    config: error.config,
+                });
+                throw error;
+            }
+        },
+        async chercherTousLotsParEncan({ state }, idEncan) {
+            try {
+                const response = await state.api.get(
+                    `/lots/cherchertouslotsparencan/${idEncan}`
+                );
 
         console.log("Réponse reçue:", response);
         return response;
@@ -907,32 +925,29 @@ const store = createStore({
       try {
         const response = await state.api.post("/utilisateurs/creer", formData);
 
-        if (response.data.success) {
-          return {
-            success: true,
-            message: response.data.message,
-          };
-        } else {
-          return {
-            success: false,
-            message: response.data.message,
-          };
-        }
-      } catch (error) {
-        console.error("Erreur lors de la création du compte:", error);
-        return {
-          success: false,
-          message:
-            error.response?.data?.message ||
-            "Une erreur est survenue lors de la création du compte",
-        };
-      }
-    },
-  },
-  async fetchFactureInfo({ commit, state }) {
-    try {
-      const response = await state.api.get("/factures/chercherFactures");
-      console.log("Données reçues de l'API:", response.data); // Pour le débogage
+                if (response.data.success) {
+                    return {
+                        success: true,
+                        message: response.data.message
+                    };
+                } else {
+                    return {
+                        success: false,
+                        message: response.data.message
+                    };
+                }
+            } catch (error) {
+                console.error("Erreur lors de la création du compte:", error);
+                return {
+                    success: false,
+                    message: error.response?.data?.message || "Une erreur est survenue lors de la création du compte"
+                };
+            }
+        },
+        async fetchFactureInfo({ commit, state }) {
+            try {
+                const response = await state.api.get("/factures/chercherFactures");
+                console.log("Données reçues de l'API:", response.data); // Pour le débogage
 
       return response.data;
     } catch (error) {

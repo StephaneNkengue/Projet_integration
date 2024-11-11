@@ -16,7 +16,7 @@ async function initApp() {
 
     const app = createApp(App);
     app.component("VueDatePicker", VueDatePicker);
-    app.use(store).use(router).use(PrimeVue, { theme: 'none' }).use(Toast);
+    app.use(store).use(router).use(PrimeVue, { theme: "none" }).use(Toast);
     app.component("InputMask", InputMask);
     await router.isReady();
     app.mount("#app");
