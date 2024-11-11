@@ -17,8 +17,18 @@ builder.Configuration
 
 StripeConfiguration.ApiKey = builder.Configuration["Stripe:SecretKey"];
 
+var options = new CustomerListOptions { Limit = 100 };
 var customerService = new CustomerService();
-StripeList<Customer> customers = customerService.List();
+StripeList<Customer> customersTemp = customerService.List(options);
+StripeList<Customer> customers = customersTemp;
+
+while (customersTemp.Data.Count == 100)
+{
+    customers.Data.AddRange(customersTemp.Data);
+    customersTemp = customerService.List(new CustomerListOptions { Limit = 100, StartingAfter = customers.Data.Last().Id });
+}
+
+
 
 Console.WriteLine("Début du seed...");
 
@@ -42,7 +52,7 @@ var utilisateurs = System.IO.File.ReadAllLines("CSV/Acheteurs.csv", System.Text.
                                 Numero="4242424242424242"
                                 }
                             };
-                            var stripeCustomer = customers.FirstOrDefault(c => c.Email == u.Email);
+                            var stripeCustomer = customers.Data.Find(c => c.Email.Equals(u.Email));
 
                             if (stripeCustomer != null)
                             {
