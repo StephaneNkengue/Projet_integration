@@ -71,7 +71,6 @@ namespace Gamma2024.Server.Controllers
             var user = await _userManager.Users
                 .OfType<ApplicationUser>()
                 .Include(u => u.Adresses.Where(a => a.EstDomicile))
-                .Include(u => u.CarteCredits)
                 .FirstOrDefaultAsync(u => u.Id == userId);
 
             var options = new SetupIntentCreateOptions
