@@ -1,8 +1,9 @@
 using Gamma2024.Server.Data;
+using Gamma2024.Server.Hub;
 using Gamma2024.Server.Models;
 using Gamma2024.Server.Validations;
 using Gamma2024.Server.ViewModels;
-using Gamma2024.Server.WebSockets;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 
 namespace Gamma2024.Server.Services
@@ -11,55 +12,56 @@ namespace Gamma2024.Server.Services
     {
         private readonly ApplicationDbContext _context;
         private readonly IWebHostEnvironment _environment;
-        private readonly WebSocketHandler _webSocketHandler;
+        private readonly IHubContext<LotMiseHub> _hubContext;
 
-        public LotService(ApplicationDbContext context, IWebHostEnvironment environment, WebSocketHandler webSocketHandler)
+
+        public LotService(ApplicationDbContext context, IWebHostEnvironment environment, IHubContext<LotMiseHub> hubContext)
         {
             _context = context;
             _environment = environment;
-            _webSocketHandler = webSocketHandler;
+            _hubContext = hubContext;
         }
 
-		public async Task<IEnumerable<LotAffichageVM>> ObtenirTousLots()
-		{
-			return await _context.Lots
-				.Include(l => l.Photos)
-				.Include(l => l.Categorie)
-				.Include(l => l.Medium)
-				.Include(l => l.Vendeur)
-				.Include(l => l.EncanLots)
-				.ThenInclude(el => el.Encan)
-				.Select(l => new LotAffichageVM
-				{
-					Id = l.Id,
-					NumeroEncan = l.EncanLots.FirstOrDefault().Encan.NumeroEncan.ToString(),
-					Code = l.Numero,
-					PrixOuverture = $"{l.PrixOuverture.ToString()} $",
-					PrixMinPourVente = $"{l.PrixMinPourVente.ToString()} $",
-					ValeurEstimeMin = $"{l.ValeurEstimeMin.ToString()} $",
-					ValeurEstimeMax = $"{l.ValeurEstimeMax.ToString()} $",
-					Categorie = l.Categorie.Nom,
-					Artiste = l.Artiste,
-					Dimension = $"{l.Hauteur} x {l.Largeur}",
-					Description = l.Description,
-					Medium = l.Medium.Type,
-					EstLivrable = l.EstLivrable,
-					Vendeur = $"{l.Vendeur.Prenom} {l.Vendeur.Nom}",
-					Mise = l.Mise,
-					EstVendu = l.EstVendu,
-					DateFinVente = l.DateFinVente,
-					DateDepot = l.DateDepot,
-					DateCreation = l.DateCreation,
-					IdClientMise = l.IdClientMise,
-					SeraLivree = l.SeraLivree,
-					Photos = l.Photos.Select(p => new PhotoVM
-					{
-						Id = p.Id,
-						Url = p.Lien
-					}).ToList()
-				})
-				.ToListAsync();
-		}
+        public async Task<IEnumerable<LotAffichageVM>> ObtenirTousLots()
+        {
+            return await _context.Lots
+                .Include(l => l.Photos)
+                .Include(l => l.Categorie)
+                .Include(l => l.Medium)
+                .Include(l => l.Vendeur)
+                .Include(l => l.EncanLots)
+                .ThenInclude(el => el.Encan)
+                .Select(l => new LotAffichageVM
+                {
+                    Id = l.Id,
+                    NumeroEncan = l.EncanLots.FirstOrDefault().Encan.NumeroEncan.ToString(),
+                    Code = l.Numero,
+                    PrixOuverture = $"{l.PrixOuverture.ToString()} $",
+                    PrixMinPourVente = $"{l.PrixMinPourVente.ToString()} $",
+                    ValeurEstimeMin = $"{l.ValeurEstimeMin.ToString()} $",
+                    ValeurEstimeMax = $"{l.ValeurEstimeMax.ToString()} $",
+                    Categorie = l.Categorie.Nom,
+                    Artiste = l.Artiste,
+                    Dimension = $"{l.Hauteur} x {l.Largeur}",
+                    Description = l.Description,
+                    Medium = l.Medium.Type,
+                    EstLivrable = l.EstLivrable,
+                    Vendeur = $"{l.Vendeur.Prenom} {l.Vendeur.Nom}",
+                    Mise = l.Mise,
+                    EstVendu = l.EstVendu,
+                    DateFinVente = l.DateFinVente,
+                    DateDepot = l.DateDepot,
+                    DateCreation = l.DateCreation,
+                    IdClientMise = l.IdClientMise,
+                    SeraLivree = l.SeraLivree,
+                    Photos = l.Photos.Select(p => new PhotoVM
+                    {
+                        Id = p.Id,
+                        Url = p.Lien
+                    }).ToList()
+                })
+                .ToListAsync();
+        }
 
         public async Task<LotModificationVM> ObtenirLot(int id)
         {
@@ -529,12 +531,12 @@ namespace Gamma2024.Server.Services
             return new LotAffichageVM
             {
                 Id = lotModification.Id,
-				NumeroEncan = lotModification.NumeroEncan,
-				Code = lotModification.Numero,
-				PrixOuverture = lotModification.PrixOuverture.ToString("N2") + " $",
-				PrixMinPourVente = lotModification.PrixMinPourVente?.ToString("N2") + " $",
-				ValeurEstimeMin = lotModification.ValeurEstimeMin.ToString("N2") + " $",
-				ValeurEstimeMax = lotModification.ValeurEstimeMax.ToString("N2") + " $",
+                NumeroEncan = lotModification.NumeroEncan,
+                Code = lotModification.Numero,
+                PrixOuverture = lotModification.PrixOuverture.ToString("N2") + " $",
+                PrixMinPourVente = lotModification.PrixMinPourVente?.ToString("N2") + " $",
+                ValeurEstimeMin = lotModification.ValeurEstimeMin.ToString("N2") + " $",
+                ValeurEstimeMax = lotModification.ValeurEstimeMax.ToString("N2") + " $",
                 Categorie = lotModification.Categorie,
                 Artiste = lotModification.Artiste,
                 Dimension = $"{lotModification.Hauteur} x {lotModification.Largeur}",
@@ -581,13 +583,12 @@ namespace Gamma2024.Server.Services
                 return (false, "L'encan n'a pas encore commencé");
             }
 
-            // Vérifier si la mise est valide (conversion explicite de decimal en double)
+            // Vérifie si la mise est valide
             if (lot.Mise.HasValue && mise.Montant <= (decimal)lot.Mise.Value)
             {
                 return (false, "La mise doit être supérieure à la mise actuelle");
             }
 
-            // Conversion explicite de decimal en double
             lot.Mise = (double)mise.Montant;
             lot.IdClientMise = mise.UserId;
 
@@ -595,9 +596,9 @@ namespace Gamma2024.Server.Services
             {
                 await _context.SaveChangesAsync();
 
-                await _webSocketHandler.BroadcastMessage(new
+                // Diffuser l'événement de nouvelle mise avec SignalR
+                await _hubContext.Clients.All.SendAsync("ReceiveNewBid", new
                 {
-                    type = "NOUVELLE_MISE",
                     idLot = mise.IdLot,
                     montant = mise.Montant,
                     userId = mise.UserId
@@ -617,7 +618,7 @@ namespace Gamma2024.Server.Services
                 .Where(l => l.IdClientMise == userId)
                 .Select(l => l.Id)
                 .ToListAsync();
-            
+
             return userBids;
         }
     }

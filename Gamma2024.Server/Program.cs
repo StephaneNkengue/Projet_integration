@@ -1,9 +1,9 @@
 using Gamma2024.Server.Data;
+using Gamma2024.Server.Hub;
 using Gamma2024.Server.Interface;
 using Gamma2024.Server.Models;
 using Gamma2024.Server.Services;
 using Gamma2024.Server.Services.Email;
-using Gamma2024.Server.WebSockets;
 using jsreport.AspNetCore;
 using jsreport.Binary;
 using jsreport.Local;
@@ -44,6 +44,7 @@ builder.Services.AddControllers()
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddSignalR();
 
 builder.Services.AddScoped<ClientInscriptionService>();
 builder.Services.AddScoped<ClientModificationService>();
@@ -109,7 +110,6 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;
 });
 
-builder.Services.AddSingleton<WebSocketHandler>();
 
 builder.Services.AddJsReport(new LocalReporting()
     .UseBinary(JsReportBinary.GetBinary())
@@ -150,11 +150,8 @@ app.UseStaticFiles();
 
 app.MapFallbackToFile("index.html");
 
-var webSocketOptions = new WebSocketOptions
-{
-    KeepAliveInterval = TimeSpan.FromMinutes(2)
-};
-app.UseWebSockets(webSocketOptions);
-app.UseMiddleware<WebSocketMiddleware>();
+
+app.MapHub<LotMiseHub>("/hubs/lotMiseHub"); // Permet de mapper les requ�tes vers SignalR
+
 
 app.Run();

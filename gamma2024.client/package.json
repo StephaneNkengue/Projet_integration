@@ -12,11 +12,13 @@
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore"
   },
   "dependencies": {
+    "@microsoft/signalr": "^8.0.7",
     "@primevue/themes": "^4.2.0",
     "@vuelidate/core": "^2.0.3",
     "@vuelidate/validators": "^2.0.4",
     "@vuepic/vue-datepicker": "^9.0.3",
     "axios": "^1.7.7",
+    "bootstrap": "^5.3.3",
     "bootstrap-table": "^1.23.5",
     "datatables.net-dt": "^2.1.8",
     "datatables.net-responsive-dt": "^3.0.3",

@@ -71,10 +71,10 @@
 </template>
 
 <script setup>
-import { ref, watch, onMounted, computed, nextTick } from 'vue';
-import { Modal } from 'bootstrap';
-import { useStore } from 'vuex';
-import { toast } from 'vue3-toastify';
+import { ref, watch, onMounted, computed, nextTick } from "vue";
+import { Modal } from "bootstrap";
+import { useStore } from "vuex";
+import { toast } from "vue3-toastify";
 
 const store = useStore();
 const modalInstance = ref(null);
@@ -84,23 +84,23 @@ const montantInitial = ref(0);
 const props = defineProps({
   lot: {
     type: Object,
-    required: true
-  }
+    required: true,
+  },
 });
 
 // Fonction pour calculer le pas d'enchère selon le montant
 const calculerPasEnchere = (montant) => {
-  if (montant <= 199.00) return 10.00;
-  if (montant <= 499.00) return 25.00;
-  if (montant <= 999.00) return 50.00;
-  if (montant <= 1999.00) return 100.00;
-  if (montant <= 4999.00) return 200.00;
-  if (montant <= 9999.00) return 250.00;
-  if (montant <= 19999.00) return 500.00;
-  if (montant <= 49999.00) return 1000.00;
-  if (montant <= 99999.00) return 2000.00;
-  if (montant <= 499999.00) return 5000.00;
-  return 10000.00;
+  if (montant <= 199.0) return 10.0;
+  if (montant <= 499.0) return 25.0;
+  if (montant <= 999.0) return 50.0;
+  if (montant <= 1999.0) return 100.0;
+  if (montant <= 4999.0) return 200.0;
+  if (montant <= 9999.0) return 250.0;
+  if (montant <= 19999.0) return 500.0;
+  if (montant <= 49999.0) return 1000.0;
+  if (montant <= 99999.0) return 2000.0;
+  if (montant <= 499999.0) return 5000.0;
+  return 10000.0;
 };
 
 // Computed pour le pas d'enchère actuel
@@ -138,28 +138,32 @@ const confirmerMise = async () => {
     if (response.success) {
       modalInstance.value.hide();
       emit("miseConfirmee", montantMise.value);
-      
+
       toast.success("Votre mise a été placée avec succès", {
         position: toast.POSITION.TOP_RIGHT,
-        autoClose: 3000
+        autoClose: 3000,
       });
     }
   } catch (error) {
     toast.error(error.message || "Erreur lors de la mise", {
       position: toast.POSITION.TOP_RIGHT,
-      autoClose: 5000
+      autoClose: 5000,
     });
   }
 };
 
 // Initialisation du montant de la mise
-watch(() => props.lot, (newLot) => {
-  if (newLot) {
-    montantInitial.value = calculerMontantInitial(newLot);
-    const pasInitial = calculerPasEnchere(montantInitial.value);
-    montantMise.value = montantInitial.value + pasInitial;
-  }
-}, { immediate: true, deep: true });
+watch(
+  () => props.lot,
+  (newLot) => {
+    if (newLot) {
+      montantInitial.value = calculerMontantInitial(newLot);
+      const pasInitial = calculerPasEnchere(montantInitial.value);
+      montantMise.value = montantInitial.value + pasInitial;
+    }
+  },
+  { immediate: true, deep: true }
+);
 
 // Gestion du modal
 onMounted(() => {
@@ -167,8 +171,8 @@ onMounted(() => {
     const modalElement = document.getElementById(`modalMise_${props.lot?.id}`);
     if (modalElement) {
       modalInstance.value = new Modal(modalElement, {
-        backdrop: 'static',
-        keyboard: false
+        backdrop: "static",
+        keyboard: false,
       });
     }
   });
@@ -207,7 +211,7 @@ const hide = () => {
 // Computed properties
 const affichageMiseActuelle = computed(() => {
   const lot = store.getters.getLot(props.lot?.id);
-  return lot?.mise ? `${lot.mise}$` : 'aucune mise';
+  return lot?.mise ? `${lot.mise}$` : "aucune mise";
 });
 
 const hasUserBidOnLot = computed(() => {
@@ -217,11 +221,11 @@ const hasUserBidOnLot = computed(() => {
 // Expose les méthodes nécessaires
 defineExpose({
   show,
-  hide
+  hide,
 });
 
 // Définir les émissions
-const emit = defineEmits(['miseConfirmee']);
+const emit = defineEmits(["miseConfirmee"]);
 </script>
 
 <style scoped>
