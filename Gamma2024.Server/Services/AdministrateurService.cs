@@ -3,6 +3,7 @@ using Gamma2024.Server.Models;
 using Gamma2024.Server.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Stripe;
 
 namespace Gamma2024.Server.Services
 {
@@ -41,13 +42,7 @@ namespace Gamma2024.Server.Services
                         Province = a.Province,
                         Pays = a.Pays
                     }).ToList(),
-                    CartesCredit = u.CarteCredits.Select(c => new CarteCreditInfoVM
-                    {
-                        Id = c.Id,
-                        Nom = c.Nom,
-                        Numero = c.Numero,
-                        ExpirationDate = $"{c.MoisExpiration:D2}/{(c.AnneeExpiration - 2000)}"
-                    }).ToList()
+                    CartesCredit = ChercherCartesStripe(u.StripeCustomer)
                 }).Where(x => x.Id != "8e445865-a24d-4543-a6c6-9443d048cdb9")
                 .ToListAsync();
 
@@ -77,13 +72,7 @@ namespace Gamma2024.Server.Services
                         Province = a.Province,
                         Pays = a.Pays
                     }).ToList(),
-                    CartesCredit = u.CarteCredits.Select(c => new CarteCreditInfoVM
-                    {
-                        Id = c.Id,
-                        Nom = c.Nom,
-                        Numero = c.Numero,
-                        ExpirationDate = $"{c.MoisExpiration:D2}/{(c.AnneeExpiration - 2000)}"
-                    }).ToList()
+                    CartesCredit = ChercherCartesStripe(u.StripeCustomer)
                 })
                 .FirstOrDefaultAsync(x => x.Id == membreId);
 
@@ -100,6 +89,31 @@ namespace Gamma2024.Server.Services
             {
                 return false;
             }
+        }
+
+        public static List<CarteCreditInfoVM> ChercherCartesStripe(string customerId)
+        {
+            var service = new PaymentMethodService();
+            var options = new PaymentMethodListOptions
+            {
+                Type = "card",
+                Limit = 100,
+                Customer = customerId,
+            };
+
+            StripeList<PaymentMethod> paymentMethods = service.List(options);
+            List<CarteCreditInfoVM> cartes = new();
+
+            foreach (var paymentMethod in paymentMethods.Data)
+            {
+                cartes.Add(new CarteCreditInfoVM()
+                {
+                    Dernier4Numero = paymentMethod.Card.Last4,
+                    ExpirationDate = paymentMethod.Card.ExpMonth + "/" + paymentMethod.Card.ExpYear,
+                    Marque = paymentMethod.Card.Brand
+                });
+            }
+            return cartes;
         }
     }
 }
