@@ -91,7 +91,7 @@ namespace Gamma2024.Server.Services
             }
         }
 
-        public static List<CarteCreditInfoVM> ChercherCartesStripe(string customerId)
+        private static List<CarteCreditInfoVM> ChercherCartesStripe(string customerId)
         {
             var service = new PaymentMethodService();
             var options = new PaymentMethodListOptions
