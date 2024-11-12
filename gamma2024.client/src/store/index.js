@@ -124,10 +124,21 @@ const store = createStore({
         };
       }
       state.lots = newLots; // Forcer la réactivité en réassignant l'objet
+
+      // Mettre à jour userBids seulement si c'est l'utilisateur actuel qui a misé
+      if (userId === state.user?.id) {
+        if (!state.userBids.includes(idLot)) {
+          state.userBids.push(idLot);
+        }
+      }
     },
 
     SET_CONNECTION(state, connection) {
-      state.connection = connection;
+        if (state.connection) {
+            // Nettoyer les écouteurs de l'ancienne connexion
+            state.connection.off("ReceiveNewBid");
+          }
+          state.connection = connection;
     },
 
     SET_NOTIFICATION_CONNECTION(state, notificationConnection) {
@@ -191,7 +202,7 @@ const store = createStore({
     },
   },
   actions: {
-    async login({ commit, state }, userData) {
+    async login({ commit, state, dispatch }, userData) {
       try {
         if (!state.api) {
           throw new Error("API non initialisée");
@@ -214,6 +225,7 @@ const store = createStore({
             state.api.defaults.headers.common[
               "Authorization"
             ] = `Bearer ${response.data.token}`;
+            await dispatch("initializeSignalR");
           }
           return { success: true, roles: response.data.roles };
         } else {
@@ -578,24 +590,43 @@ const store = createStore({
       }
     },
     async logout({ commit, state }) {
-      try {
-        // Appel à l'API pour invalider le token côté serveur (optionnel mais recommandé)
-        const response = await state.api.post("/home/logout");
-        console.log("Réponse de la déconnexion:", response);
-      } catch (error) {
-        console.error("Erreur lors de la déconnexion côté serveur:", error);
-      } finally {
-        // Nettoyage des données côté client
-        commit("setLoggedIn", false);
-        commit("setUser", null);
-        commit("setRoles", []);
-        commit("setToken", null);
-        sessionStorage.removeItem("token");
-        sessionStorage.removeItem("user");
-        sessionStorage.removeItem("roles");
-        sessionStorage.removeItem("isLoggedIn");
-      }
-    },
+        try {
+          // Arrêter la connexion SignalR avant tout
+          if (state.connection) {
+            await state.connection.stop();
+            console.log("Connexion SignalR arrêtée");
+          }
+      
+          // Appel à l'API pour invalider le token côté serveur
+          const response = await state.api.post("/home/logout");
+          console.log("Réponse de la déconnexion:", response);
+      
+        } catch (error) {
+          console.error("Erreur lors de la déconnexion:", error);
+        } finally {
+          // Nettoyage des données côté client
+          commit("setLoggedIn", false);
+          commit("setUser", null);
+          commit("setRoles", []);
+          commit("setToken", null);
+          commit("SET_CONNECTION", null); // Nettoyer la référence SignalR
+      
+          // Nettoyage du stockage local
+          sessionStorage.removeItem("token");
+          sessionStorage.removeItem("user");
+          sessionStorage.removeItem("roles");
+          sessionStorage.removeItem("isLoggedIn");
+      
+          // Réinitialiser les données liées aux mises
+          commit("updateLotMise", {
+            idLot: null,
+            montant: null,
+            userId: null
+          });
+          state.userBids = [];
+          state.lots = {};
+        }
+      },
 
     async fetchListeDeLotsPourAdministrateur({ commit, state }) {
       try {

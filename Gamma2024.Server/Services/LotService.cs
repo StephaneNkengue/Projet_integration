@@ -13,13 +13,15 @@ namespace Gamma2024.Server.Services
         private readonly ApplicationDbContext _context;
         private readonly IWebHostEnvironment _environment;
         private readonly IHubContext<LotMiseHub, ILotMiseHub> _hubContext;
+        private readonly ILogger<LotService> _logger;
 
 
-        public LotService(ApplicationDbContext context, IWebHostEnvironment environment, IHubContext<LotMiseHub, ILotMiseHub> hubContext)
+        public LotService(ApplicationDbContext context, IWebHostEnvironment environment, IHubContext<LotMiseHub, ILotMiseHub> hubContext, ILogger<LotService> logger)
         {
             _context = context;
             _environment = environment;
             _hubContext = hubContext;
+            _logger = logger;
         }
 
         public async Task<IEnumerable<LotAffichageVM>> ObtenirTousLots()
@@ -640,14 +642,16 @@ namespace Gamma2024.Server.Services
                 {
                     idLot = mise.IdLot,
                     montant = mise.Montant,
-                    userId = mise.UserId
+                    userId = mise.UserId,
+                    timestamp = DateTime.UtcNow
                 });
 
                 return (true, "Mise placée avec succès");
             }
             catch (Exception ex)
             {
-                return (false, $"Erreur lors de la mise : {ex.Message}");
+                _logger.LogError(ex, "Erreur lors de la mise pour le lot {LotId}", mise.IdLot);
+                return (false, "Une erreur est survenue lors de la mise");
             }
         }
 

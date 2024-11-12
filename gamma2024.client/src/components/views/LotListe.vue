@@ -138,7 +138,9 @@
 
   const isUserHighestBidder = computed(() => {
       const lotActuel = store.getters.getLot(props.lotRecu.id);
-      return store.getters.hasUserBidOnLot(props.lotRecu.id) && lotActuel?.mise === miseActuelle.value;
+      const userId = store.state.user?.id;
+      return store.getters.hasUserBidOnLot(props.lotRecu.id) && 
+             lotActuel?.idClientMise === userId;
   });
 
   const miseActuelle = computed(() => {
@@ -248,7 +250,8 @@
 
   const isUserOutbid = computed(() => {
       const lotActuel = store.getters.getLot(props.lotRecu.id);
-      return store.getters.hasUserBidOnLot(props.lotRecu.id) && !isUserHighestBidder.value;
+      return store.getters.hasUserBidOnLot(props.lotRecu.id) && 
+             lotActuel?.idClientMise !== store.state.user?.id;
   });
 
 </script>
