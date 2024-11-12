@@ -98,6 +98,11 @@ const store = createStore({
     },
     SET_API(state, api) {
       state.api = api;
+      // Configurer le token s'il existe
+      const token = sessionStorage.getItem("token");
+      if (token) {
+        state.api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+      }
     },
     SET_CLIENT_INFO(state, clientInfo) {
       state.clientInfo = clientInfo;
@@ -200,6 +205,9 @@ const store = createStore({
     setLotOutbid(state, lotId) {
       state.outbidLots.push(lotId);
     },
+    setSignalRConnection(state, connection) {  // Ajouter cette mutation manquante
+      state.connection = connection;
+    }
   },
   actions: {
     async login({ commit, state, dispatch }, userData) {
@@ -640,24 +648,31 @@ const store = createStore({
       }
     },
 
-    async initializeStore({ commit, state }) {
+    async initializeStore({ commit, dispatch }) {
       console.log("=== Initialisation du Store ===");
-
-      // Initialiser d'abord l'API
-      const api = initApi(() => state.token);
-      commit("SET_API", api);
-
-      // Ensuite, récupérer l'état depuis sessionStorage
+      
+      // Récupérer les données de session
+      const token = sessionStorage.getItem("token");
       const savedIsLoggedIn = sessionStorage.getItem("isLoggedIn") === "true";
-      const savedToken = sessionStorage.getItem("token");
       const savedUser = JSON.parse(sessionStorage.getItem("user"));
       const savedRoles = JSON.parse(sessionStorage.getItem("roles")) || [];
 
+      // Initialiser l'API avec le token
+      const api = initApi(() => token);
+      if (token) {
+        api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+      }
+      commit("SET_API", api);
+
       // Initialiser l'état
+      commit("setToken", token);
       commit("setLoggedIn", savedIsLoggedIn);
       commit("setUser", savedUser);
       commit("setRoles", savedRoles);
-      commit("setToken", savedToken); // Déplacer setToken après l'initialisation de l'API
+
+      if (savedIsLoggedIn) {
+        await dispatch("fetchUserBids");
+      }
     },
 
     async chercherTousEncansVisibles({ commit, state }) {
@@ -897,13 +912,21 @@ const store = createStore({
     },
 
     async fetchUserBids({ state, commit }) {
-      if (!state.user?.id) return;
+      if (!state.user?.id || !state.token) return;
+      
       try {
-        const response = await state.api.get(`/lots/userBids/${state.user.id}`);
+        const response = await state.api.get(`/lots/userBids/${state.user.id}`, {
+          headers: {
+            'Authorization': `Bearer ${state.token}`
+          }
+        });
         commit("setUserBids", response.data);
-        commit("updateLotsWithUserBids", response.data);
       } catch (error) {
         console.error("Erreur lors du chargement des mises:", error);
+        // Si erreur d'authentification, nettoyer les données
+        if (error.response?.status === 401) {
+          commit("setUserBids", []);
+        }
       }
     },
 
