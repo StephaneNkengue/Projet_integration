@@ -31,6 +31,7 @@ import EnregistrerCarte from "@/components/views/EnregistrerCarte.vue";
 import TableauDeBordVentes from "@/components/views/TableauDeBordVentes.vue";
 import ResultatRechercheLots from "@/components/views/ResultatRechercheLots.vue";
 import ResultatRechercheEncans from "@/components/views/ResultatRechercheEncans.vue";
+import GestionCartes from "@/components/views/GestionCartes.vue";
 const routes = [
     {
         path: "/",
@@ -215,9 +216,19 @@ const routes = [
         component: ReinitialisationMotDePasse,
     },
     {
-        path: "/paiement/enregistrercarte",
+        path: "/cartes/enregistrercarte",
         name: "EnregistrerCarte",
         component: EnregistrerCarte,
+        props: true,
+        meta: {
+            requiresAuth: true,
+            requiredRole: "Client"
+        },
+    },
+    {
+        path: "/cartes",
+        name: "GestionCartes",
+        component: GestionCartes,
         props: true,
         meta: {
             requiresAuth: true,
