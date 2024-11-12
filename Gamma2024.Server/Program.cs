@@ -152,6 +152,7 @@ app.MapFallbackToFile("index.html");
 
 
 app.MapHub<LotMiseHub>("/hubs/lotMiseHub"); // Permet de mapper les requ�tes vers SignalR
+app.MapHub<NotificationHub>("/hubs/NotificationHub");
 
 
 app.Run();

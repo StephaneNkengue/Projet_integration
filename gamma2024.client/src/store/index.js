@@ -10,11 +10,23 @@ const store = createStore({
     isLoggedIn: false,
     user: null,
     connection: null, // Connexion SignalR
+    notificationConnection: null,
     lots: {},
     userBids: [],
     userOutbidLots: [],
+    notifications: [],
   },
   mutations: {
+    ADD_NOTIFICATION(state, message) {
+      state.userNotifications.push({ id: Date.now(), message, read: false });
+    },
+
+    MARK_ALL_AS_READ(state) {
+      state.userNotifications.forEach((notification) => {
+        notification.read = true;
+      });
+    },
+
     setLoggedIn(state, value) {
       state.isLoggedIn = value;
       sessionStorage.setItem("isLoggedIn", value);
@@ -118,6 +130,9 @@ const store = createStore({
       state.connection = connection;
     },
 
+    SET_NOTIFICATION_CONNECTION(state, notificationConnection) {
+      state.notificationConnection = notificationConnection;
+    },
     addUserBid(state, lotId) {
       if (!state.userBids.includes(lotId)) {
         state.userBids.push(lotId);
@@ -866,10 +881,14 @@ const store = createStore({
         if (state.connection) {
           await state.connection.stop();
         }
+        if (state.notificationConnection) {
+          await state.notificationConnection.stop();
+        }
 
+        // Initialisation de la connexion pour lotMiseHub
         const connection = new signalR.HubConnectionBuilder()
           .withUrl(
-            `${state.api.defaults.baseURL.replace("/api", "/hubs/lotMiseHub")}`
+            `${state.api.defaults.baseURL.replace("/api", "/hub/lotMiseHub")}`
           )
           .configureLogging(signalR.LogLevel.Information)
           .withAutomaticReconnect()
@@ -885,18 +904,52 @@ const store = createStore({
           });
         });
 
+        // Gestion de la reconnexion pour lotMiseHub
         connection.onclose(async () => {
-          console.log("Connexion SignalR perdue. Tentative de reconnexion...");
-          setTimeout(() => dispatch("initSignalR"), 5000); // Reconnexion après délai
+          console.log(
+            "Connexion SignalR lotMiseHub perdue. Tentative de reconnexion..."
+          );
+          setTimeout(() => dispatch("initSignalR"), 5000);
         });
 
-        await connection.start();
-        console.log("Connecté à SignalR");
+        // Initialisation de la connexion pour notificationHub
+        const notificationConnection = new signalR.HubConnectionBuilder()
+          .withUrl(
+            `${state.api.defaults.baseURL.replace(
+              "/api",
+              "/hub/notificationHub"
+            )}`
+          )
+          .configureLogging(signalR.LogLevel.Information)
+          .withAutomaticReconnect()
+          .build();
 
+        // Écouter l'événement de notification
+        notificationConnection.on("ReceiveNotification", (message) => {
+          commit("ADD_NOTIFICATION", message);
+          // Ajouter toute autre logique d'animation ou de traitement ici
+        });
+
+        // Gestion de la reconnexion pour notificationHub
+        notificationConnection.onclose(async () => {
+          console.log(
+            "Connexion SignalR notificationHub perdue. Tentative de reconnexion..."
+          );
+          setTimeout(() => dispatch("initSignalR"), 5000);
+        });
+
+        // Démarrer les deux connexions
+        await connection.start();
+        await notificationConnection.start();
+
+        console.log("Connecté à SignalR pour lotMiseHub et notificationHub");
+
+        // Enregistrer les connexions dans le state
         commit("SET_CONNECTION", connection);
+        commit("SET_NOTIFICATION_CONNECTION", notificationConnection);
       } catch (error) {
         console.error("Erreur lors de l'initialisation de SignalR:", error);
-        setTimeout(() => dispatch("initSignalR"), 5000);
+        setTimeout(() => dispatch("initSignalR"), 5000); // Reconnexion en cas d'erreur
       }
     },
 

@@ -1,9 +1,11 @@
 using Gamma2024.Server.Data;
+using Gamma2024.Server.Hub;
 using Gamma2024.Server.Models;
 using Gamma2024.Server.Services;
 using Gamma2024.Server.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
@@ -15,12 +17,16 @@ namespace Gamma2024.Server.Controllers
     {
         private readonly LotService _lotService;
         private readonly ApplicationDbContext _context;
+        private readonly IHubContext<LotMiseHub> _hubContext;
 
-		public LotsController(LotService lotService, ApplicationDbContext context)
-		{
-			_lotService = lotService;
-			_context = context;
-		}
+
+        public LotsController(LotService lotService, ApplicationDbContext context, IHubContext<LotMiseHub> hubContext)
+        {
+            _lotService = lotService;
+            _context = context;
+            _hubContext = hubContext;
+
+        }
 
         [Authorize(Roles = ApplicationRoles.ADMINISTRATEUR)]
         [HttpGet("tous")]
@@ -51,13 +57,13 @@ namespace Gamma2024.Server.Controllers
                 lotVM.Photos = Request.Form.Files.ToList();
             }
 
-			var resultat = await _lotService.CreerLot(lotVM);
-			if (!resultat.Success)
-			{
-				return BadRequest(resultat.Message);
-			}
-			return Ok(new { success = true, message = "Lot crée avec succès" });
-		}
+            var resultat = await _lotService.CreerLot(lotVM);
+            if (!resultat.Success)
+            {
+                return BadRequest(resultat.Message);
+            }
+            return Ok(new { success = true, message = "Lot crée avec succès" });
+        }
 
         [Authorize(Roles = ApplicationRoles.ADMINISTRATEUR)]
         [HttpPut("modifier/{id}")]
@@ -115,36 +121,36 @@ namespace Gamma2024.Server.Controllers
             return Ok(encans);
         }
 
-		[HttpGet("cherchertouslotsrecherche")]
-		[AllowAnonymous]
-		public async Task<ActionResult<ICollection<LotEncanAffichageVM>>> ChercherTousLotsRecherche()
-		{
-			try
-			{
-				var lots = _lotService.ChercherTousLotsRecherche();
-				return Ok(lots);
-			}
-			catch (Exception ex)
-			{
-				return BadRequest($"Erreur: {ex.Message}");
-			}
-		}
+        [HttpGet("cherchertouslotsrecherche")]
+        [AllowAnonymous]
+        public async Task<ActionResult<ICollection<LotEncanAffichageVM>>> ChercherTousLotsRecherche()
+        {
+            try
+            {
+                var lots = _lotService.ChercherTousLotsRecherche();
+                return Ok(lots);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Erreur: {ex.Message}");
+            }
+        }
 
-		[HttpGet("cherchertouslotsparencan/{idEncan}")]
-		[AllowAnonymous]
-		public async Task<ActionResult<ICollection<LotEncanAffichageVM>>> ChercherTousLotsParEncan(string idEncan)
-		{
-			try
-			{
-				var idEncanInt = int.Parse(idEncan);
-				var lots = _lotService.ChercherTousLotsParEncan(idEncanInt);
-				return Ok(lots);
-			}
-			catch (Exception ex)
-			{
-				return BadRequest($"Erreur: {ex.Message}");
-			}
-		}
+        [HttpGet("cherchertouslotsparencan/{idEncan}")]
+        [AllowAnonymous]
+        public async Task<ActionResult<ICollection<LotEncanAffichageVM>>> ChercherTousLotsParEncan(string idEncan)
+        {
+            try
+            {
+                var idEncanInt = int.Parse(idEncan);
+                var lots = _lotService.ChercherTousLotsParEncan(idEncanInt);
+                return Ok(lots);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Erreur: {ex.Message}");
+            }
+        }
 
         [AllowAnonymous]
         [HttpGet("chercherTousLots")]
@@ -175,18 +181,26 @@ namespace Gamma2024.Server.Controllers
         public async Task<IActionResult> PlacerMise([FromBody] MiseVM mise)
         {
             if (!ModelState.IsValid)
+            {
                 return BadRequest(ModelState);
+            }
 
             // Récupérer l'ID de l'utilisateur connecté
             mise.UserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (string.IsNullOrEmpty(mise.UserId))
+            {
                 return Unauthorized();
+            }
 
             var (success, message) = await _lotService.PlacerMise(mise);
             if (success)
+            {
                 return Ok(new { success = true, message = message });
+            }
             else
+            {
                 return BadRequest(new { success = false, message = message });
+            }
         }
 
         [Authorize(Roles = ApplicationRoles.CLIENT)]
@@ -201,6 +215,31 @@ namespace Gamma2024.Server.Controllers
             var userBids = await _lotService.GetUserBids(userId);
             return Ok(userBids);
         }
+
+
+
+
+        ////////////////
+        ///
+
+        [HttpPost("placeBid")]
+        public async Task<IActionResult> PlaceBid([FromBody] MiseVM mise)
+        {
+            // Enregistrer la mise dans la base de données...
+
+            // Récupérer les utilisateurs ayant misé sur ce lot
+            var usersToNotify = _lotService.GetUsersWhoBidOnLot(mise.IdLot);
+
+            // Envoyer une notification à chaque utilisateur
+            foreach (var userId in usersToNotify)
+            {
+                await _hubContext.Clients.User(userId).SendAsync("ReceiveNotification", $"Nouvelle mise sur le lot {mise.IdLot}");
+            }
+
+            return Ok();
+        }
+
+
 
     }
 }

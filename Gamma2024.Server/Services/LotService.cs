@@ -660,5 +660,13 @@ namespace Gamma2024.Server.Services
 
             return userBids;
         }
+
+
+        // Logique pour récupérer les utilisateurs ayant déjà misé sur le lot
+        public List<string> GetUsersWhoBidOnLot(int lotId)
+        {
+            return new List<string> { /* Liste des IDs utilisateur */ };
+        }
+
     }
 }
