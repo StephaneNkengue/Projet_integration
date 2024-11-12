@@ -80,51 +80,10 @@
             </div>
 
             <!-- Informations de carte de crédit -->
-            <div class="card my-5" v-if="membre.cartesCredit.count > 0">
+            <div class="card my-5" v-if="membre.cartesCredit.length > 0">
               <div class="card-header">Cartes de crédit</div>
               <div class="card-body" v-for="carte in membre.cartesCredit">
-                <div class="row">
-                  <div class="col-md-6">
-                    <label for="numeroCarte"
-                      >Dernier 4 chiffres de la carte</label
-                    >
-                    <div class="input-wrapper">
-                      <InputMask
-                        type="text"
-                        mask="9999"
-                        id="numeroCarte"
-                        disabled
-                        class="form-control"
-                        v-model="carte.dernier4Numero"
-                      />
-                    </div>
-                  </div>
-                  <div class="col-md-4">
-                    <label for="dateExpiration">Date d'expiration</label>
-                    <div class="input-wrapper">
-                      <InputMask
-                        type="text"
-                        mask="99/99"
-                        class="form-control"
-                        placeholder="MM/YY"
-                        id="dateExpiration"
-                        v-model="carte.expirationDate"
-                      />
-                    </div>
-                  </div>
-                  <div class="col-md-2">
-                    <label for="marque">Marque</label>
-                    <div class="input-wrapper">
-                      <input
-                        type="text"
-                        id="nom"
-                        class="form-control"
-                        disabled
-                        v-model="carte.marque"
-                      />
-                    </div>
-                  </div>
-                </div>
+                <AffichageCarteCredit :carte="carte"></AffichageCarteCredit>
               </div>
             </div>
 
@@ -222,6 +181,7 @@
 import { ref, onMounted } from "vue";
 import { useStore } from "vuex";
 import InputMask from "primevue/inputmask";
+import AffichageCarteCredit from "@/components/views/AffichageCarteCredit.vue";
 import { useRoute } from "vue-router";
 
 const route = useRoute();
