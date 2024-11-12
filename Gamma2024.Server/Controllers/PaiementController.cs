@@ -19,43 +19,7 @@ namespace Gamma2024.Server.Controllers
 
         public PaiementController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
-            _context = context;
             _userManager = userManager;
-        }
-
-        [HttpPost("CreerPaymentIntent/{idFacture}")]
-        public ActionResult CreerPaymentIntent(int idFacture)
-        {
-            var facture = _context.Factures.FirstOrDefault(f => f.Id == idFacture);
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-            if (facture == null || facture.IdClient != userId)
-            {
-                return NotFound();
-            }
-
-            if (facture.estPaye)
-            {
-                return NoContent();
-            }
-
-            var prix = (long)facture.PrixFinal * 100;
-
-            var paymentIntentService = new PaymentIntentService();
-            var paymentIntent = paymentIntentService.Create(new PaymentIntentCreateOptions
-            {
-                Amount = prix,
-                Currency = "cad",
-                AutomaticPaymentMethods = new PaymentIntentAutomaticPaymentMethodsOptions
-                {
-                    Enabled = true,
-                },
-            });
-
-            return Json(new
-            {
-                clientSecret = paymentIntent.ClientSecret,
-            });
         }
 
         [Authorize(Roles = "Client")]
