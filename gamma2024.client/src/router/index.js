@@ -216,7 +216,7 @@ const routes = [
         component: ReinitialisationMotDePasse,
     },
     {
-        path: "/cartes/enregistrercarte",
+        path: "/cartes/enregistrer",
         name: "EnregistrerCarte",
         component: EnregistrerCarte,
         props: true,
