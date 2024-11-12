@@ -23,6 +23,7 @@ namespace Gamma2024.Server.Data
         public DbSet<Adresse> Adresses { get; set; } = default!;
         public DbSet<Medium> Mediums { get; set; } = default!;
         public DbSet<Charite> Charites { get; set; } = default!;
+        public DbSet<MiseAutomatique> MiseAutomatiques { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

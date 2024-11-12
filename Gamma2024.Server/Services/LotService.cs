@@ -632,9 +632,21 @@ namespace Gamma2024.Server.Services
                     return (false, "La mise doit être supérieure à la mise actuelle");
                 }
 
+                // Créer l'entrée dans l'historique des mises
+                var nouvelleMise = new MiseAutomatique
+                {
+                    LotId = mise.IdLot,
+                    UserId = mise.UserId,
+                    Montant = mise.Montant,
+                    DateMise = DateTime.UtcNow,
+                    EstMiseAutomatique = false
+                };
+
+                // Mettre à jour le lot avec la dernière mise
                 lot.Mise = (double)mise.Montant;
                 lot.IdClientMise = mise.UserId;
 
+                _context.MiseAutomatiques.Add(nouvelleMise);
                 await _context.SaveChangesAsync();
 
                 // Envoyer la mise à jour via SignalR
@@ -653,6 +665,22 @@ namespace Gamma2024.Server.Services
                 _logger.LogError(ex, "Erreur lors de la mise pour le lot {LotId}", mise.IdLot);
                 return (false, "Une erreur est survenue lors de la mise");
             }
+        }
+
+        // Méthode pour récupérer l'historique des mises d'un lot
+        public async Task<IEnumerable<MiseHistoriqueVM>> GetLotBidHistory(int lotId)
+        {
+            return await _context.MiseAutomatiques
+                .Where(m => m.LotId == lotId)
+                .OrderByDescending(m => m.DateMise)
+                .Select(m => new MiseHistoriqueVM
+                {
+                    UserId = m.UserId,
+                    Montant = m.Montant,
+                    DateMise = m.DateMise,
+                    EstMiseAutomatique = m.EstMiseAutomatique
+                })
+                .ToListAsync();
         }
 
         public async Task<IEnumerable<int>> GetUserBids(string userId)
