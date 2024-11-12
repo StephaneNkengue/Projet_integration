@@ -14,7 +14,6 @@ namespace Gamma2024.Server.Controllers
     [Route("api/[controller]")]
     public class PaiementController : Controller
     {
-        private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
 
         public PaiementController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
