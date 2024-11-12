@@ -80,38 +80,26 @@
             </div>
 
             <!-- Informations de carte de crédit -->
-            <div class="card my-5">
-              <div class="card-header">Carte de crédit</div>
-              <div class="card-body">
-                <div class="row mt-2">
-                  <div class="col-md-12">
-                    <label for="nomPropio"
-                      >Nom du propriétaire de la carte</label
-                    >
-                    <input
-                      type="text"
-                      id="nomPropio"
-                      disabled
-                      class="form-control"
-                      v-model="membre.carteCredit.nomProprio"
-                    />
-                  </div>
-                </div>
-                <div class="row mt-2">
+            <div class="card my-5" v-if="membre.cartesCredit.count > 0">
+              <div class="card-header">Cartes de crédit</div>
+              <div class="card-body" v-for="carte in membre.cartesCredit">
+                <div class="row">
                   <div class="col-md-6">
-                    <label for="numeroCarte">Numéro de la carte</label>
+                    <label for="numeroCarte"
+                      >Dernier 4 chiffres de la carte</label
+                    >
                     <div class="input-wrapper">
                       <InputMask
                         type="text"
-                        mask="9999 9999 9999 9999"
+                        mask="9999"
                         id="numeroCarte"
                         disabled
                         class="form-control"
-                        v-model="membre.carteCredit.numeroCarte"
+                        v-model="carte.dernier4Numero"
                       />
                     </div>
                   </div>
-                  <div class="col-md-6">
+                  <div class="col-md-4">
                     <label for="dateExpiration">Date d'expiration</label>
                     <div class="input-wrapper">
                       <InputMask
@@ -120,7 +108,19 @@
                         class="form-control"
                         placeholder="MM/YY"
                         id="dateExpiration"
-                        v-model="membre.carteCredit.dateExpiration"
+                        v-model="carte.expirationDate"
+                      />
+                    </div>
+                  </div>
+                  <div class="col-md-2">
+                    <label for="marque">Marque</label>
+                    <div class="input-wrapper">
+                      <input
+                        type="text"
+                        id="nom"
+                        class="form-control"
+                        disabled
+                        v-model="carte.marque"
                       />
                     </div>
                   </div>
@@ -237,11 +237,7 @@ let membre = ref({
     newPassword: "",
     confirmNewPassword: "",
   },
-  carteCredit: {
-    nomProprio: "",
-    numeroCarte: "",
-    dateExpiration: "",
-  },
+  cartesCredit: [],
   adresse: {
     numeroCivique: "",
     rue: "",
@@ -267,11 +263,7 @@ onMounted(async () => {
       pseudo: response.userName || "",
     };
 
-    membre.value.carteCredit = {
-      nomProprio: response.cartesCredit[0].nom || "",
-      numeroCarte: response.cartesCredit[0].numero || "",
-      dateExpiration: response.cartesCredit[0].expirationDate || "",
-    };
+    membre.value.cartesCredit = response.cartesCredit;
 
     membre.value.adresse = {
       numeroCivique: response.adresses[0].numeroCivique || "",
