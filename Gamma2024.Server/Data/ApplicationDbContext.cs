@@ -131,6 +131,17 @@ namespace Gamma2024.Server.Data
                 .WithMany(c => c.CarteCredits)
                 .HasForeignKey(cc => cc.IdApplicationUser)
                 .OnDelete(DeleteBehavior.NoAction);
+
+            // Configuration pour MiseAutomatique
+            builder.Entity<MiseAutomatique>()
+                .HasOne(m => m.Lot)
+                .WithMany(l => l.MisesAutomatiques)
+                .HasForeignKey(m => m.LotId);
+
+            builder.Entity<MiseAutomatique>()
+                .HasOne(m => m.User)
+                .WithMany()
+                .HasForeignKey(m => m.UserId);
         }
 
         private void CreateRolesAndUsers(ModelBuilder builder)
