@@ -1,13 +1,21 @@
-namespace Gamma2024.Server.Hub;
 using Microsoft.AspNetCore.SignalR;
 
-public class LotMiseHub : Hub
-{
-    public async Task PlaceBid(int lotId, decimal amount, string userId)
+namespace Gamma2024.Server.Hub {
+    public interface ILotMiseHub
     {
-        await Clients.Caller.SendAsync("ConfirmBid", lotId, amount);
-
-        await Clients.AllExcept(Context.ConnectionId).SendAsync("ReceiveBid", lotId, amount, userId);
+        Task ReceiveNewBid(object bid);
     }
 
+    public class LotMiseHub : Hub<ILotMiseHub>
+    {
+        public async Task PlaceBid(int lotId, decimal amount, string userId)
+        {
+            await Clients.All.ReceiveNewBid(new
+            {
+                idLot = lotId,
+                montant = amount,
+                userId = userId
+            });
+        }
+    }
 }

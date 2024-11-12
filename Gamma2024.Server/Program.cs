@@ -138,6 +138,9 @@ StripeConfiguration.ApiKey = builder.Configuration["Stripe:SecretKey"];
 app.UseAuthentication();
 app.UseAuthorization();
 
+app.MapHub<LotMiseHub>("/api/hub/lotMiseHub"); // Permet de mapper les requêtes vers SignalR
+app.MapHub<NotificationHub>("/api/hub/NotificationHub");
+
 app.MapControllers();
 
 app.UseStaticFiles();
@@ -151,8 +154,7 @@ app.UseStaticFiles();
 app.MapFallbackToFile("index.html");
 
 
-app.MapHub<LotMiseHub>("/hubs/lotMiseHub"); // Permet de mapper les requ�tes vers SignalR
-app.MapHub<NotificationHub>("/hubs/NotificationHub");
+
 
 
 app.Run();

@@ -63,7 +63,7 @@
 </template>
 
 <script setup>
-import { ref, computed, watch, onMounted } from 'vue';
+import { ref, computed, watch, onMounted, onUnmounted } from 'vue';
 import { useStore } from 'vuex';
 import { toast } from 'vue3-toastify';
 import { useRouter } from 'vue-router';
@@ -144,10 +144,32 @@ watch(isLoggedIn, (newValue) => {
     }
 });
 
+const handleNewBid = (data) => {
+  if (data.idLot === props.lotRecu.id) {
+    store.commit('updateLotMise', {
+      idLot: data.idLot,
+      montant: data.montant,
+      userId: data.userId
+    });
+  }
+};
+
 onMounted(async () => {
     urlApi.value = await store.state.api.defaults.baseURL.replace("\api", "");
     if (lot.value.mise != null) {
         mise.value = lot.value.mise;
+    }
+    
+    // S'abonner aux événements de mise
+    if (store.state.connection) {
+        store.state.connection.on("ReceiveNewBid", handleNewBid);
+    }
+});
+
+onUnmounted(() => {
+    // Se désabonner des événements
+    if (store.state.connection) {
+        store.state.connection.off("ReceiveNewBid", handleNewBid);
     }
 });
 

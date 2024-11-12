@@ -216,30 +216,5 @@ namespace Gamma2024.Server.Controllers
             return Ok(userBids);
         }
 
-
-
-
-        ////////////////
-        ///
-
-        [HttpPost("placeBid")]
-        public async Task<IActionResult> PlaceBid([FromBody] MiseVM mise)
-        {
-            // Enregistrer la mise dans la base de données...
-
-            // Récupérer les utilisateurs ayant misé sur ce lot
-            var usersToNotify = _lotService.GetUsersWhoBidOnLot(mise.IdLot);
-
-            // Envoyer une notification à chaque utilisateur
-            foreach (var userId in usersToNotify)
-            {
-                await _hubContext.Clients.User(userId).SendAsync("ReceiveNotification", $"Nouvelle mise sur le lot {mise.IdLot}");
-            }
-
-            return Ok();
-        }
-
-
-
     }
 }

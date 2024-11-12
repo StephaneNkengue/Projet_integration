@@ -57,7 +57,7 @@
              @miseConfirmee="onMiseConfirmee" />
 </template>
 <script setup>
-  import { onMounted, ref, computed, watch } from "vue";
+  import { onMounted, ref, computed, watch, onUnmounted } from "vue";
   import { useStore } from "vuex";
   import ModalMise from '@/components/modals/ModalMise.vue';
   import { toast } from 'vue3-toastify';
@@ -218,9 +218,32 @@
       }
   });
 
+  // Ajouter cette fonction pour gérer la réception des nouvelles mises
+  const handleNewBid = (data) => {
+    if (data.idLot === props.lotRecu.id) {
+      store.commit('updateLotMise', {
+        idLot: data.idLot,
+        montant: data.montant,
+        userId: data.userId
+      });
+    }
+  };
+
   onMounted(async () => {
       lot.value = props.lotRecu;
       urlApi.value = await store.state.api.defaults.baseURL.replace("\api", "");
+      
+      // S'abonner aux événements de mise
+      if (store.state.connection) {
+        store.state.connection.on("ReceiveNewBid", handleNewBid);
+      }
+  });
+
+  onUnmounted(() => {
+    // Se désabonner des événements
+    if (store.state.connection) {
+      store.state.connection.off("ReceiveNewBid", handleNewBid);
+    }
   });
 
   const isUserOutbid = computed(() => {

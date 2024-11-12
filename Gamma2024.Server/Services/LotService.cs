@@ -12,10 +12,10 @@ namespace Gamma2024.Server.Services
     {
         private readonly ApplicationDbContext _context;
         private readonly IWebHostEnvironment _environment;
-        private readonly IHubContext<LotMiseHub> _hubContext;
+        private readonly IHubContext<LotMiseHub, ILotMiseHub> _hubContext;
 
 
-        public LotService(ApplicationDbContext context, IWebHostEnvironment environment, IHubContext<LotMiseHub> hubContext)
+        public LotService(ApplicationDbContext context, IWebHostEnvironment environment, IHubContext<LotMiseHub, ILotMiseHub> hubContext)
         {
             _context = context;
             _environment = environment;
@@ -596,47 +596,47 @@ namespace Gamma2024.Server.Services
 
         public async Task<(bool success, string message)> PlacerMise(MiseVM mise)
         {
-            var lot = await _context.Lots
-                .Include(l => l.EncanLots)
-                .ThenInclude(el => el.Encan)
-                .FirstOrDefaultAsync(l => l.Id == mise.IdLot);
-
-            if (lot == null)
-            {
-                return (false, "Lot non trouvé");
-            }
-
-            var encan = lot.EncanLots.FirstOrDefault()?.Encan;
-            if (encan == null)
-            {
-                return (false, "Encan non trouvé");
-            }
-
-            if (DateTime.Now > encan.DateFinSoireeCloture)
-            {
-                return (false, "L'encan est terminé");
-            }
-
-            if (DateTime.Now < encan.DateDebut)
-            {
-                return (false, "L'encan n'a pas encore commencé");
-            }
-
-            // Vérifie si la mise est valide
-            if (lot.Mise.HasValue && mise.Montant <= (decimal)lot.Mise.Value)
-            {
-                return (false, "La mise doit être supérieure à la mise actuelle");
-            }
-
-            lot.Mise = (double)mise.Montant;
-            lot.IdClientMise = mise.UserId;
-
             try
             {
+                var lot = await _context.Lots
+                    .Include(l => l.EncanLots)
+                    .ThenInclude(el => el.Encan)
+                    .FirstOrDefaultAsync(l => l.Id == mise.IdLot);
+
+                if (lot == null)
+                {
+                    return (false, "Lot non trouvé");
+                }
+
+                var encan = lot.EncanLots.FirstOrDefault()?.Encan;
+                if (encan == null)
+                {
+                    return (false, "Encan non trouvé");
+                }
+
+                if (DateTime.Now > encan.DateFinSoireeCloture)
+                {
+                    return (false, "L'encan est terminé");
+                }
+
+                if (DateTime.Now < encan.DateDebut)
+                {
+                    return (false, "L'encan n'a pas encore commencé");
+                }
+
+                // Vérifie si la mise est valide
+                if (lot.Mise.HasValue && mise.Montant <= (decimal)lot.Mise.Value)
+                {
+                    return (false, "La mise doit être supérieure à la mise actuelle");
+                }
+
+                lot.Mise = (double)mise.Montant;
+                lot.IdClientMise = mise.UserId;
+
                 await _context.SaveChangesAsync();
 
-                // Diffuser l'événement de nouvelle mise avec SignalR
-                await _hubContext.Clients.All.SendAsync("ReceiveNewBid", new
+                // Envoyer la mise à jour via SignalR
+                await _hubContext.Clients.All.ReceiveNewBid(new
                 {
                     idLot = mise.IdLot,
                     montant = mise.Montant,

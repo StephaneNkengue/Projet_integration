@@ -108,22 +108,22 @@ const store = createStore({
     },
     updateLotMise(state, { idLot, montant, userId }) {
       console.log("Mise à jour du lot:", idLot, "avec montant:", montant);
-
-      if (!state.lots[idLot]) {
-        // Créer un nouveau lot si non existant
-        state.lots[idLot] = {
+      
+      const newLots = { ...state.lots };
+      if (!newLots[idLot]) {
+        newLots[idLot] = {
           id: idLot,
           mise: montant,
           idClientMise: userId,
         };
       } else {
-        // Mettre à jour le lot existant
-        state.lots[idLot] = {
-          ...state.lots[idLot],
+        newLots[idLot] = {
+          ...newLots[idLot],
           mise: montant,
           idClientMise: userId,
         };
       }
+      state.lots = newLots; // Forcer la réactivité en réassignant l'objet
     },
 
     SET_CONNECTION(state, connection) {
@@ -876,80 +876,25 @@ const store = createStore({
       }
     },
 
-    async initSignalR({ commit, state, dispatch }) {
+    async initSignalR({ commit }) {
       try {
-        if (state.connection) {
-          await state.connection.stop();
-        }
-        if (state.notificationConnection) {
-          await state.notificationConnection.stop();
-        }
-
-        // Initialisation de la connexion pour lotMiseHub
         const connection = new signalR.HubConnectionBuilder()
-          .withUrl(
-            `${state.api.defaults.baseURL.replace("/api", "/hub/lotMiseHub")}`
-          )
-          .configureLogging(signalR.LogLevel.Information)
+          .withUrl(`${this.state.api.defaults.baseURL}/hub/lotMiseHub`)
           .withAutomaticReconnect()
           .build();
 
-        // Écouter l'événement de nouvelle mise
         connection.on("ReceiveNewBid", (data) => {
-          console.log("Nouvelle mise reçue via SignalR:", data);
-          commit("updateLotMise", {
-            idLot: parseInt(data.idLot),
-            montant: parseFloat(data.montant),
-            userId: data.userId,
+          commit('updateLotMise', {
+            idLot: data.idLot,
+            montant: data.montant,
+            userId: data.userId
           });
         });
 
-        // Gestion de la reconnexion pour lotMiseHub
-        connection.onclose(async () => {
-          console.log(
-            "Connexion SignalR lotMiseHub perdue. Tentative de reconnexion..."
-          );
-          setTimeout(() => dispatch("initSignalR"), 5000);
-        });
-
-        // Initialisation de la connexion pour notificationHub
-        const notificationConnection = new signalR.HubConnectionBuilder()
-          .withUrl(
-            `${state.api.defaults.baseURL.replace(
-              "/api",
-              "/hub/notificationHub"
-            )}`
-          )
-          .configureLogging(signalR.LogLevel.Information)
-          .withAutomaticReconnect()
-          .build();
-
-        // Écouter l'événement de notification
-        notificationConnection.on("ReceiveNotification", (message) => {
-          commit("ADD_NOTIFICATION", message);
-          // Ajouter toute autre logique d'animation ou de traitement ici
-        });
-
-        // Gestion de la reconnexion pour notificationHub
-        notificationConnection.onclose(async () => {
-          console.log(
-            "Connexion SignalR notificationHub perdue. Tentative de reconnexion..."
-          );
-          setTimeout(() => dispatch("initSignalR"), 5000);
-        });
-
-        // Démarrer les deux connexions
         await connection.start();
-        await notificationConnection.start();
-
-        console.log("Connecté à SignalR pour lotMiseHub et notificationHub");
-
-        // Enregistrer les connexions dans le state
-        commit("SET_CONNECTION", connection);
-        commit("SET_NOTIFICATION_CONNECTION", notificationConnection);
-      } catch (error) {
-        console.error("Erreur lors de l'initialisation de SignalR:", error);
-        setTimeout(() => dispatch("initSignalR"), 5000); // Reconnexion en cas d'erreur
+        commit('setSignalRConnection', connection);
+      } catch (err) {
+        console.error("Erreur lors de l'initialisation de SignalR:", err);
       }
     },
 
