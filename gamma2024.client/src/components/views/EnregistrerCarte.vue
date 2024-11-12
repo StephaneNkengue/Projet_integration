@@ -24,8 +24,11 @@
 <script setup>
     import { onMounted, ref } from "vue"
     import { useStore } from "vuex"
+    import { useRouter } from "vue-router";
 
     const store = useStore();
+
+    const router = useRouter()
     const props = defineProps({
         idFacture: String,
     });
@@ -46,6 +49,7 @@
 
         const appearance = {
             theme: 'stripe',
+
         };
         elements = stripe.elements({ appearance, clientSecret, locale: "fr", loader: 'always' });
 
@@ -65,22 +69,27 @@
         const { error } = await stripe.confirmSetup({
             elements,
             confirmParams: {
-                // Make sure to change this to your payment completion page
-                return_url: "https://sqlinfocg.cegepgranby.qc.ca/2162067/",
+                return_url: "https://google.com",
             },
+            redirect: "if_required",
         });
 
-        // This point will only be reached if there is an immediate error when
-        // confirming the payment. Otherwise, your customer will be redirected to
-        // your `return_url`. For some payment methods like iDEAL, your customer will
-        // be redirected to an intermediate site first to authorize the payment, then
-        // redirected to the `return_url`.
-        if (error.type === "card_error" || error.type === "validation_error") {
-            showMessage(error.message);
-        } else {
-            showMessage("An unexpected error occurred.");
+        if (error != undefined) {
+            if (error.type === "card_error" || error.type === "validation_error") {
+                showMessage(error.message);
+            } else {
+                showMessage("An unexpected error occurred.");
+            }
         }
-
+        else {
+            const response = await store.dispatch("chercherCartesUser")
+            if (response.data.length > 1) {
+                router.push({ name: 'GestionCartes' })
+            }
+            else {
+                router.push({ name: "Accueil" })
+            }
+        }
         setLoading(false);
     }
 
