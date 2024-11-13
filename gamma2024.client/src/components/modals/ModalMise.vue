@@ -81,6 +81,7 @@ const store = useStore();
 const modalInstance = ref(null);
 const montantMise = ref(0);
 const montantInitial = ref(0);
+const userLastBid = ref(0);
 
 const props = defineProps({
   lot: {
@@ -176,13 +177,16 @@ watch(
 
 // Gestion du modal
 onMounted(() => {
-  nextTick(() => {
+  nextTick(async () => {
     const modalElement = document.getElementById(`modalMise_${props.lot?.id}`);
     if (modalElement) {
       modalInstance.value = new Modal(modalElement, {
         backdrop: "static",
         keyboard: false,
       });
+    }
+    if (props.lot?.id) {
+      userLastBid.value = await store.getters.getUserBidForLot(props.lot.id);
     }
   });
 });
@@ -220,8 +224,10 @@ const hide = () => {
 
 // Computed properties
 const affichageMiseActuelle = computed(() => {
-  const lot = store.getters.getLot(props.lot?.id);
-  return lot?.mise ? `${lot.mise}$` : "aucune mise";
+  if (userLastBid.value > 0) {
+    return `${userLastBid.value}$`;
+  }
+  return "aucune mise";
 });
 
 const hasUserBidOnLot = computed(() => {

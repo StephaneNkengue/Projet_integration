@@ -216,5 +216,19 @@ namespace Gamma2024.Server.Controllers
             return Ok(userBids);
         }
 
+        [Authorize]
+        [HttpGet("userLastBid/{lotId}")]
+        public async Task<ActionResult<decimal>> GetUserLastBid(int lotId)
+        {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userId))
+            {
+                return Unauthorized();
+            }
+
+            var lastBid = await _lotService.GetUserLastBid(lotId, userId);
+            return Ok(lastBid);
+        }
+
     }
 }

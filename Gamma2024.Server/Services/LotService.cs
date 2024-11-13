@@ -711,5 +711,14 @@ namespace Gamma2024.Server.Services
             return new List<string> { /* Liste des IDs utilisateur */ };
         }
 
+        public async Task<decimal?> GetUserLastBid(int lotId, string userId)
+        {
+            return await _context.MiseAutomatiques
+                .Where(m => m.LotId == lotId && m.UserId == userId)
+                .OrderByDescending(m => m.DateMise)
+                .Select(m => m.Montant)
+                .FirstOrDefaultAsync();
+        }
+
     }
 }

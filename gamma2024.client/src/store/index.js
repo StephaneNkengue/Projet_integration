@@ -15,6 +15,7 @@ const store = createStore({
     userBids: [],
     userOutbidLots: [],
     notifications: [],
+    userBidHistory: {}, // Format: { lotId: { userId: montant } }
   },
   mutations: {
     ADD_NOTIFICATION(state, message) {
@@ -219,6 +220,12 @@ const store = createStore({
     },
     setSignalRConnection(state, connection) {  // Ajouter cette mutation manquante
       state.connection = connection;
+    },
+    updateUserBid(state, { lotId, userId, montant }) {
+      if (!state.userBidHistory[lotId]) {
+        state.userBidHistory[lotId] = {};
+      }
+      state.userBidHistory[lotId][userId] = montant;
     }
   },
   actions: {
@@ -1028,6 +1035,15 @@ const store = createStore({
         return "Erreur, veuillez réessayer";
       }
     },
+    async getUserLastBidForLot({ state }, lotId) {
+      try {
+        const response = await state.api.get(`/lots/userLastBid/${lotId}`);
+        return response.data;
+      } catch (error) {
+        console.error("Erreur lors de la récupération de la dernière mise:", error);
+        return 0;
+      }
+    }
   },
   getters: {
     isAdmin: (state) => {
@@ -1065,6 +1081,15 @@ const store = createStore({
     getAllLots: (state) => {
       return Object.values(state.lots);
     },
+    getUserBidForLot: (state) => async (lotId) => {
+      try {
+        const response = await state.api.get(`/lots/userLastBid/${lotId}`);
+        return response.data;
+      } catch (error) {
+        console.error("Erreur lors de la récupération de la dernière mise:", error);
+        return 0;
+      }
+    }
   },
 });
 
