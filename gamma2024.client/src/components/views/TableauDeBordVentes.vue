@@ -12,7 +12,7 @@
             <div class="accordion-item " v-for="encan in numerosEncans" :key="encan">
                 <h2 class="accordion-header px-0">
                     <button class="accordion-button" type="button" data-bs-toggle="collapse" :data-bs-target="'#collapse'+encan" aria-expanded="true" :aria-controls="'collapse'+encan">
-                        {{encan}} ()
+                        {{encan.numero}} ({{encan.dateAchat.split("T")[0]}})
                     </button>
                 </h2>
                 <!--Changer le 233 en le numero de l'encan le plus récent-->
@@ -75,7 +75,7 @@
             listeFactures.value[0].encan = '233'
             listeFactures.value[0].lots[0].estLivrable = 0
 
-            listeFactures.value.forEach(x => numerosEncans.value.push(parseInt(x.encan)))
+            listeFactures.value.forEach(x => numerosEncans.value.push({ 'numero': parseInt(x.encan), 'dateAchat': x.dateAchat }))
             numerosEncans.value = numerosEncans.value.filter((value, index, self) => self.indexOf(value) === index).sort(function (a, b) { return b - a; })
         }
         catch (error) {
