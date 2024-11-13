@@ -12,7 +12,7 @@
             <div class="accordion-item " v-for="(facture, index) in filteredVentes" :key="facture.id">
                 <h2 class="accordion-header px-0">
                     <button v-if="index == 0 || filteredVentes[index-1].encan != facture.encan" class="accordion-button" type="button" data-bs-toggle="collapse" :data-bs-target="'#collapse'+facture.encan" aria-expanded="true" :aria-controls="'collapse'+facture.encan">
-                        {{facture.encan}} (dateAchat)
+                        {{facture.encan}} ({{facture.dateAchat.split("T")[0]}})
                     </button>
                 </h2>
                 <!--Changer le 233 en le numero de l'encan le plus récent-->
@@ -22,7 +22,7 @@
                             <div class="accordion-item">
                                 <h2 class="accordion-header px-0">
                                     <button class="accordion-button" type="button" data-bs-toggle="collapse" :data-bs-target="'#collapseFacture'+facture.id" aria-expanded="true" :aria-controls="'collapseFacture'+facture.id">
-                                        nom client (pseudonyme) - téléphone courriel
+                                        {{facture.prenom}} {{facture.nom}} ({{facture.pseudonyme}})<br />{{facture.courriel}}<br />{{facture.telephone}}
                                     </button>
                                 </h2>
                                 <div :id="'collapseFacture'+facture.id" class="accordion-collapse collapse" data-bs-parent="#accordionClient">
@@ -36,11 +36,14 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <!-- <tr v-for="lot in facture.lots" :key="lot.id">
+                                                <tr v-for="lot in facture.lots" :key="lot.id">
                                                     <td scope="row">{{ lot.numero }}</td>
-                                                    <td>{{lot.description}}</td>
-                                                    <td>{{lot.artiste}}</td>
-                                                </tr> -->
+                                                    <td>{{lot.mise}}</td>
+                                                    <td>
+                                                        <img v-if="lot.estLivrable" src="/icons/livrable.png" />
+                                                        <img v-else src="/icons/nonlivrable.png" />
+                                                    </td>
+                                                </tr>
                                             </tbody>
                                         </table>
                                     </div>
@@ -69,6 +72,7 @@
             listeFactures.value = await store.dispatch("fetchFactureInfo");
 
             listeFactures.value[0].encan = 233
+            listeFactures.value[0].lots[0].estLivrable = 0
             console.log("test" + listeFactures.value);
         }
         catch (error) {
