@@ -20,7 +20,7 @@ namespace Gamma2024.Server.Controllers
             _userManager = userManager;
         }
 
-        //[Authorize(Roles = "Client")]
+        [Authorize(Roles = "Client")]
         [HttpPost("CreerSetupIntent")]
         public async Task<ActionResult> CreerSetupIntent()
         {
@@ -49,7 +49,7 @@ namespace Gamma2024.Server.Controllers
             return Ok(new { clientSecret = intent.ClientSecret });
         }
 
-        //[Authorize(Roles = "Client")]
+        [Authorize(Roles = "Client")]
         [HttpGet("ChercherCartes")]
         public async Task<ActionResult> ChercherCartes()
         {
