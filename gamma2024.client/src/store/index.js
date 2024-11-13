@@ -893,32 +893,24 @@ const store = createStore({
 
     async placerMise({ state, commit, dispatch }, { idLot, montant }) {
       try {
-        const miseData = {
+        const response = await state.api.post("/lots/placerMise", {
           idLot: idLot,
           montant: parseFloat(montant),
-          userId: state.user?.id,
-        };
-
-        const response = await state.api.post("/lots/placerMise", miseData);
+          userId: state.user?.id
+        });
 
         if (response.data.success) {
+          // Ne pas mettre à jour ici, attendre la notification SignalR
           commit("addUserBid", idLot);
-          commit("updateLotMise", {
-            idLot: idLot,
-            montant: montant,
-            userId: state.user.id,
-          });
           await dispatch("fetchUserBids");
         }
 
         return response.data;
       } catch (error) {
         console.error("Erreur lors de la mise:", error);
-        const errorMessage =
-          error.response?.data?.message || "Erreur lors de la mise";
         return {
           success: false,
-          message: errorMessage,
+          message: error.response?.data?.message || "Erreur lors de la mise"
         };
       }
     },
@@ -954,6 +946,12 @@ const store = createStore({
             idLot: data.idLot,
             montant: data.montant,
             userId: data.userId
+          });
+          // Mettre à jour le lot dans le store
+          commit('updateLot', {
+            id: data.idLot,
+            mise: data.montant,
+            idClientMise: data.userId
           });
         });
 

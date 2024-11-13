@@ -204,7 +204,8 @@ const decrementerMise = () => {
 // Méthodes du modal
 const show = () => {
   if (modalInstance.value) {
-    const montantBase = calculerMontantInitial(props.lot);
+    const lot = store.getters.getLot(props.lot?.id);
+    const montantBase = lot?.mise || props.lot.prixOuverture || 0;
     const pasInitial = calculerPasEnchere(montantBase);
     montantMise.value = montantBase + pasInitial;
     modalInstance.value.show();
@@ -235,6 +236,18 @@ defineExpose({
 
 // Définir les émissions
 const emit = defineEmits(["miseConfirmee"]);
+
+// Watch pour mettre à jour le montant initial quand la mise change
+watch(
+  () => store.getters.getLot(props.lot?.id)?.mise,
+  (newMise) => {
+    if (newMise) {
+      montantInitial.value = newMise;
+      const pasInitial = calculerPasEnchere(montantInitial.value);
+      montantMise.value = montantInitial.value + pasInitial;
+    }
+  }
+);
 </script>
 
 <style scoped>
