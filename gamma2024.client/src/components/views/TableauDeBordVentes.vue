@@ -15,7 +15,8 @@
                         {{facture.encan}} (dateAchat)
                     </button>
                 </h2>
-                <div :id="'collapse'+facture.encan" class="accordion-collapse collapse show" data-bs-parent="#accordionEncan">
+                <!--Changer le 233 en le numero de l'encan le plus récent-->
+                <div :id="'collapse'+facture.encan" class="accordion-collapse collapse" :class="{ show: facture.encan == 233}" data-bs-parent="#accordionEncan">
                     <div class="accordion-body">
                         <div class="accordion" id="accordionClient">
                             <div class="accordion-item">
@@ -24,7 +25,7 @@
                                         nom client (pseudonyme) - téléphone courriel
                                     </button>
                                 </h2>
-                                <div :id="'collapseFacture'+facture.id" class="accordion-collapse collapse show" data-bs-parent="#accordionClient">
+                                <div :id="'collapseFacture'+facture.id" class="accordion-collapse collapse" data-bs-parent="#accordionClient">
                                     <div class="accordion-body">
                                         <table class="table">
                                             <thead>
