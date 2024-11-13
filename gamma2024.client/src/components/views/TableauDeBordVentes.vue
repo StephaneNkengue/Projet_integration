@@ -20,11 +20,11 @@
                         <div class="accordion" id="accordionClient">
                             <div class="accordion-item">
                                 <h2 class="accordion-header px-0">
-                                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapsetwo" aria-expanded="true" aria-controls="collapseOne">
+                                    <button class="accordion-button" type="button" data-bs-toggle="collapse" :data-bs-target="'#collapseFacture'+facture.id" aria-expanded="true" :aria-controls="'collapseFacture'+facture.id">
                                         nom client (pseudonyme) - téléphone courriel
                                     </button>
                                 </h2>
-                                <div id="collapsetwo" class="accordion-collapse collapse show" data-bs-parent="#accordionClient">
+                                <div :id="'collapseFacture'+facture.id" class="accordion-collapse collapse show" data-bs-parent="#accordionClient">
                                     <div class="accordion-body">
                                         <table class="table">
                                             <thead>
