@@ -24,8 +24,6 @@ namespace Gamma2024.Server.Controllers
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly IEmailSender _emailSender;
         private readonly ApplicationDbContext _context;
-
-
         public UtilisateursController(ClientInscriptionService inscriptionService, IEmailSender emailSender,
             UserManager<ApplicationUser> userManager, ApplicationDbContext context, ClientModificationService modificationService,
             IWebHostEnvironment webHostEnvironment)
@@ -116,7 +114,6 @@ namespace Gamma2024.Server.Controllers
             var user = await _userManager.Users
                 .OfType<ApplicationUser>()
                 .Include(u => u.Adresses.Where(a => a.EstDomicile))
-                .Include(u => u.CarteCredits)
                 .FirstOrDefaultAsync(u => u.Id == userId);
 
             if (user == null)
@@ -135,11 +132,6 @@ namespace Gamma2024.Server.Controllers
                 pseudonym = user.UserName,
                 photo = string.IsNullOrEmpty(user.Avatar) ? "/Avatars/default.png" : user.Avatar,
                 roles = await _userManager.GetRolesAsync(user),
-                cardOwnerName = user.CarteCredits.FirstOrDefault()?.Nom,
-                cardNumber = user.CarteCredits.FirstOrDefault()?.Numero,
-                cardExpiryDate = user.CarteCredits.Any()
-                    ? $"{user.CarteCredits.First().MoisExpiration:D2}/{user.CarteCredits.First().AnneeExpiration % 100:D2}"
-                    : null,
                 civicNumber = user.Adresses.FirstOrDefault()?.Numero.ToString(),
                 street = user.Adresses.FirstOrDefault()?.Rue,
                 apartment = user.Adresses.FirstOrDefault()?.Appartement,

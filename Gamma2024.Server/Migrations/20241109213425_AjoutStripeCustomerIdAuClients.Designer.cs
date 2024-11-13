@@ -4,6 +4,7 @@ using Gamma2024.Server.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Gamma2024.Server.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241109213425_AjoutStripeCustomerIdAuClients")]
+    partial class AjoutStripeCustomerIdAuClients
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -217,6 +220,59 @@ namespace Gamma2024.Server.Migrations
                             StripeCustomer = "",
                             TwoFactorEnabled = false,
                             UserName = "client@example.com"
+                        });
+                });
+
+            modelBuilder.Entity("Gamma2024.Server.Models.CarteCredit", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AnneeExpiration")
+                        .HasColumnType("int");
+
+                    b.Property<string>("IdApplicationUser")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("MoisExpiration")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Nom")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Numero")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IdApplicationUser");
+
+                    b.ToTable("CartesCredits");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            AnneeExpiration = 2025,
+                            IdApplicationUser = "8e445865-a24d-4543-a6c6-9443d048cdb9",
+                            MoisExpiration = 12,
+                            Nom = "Admin Admin",
+                            Numero = "5555555555554444"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            AnneeExpiration = 2026,
+                            IdApplicationUser = "1d8ac862-e54d-4f10-b6f8-638808c02967",
+                            MoisExpiration = 12,
+                            Nom = "Jean Dupont",
+                            Numero = "4242424242424242"
                         });
                 });
 
@@ -702,6 +758,17 @@ namespace Gamma2024.Server.Migrations
                     b.Navigation("ApplicationUser");
                 });
 
+            modelBuilder.Entity("Gamma2024.Server.Models.CarteCredit", b =>
+                {
+                    b.HasOne("Gamma2024.Server.Models.ApplicationUser", "ApplicationUser")
+                        .WithMany("CarteCredits")
+                        .HasForeignKey("IdApplicationUser")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("ApplicationUser");
+                });
+
             modelBuilder.Entity("Gamma2024.Server.Models.EncanLot", b =>
                 {
                     b.HasOne("Gamma2024.Server.Models.Encan", "Encan")
@@ -868,6 +935,8 @@ namespace Gamma2024.Server.Migrations
             modelBuilder.Entity("Gamma2024.Server.Models.ApplicationUser", b =>
                 {
                     b.Navigation("Adresses");
+
+                    b.Navigation("CarteCredits");
                 });
 
             modelBuilder.Entity("Gamma2024.Server.Models.Categorie", b =>
