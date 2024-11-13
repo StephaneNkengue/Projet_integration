@@ -9,16 +9,16 @@
         <h1 class="text-center mt-5">Liste des ventes</h1>
 
         <div class="accordion" id="accordionEncan">
-            <div class="accordion-item " v-for="(facture, index) in filteredVentes" :key="facture.id">
+            <div class="accordion-item " v-for="encan in numerosEncans" :key="encan">
                 <h2 class="accordion-header px-0">
-                    <button v-if="index == 0 || filteredVentes[index-1].encan != facture.encan" class="accordion-button" type="button" data-bs-toggle="collapse" :data-bs-target="'#collapse'+facture.encan" aria-expanded="true" :aria-controls="'collapse'+facture.encan">
-                        {{facture.encan}} ({{facture.dateAchat.split("T")[0]}})
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse" :data-bs-target="'#collapse'+encan" aria-expanded="true" :aria-controls="'collapse'+encan">
+                        {{encan}} ()
                     </button>
                 </h2>
                 <!--Changer le 233 en le numero de l'encan le plus récent-->
-                <div :id="'collapse'+facture.encan" class="accordion-collapse collapse" :class="{ show: facture.encan == 233}" data-bs-parent="#accordionEncan">
+                <div :id="'collapse'+encan" class="accordion-collapse collapse" :class="{ show: encan == numerosEncans[0]}" data-bs-parent="#accordionEncan">
                     <div class="accordion-body">
-                        <div class="accordion" id="accordionClient">
+                        <div class="accordion" id="accordionClient" v-for="(facture, index) in filteredVentes.filter((x)=>x.encan == encan)">
                             <div class="accordion-item">
                                 <h2 class="accordion-header px-0">
                                     <button class="accordion-button" type="button" data-bs-toggle="collapse" :data-bs-target="'#collapseFacture'+facture.id" aria-expanded="true" :aria-controls="'collapseFacture'+facture.id">
@@ -66,14 +66,17 @@
     const store = useStore();
     const listeFactures = ref([]);
     const searchQuery = ref("");
+    const numerosEncans = ref([])
 
     onMounted(async () => {
         try {
             listeFactures.value = await store.dispatch("fetchFactureInfo");
 
-            listeFactures.value[0].encan = 233
+            listeFactures.value[0].encan = '233'
             listeFactures.value[0].lots[0].estLivrable = 0
-            console.log("test" + listeFactures.value);
+
+            listeFactures.value.forEach(x => numerosEncans.value.push(parseInt(x.encan)))
+            numerosEncans.value = numerosEncans.value.filter((value, index, self) => self.indexOf(value) === index).sort(function (a, b) { return b - a; })
         }
         catch (error) {
             console.log("Erreur factures" + error);
