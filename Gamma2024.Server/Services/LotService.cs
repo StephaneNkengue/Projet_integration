@@ -647,7 +647,10 @@ namespace Gamma2024.Server.Services
                 lot.IdClientMise = mise.UserId;
 
                 _context.MiseAutomatiques.Add(nouvelleMise);
+                _context.Lots.Update(lot);
+                
                 await _context.SaveChangesAsync();
+
 
                 // Envoyer la mise à jour via SignalR
                 await _hubContext.Clients.All.ReceiveNewBid(new
@@ -683,11 +686,19 @@ namespace Gamma2024.Server.Services
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<int>> GetUserBids(string userId)
+        public async Task<IEnumerable<UserBidVM>> GetUserBids(string userId)
         {
-            var userBids = await _context.Lots
-                .Where(l => l.IdClientMise == userId)
-                .Select(l => l.Id)
+            var userBids = await _context.MiseAutomatiques
+                .Where(m => m.UserId == userId)  // Filtre les mises de l'utilisateur
+                .GroupBy(m => m.LotId)           // Groupe par lot
+                .Select(g => new UserBidVM
+                {
+                    LotId = g.Key,
+                    IsLastBidder = _context.Lots
+                        .Where(l => l.Id == g.Key)
+                        .Select(l => l.IdClientMise == userId)
+                        .FirstOrDefault()  // Compare directement les strings IdClientMise et userId
+                })
                 .ToListAsync();
 
             return userBids;

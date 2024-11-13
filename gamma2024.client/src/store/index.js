@@ -155,7 +155,19 @@ const store = createStore({
       }
     },
     setUserBids(state, bids) {
-      state.userBids = bids;
+      // Stocke les IDs des lots sur lesquels l'utilisateur a misé
+      state.userBids = bids.map(bid => bid.lotId);
+      
+      // Met à jour chaque lot avec son statut
+      bids.forEach(bid => {
+        if (state.lots[bid.lotId]) {
+          state.lots[bid.lotId] = {
+            ...state.lots[bid.lotId],
+            userHasBid: true,              // L'utilisateur a misé sur ce lot
+            isOutbid: !bid.isLastBidder    // L'utilisateur n'est plus le dernier enchérisseur
+          };
+        }
+      });
     },
     setLots(state, lots) {
       // Convertir le tableau en objet indexé par id
