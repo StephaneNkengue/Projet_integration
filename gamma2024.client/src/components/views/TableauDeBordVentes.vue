@@ -9,9 +9,9 @@
         <h1 class="text-center mt-5">Liste des ventes</h1>
 
         <div class="accordion" id="accordionEncan">
-            <div class="accordion-item " v-for="facture in filteredVentes" :key="facture.id">
+            <div class="accordion-item " v-for="(facture, index) in filteredVentes" :key="facture.id">
                 <h2 class="accordion-header px-0">
-                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                    <button v-if="index == 0 || filteredVentes[index-1].encan != facture.encan" class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
                         {{facture.encan}} (dateAchat)
                     </button>
                 </h2>
