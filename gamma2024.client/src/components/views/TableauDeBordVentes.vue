@@ -7,27 +7,50 @@
                placeholder="Rechercher une vente"
                aria-label="Search" />
         <h1 class="text-center mt-5">Liste des ventes</h1>
-        <table class="table table-striped mt-5 mb-5 col-md-12 text-center">
-            <thead>
-                <tr>
-                    <th scope="col">Encan</th>
-                    <th scope="col">Date</th>
-                    <th scope="col">Client</th>
-                    <th scope="col">Action</th>
-                </tr>
-            </thead>
-            <tr v-for="facture in filteredVentes" :key="facture.id" data-bs-toggle="modal" :data-bs-target="'#'+facture.id">
-                <td scope="row">{{facture.encan}}</td>
-                <td>{{facture.dateAchat.split("T")[0]}}</td>
-                <td>{{facture.prenom}} {{facture.nom}}</td>
-                <td>
-                    <button class="btn btn-info">
-                        <img src="/images/ice.png" class="img-fluid" alt="..." />
+
+        <div class="accordion" id="accordionEncan">
+            <div class="accordion-item " v-for="facture in filteredVentes" :key="facture.id">
+                <h2 class="accordion-header px-0">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                        {{facture.encan}} (dateAchat)
                     </button>
-                </td>
-                <DetailsAchats :f="facture" />
-            </tr>
-        </table>
+                </h2>
+                <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#accordionEncan">
+                    <div class="accordion-body">
+                        <div class="accordion" id="accordionClient">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header px-0">
+                                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapsetwo" aria-expanded="true" aria-controls="collapseOne">
+                                        nom client (pseudonyme) - téléphone courriel
+                                    </button>
+                                </h2>
+                                <div id="collapsetwo" class="accordion-collapse collapse show" data-bs-parent="#accordionClient">
+                                    <div class="accordion-body">
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th scope="col">Numéro du lot</th>
+                                                    <th scope="col">Prix vendu</th>
+                                                    <th scope="col">Livraison</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <!-- <tr v-for="lot in facture.lots" :key="lot.id">
+                                                    <td scope="row">{{ lot.numero }}</td>
+                                                    <td>{{lot.description}}</td>
+                                                    <td>{{lot.artiste}}</td>
+                                                </tr> -->
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 </template>
 
@@ -57,7 +80,6 @@
         }
         return [];
     });
-
 
     const filteredVentes = computed(() => {
         return tousLesVentes.value.filter((vente) => {
@@ -90,7 +112,7 @@
         font-size: 16px;
     }
 
-    .btn{
+    .btn {
         background-color: #0dcaf0;
     }
 </style>
