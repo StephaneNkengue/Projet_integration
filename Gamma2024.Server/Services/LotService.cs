@@ -601,8 +601,9 @@ namespace Gamma2024.Server.Services
             try
             {
                 var lot = await _context.Lots
+                    .Include(l => l.MisesAutomatiques)
                     .Include(l => l.EncanLots)
-                    .ThenInclude(el => el.Encan)
+                        .ThenInclude(el => el.Encan)
                     .FirstOrDefaultAsync(l => l.Id == mise.IdLot);
 
                 if (lot == null)
@@ -610,26 +611,28 @@ namespace Gamma2024.Server.Services
                     return (false, "Lot non trouvé");
                 }
 
+                // Vérifier si l'encan est actif
                 var encan = lot.EncanLots.FirstOrDefault()?.Encan;
                 if (encan == null)
                 {
                     return (false, "Encan non trouvé");
                 }
 
-                if (DateTime.Now > encan.DateFinSoireeCloture)
-                {
-                    return (false, "L'encan est terminé");
-                }
-
-                if (DateTime.Now < encan.DateDebut)
+                var maintenant = DateTime.Now;
+                if (maintenant < encan.DateDebut)
                 {
                     return (false, "L'encan n'a pas encore commencé");
                 }
 
-                // Vérifie si la mise est valide
-                if (lot.Mise.HasValue && mise.Montant <= (decimal)lot.Mise.Value)
+                if (maintenant > encan.DateFinSoireeCloture)
                 {
-                    return (false, "La mise doit être supérieure à la mise actuelle");
+                    return (false, "L'encan est terminé");
+                }
+
+                // Vérifier si la mise respecte le pas d'enchère
+                if (!EstMiseValide(lot.Mise ?? 0, mise.Montant))
+                {
+                    return (false, "La mise ne respecte pas le pas d'enchère");
                 }
 
                 // Créer l'entrée dans l'historique des mises
@@ -642,23 +645,31 @@ namespace Gamma2024.Server.Services
                     EstMiseAutomatique = false
                 };
 
-                // Mettre à jour le lot avec la dernière mise
-                lot.Mise = (double)mise.Montant;
-                lot.IdClientMise = mise.UserId;
-
                 _context.MiseAutomatiques.Add(nouvelleMise);
-                _context.Lots.Update(lot);
                 
+                // Traiter les mises automatiques
+                await TraiterMisesAutomatiques(lot, encan);
+
+                // Mettre à jour le lot avec la dernière mise
+                var derniereMise = await _context.MiseAutomatiques
+                    .Where(m => m.LotId == lot.Id)
+                    .OrderByDescending(m => m.DateMise)
+                    .FirstAsync();
+
+                // Mettre à jour le lot avec la dernière mise une seule fois
+                lot.Mise = (double)derniereMise.Montant;
+                lot.IdClientMise = derniereMise.UserId;
+                
+                _context.Lots.Update(lot);
                 await _context.SaveChangesAsync();
 
-
-                // Envoyer la mise à jour via SignalR
+                // Envoyer la notification de la dernière mise
                 await _hubContext.Clients.All.ReceiveNewBid(new
                 {
-                    idLot = mise.IdLot,
-                    montant = mise.Montant,
-                    userId = mise.UserId,
-                    timestamp = DateTime.UtcNow
+                    idLot = lot.Id,
+                    montant = derniereMise.Montant,
+                    userId = derniereMise.UserId,
+                    timestamp = derniereMise.DateMise
                 });
 
                 return (true, "Mise placée avec succès");
@@ -667,6 +678,87 @@ namespace Gamma2024.Server.Services
             {
                 _logger.LogError(ex, "Erreur lors de la mise pour le lot {LotId}", mise.IdLot);
                 return (false, "Une erreur est survenue lors de la mise");
+            }
+        }
+
+        private bool EstMiseValide(double miseActuelle, decimal nouvelleMise)
+        {
+            decimal pasEnchere = CalculerPasEnchere((decimal)miseActuelle);
+            return nouvelleMise >= (decimal)miseActuelle + pasEnchere;
+        }
+
+        private decimal CalculerPasEnchere(decimal montant)
+        {
+            if (montant <= 199.0M) return 10.0M;
+            if (montant <= 499.0M) return 25.0M;
+            if (montant <= 999.0M) return 50.0M;
+            if (montant <= 1999.0M) return 100.0M;
+            if (montant <= 4999.0M) return 200.0M;
+            if (montant <= 9999.0M) return 250.0M;
+            if (montant <= 19999.0M) return 500.0M;
+            if (montant <= 49999.0M) return 1000.0M;
+            if (montant <= 99999.0M) return 2000.0M;
+            if (montant <= 499999.0M) return 5000.0M;
+            return 10000.0M;
+        }
+
+        private async Task TraiterMisesAutomatiques(Lot lot, Encan encan)
+        {
+            bool continuerMises = true;
+            while (continuerMises)
+            {
+                // Vérifier si l'encan est toujours actif
+                if (DateTime.Now > encan.DateFinSoireeCloture)
+                {
+                    break;
+                }
+
+                var misesAutomatiques = await _context.MiseAutomatiques
+                    .Where(m => m.LotId == lot.Id && 
+                               m.MontantMaximal.HasValue && 
+                               m.MontantMaximal > (decimal)lot.Mise)
+                    .OrderByDescending(m => m.MontantMaximal)
+                    .ThenBy(m => m.DateMise)
+                    .ToListAsync();
+
+                // S'arrêter s'il n'y a pas de mises auto ou s'il n'y a qu'un seul enchérisseur
+                if (!misesAutomatiques.Any() || misesAutomatiques.Count == 1)
+                {
+                    continuerMises = false;
+                    continue;
+                }
+
+                var miseGagnante = misesAutomatiques.First();
+                var deuxiemeMise = misesAutomatiques.Skip(1).FirstOrDefault();
+
+                decimal nouvelleMise;
+                if (deuxiemeMise != null)
+                {
+                    nouvelleMise = Math.Min(
+                        deuxiemeMise.MontantMaximal.Value + CalculerPasEnchere(deuxiemeMise.MontantMaximal.Value),
+                        miseGagnante.MontantMaximal.Value
+                    );
+                }
+                else
+                {
+                    nouvelleMise = Math.Min(
+                        (decimal)lot.Mise + CalculerPasEnchere((decimal)lot.Mise),
+                        miseGagnante.MontantMaximal.Value
+                    );
+                }
+
+                var nouvelleMiseAuto = new MiseAutomatique
+                {
+                    LotId = lot.Id,
+                    UserId = miseGagnante.UserId,
+                    Montant = nouvelleMise,
+                    DateMise = DateTime.UtcNow,
+                    EstMiseAutomatique = true,
+                    MontantMaximal = miseGagnante.MontantMaximal
+                };
+
+                _context.MiseAutomatiques.Add(nouvelleMiseAuto);
+                await _context.SaveChangesAsync();
             }
         }
 

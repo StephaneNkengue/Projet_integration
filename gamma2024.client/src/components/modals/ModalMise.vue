@@ -248,9 +248,9 @@ watch(
   () => store.getters.getLot(props.lot?.id)?.mise,
   (newMise) => {
     if (newMise) {
-      montantInitial.value = newMise;
+     montantInitial.value = newMise;
       const pasInitial = calculerPasEnchere(montantInitial.value);
-      montantMise.value = montantInitial.value + pasInitial;
+     
     }
   }
 );
