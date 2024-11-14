@@ -42,7 +42,7 @@ namespace Gamma2024.Server.Controllers
                 Data = new
                 {
                     idFacture = model.Id,
-                    adresse = _context.Adresses.FindAsync(model.IdAdresse),
+                    //adresse = _context.Adresses.FindAsync(model.Client.Adresses.First().Id),
                     user = _context.Users.FindAsync(model.IdClient),
 
                 }
