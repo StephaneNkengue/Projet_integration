@@ -296,9 +296,7 @@
                                         <option class="py-0" value="0" selected>
                                             Pas de choix
                                         </option>
-                                        <option class="py-0" value="1">Choix 1</option>
-                                        <option class="py-0" value="2">Choix 2</option>
-                                        <option class="py-0" value="3">Choix 3</option>
+                                        <option v-for="artiste in listeDesArtistes" :key="artiste.nomArtiste" class="py-0" :value="artiste.nomArtiste">{{artiste.nomArtiste}}</option>
                                     </select>
                                 </div>
                                 <div class="col-md-4">
@@ -312,7 +310,7 @@
                                         <option class="py-0" value="0" selected>
                                             Pas de choix
                                         </option>
-                                        <option v-for="categorie in listeDeCategories" :key="`categorie.id`" class="py-0" value="`{{categorie.id}}`">{{categorie.nom}}</option>
+                                        <option v-for="categorie in listeDesCategories" :key="categorie.id" class="py-0" :value="categorie.id">{{categorie.nom}}</option>
                                     </select>
                                 </div>
                                 <div class="col-md-4">
@@ -326,7 +324,7 @@
                                         <option class="py-0" value="0" selected>
                                             Pas de choix
                                         </option>
-                                        <option v-for="medium in listeDeMediums" :key="medium.id" class="py-0" value={{medium.id}}>{{medium.type}}</option>
+                                        <option v-for="medium in listeDesMediums" :key="medium.id" class="py-0" :value="medium.id">{{medium.type}}</option>
                                     </select>
                                 </div>
                             </div>
@@ -438,9 +436,9 @@
 
     const currentUser = ref(null);
 
-    const listeDArtistes = ref([]);
-    const listeDeCategories = ref([]);
-    const listeDeMediums = ref([]);
+    const listeDesArtistes = ref([]);
+    const listeDesCategories = ref([]);
+    const listeDesMediums = ref([]);
 
     const colonnesDeCriteresEncans = ref({
         numero: true,
@@ -664,8 +662,9 @@
         document.querySelectorAll(".dropdown-toggle").forEach((dropdownToggle) => {
             new bootstrap.Dropdown(dropdownToggle);
         });
-        listeDeMediums.value = await store.dispatch('obtenirMediums');
-        listeDeCategories.value = await store.dispatch('obtenirCategories');
+        listeDesArtistes.value = await store.dispatch('obtenirArtistes');
+        listeDesMediums.value = await store.dispatch('obtenirMediums');
+        listeDesCategories.value = await store.dispatch('obtenirCategories');
     });
 </script>
 <style scoped>

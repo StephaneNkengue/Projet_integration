@@ -404,6 +404,10 @@ const store = createStore({
                 throw error;
             }
         },
+        async obtenirArtistes({ state }) {
+            const response = await state.api.get("/lots/artistes");
+            return response.data;
+        },
         async obtenirCategories({ state }) {
             const response = await state.api.get("/lots/categories");
             return response.data;

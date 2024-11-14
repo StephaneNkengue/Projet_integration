@@ -83,6 +83,20 @@ namespace Gamma2024.Server.Controllers
 			return Ok(new { success = true, message = "Lot supprimé avec succès" });
 		}
 
+		[HttpGet("artistes")]
+		public async Task<ActionResult<ICollection<ArtisteVM>>> ObtenirTousArtistes()
+		{
+			try
+			{
+				var artistes = _lotService.ObtenirTousArtistes();
+				return Ok(artistes);
+			}
+			catch (Exception ex)
+			{
+				return BadRequest($"Erreur d'obtenir tous les artistes: {ex.Message}");
+			}
+		}
+
 		[HttpGet("categories")]
 		public async Task<ActionResult<IEnumerable<Categorie>>> ObtenirCategories()
 		{
