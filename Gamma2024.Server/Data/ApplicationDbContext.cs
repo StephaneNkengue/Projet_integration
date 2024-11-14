@@ -18,6 +18,7 @@ namespace Gamma2024.Server.Data
         public DbSet<Categorie> Categories { get; set; } = default!;
         public DbSet<Photo> Photos { get; set; } = default!;
         public DbSet<Facture> Factures { get; set; } = default!;
+        public DbSet<FactureLivraison> FactureLivraisons { get; set; } = default!;
         public DbSet<Vendeur> Vendeurs { get; set; } = default!;
         public DbSet<Adresse> Adresses { get; set; } = default!;
         public DbSet<Medium> Mediums { get; set; } = default!;
@@ -92,16 +93,29 @@ namespace Gamma2024.Server.Data
             .OnDelete(DeleteBehavior.NoAction);
 
             builder.Entity<Facture>()
-                .HasOne(f => f.Adresse)
-                .WithMany(a => a.Factures)
-                .HasForeignKey(f => f.IdAdresse)
-                .OnDelete(DeleteBehavior.NoAction);
-
-            builder.Entity<Facture>()
                 .HasOne(f => f.Client)
                 .WithMany()
                 .HasForeignKey(f => f.IdClient)
                 .OnDelete(DeleteBehavior.NoAction);
+
+            builder.Entity<FactureLivraison>()
+                .HasOne(fl => fl.Facture)
+                .WithOne(f => f.FactureLivraison)
+                .HasForeignKey<Facture>(f => f.IdFactureLivraison)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            builder.Entity<FactureLivraison>()
+                .HasOne(fl => fl.Charite)
+                .WithMany(fl => fl.FacturesLivraisons)
+                .HasForeignKey(fl => fl.IdCharite)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            builder.Entity<FactureLivraison>()
+                .HasOne(fl => fl.Adresse)
+                .WithMany(a => a.FacturesLivraisons)
+                .HasForeignKey(f => f.IdAdresse)
+                .OnDelete(DeleteBehavior.NoAction);
+
 
             // Photo
             builder.Entity<Photo>()
