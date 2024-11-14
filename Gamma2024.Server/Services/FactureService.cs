@@ -1,5 +1,7 @@
 using Gamma2024.Server.Data;
+using Gamma2024.Server.Models;
 using Gamma2024.Server.ViewModels;
+using Microsoft.EntityFrameworkCore;
 
 namespace Gamma2024.Server.Services
 {
@@ -42,6 +44,12 @@ namespace Gamma2024.Server.Services
             }
 
             return factures;
+        }
+
+        public ICollection<Facture> ChercherFacturesParEncan(int numeroEncan)
+        {
+            var factures = _context.Factures.Include(f => f.Client).Include(f => f.Lots).Where(f => f.NumeroEncan == numeroEncan);
+            return factures.ToList();
         }
     }
 }
