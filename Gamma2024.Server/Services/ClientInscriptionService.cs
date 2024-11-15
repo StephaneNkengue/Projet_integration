@@ -4,6 +4,7 @@ using Gamma2024.Server.Validations;
 using Gamma2024.Server.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Stripe;
 
 namespace Gamma2024.Server.Services
 {
@@ -11,11 +12,13 @@ namespace Gamma2024.Server.Services
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly CustomerService _customerService;
 
         public ClientInscriptionService(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
             _userManager = userManager;
+            _customerService = new CustomerService();
         }
 
         public async Task<(bool Success, string Message)> InscrireUtilisateur(InscriptionVM model)
@@ -45,12 +48,13 @@ namespace Gamma2024.Server.Services
 
             try
             {
-                // Vérifier et convertir la date d'expiration
-                var (isValidExpiration, moisExpiration, anneeExpiration) = ClientValidation.ValidateAndParseExpirationDate(model.CarteCredit.DateExpiration);
-                if (!isValidExpiration)
+                var options = new CustomerCreateOptions()
                 {
-                    return (false, "La date d'expiration de la carte est invalide ou expirée.");
-                }
+                    Email = model.GeneralInfo.Courriel,
+                    Name = model.GeneralInfo.Prenom + " " + model.GeneralInfo.Nom,
+                    Description = model.GeneralInfo.Pseudo
+                };
+                var customer = _customerService.Create(options);
 
                 // Créer le client (ApplicationUser)
                 var client = new ApplicationUser
@@ -64,29 +68,20 @@ namespace Gamma2024.Server.Services
                     FirstName = model.GeneralInfo.Prenom,
                     PhoneNumber = model.GeneralInfo.Telephone,
                     PhoneNumberConfirmed = true,
-                    Avatar = "/Avatars/default.png"
+                    Avatar = "/Avatars/default.png",
+                    StripeCustomer = customer.Id
                 };
 
                 var result = await _userManager.CreateAsync(client, model.GeneralInfo.MotDePasse);
 
                 if (!result.Succeeded)
                 {
+                    _customerService.Delete(customer.Id);
                     return (false, "Erreur lors de la création de l'utilisateur : " + string.Join(", ", result.Errors.Select(e => e.Description)));
                 }
 
                 // Ajouter le rôle CLIENT
                 await _userManager.AddToRoleAsync(client, "CLIENT");
-
-                // Créer la carte de crédit
-                var carteCredit = new Models.CarteCredit
-                {
-                    Nom = model.CarteCredit.NomProprio,
-                    Numero = ParseCreditCard(model.CarteCredit.NumeroCarte),
-                    MoisExpiration = moisExpiration,
-                    AnneeExpiration = anneeExpiration,
-                    IdApplicationUser = client.Id
-                };
-                _context.CartesCredits.Add(carteCredit);
 
                 // Créer l'adresse
                 var adresse = new Models.Adresse
@@ -99,7 +94,8 @@ namespace Gamma2024.Server.Services
                     Pays = model.Adresse.Pays,
                     CodePostal = ParseCodePostal(model.Adresse.CodePostal),
                     EstDomicile = true,
-                    IdApplicationUser = client.Id
+                    IdApplicationUser = client.Id,
+
                 };
                 _context.Adresses.Add(adresse);
 
@@ -118,12 +114,6 @@ namespace Gamma2024.Server.Services
         private async Task<bool> IsUsernameUnique(string username)
         {
             return !await _context.Users.AnyAsync(u => u.UserName == username);
-        }
-
-        public static string ParseCreditCard(string code)
-        {
-            var parts = code.Split(' ');
-            return parts[0] + parts[1] + parts[2] + parts[3];
         }
 
         public static string ParseCodePostal(string code)

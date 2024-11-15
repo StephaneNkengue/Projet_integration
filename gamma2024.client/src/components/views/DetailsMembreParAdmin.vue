@@ -80,51 +80,10 @@
             </div>
 
             <!-- Informations de carte de crédit -->
-            <div class="card my-5">
-              <div class="card-header">Carte de crédit</div>
-              <div class="card-body">
-                <div class="row mt-2">
-                  <div class="col-md-12">
-                    <label for="nomPropio"
-                      >Nom du propriétaire de la carte</label
-                    >
-                    <input
-                      type="text"
-                      id="nomPropio"
-                      disabled
-                      class="form-control"
-                      v-model="membre.carteCredit.nomProprio"
-                    />
-                  </div>
-                </div>
-                <div class="row mt-2">
-                  <div class="col-md-6">
-                    <label for="numeroCarte">Numéro de la carte</label>
-                    <div class="input-wrapper">
-                      <InputMask
-                        type="text"
-                        mask="9999 9999 9999 9999"
-                        id="numeroCarte"
-                        disabled
-                        class="form-control"
-                        v-model="membre.carteCredit.numeroCarte"
-                      />
-                    </div>
-                  </div>
-                  <div class="col-md-6">
-                    <label for="dateExpiration">Date d'expiration</label>
-                    <div class="input-wrapper">
-                      <InputMask
-                        type="text"
-                        mask="99/99"
-                        class="form-control"
-                        placeholder="MM/YY"
-                        id="dateExpiration"
-                        v-model="membre.carteCredit.dateExpiration"
-                      />
-                    </div>
-                  </div>
-                </div>
+            <div class="card my-5" v-if="membre.cartesCredit.length > 0">
+              <div class="card-header">Cartes de crédit</div>
+              <div class="card-body" v-for="carte in membre.cartesCredit">
+                <AffichageCarteCredit :carte="carte"></AffichageCarteCredit>
               </div>
             </div>
 
@@ -222,6 +181,7 @@
 import { ref, onMounted } from "vue";
 import { useStore } from "vuex";
 import InputMask from "primevue/inputmask";
+import AffichageCarteCredit from "@/components/views/AffichageCarteCredit.vue";
 import { useRoute } from "vue-router";
 
 const route = useRoute();
@@ -237,11 +197,7 @@ let membre = ref({
     newPassword: "",
     confirmNewPassword: "",
   },
-  carteCredit: {
-    nomProprio: "",
-    numeroCarte: "",
-    dateExpiration: "",
-  },
+  cartesCredit: [],
   adresse: {
     numeroCivique: "",
     rue: "",
@@ -267,11 +223,7 @@ onMounted(async () => {
       pseudo: response.userName || "",
     };
 
-    membre.value.carteCredit = {
-      nomProprio: response.cartesCredit[0].nom || "",
-      numeroCarte: response.cartesCredit[0].numero || "",
-      dateExpiration: response.cartesCredit[0].expirationDate || "",
-    };
+    membre.value.cartesCredit = response.cartesCredit;
 
     membre.value.adresse = {
       numeroCivique: response.adresses[0].numeroCivique || "",
