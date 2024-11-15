@@ -98,7 +98,7 @@
                                                         <tbody>
                                                             <tr v-for="lot in facture.lots" :key="lot.id">
                                                                 <td scope="row">{{ lot.numero }}</td>
-                                                                <td>{{ lot.mise }}</td>
+                                                                <td>{{ lot.mise }}$</td>
                                                                 <td>
                                                                     <img v-if="lot.estLivrable"
                                                                          src="/icons/livrable.png" />
