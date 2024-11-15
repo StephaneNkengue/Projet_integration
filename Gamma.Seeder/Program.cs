@@ -398,8 +398,6 @@ var infoFactures = System.IO.File.ReadAllLines("CSV/AcheteurEncan232.csv", Syste
                 .GetAcheteursEncan232()
                 .ToList();
 
-var factures = new List<Facture>();
-
 foreach (var item in utilisateurs)
 {
     var achats = infoFactures.FindAll(i => i.Pseudonyme == item.UserName).ToList();
@@ -410,10 +408,9 @@ foreach (var item in utilisateurs)
         {
             IdClient = item.Id,
             Client = item,
-            IdAdresse = item.Adresses.First().Id,
-            Adresse = item.Adresses.First(),
             DateAchat = DateTime.Now,
-            PrixLots = 0
+            PrixLots = 0,
+            NumeroEncan = 232
         };
 
         foreach (var a in achats)
@@ -429,13 +426,29 @@ foreach (var item in utilisateurs)
         }
 
         facture.CalculerFacture();
-        factures.Add(facture);
+        context.Factures.Add(facture);
+        context.SaveChanges();
+
+        if (facture.Livrable)
+        {
+            var factureLivraison = new FactureLivraison
+            {
+                IdFacture = facture.Id,
+                Facture = facture,
+                Charite = charites[0],
+                IdCharite = charites[0].Id,
+                Adresse = facture.Client.Adresses.First(),
+                DateAchat = DateTime.Now,
+            };
+            factureLivraison.CalculerFacture();
+
+            context.FactureLivraisons.Add(factureLivraison);
+            context.SaveChanges();
+        }
+
         infoFactures.RemoveAll(i => i.Pseudonyme == item.UserName);
     }
 }
-
-context.Factures.AddRange(factures);
-context.SaveChanges();
 
 context.Lots.UpdateRange(lots232);
 context.SaveChanges();
