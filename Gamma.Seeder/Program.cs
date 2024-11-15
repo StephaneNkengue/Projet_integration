@@ -34,9 +34,30 @@ foreach (var user in usersExistants)
 {
     if (user.StripeCustomer.IsNullOrEmpty())
     {
-        var customer = customerService.Create(new CustomerCreateOptions { Email = user.Email, Name = user.FirstName + " " + user.Name, Description = user.UserName });
-        user.StripeCustomer = customer.Id;
-        context.Update(user);
+        var stripeCustomer = customers.Data.Find(c => c.Email.Equals(user.Email));
+
+        if (stripeCustomer != null)
+        {
+            user.StripeCustomer = stripeCustomer.Id;
+        }
+        else
+        {
+            var customer = customerService.Create(new CustomerCreateOptions
+            {
+                Email = user.Email,
+                Name = user.FirstName + " " + user.Name,
+                Description = user.UserName,
+                PreferredLocales = ["fr-CA"],
+                PaymentMethod = "pm_card_visa",
+                InvoiceSettings = new CustomerInvoiceSettingsOptions
+                {
+                    DefaultPaymentMethod = "pm_card_visa",
+                },
+            });
+            user.StripeCustomer = customer.Id;
+            context.Update(user);
+
+        }
     }
 }
 
@@ -65,7 +86,13 @@ var utilisateurs = System.IO.File.ReadAllLines("CSV/Acheteurs.csv", System.Text.
                                 {
                                     Email = u.Email,
                                     Name = u.FirstName + " " + u.Name,
-                                    Description = u.UserName
+                                    Description = u.UserName,
+                                    PreferredLocales = ["fr-CA"],
+                                    PaymentMethod = "pm_card_visa",
+                                    InvoiceSettings = new CustomerInvoiceSettingsOptions
+                                    {
+                                        DefaultPaymentMethod = "pm_card_visa",
+                                    },
                                 };
                                 var customer = customerService.Create(options);
                                 u.StripeCustomer = customer.Id;
