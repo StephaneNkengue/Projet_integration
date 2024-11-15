@@ -1,6 +1,7 @@
 import { createStore } from "vuex";
 import { initApi } from "@/services/api";
 import * as signalR from "@microsoft/signalr";
+import { startSignalRConnection, stopSignalRConnection } from '@/services/signalR';
 
 const store = createStore({
   state: {
@@ -222,6 +223,15 @@ const store = createStore({
       state.connection = connection;
     },
     updateUserBid(state, { lotId, userId, montant }) {
+      if (!state.userBidHistory[lotId]) {
+        state.userBidHistory[lotId] = {};
+      }
+      state.userBidHistory[lotId][userId] = montant;
+    },
+    UPDATE_USER_LAST_BID(state, { lotId, userId, montant }) {
+      if (!state.userBidHistory) {
+        state.userBidHistory = {};  // Initialiser l'objet s'il n'existe pas
+      }
       if (!state.userBidHistory[lotId]) {
         state.userBidHistory[lotId] = {};
       }
@@ -618,12 +628,8 @@ const store = createStore({
     },
     async logout({ commit, state }) {
         try {
-          // Arrêter la connexion SignalR avant tout
-          if (state.connection) {
-            await state.connection.stop();
-            console.log("Connexion SignalR arrêtée");
-          }
-      
+          await stopSignalRConnection();
+          commit("SET_CONNECTION", null);
           // Appel à l'API pour invalider le token côté serveur
           const response = await state.api.post("/home/logout");
           console.log("Réponse de la déconnexion:", response);
@@ -691,6 +697,8 @@ const store = createStore({
 
       if (savedIsLoggedIn) {
         await dispatch("fetchUserBids");
+        // Initialiser SignalR après la connexion
+        await dispatch("initializeSignalR");
       }
     },
 
@@ -898,19 +906,14 @@ const store = createStore({
       commit("refreshUserData");
     },
 
-    async placerMise({ state, commit, dispatch }, { idLot, montant }) {
+    async placerMise({ state, commit, dispatch }, miseData) {
       try {
         const response = await state.api.post("/lots/placerMise", {
-          idLot: idLot,
-          montant: parseFloat(montant),
-          userId: state.user?.id
+          LotId: miseData.lotId,
+          Montant: parseFloat(miseData.montant),
+          UserId: state.user?.id,
+          MontantMaximal: miseData.montantMaximal
         });
-
-        if (response.data.success) {
-          // Ne pas mettre à jour ici, attendre la notification SignalR
-          commit("addUserBid", idLot);
-          await dispatch("fetchUserBids");
-        }
 
         return response.data;
       } catch (error) {
@@ -941,31 +944,34 @@ const store = createStore({
       }
     },
 
-    async initSignalR({ commit }) {
+    async initializeSignalR({ commit, state }) {
+      if (!state.isLoggedIn) return;
+
       try {
-        const connection = new signalR.HubConnectionBuilder()
-          .withUrl(`${this.state.api.defaults.baseURL}/hub/lotMiseHub`)
-          .withAutomaticReconnect()
-          .build();
-
-        connection.on("ReceiveNewBid", (data) => {
-          commit('updateLotMise', {
-            idLot: data.idLot,
-            montant: data.montant,
-            userId: data.userId
+        const baseUrl = state.api.defaults.baseURL.replace('/api', '');
+        const connection = await startSignalRConnection(baseUrl, state.token);
+        
+        if (connection) {
+          connection.on("ReceiveNewBid", (data) => {
+            commit("updateLotMise", { 
+              idLot: data.idLot, 
+              montant: data.montant, 
+              userId: data.userId 
+            });
+            
+            if (data.userLastBid?.userId === state.user?.id) {
+              commit("UPDATE_USER_LAST_BID", { 
+                lotId: data.idLot,
+                userId: data.userLastBid.userId,
+                montant: data.userLastBid.montant
+              });
+            }
           });
-          // Mettre à jour le lot dans le store
-          commit('updateLot', {
-            id: data.idLot,
-            mise: data.montant,
-            idClientMise: data.userId
-          });
-        });
 
-        await connection.start();
-        commit('setSignalRConnection', connection);
-      } catch (err) {
-        console.error("Erreur lors de l'initialisation de SignalR:", err);
+          commit("SET_CONNECTION", connection);
+        }
+      } catch (error) {
+        console.error("Erreur lors de l'initialisation de SignalR:", error);
       }
     },
 
@@ -1035,9 +1041,22 @@ const store = createStore({
         return "Erreur, veuillez réessayer";
       }
     },
-    async getUserLastBidForLot({ state }, lotId) {
+    async getUserBidForLot({ state, commit }, lotId) {
       try {
+        // D'abord vérifier dans le store
+        if (state.userBidHistory?.[lotId]?.[state.user?.id]) {
+          return state.userBidHistory[lotId][state.user?.id];
+        }
+        
+        // Sinon faire l'appel API
         const response = await state.api.get(`/lots/userLastBid/${lotId}`);
+        if (response.data > 0) {
+          commit('UPDATE_USER_LAST_BID', { 
+            lotId, 
+            userId: state.user?.id, 
+            montant: response.data 
+          });
+        }
         return response.data;
       } catch (error) {
         console.error("Erreur lors de la récupération de la dernière mise:", error);
@@ -1080,15 +1099,6 @@ const store = createStore({
     },
     getAllLots: (state) => {
       return Object.values(state.lots);
-    },
-    getUserBidForLot: (state) => async (lotId) => {
-      try {
-        const response = await state.api.get(`/lots/userLastBid/${lotId}`);
-        return response.data;
-      } catch (error) {
-        console.error("Erreur lors de la récupération de la dernière mise:", error);
-        return 0;
-      }
     }
   },
 });

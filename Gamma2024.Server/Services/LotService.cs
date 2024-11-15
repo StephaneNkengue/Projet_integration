@@ -604,7 +604,7 @@ namespace Gamma2024.Server.Services
                     .Include(l => l.MisesAutomatiques)
                     .Include(l => l.EncanLots)
                         .ThenInclude(el => el.Encan)
-                    .FirstOrDefaultAsync(l => l.Id == mise.IdLot);
+                    .FirstOrDefaultAsync(l => l.Id == mise.LotId);
 
                 if (lot == null)
                 {
@@ -638,45 +638,50 @@ namespace Gamma2024.Server.Services
                 // Créer l'entrée dans l'historique des mises
                 var nouvelleMise = new MiseAutomatique
                 {
-                    LotId = mise.IdLot,
+                    LotId = mise.LotId,
                     UserId = mise.UserId,
                     Montant = mise.Montant,
                     DateMise = DateTime.UtcNow,
-                    EstMiseAutomatique = false
+                    EstMiseAutomatique = mise.MontantMaximal.HasValue,
+                    MontantMaximal = mise.MontantMaximal
                 };
 
                 _context.MiseAutomatiques.Add(nouvelleMise);
                 
-                // Traiter les mises automatiques
+                // Mettre à jour le lot avec la nouvelle mise
+                lot.Mise = (double)mise.Montant;
+                lot.IdClientMise = mise.UserId;
+                _context.Lots.Update(lot);
+                
+                await _context.SaveChangesAsync();
+
+                // Maintenant le lot est à jour avant de traiter les mises automatiques
                 await TraiterMisesAutomatiques(lot, encan);
 
-                // Mettre à jour le lot avec la dernière mise
+                // Récupérer la dernière mise pour la notification
                 var derniereMise = await _context.MiseAutomatiques
                     .Where(m => m.LotId == lot.Id)
                     .OrderByDescending(m => m.DateMise)
-                    .FirstAsync();
+                    .FirstOrDefaultAsync();
 
-                // Mettre à jour le lot avec la dernière mise une seule fois
-                lot.Mise = (double)derniereMise.Montant;
-                lot.IdClientMise = derniereMise.UserId;
-                
-                _context.Lots.Update(lot);
-                await _context.SaveChangesAsync();
-
-                // Envoyer la notification de la dernière mise
+                // Notification avec la mise initiale et la dernière mise
                 await _hubContext.Clients.All.ReceiveNewBid(new
                 {
                     idLot = lot.Id,
-                    montant = derniereMise.Montant,
-                    userId = derniereMise.UserId,
-                    timestamp = derniereMise.DateMise
+                    montant = lot.Mise,          // Dernière mise (auto ou manuelle)
+                    userId = lot.IdClientMise,   // ID du dernier miseur
+                    userLastBid = new {          // Informations sur la mise initiale
+                        userId = mise.UserId,
+                        montant = mise.Montant
+                    },
+                    timestamp = DateTime.Now
                 });
 
                 return (true, "Mise placée avec succès");
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Erreur lors de la mise pour le lot {LotId}", mise.IdLot);
+                _logger.LogError(ex, "Erreur lors de la mise pour le lot {LotId}", mise.LotId);
                 return (false, "Une erreur est survenue lors de la mise");
             }
         }
@@ -707,7 +712,6 @@ namespace Gamma2024.Server.Services
             bool continuerMises = true;
             while (continuerMises)
             {
-                // Vérifier si l'encan est toujours actif
                 if (DateTime.Now > encan.DateFinSoireeCloture)
                 {
                     break;
@@ -716,49 +720,46 @@ namespace Gamma2024.Server.Services
                 var misesAutomatiques = await _context.MiseAutomatiques
                     .Where(m => m.LotId == lot.Id && 
                                m.MontantMaximal.HasValue && 
-                               m.MontantMaximal > (decimal)lot.Mise)
+                               m.MontantMaximal > (decimal)lot.Mise &&
+                               m.UserId != lot.IdClientMise)
                     .OrderByDescending(m => m.MontantMaximal)
                     .ThenBy(m => m.DateMise)
                     .ToListAsync();
 
-                // S'arrêter s'il n'y a pas de mises auto ou s'il n'y a qu'un seul enchérisseur
-                if (!misesAutomatiques.Any() || misesAutomatiques.Count == 1)
+                if (!misesAutomatiques.Any())
                 {
                     continuerMises = false;
                     continue;
                 }
 
                 var miseGagnante = misesAutomatiques.First();
-                var deuxiemeMise = misesAutomatiques.Skip(1).FirstOrDefault();
+                decimal nouvelleMise = (decimal)lot.Mise + CalculerPasEnchere((decimal)lot.Mise);
 
-                decimal nouvelleMise;
-                if (deuxiemeMise != null)
+                if (nouvelleMise <= miseGagnante.MontantMaximal)
                 {
-                    nouvelleMise = Math.Min(
-                        deuxiemeMise.MontantMaximal.Value + CalculerPasEnchere(deuxiemeMise.MontantMaximal.Value),
-                        miseGagnante.MontantMaximal.Value
-                    );
+                    var nouvelleMiseAuto = new MiseAutomatique
+                    {
+                        LotId = lot.Id,
+                        UserId = miseGagnante.UserId,
+                        Montant = nouvelleMise,
+                        DateMise = DateTime.UtcNow,
+                        EstMiseAutomatique = true,
+                        MontantMaximal = miseGagnante.MontantMaximal
+                    };
+
+                    _context.MiseAutomatiques.Add(nouvelleMiseAuto);
+                    
+                    // Mettre à jour le lot avec la nouvelle mise
+                    lot.Mise = (double)nouvelleMise;
+                    lot.IdClientMise = miseGagnante.UserId;
+                    _context.Lots.Update(lot);
+                    
+                    await _context.SaveChangesAsync();
                 }
                 else
                 {
-                    nouvelleMise = Math.Min(
-                        (decimal)lot.Mise + CalculerPasEnchere((decimal)lot.Mise),
-                        miseGagnante.MontantMaximal.Value
-                    );
+                    continuerMises = false;
                 }
-
-                var nouvelleMiseAuto = new MiseAutomatique
-                {
-                    LotId = lot.Id,
-                    UserId = miseGagnante.UserId,
-                    Montant = nouvelleMise,
-                    DateMise = DateTime.UtcNow,
-                    EstMiseAutomatique = true,
-                    MontantMaximal = miseGagnante.MontantMaximal
-                };
-
-                _context.MiseAutomatiques.Add(nouvelleMiseAuto);
-                await _context.SaveChangesAsync();
             }
         }
 

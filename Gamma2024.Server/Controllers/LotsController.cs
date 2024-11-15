@@ -185,21 +185,29 @@ namespace Gamma2024.Server.Controllers
                 return BadRequest(ModelState);
             }
 
-            // Récupérer l'ID de l'utilisateur connecté
             mise.UserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (string.IsNullOrEmpty(mise.UserId))
             {
                 return Unauthorized();
             }
 
-            var (success, message) = await _lotService.PlacerMise(mise);
-            if (success)
+            (bool isSuccess, string resultMessage) = await _lotService.PlacerMise(mise);
+            
+            if (isSuccess)
             {
-                return Ok(new { success = true, message = message });
+                var lastUserBid = await _lotService.GetUserLastBid(mise.LotId, mise.UserId);
+                return Ok(new { 
+                    success = true, 
+                    message = resultMessage,
+                    userLastBid = lastUserBid
+                });
             }
             else
             {
-                return BadRequest(new { success = false, message = message });
+                return BadRequest(new { 
+                    success = false, 
+                    message = resultMessage
+                });
             }
         }
 

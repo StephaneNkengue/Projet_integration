@@ -22,10 +22,21 @@
         <div class="modal-body">
           <div class="d-flex flex-column gap-3">
             <p class="fs-5 mb-0">lot {{ lot?.numero }}</p>
-            <p class="fs-5 mb-0">votre mise : {{ affichageMiseActuelle }}</p>
+            <p class="fs-5 mb-0">votre mise actuelle : {{ affichageMiseActuelle }}</p>
 
             <div class="d-flex flex-column gap-2">
-              <p class="mb-0">Ma mise maximale à ne pas dépasser :</p>
+              <div class="form-check form-switch mb-2">
+                <input 
+                  class="form-check-input" 
+                  type="checkbox" 
+                  v-model="miseAutomatique"
+                  id="switchMiseAuto"
+                >
+                <label class="form-check-label" for="switchMiseAuto">
+                  Activer la mise automatique
+                </label>
+              </div>
+
               <div class="d-flex align-items-center gap-2">
                 <button
                   class="btn btn-outline-secondary"
@@ -43,7 +54,9 @@
                 </button>
               </div>
               <p class="text-muted small">
-                Ajouter le montant maximum souhaité
+                {{ miseAutomatique ? 
+                  "Montant maximum pour la mise automatique" : 
+                  "Montant de la mise" }}
               </p>
             </div>
           </div>
@@ -82,6 +95,7 @@ const modalInstance = ref(null);
 const montantMise = ref(0);
 const montantInitial = ref(0);
 const userLastBid = ref(0);
+const miseAutomatique = ref(false);
 
 const props = defineProps({
   lot: {
@@ -132,23 +146,24 @@ const calculerMontantInitial = (lot) => {
 // Confirmer la mise
 const confirmerMise = async () => {
   try {
-    const response = await store.dispatch("placerMise", {
-      idLot: props.lot.id,
-      montant: montantMise.value,
-    });
+    const miseData = {
+      lotId: props.lot.id,
+      montant: miseAutomatique.value ? getMiseMinimale.value : montantMise.value,
+      montantMaximal: miseAutomatique.value ? montantMise.value : null
+    };
+
+    const response = await store.dispatch("placerMise", miseData);
 
     if (response.success) {
       modalInstance.value.hide();
       emit("miseConfirmee", montantMise.value);
 
-      // Forcer la mise à jour du montant pour la prochaine ouverture
-      props.lot.mise = montantMise.value;
-
-      // Afficher le toast de succès
       toast.success(
         h(ToastContent, {
           title: "Succès",
-          description: "Votre mise a été placée avec succès",
+          description: miseAutomatique.value ? 
+            "Votre mise automatique a été configurée avec succès" :
+            "Votre mise a été placée avec succès",
         })
       );
     }
@@ -162,18 +177,7 @@ const confirmerMise = async () => {
   }
 };
 
-// Initialisation du montant de la mise
-watch(
-  () => props.lot,
-  (newLot) => {
-    if (newLot) {
-      montantInitial.value = calculerMontantInitial(newLot);
-      const pasInitial = calculerPasEnchere(montantInitial.value);
-      montantMise.value = montantInitial.value + pasInitial;
-    }
-  },
-  { immediate: true, deep: true }
-);
+
 
 // Gestion du modal
 onMounted(() => {
@@ -186,7 +190,7 @@ onMounted(() => {
       });
     }
     if (props.lot?.id) {
-      userLastBid.value = await store.getters.getUserBidForLot(props.lot.id);
+      userLastBid.value = await store.dispatch('getUserBidForLot', props.lot.id);
     }
   });
 });
@@ -212,6 +216,7 @@ const show = () => {
     const montantBase = lot?.mise || props.lot.prixOuverture || 0;
     const pasInitial = calculerPasEnchere(montantBase);
     montantMise.value = montantBase + pasInitial;
+    miseAutomatique.value = false; // Réinitialiser le switch
     modalInstance.value.show();
   }
 };
@@ -246,11 +251,10 @@ const emit = defineEmits(["miseConfirmee"]);
 // Watch pour mettre à jour le montant initial quand la mise change
 watch(
   () => store.getters.getLot(props.lot?.id)?.mise,
-  (newMise) => {
+  async (newMise) => {
     if (newMise) {
-     montantInitial.value = newMise;
-      const pasInitial = calculerPasEnchere(montantInitial.value);
-     
+      montantInitial.value = newMise;
+      userLastBid.value = await store.dispatch('getUserBidForLot', props.lot.id);
     }
   }
 );
@@ -267,5 +271,13 @@ watch(
 
 .gap-2 {
   gap: 0.75rem !important;
+}
+
+.form-switch {
+  padding-left: 2.5em;
+}
+
+.form-check-input {
+  cursor: pointer;
 }
 </style>
