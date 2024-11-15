@@ -41,25 +41,6 @@ namespace Gamma2024.Server.Services
             user.PhoneNumber = model.PhoneNumber;
             user.UserName = model.Pseudonym;
 
-            // Mettre à jour les informations de carte de crédit
-            var carteCredit = await _context.CartesCredits.FirstOrDefaultAsync(c => c.IdApplicationUser == user.Id);
-            if (carteCredit != null)
-            {
-                carteCredit.Nom = model.CardOwnerName;
-                carteCredit.Numero = model.CardNumber;
-                var (isValidExpiration, moisExpiration, anneeExpiration) = ClientValidation.ValidateAndParseExpirationDate(model.CardExpiryDate);
-                if (!isValidExpiration)
-                {
-                    return (false, "La date d'expiration de la carte est invalide ou expirée.", new object());
-                }
-                carteCredit.MoisExpiration = moisExpiration;
-                carteCredit.AnneeExpiration = anneeExpiration;
-            }
-            else
-            {
-                return (false, "Aucune carte de crédit trouvée pour cet utilisateur.", new object());
-            }
-
             // Mettre à jour les informations d'adresse
             var adresse = await _context.Adresses.FirstOrDefaultAsync(a => a.IdApplicationUser == user.Id && a.EstDomicile);
             if (adresse != null)
@@ -126,9 +107,6 @@ namespace Gamma2024.Server.Services
                 user.Email,
                 user.PhoneNumber,
                 user.UserName,
-                CardOwnerName = carteCredit.Nom,
-                CardNumber = carteCredit.Numero,
-                CardExpiryDate = $"{carteCredit.MoisExpiration:D2}/{carteCredit.AnneeExpiration}",
                 CivicNumber = adresse.Numero.ToString(),
                 Street = adresse.Rue,
                 Apartment = adresse.Appartement,

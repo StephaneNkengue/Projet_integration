@@ -1,5 +1,7 @@
 using Gamma2024.Server.Data;
+using Gamma2024.Server.Models;
 using Gamma2024.Server.ViewModels;
+using Microsoft.EntityFrameworkCore;
 
 namespace Gamma2024.Server.Services
 {
@@ -27,6 +29,9 @@ namespace Gamma2024.Server.Services
                 var client = _context.Users.FirstOrDefault(c => c.Id == facture.IdClient);
                 facture.Nom = client.Name;
                 facture.Prenom = client.FirstName;
+                facture.Pseudonyme = client.UserName;
+                facture.Courriel = client.Email;
+                facture.Telephone = client.PhoneNumber;
 
                 var numerosEncans = _context.Factures.Where(f => f.Id == facture.Id)
                                                      .SelectMany(f => f.Lots)
@@ -42,6 +47,12 @@ namespace Gamma2024.Server.Services
             }
 
             return factures;
+        }
+
+        public ICollection<Facture> ChercherFacturesParEncan(int numeroEncan)
+        {
+            var factures = _context.Factures.Include(f => f.Client).Include(f => f.Lots).Where(f => f.NumeroEncan == numeroEncan);
+            return factures.ToList();
         }
     }
 }

@@ -930,6 +930,26 @@ const store = createStore({
                 return "Erreur, veuillez réessayer";
             }
         },
+        async creerSetupIntent({ state }) {
+            try {
+                const response = await state.api.post(
+                    "/paiement/creerSetupIntent"
+                );
+                return response;
+            } catch (error) {
+                return "Erreur, veuillez réessayer";
+            }
+        },
+        async chercherCartesUser({ state }) {
+            try {
+                const response = await state.api.get(
+                    "/paiement/chercherCartes"
+                );
+                return response;
+            } catch (error) {
+                return "Erreur, veuillez réessayer";
+            }
+        }
     },
 
     getters: {

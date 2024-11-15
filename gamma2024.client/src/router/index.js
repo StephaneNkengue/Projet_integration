@@ -27,10 +27,11 @@ import ReinitialisationMotDePasse from "@/components/views/ReinitialisationMotDe
 import TableauDeBordEncans from "@/components/views/TableauDeBordEncans.vue";
 import TableauDeBordEncansAjout from "@/components/views/TableauDeBordEncansAjout.vue";
 import ModificationEncan from "@/components/views/ModificationEncan.vue";
-import Paiement from "@/components/views/Paiement.vue";
+import EnregistrerCarte from "@/components/views/EnregistrerCarte.vue";
 import TableauDeBordVentes from "@/components/views/TableauDeBordVentes.vue";
 import ResultatRechercheLots from "@/components/views/ResultatRechercheLots.vue";
 import ResultatRechercheEncans from "@/components/views/ResultatRechercheEncans.vue";
+import GestionCartes from "@/components/views/GestionCartes.vue";
 const routes = [
     {
         path: "/",
@@ -108,7 +109,7 @@ const routes = [
     {
         path: "/modificationprofilutilisateur",
         name: "ModificationProfilUtilisateur",
-        component: () => ModificationProfilUtilisateur,
+        component: ModificationProfilUtilisateur,
         meta: { requiresAuth: true, requiredRole: "Client" },
         beforeEnter: async (to, from, next) => {
             if (store.state.isLoggedIn) {
@@ -215,12 +216,23 @@ const routes = [
         component: ReinitialisationMotDePasse,
     },
     {
-        path: "/Paiement/:idFacture",
-        name: "Paiement",
-        component: Paiement,
+        path: "/cartes/enregistrer",
+        name: "EnregistrerCarte",
+        component: EnregistrerCarte,
         props: true,
         meta: {
-            requiresAuth: false,
+            requiresAuth: true,
+            requiredRole: "Client"
+        },
+    },
+    {
+        path: "/cartes",
+        name: "GestionCartes",
+        component: GestionCartes,
+        props: true,
+        meta: {
+            requiresAuth: true,
+            requiredRole: "Client"
         },
     },
     {
@@ -250,7 +262,7 @@ const routes = [
 ];
 
 const router = createRouter({
-    history: createWebHistory("/2162067"),
+    history: createWebHistory(import.meta.env.BASE_URL),
     routes,
     scrollBehavior(to, from, savedPosition) {
         return { top: 0 };
