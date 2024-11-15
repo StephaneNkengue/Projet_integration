@@ -149,70 +149,11 @@
         lotsFiltres.value = lots.value;
         filtrerLesLotsParNumeroEncan();
         filtrerLesLotsParValeurEstimee();
-
+        filtrerLesLotsParArtiste();
+        filtrerLesLotsParCategorie();
+        filtrerLesLotsParMedium();
         filtrerLesLotsParHauteur();
         filtrerLesLotsParLargeur();
-        var stringquery = JSON.parse(route.query.data);
-        lotsFiltres.value = lotsAFiltres.filter((lot) => {
-            if (stringquery.stringNumeroEncan) {
-                if (stringquery.selectNumeroEncan == 0) {
-
-                }
-                return true;
-            } else if (
-                route.query.numero == 'true' &&
-                lot.numero.toString().toLowerCase().startsWith(rechercheEnMinuscule)
-            ) {
-                return true;
-            } else if (
-                route.query.estimationMin == 'true' &&
-                lot.valeurEstimeMin
-                    .toString()
-                    .toLowerCase()
-                    .startsWith(rechercheEnMinuscule)
-            ) {
-                return true;
-            } else if (
-                route.query.estimationMax == 'true' &&
-                lot.valeurEstimeMax
-                    .toString()
-                    .toLowerCase()
-                    .startsWith(rechercheEnMinuscule)
-            ) {
-                return true;
-            } else if (
-                route.query.categorie == 'true' &&
-                lot.categorie.toString().toLowerCase().startsWith(rechercheEnMinuscule)
-            ) {
-                return true;
-            } else if (
-                route.query.artiste == 'true' &&
-                lot.artiste.toString().toLowerCase().startsWith(rechercheEnMinuscule)
-            ) {
-                return true;
-            } else if (
-                route.query.dimension == 'true' &&
-                lot.hauteur.toString().toLowerCase().startsWith(rechercheEnMinuscule)
-            ) {
-                return true;
-            } else if (
-                route.query.dimension == 'true' &&
-                lot.largeur.toString().toLowerCase().startsWith(rechercheEnMinuscule)
-            ) {
-                return true;
-            } else if (
-                route.query.description == 'true' &&
-                lot.description.toString().toLowerCase().startsWith(rechercheEnMinuscule)
-            ) {
-                return true;
-            } else if (
-                route.query.medium == 'true' &&
-                lot.medium.toString().toLowerCase().startsWith(rechercheEnMinuscule)
-            ) {
-                return true;
-            }
-            return false;
-        });
     };
 
     function filtrerLesLotsParNumeroEncan() {
@@ -220,25 +161,25 @@
         lotsFiltres.value = lotsFiltres.value.filter((lot) => {
             if (stringquery.stringNumeroEncan) {
                 if (stringquery.selectNumeroEncan == 0) {
-                    if (lot.numero.valueOf() == stringquery.stringNumeroEncan) {
+                    if (lot.numeroEncan.valueOf() == stringquery.stringNumeroEncan) {
                         return true
                     }
                     return false
                 }
                 if (stringquery.selectNumeroEncan == 1) {
-                    if (lot.numero.valueOf() <= stringquery.stringNumeroEncan) {
+                    if (lot.numeroEncan.valueOf() <= stringquery.stringNumeroEncan) {
                         return true
                     }
                     return false
                 }
                 if (stringquery.selectNumeroEncan == 2) {
-                    if (lot.numero.valueOf() >= stringquery.stringNumeroEncan) {
+                    if (lot.numeroEncan.valueOf() >= stringquery.stringNumeroEncan) {
                         return true
                     }
                     return false
                 }
                 if (stringquery.selectNumeroEncan == 3 && stringquery.stringNumeroEncan2) {
-                    if (lot.numero.valueOf() >= stringquery.stringNumeroEncan && lot.numero.valueOf() <= stringquery.stringNumeroEncan2) {
+                    if (lot.numeroEncan.valueOf() >= stringquery.stringNumeroEncan && lot.numeroEncan.valueOf() <= stringquery.stringNumeroEncan2) {
                         return true
                     }
                     return false
@@ -271,11 +212,50 @@
                     return false
                 }
                 if (stringquery.selectValeurEstimee == 3 && stringquery.stringValeurEstimee2) {
-                    if (lot.valeurEstimeMin.valueOf() >= stringquery.stringValeurEstimee && lot.valeurEstimeMax.valueOf() <= stringquery.stringValeurEstimee2) {
+                    if (lot.valeurEstimeMax.valueOf() >= stringquery.stringValeurEstimee && lot.valeurEstimeMin.valueOf() <= stringquery.stringValeurEstimee2) {
                         return true
                     }
                     return false
                 }
+            }
+            return true
+        });
+    };
+
+    function filtrerLesLotsParArtiste() {
+        var stringquery = JSON.parse(route.query.data);
+        lotsFiltres.value = lotsFiltres.value.filter((lot) => {
+            if (stringquery.selectArtiste != 0 && stringquery.selectArtiste) {
+                if (lot.artiste.valueOf() == stringquery.selectArtiste) {
+                    return true
+                }
+                return false
+            }
+            return true
+        });
+    };
+
+    function filtrerLesLotsParCategorie() {
+        var stringquery = JSON.parse(route.query.data);
+        lotsFiltres.value = lotsFiltres.value.filter((lot) => {
+            if (stringquery.selectCategorie != 0 && stringquery.selectCategorie) {
+                if (lot.idCategorie.valueOf() == stringquery.selectCategorie) {
+                    return true
+                }
+                return false
+            }
+            return true
+        });
+    };
+
+    function filtrerLesLotsParMedium() {
+        var stringquery = JSON.parse(route.query.data);
+        lotsFiltres.value = lotsFiltres.value.filter((lot) => {
+            if (stringquery.selectMedium != 0 && stringquery.selectMedium) {
+                if (lot.idMedium.valueOf() == stringquery.selectMedium) {
+                    return true
+                }
+                return false
             }
             return true
         });
