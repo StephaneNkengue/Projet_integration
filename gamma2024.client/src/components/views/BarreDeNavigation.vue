@@ -203,7 +203,7 @@
                         </div>
                         <div class="card-body">
                             <div class="col mt-2">
-                                <label class="text-nowrap recherchelabel"
+                                <label class="text-nowrap recherchelabel fs-6"
                                        for="rechercheLotsNumeroEncan">
                                     Numéro d'encan
                                 </label>
@@ -214,11 +214,9 @@
                                                 @change="affichageInputNumeroEncan"
                                                 aria-label="Default select example">
                                             <option class="py-0" value="0" selected>Égal à</option>
-                                            <option class="py-0" value="1">Inférieur à</option>
-                                            <option class="py-0" value="2">Supérieur à</option>
                                             <option class="py-0"
                                                     id="selectNumeroEncanEntre"
-                                                    value="3">
+                                                    value="1">
                                                 Entre
                                             </option>
                                         </select>
@@ -244,7 +242,7 @@
                                 </div>
                             </div>
                             <div class="col mt-2">
-                                <label class="text-nowrap recherchelabel"
+                                <label class="text-nowrap recherchelabel fs-6"
                                        for="rechercheLotsValeurEstimee">
                                     Valeur estimée
                                 </label>
@@ -286,42 +284,45 @@
                             </div>
                             <div class="row mt-2">
                                 <div class="col-md-4">
-                                    <label class="text-nowrap recherchelabel"
+                                    <label class="text-nowrap recherchelabel fs-6"
                                            for="rechercheLotsArtiste">
                                         Artiste
                                     </label>
                                     <select class="form-select py-0 align-self-center"
                                             id="selectArtiste"
-                                            aria-label="Default select example">
-                                        <option class="py-0" value="0" selected>
+                                            aria-label="Default select example"
+                                            required>
+                                        <option class="py-0 text-muted" value="" selected>
                                             Pas de choix
                                         </option>
                                         <option v-for="artiste in listeDesArtistes" :key="artiste.nomArtiste" class="py-0" :value="artiste.nomArtiste">{{artiste.nomArtiste}}</option>
                                     </select>
                                 </div>
                                 <div class="col-md-4">
-                                    <label class="text-nowrap recherchelabel"
+                                    <label class="text-nowrap recherchelabel fs-6"
                                            for="rechercheLotsCategorie">
                                         Catégorie
                                     </label>
                                     <select class="form-select py-0 align-self-center"
                                             id="selectCategorie"
-                                            aria-label="Default select example">
-                                        <option class="py-0" value="0" selected>
+                                            aria-label="Default select example"
+                                            required>
+                                        <option class="py-0 text-muted" value="" selected>
                                             Pas de choix
                                         </option>
                                         <option v-for="categorie in listeDesCategories" :key="categorie.id" class="py-0" :value="categorie.id">{{categorie.nom}}</option>
                                     </select>
                                 </div>
                                 <div class="col-md-4">
-                                    <label class="text-nowrap recherchelabel"
+                                    <label class="text-nowrap recherchelabel fs-6"
                                            for="rechercheLotsMedium">
                                         Medium
                                     </label>
                                     <select class="form-select py-0 align-self-center"
                                             id="selectMedium"
-                                            aria-label="Default select example">
-                                        <option class="py-0" value="0" selected>
+                                            aria-label="Default select example"
+                                            required>
+                                        <option class="py-0 text-muted" value="" selected>
                                             Pas de choix
                                         </option>
                                         <option v-for="medium in listeDesMediums" :key="medium.id" class="py-0" :value="medium.id">{{medium.type}}</option>
@@ -329,7 +330,7 @@
                                 </div>
                             </div>
                             <div class="col mt-2">
-                                <label class="text-nowrap recherchelabel"
+                                <label class="text-nowrap recherchelabel fs-6"
                                        for="rechercheLotsHauteur">
                                     Hauteur
                                 </label>
@@ -367,7 +368,7 @@
                                 </div>
                             </div>
                             <div class="col mt-2">
-                                <label class="text-nowrap recherchelabel"
+                                <label class="text-nowrap recherchelabel fs-6"
                                        for="rechercheLotsLargeur">
                                     Largeur
                                 </label>
@@ -704,7 +705,6 @@
     recherchelabel {
         margin-left: 10px !important;
         margin-right: 10px !important;
-        font-size: 25px !important;
     }
 
     .rechercheinput {
@@ -729,6 +729,21 @@
     .inputAAfficher {
         display: none;
     }
+
+    .card-body {
+        padding-top: 0px !important;
+        padding-bottom: 10px !important;
+    }
+
+    select,
+    select option {
+        color: #000000;
+    }
+
+        select:invalid,
+        select option[value=""] {
+            color: #999999;
+        }
 
     /*Pour faire changer l'icone du menu hamburger de la recherche*/
     /*.navbar-toggler-icon {

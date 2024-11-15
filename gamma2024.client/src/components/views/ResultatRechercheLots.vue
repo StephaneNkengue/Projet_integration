@@ -166,19 +166,7 @@
                     }
                     return false
                 }
-                if (stringquery.selectNumeroEncan == 1) {
-                    if (lot.numeroEncan.valueOf() <= stringquery.stringNumeroEncan) {
-                        return true
-                    }
-                    return false
-                }
-                if (stringquery.selectNumeroEncan == 2) {
-                    if (lot.numeroEncan.valueOf() >= stringquery.stringNumeroEncan) {
-                        return true
-                    }
-                    return false
-                }
-                if (stringquery.selectNumeroEncan == 3 && stringquery.stringNumeroEncan2) {
+                if (stringquery.selectNumeroEncan == 1 && stringquery.stringNumeroEncan2) {
                     if (lot.numeroEncan.valueOf() >= stringquery.stringNumeroEncan && lot.numeroEncan.valueOf() <= stringquery.stringNumeroEncan2) {
                         return true
                     }
