@@ -52,7 +52,8 @@ namespace Gamma2024.Server.Services
                 {
                     Email = model.GeneralInfo.Courriel,
                     Name = model.GeneralInfo.Prenom + " " + model.GeneralInfo.Nom,
-                    Description = model.GeneralInfo.Pseudo
+                    Description = model.GeneralInfo.Pseudo,
+                    PreferredLocales = ["fr-CA"]
                 };
                 var customer = _customerService.Create(options);
 
