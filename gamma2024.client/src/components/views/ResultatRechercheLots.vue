@@ -109,7 +109,7 @@
 
     const listeLots = ref([]);
     const lots = ref([]);
-    const lotsFiltres = ref([]);
+    var lotsFiltres = ref([]);
     const nbLotsRecus = ref();
     const lotsParPage = ref();
     const listePagination = ref([]);
@@ -118,7 +118,6 @@
     const lotsAffiche = ref();
     const nbPages = ref();
     const chargement = ref(true);
-    let genererListeDeLotsFiltree = function () { };
 
     onMounted(async () => {
         try {
@@ -146,71 +145,173 @@
         chargement.value = false;
     }
 
-    genererListeDeLotsFiltree = function () {
-        var lotsAFiltres = lots.value;
-        lotsFiltres.value = [];
-        let rechercheEnMinuscule = route.query.stringDeRecherche
-            .toString()
-            .toLowerCase();
-        lotsFiltres.value = lotsAFiltres.filter((lot) => {
-            if (
-                route.query.encan == 'true' &&
-                lot.numeroEncan.toString().toLowerCase().startsWith(rechercheEnMinuscule)
-            ) {
-                return true;
-            } else if (
-                route.query.numero == 'true' &&
-                lot.numero.toString().toLowerCase().startsWith(rechercheEnMinuscule)
-            ) {
-                return true;
-            } else if (
-                route.query.estimationMin == 'true' &&
-                lot.valeurEstimeMin
-                    .toString()
-                    .toLowerCase()
-                    .startsWith(rechercheEnMinuscule)
-            ) {
-                return true;
-            } else if (
-                route.query.estimationMax == 'true' &&
-                lot.valeurEstimeMax
-                    .toString()
-                    .toLowerCase()
-                    .startsWith(rechercheEnMinuscule)
-            ) {
-                return true;
-            } else if (
-                route.query.categorie == 'true' &&
-                lot.categorie.toString().toLowerCase().startsWith(rechercheEnMinuscule)
-            ) {
-                return true;
-            } else if (
-                route.query.artiste == 'true' &&
-                lot.artiste.toString().toLowerCase().startsWith(rechercheEnMinuscule)
-            ) {
-                return true;
-            } else if (
-                route.query.dimension == 'true' &&
-                lot.hauteur.toString().toLowerCase().startsWith(rechercheEnMinuscule)
-            ) {
-                return true;
-            } else if (
-                route.query.dimension == 'true' &&
-                lot.largeur.toString().toLowerCase().startsWith(rechercheEnMinuscule)
-            ) {
-                return true;
-            } else if (
-                route.query.description == 'true' &&
-                lot.description.toString().toLowerCase().startsWith(rechercheEnMinuscule)
-            ) {
-                return true;
-            } else if (
-                route.query.medium == 'true' &&
-                lot.medium.toString().toLowerCase().startsWith(rechercheEnMinuscule)
-            ) {
-                return true;
+    function genererListeDeLotsFiltree() {
+        lotsFiltres.value = lots.value;
+        filtrerLesLotsParNumeroEncan();
+        filtrerLesLotsParValeurEstimee();
+        filtrerLesLotsParArtiste();
+        filtrerLesLotsParCategorie();
+        filtrerLesLotsParMedium();
+        filtrerLesLotsParHauteur();
+        filtrerLesLotsParLargeur();
+    };
+
+    function filtrerLesLotsParNumeroEncan() {
+        var stringquery = JSON.parse(route.query.data);
+        lotsFiltres.value = lotsFiltres.value.filter((lot) => {
+            if (stringquery.stringNumeroEncan) {
+                if (stringquery.selectNumeroEncan == 0) {
+                    if (lot.numeroEncan.valueOf() == stringquery.stringNumeroEncan) {
+                        return true
+                    }
+                    return false
+                }
+                if (stringquery.selectNumeroEncan == 1 && stringquery.stringNumeroEncan2) {
+                    if (lot.numeroEncan.valueOf() >= stringquery.stringNumeroEncan && lot.numeroEncan.valueOf() <= stringquery.stringNumeroEncan2) {
+                        return true
+                    }
+                    return false
+                }
             }
-            return false;
+            return true
+        });
+    };
+
+    function filtrerLesLotsParValeurEstimee() {
+        var stringquery = JSON.parse(route.query.data);
+        lotsFiltres.value = lotsFiltres.value.filter((lot) => {
+            if (stringquery.stringValeurEstimee) {
+                if (stringquery.selectValeurEstimee == 0) {
+                    if (lot.valeurEstimeMin.valueOf() <= stringquery.stringValeurEstimee && lot.valeurEstimeMax.valueOf() >= stringquery.stringValeurEstimee) {
+                        return true
+                    }
+                    return false
+                }
+                if (stringquery.selectValeurEstimee == 1) {
+                    if (lot.valeurEstimeMin.valueOf() <= stringquery.stringValeurEstimee) {
+                        return true
+                    }
+                    return false
+                }
+                if (stringquery.selectValeurEstimee == 2) {
+                    if (lot.valeurEstimeMax.valueOf() >= stringquery.stringValeurEstimee) {
+                        return true
+                    }
+                    return false
+                }
+                if (stringquery.selectValeurEstimee == 3 && stringquery.stringValeurEstimee2) {
+                    if (lot.valeurEstimeMax.valueOf() >= stringquery.stringValeurEstimee && lot.valeurEstimeMin.valueOf() <= stringquery.stringValeurEstimee2) {
+                        return true
+                    }
+                    return false
+                }
+            }
+            return true
+        });
+    };
+
+    function filtrerLesLotsParArtiste() {
+        var stringquery = JSON.parse(route.query.data);
+        lotsFiltres.value = lotsFiltres.value.filter((lot) => {
+            if (stringquery.selectArtiste != 0 && stringquery.selectArtiste) {
+                if (lot.artiste.valueOf() == stringquery.selectArtiste) {
+                    return true
+                }
+                return false
+            }
+            return true
+        });
+    };
+
+    function filtrerLesLotsParCategorie() {
+        var stringquery = JSON.parse(route.query.data);
+        lotsFiltres.value = lotsFiltres.value.filter((lot) => {
+            if (stringquery.selectCategorie != 0 && stringquery.selectCategorie) {
+                if (lot.idCategorie.valueOf() == stringquery.selectCategorie) {
+                    return true
+                }
+                return false
+            }
+            return true
+        });
+    };
+
+    function filtrerLesLotsParMedium() {
+        var stringquery = JSON.parse(route.query.data);
+        lotsFiltres.value = lotsFiltres.value.filter((lot) => {
+            if (stringquery.selectMedium != 0 && stringquery.selectMedium) {
+                if (lot.idMedium.valueOf() == stringquery.selectMedium) {
+                    return true
+                }
+                return false
+            }
+            return true
+        });
+    };
+
+    function filtrerLesLotsParHauteur() {
+        var stringquery = JSON.parse(route.query.data);
+        lotsFiltres.value = lotsFiltres.value.filter((lot) => {
+            if (stringquery.stringHauteur) {
+                if (stringquery.selectHauteur == 0) {
+                    if (lot.hauteur.valueOf() == stringquery.stringHauteur) {
+                        return true
+                    }
+                    return false
+                }
+                if (stringquery.selectHauteur == 1) {
+                    if (lot.hauteur.valueOf() <= stringquery.stringHauteur) {
+                        return true
+                    }
+                    return false
+                }
+                if (stringquery.selectHauteur == 2) {
+                    if (lot.hauteur.valueOf() >= stringquery.stringHauteur) {
+                        return true
+                    }
+                    return false
+                }
+                if (stringquery.selectHauteur == 3 && stringquery.stringHauteur2) {
+                    if (lot.hauteur.valueOf() >= stringquery.stringHauteur && lot.hauteur.valueOf() <= stringquery.stringHauteur2) {
+                        return true
+                    }
+                    return false
+                }
+            }
+            return true
+        });
+    };
+
+    function filtrerLesLotsParLargeur() {
+        var stringquery = JSON.parse(route.query.data);
+        lotsFiltres.value = lotsFiltres.value.filter((lot) => {
+            if (stringquery.stringLargeur) {
+                if (stringquery.selectLargeur == 0) {
+                    if (lot.largeur.valueOf() == stringquery.stringLargeur) {
+                        return true
+                    }
+                    return false
+                }
+                if (stringquery.selectLargeur == 1) {
+                    if (lot.largeur.valueOf() <= stringquery.stringLargeur) {
+                        return true
+                    }
+                    return false
+                }
+                if (stringquery.selectLargeur == 2) {
+                    if (lot.largeur.valueOf() >= stringquery.stringLargeur) {
+                        return true
+                    }
+                    return false
+                }
+                if (stringquery.selectLargeur == 3 && stringquery.stringLargeur2) {
+                    if (lot.largeur.valueOf() >= stringquery.stringLargeur && lot.largeur.valueOf() <= stringquery.stringLargeur2) {
+                        return true
+                    }
+                    return false
+                }
+            }
+            return true
         });
     };
 
