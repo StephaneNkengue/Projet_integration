@@ -216,6 +216,8 @@ namespace Gamma2024.Server.Controllers
                     invoiceItemService.Create(tvqInvoiceItemOptions);
 
                     invoiceService.Pay(invoice.Id);
+
+                    _factureService.PayerFacture(facture.Id);
                 }
             }
 

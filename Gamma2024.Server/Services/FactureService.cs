@@ -54,5 +54,19 @@ namespace Gamma2024.Server.Services
             var factures = _context.Factures.Include(f => f.Client).Include(f => f.Lots).Where(f => f.NumeroEncan == numeroEncan);
             return factures.ToList();
         }
+
+        public bool PayerFacture(int idFacture)
+        {
+            var facture = _context.Factures.FirstOrDefault(f => f.Id == idFacture);
+
+            if (facture == null)
+            {
+                return false;
+            }
+
+            facture.estPaye = true;
+            _context.SaveChanges();
+            return true;
+        }
     }
 }
