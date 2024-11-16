@@ -29,6 +29,7 @@ namespace Gamma2024.Server.Models
         public bool estPaye { get; set; } = false;
         public int NumeroEncan { get; set; }
         public bool Livrable { get; set; } = false;
+        public bool? ChoixLivraison { get; set; } = false;
 
         public int? IdFactureLivraison { get; set; }
         public FactureLivraison? FactureLivraison { get; set; }
@@ -48,6 +49,7 @@ namespace Gamma2024.Server.Models
             if (Lots.Where(l => l.EstLivrable == false).Any())
             {
                 Livrable = false;
+                ChoixLivraison = false;
             }
             else
             {
