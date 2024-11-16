@@ -131,7 +131,7 @@ namespace Gamma2024.Server.Controllers
                             Name = lot.Description,
                             DefaultPriceData = new ProductDefaultPriceDataOptions
                             {
-                                UnitAmount = (long)lot.Mise.Value * 100,
+                                UnitAmount = (long)(lot.Mise.Value * 100),
                                 Currency = "cad",
                             },
                             Expand = new List<string> { "default_price" },
@@ -154,7 +154,7 @@ namespace Gamma2024.Server.Controllers
                         Name = "Frais d'encanteur",
                         DefaultPriceData = new ProductDefaultPriceDataOptions
                         {
-                            UnitAmount = (long)facture.FraisEncanteur * 100,
+                            UnitAmount = (long)(facture.FraisEncanteur * 100),
                             Currency = "cad",
                         },
                         Expand = new List<string> { "default_price" },
@@ -176,7 +176,7 @@ namespace Gamma2024.Server.Controllers
                         Name = "TPS",
                         DefaultPriceData = new ProductDefaultPriceDataOptions
                         {
-                            UnitAmount = (long)facture.TPS * 100,
+                            UnitAmount = (long)(facture.TPS * 100),
                             Currency = "cad",
                         },
                         Expand = new List<string> { "default_price" },
@@ -198,7 +198,7 @@ namespace Gamma2024.Server.Controllers
                         Name = "TVQ",
                         DefaultPriceData = new ProductDefaultPriceDataOptions
                         {
-                            UnitAmount = (long)facture.TVQ * 100,
+                            UnitAmount = (long)(facture.TVQ * 100),
                             Currency = "cad",
                         },
                         Expand = new List<string> { "default_price" },
