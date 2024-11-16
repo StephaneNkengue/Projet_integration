@@ -29,6 +29,9 @@ namespace Gamma2024.Server.Services
                 var client = _context.Users.FirstOrDefault(c => c.Id == facture.IdClient);
                 facture.Nom = client.Name;
                 facture.Prenom = client.FirstName;
+                facture.Pseudonyme = client.UserName;
+                facture.Courriel = client.Email;
+                facture.Telephone = client.PhoneNumber;
 
                 var numerosEncans = _context.Factures.Where(f => f.Id == facture.Id)
                                                      .SelectMany(f => f.Lots)
