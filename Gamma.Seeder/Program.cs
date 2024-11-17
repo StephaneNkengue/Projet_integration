@@ -3,6 +3,7 @@ using Gamma2024.Server.Extensions;
 using Gamma2024.Server.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Stripe;
@@ -28,7 +29,7 @@ while (customersTemp.Data.Count == 100)
     customersTemp = customerService.List(new CustomerListOptions { Limit = 100, StartingAfter = customers.Data.Last().Id });
 }
 
-var usersExistants = context.Users.ToList();
+var usersExistants = context.Users.Include(u => u.Adresses);
 
 foreach (var user in usersExistants)
 {
@@ -53,6 +54,15 @@ foreach (var user in usersExistants)
                 {
                     DefaultPaymentMethod = "pm_card_visa",
                 },
+                Address = new AddressOptions
+                {
+                    City = user.Adresses.First().Ville,
+                    Country = user.Adresses.First().Pays,
+                    Line1 = $"{user.Adresses.First().Numero} {user.Adresses.First().Rue}",
+                    //Line2 = user.Adresses.First().Appartement,
+                    PostalCode = user.Adresses.First().CodePostal,
+                    State = user.Adresses.First().Province
+                }
             });
             user.StripeCustomer = customer.Id;
             context.Update(user);
@@ -93,6 +103,15 @@ var utilisateurs = System.IO.File.ReadAllLines("CSV/Acheteurs.csv", System.Text.
                                     {
                                         DefaultPaymentMethod = "pm_card_visa",
                                     },
+                                    Address = new AddressOptions
+                                    {
+                                        City = u.Adresses.First().Ville,
+                                        Country = u.Adresses.First().Pays,
+                                        Line1 = $"{u.Adresses.First().Numero} {u.Adresses.First().Rue}",
+                                        Line2 = u.Adresses.First().Appartement,
+                                        PostalCode = u.Adresses.First().CodePostal,
+                                        State = u.Adresses.First().Province
+                                    }
                                 };
                                 var customer = customerService.Create(options);
                                 u.StripeCustomer = customer.Id;
