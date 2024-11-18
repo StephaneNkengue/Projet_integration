@@ -9,7 +9,7 @@
             <p>Vos achats sont livrables. Veuillez faire votre choix de livraison.</p>
 
             <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="inlineRadioOptions" id="aucuneLivraison" value="aucune" checked @change="montrerFormLivraison = false">
+                <input class="form-check-input" type="radio" name="inlineRadioOptions" id="aucuneLivraison" value="aucune" checked @change="montrerFormLivraison = false; siDonation= false">
                 <label class="form-check-label" for="aucuneLivraison">Aucune livraison</label>
             </div>
             <div class="form-check form-check-inline">
@@ -33,10 +33,33 @@
                                 <th scope="col" class="text-start">TVQ</th>
                                 <td scope="col" class="text-start">{{facture.tvq}}</td>
                             </tr>
+                            <tr v-if="siDonation">
+                                <th scope="col" class="text-start">Don</th>
+                                <td scope="col" class="text-start">{{facture.don}}</td>
+                            </tr>
                         </tbody>
                     </table>
 
-                    <h2>TOTAL: {{facture.prixFinal}}</h2>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="donationCheck" @change="toggleDonation">
+                        <label class="form-check-label" for="donationCheck">
+                            Donation
+                        </label>
+                    </div>
+
+                    <div v-if="siDonation">
+                        <select class="form-select py-0"
+                                id="selectLargeur"
+                                @change="affichageInputLargeur"
+                                aria-label="Default select example">
+                            <option v-for="charite in facture.charites" class="py-0" :value="charite.id" selected>{{charite.nomOrganisme}}</option>
+                        </select>
+                    </div>
+
+
+
+                    <h2 v-if="siDonation">TOTAL: {{facture.prixFinal}}</h2>
+                    <h2 v-else>TOTAL: {{facture.prixFinalSansDon}}</h2>
                 </div>
             </div>
 
@@ -61,6 +84,10 @@
     const factureLivraison = ref({})
     const chargement = ref(true)
     const montrerFormLivraison = ref(false)
+    const siDonation = ref(false)
+    const toggleDonation = ref(function () {
+        siDonation.value = document.getElementById('donationCheck').checked
+    })
 
     onMounted(async () => {
         const response = await store.dispatch("chercherPrevisualisationLivraison", props.idFacture)
