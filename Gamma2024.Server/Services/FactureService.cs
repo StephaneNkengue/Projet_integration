@@ -68,5 +68,16 @@ namespace Gamma2024.Server.Services
             _context.SaveChanges();
             return true;
         }
+
+        public Facture ChercherFacture(int idFacture)
+        {
+            var facture = _context.Factures.Include(f => f.Lots).FirstOrDefault(f => f.Id == idFacture);
+
+            if (facture == null)
+            {
+                return null;
+            }
+            return facture;
+        }
     }
 }
