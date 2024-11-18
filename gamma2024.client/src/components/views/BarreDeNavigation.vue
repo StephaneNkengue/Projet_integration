@@ -203,7 +203,7 @@
                         </div>
                         <div class="card-body">
                             <div class="col mt-2">
-                                <label class="text-nowrap recherchelabel fs-6"
+                                <label class="text-nowrap recherchelabel fw-bold"
                                        for="rechercheLotsNumeroEncan">
                                     Numéro d'encan
                                 </label>
@@ -242,7 +242,7 @@
                                 </div>
                             </div>
                             <div class="col mt-2">
-                                <label class="text-nowrap recherchelabel fs-6"
+                                <label class="text-nowrap recherchelabel fw-bold"
                                        for="rechercheLotsValeurEstimee">
                                     Valeur estimée
                                 </label>
@@ -284,7 +284,7 @@
                             </div>
                             <div class="row mt-2">
                                 <div class="col-md-4">
-                                    <label class="text-nowrap recherchelabel fs-6"
+                                    <label class="text-nowrap recherchelabel fw-bold"
                                            for="rechercheLotsArtiste">
                                         Artiste
                                     </label>
@@ -299,7 +299,7 @@
                                     </select>
                                 </div>
                                 <div class="col-md-4">
-                                    <label class="text-nowrap recherchelabel fs-6"
+                                    <label class="text-nowrap recherchelabel fw-bold"
                                            for="rechercheLotsCategorie">
                                         Catégorie
                                     </label>
@@ -314,7 +314,7 @@
                                     </select>
                                 </div>
                                 <div class="col-md-4">
-                                    <label class="text-nowrap recherchelabel fs-6"
+                                    <label class="text-nowrap recherchelabel fw-bold"
                                            for="rechercheLotsMedium">
                                         Medium
                                     </label>
@@ -329,89 +329,94 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="col mt-2">
-                                <label class="text-nowrap recherchelabel fs-6"
-                                       for="rechercheLotsHauteur">
-                                    Hauteur
-                                </label>
-                                <div class="row">
-                                    <div class="col-sm-3">
-                                        <select class="form-select py-0"
-                                                id="selectHauteur"
-                                                @change="affichageInputHauteur"
-                                                aria-label="Default select example">
-                                            <option class="py-0" value="0" selected>Égale à</option>
-                                            <option class="py-0" value="1">Inférieure à</option>
-                                            <option class="py-0" value="2">Supérieure à</option>
-                                            <option class="py-0" value="3" id="selectHauteurEntre">
-                                                Entre
-                                            </option>
-                                        </select>
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="col mt-2">
+                                        <label class="text-nowrap recherchelabel fw-bold"
+                                               for="rechercheLotsHauteur">
+                                            Hauteur
+                                        </label>
+                                        <div class="row">
+                                            <div class="col-sm-4">
+                                                <select class="form-select py-0"
+                                                        id="selectHauteur"
+                                                        @change="affichageInputHauteur"
+                                                        aria-label="Default select example">
+                                                    <option class="py-0" value="0" selected>Égale à</option>
+                                                    <option class="py-0" value="1">Inférieure à</option>
+                                                    <option class="py-0" value="2">Supérieure à</option>
+                                                    <option class="py-0" value="3" id="selectHauteurEntre">
+                                                        Entre
+                                                    </option>
+                                                </select>
+                                            </div>
+                                            <div class="col-sm">
+                                                <input type="number"
+                                                       maxlength="10"
+                                                       class="form-control rechercheinput align-self-end"
+                                                       id="rechercheLotsHauteur" />
+                                            </div>
+                                            <div class="col-sm-auto inputAAfficher align-items-center"
+                                                 id="inputAAfficherHauteur">
+                                                <label class="fs-6">et</label>
+                                            </div>
+                                            <div class="col-sm inputAAfficher" id="inputAAfficherHauteur">
+                                                <input type="number"
+                                                       maxlength="10"
+                                                       class="form-control rechercheinput align-self-end"
+                                                       id="rechercheLotsHauteur2" />
+                                            </div>
+                                        </div>
                                     </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="col mt-2">
+                                        <label class="text-nowrap recherchelabel fw-bold"
+                                               for="rechercheLotsLargeur">
+                                            Largeur
+                                        </label>
+                                        <div class="row">
+                                            <div class="col-sm-4">
+                                                <select class="form-select py-0"
+                                                        id="selectLargeur"
+                                                        @change="affichageInputLargeur"
+                                                        aria-label="Default select example">
+                                                    <option class="py-0" value="0" selected>Égale à</option>
+                                                    <option class="py-0" value="1">Inférieure à</option>
+                                                    <option class="py-0" value="2">Supérieure à</option>
+                                                    <option class="py-0" value="3" id="selectLargeurEntre">
+                                                        Entre
+                                                    </option>
+                                                </select>
+                                            </div>
 
-                                    <div class="col-sm">
-                                        <input type="number"
-                                               maxlength="10"
-                                               class="form-control rechercheinput align-self-end"
-                                               id="rechercheLotsHauteur" />
-                                    </div>
-                                    <div class="col-sm-auto inputAAfficher align-items-center"
-                                         id="inputAAfficherHauteur">
-                                        <label class="fs-6">et</label>
-                                    </div>
-                                    <div class="col-sm inputAAfficher" id="inputAAfficherHauteur">
-                                        <input type="number"
-                                               maxlength="10"
-                                               class="form-control rechercheinput align-self-end"
-                                               id="rechercheLotsHauteur2" />
+                                            <div class="col-sm">
+                                                <input type="number"
+                                                       maxlength="10"
+                                                       class="form-control rechercheinput align-self-end"
+                                                       id="rechercheLotsLargeur" />
+                                            </div>
+                                            <div class="col-sm-auto inputAAfficher align-items-center"
+                                                 id="inputAAfficherLargeur">
+                                                <label class="fs-6">et</label>
+                                            </div>
+                                            <div class="col-sm inputAAfficher" id="inputAAfficherLargeur">
+                                                <input type="number"
+                                                       maxlength="10"
+                                                       class="form-control rechercheinput align-self-end"
+                                                       id="rechercheLotsLargeur2" />
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col mt-2">
-                                <label class="text-nowrap recherchelabel fs-6"
-                                       for="rechercheLotsLargeur">
-                                    Largeur
-                                </label>
-                                <div class="row">
-                                    <div class="col-sm-3">
-                                        <select class="form-select py-0"
-                                                id="selectLargeur"
-                                                @change="affichageInputLargeur"
-                                                aria-label="Default select example">
-                                            <option class="py-0" value="0" selected>Égale à</option>
-                                            <option class="py-0" value="1">Inférieure à</option>
-                                            <option class="py-0" value="2">Supérieure à</option>
-                                            <option class="py-0" value="3" id="selectLargeurEntre">
-                                                Entre
-                                            </option>
-                                        </select>
-                                    </div>
-
-                                    <div class="col-sm">
-                                        <input type="number"
-                                               maxlength="10"
-                                               class="form-control rechercheinput align-self-end"
-                                               id="rechercheLotsLargeur" />
-                                    </div>
-                                    <div class="col-sm-auto inputAAfficher align-items-center"
-                                         id="inputAAfficherLargeur">
-                                        <label class="fs-6">et</label>
-                                    </div>
-                                    <div class="col-sm inputAAfficher" id="inputAAfficherLargeur">
-                                        <input type="number"
-                                               maxlength="10"
-                                               class="form-control rechercheinput align-self-end"
-                                               id="rechercheLotsLargeur2" />
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col mt-2 d-flex justify-content-center">
-                                <button class="d-flex align-items-center text-center rounded btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
-                                        type="button"
-                                        @click="rechercheAvanceeLots">
-                                    Lancer la rechercher
-                                </button>
-                            </div>
+                        </div>
+                        <div class="col mt-2 mb-2 d-flex justify-content-center">
+                            <button class="d-flex align-items-center text-center rounded btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
+                                    type="button"
+                                    @click="rechercheAvanceeLots">
+                                Lancer la rechercher
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -440,11 +445,6 @@
     const listeDesArtistes = ref([]);
     const listeDesCategories = ref([]);
     const listeDesMediums = ref([]);
-
-    const colonnesDeCriteresEncans = ref({
-        numero: true,
-        date: true,
-    });
 
     watch(
         () => store.state.user,
@@ -549,38 +549,6 @@
                 data: JSON.stringify(stringquery),
             },
         });
-    }
-
-    async function rechercheAvanceeEncans() {
-        router.push({
-            path: "/resultatrechercheencans",
-            query: {
-                stringDeRecherche: document.querySelector("#rechercheInput").value,
-                numero: document.getElementById("lotNumeroCheckboxRecherche").checked,
-                date: document.getElementById("lotDateCheckboxRecherche").checked,
-            },
-        });
-    }
-
-    function comportementTousSelectionnerRecherche() {
-        var CheckboxeToutSelectionnerRecherche = document.querySelector(
-            ".checkboxTousRecherche"
-        );
-        var listeDesCheckboxesRecherche = document.querySelectorAll(
-            ".checkboxSeulRecherche"
-        );
-
-        if (CheckboxeToutSelectionnerRecherche.checked) {
-            listeDesCheckboxesRecherche.forEach((el, index) => {
-                el.checked = true;
-                el.disabled = true;
-            });
-        } else if (!CheckboxeToutSelectionnerRecherche.checked) {
-            listeDesCheckboxesRecherche.forEach((el) => {
-                el.disabled = false;
-                el.checked = false;
-            });
-        }
     }
 
     function affichageInputNumeroEncan() {
@@ -705,6 +673,7 @@
     recherchelabel {
         margin-left: 10px !important;
         margin-right: 10px !important;
+        font-weight: bold !important;
     }
 
     .rechercheinput {
@@ -719,7 +688,7 @@
     .aucunPaddingPourCarte {
         padding-left: 0px !important;
         padding-right: 0px !important;
-        width: 700px;
+        width: 1000px;
     }
 
     .selectwidth {
