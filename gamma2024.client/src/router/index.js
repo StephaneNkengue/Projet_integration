@@ -9,9 +9,8 @@ import TableauDeBordInventaire from "@/components/views/TableauDeBordInventaire.
 import EncanPresent from "@/components/views/EncanPresent.vue";
 import EncansFuturs from "@/components/views/EncansFuturs.vue";
 import EncansPasses from "@/components/views/EncansPasses.vue";
-import TousLesLots from "@/components/views/TousLesLots.vue";
-import Encan from "@/components/views/Encan.vue";
 import TousLesEncans from "@/components/views/TousLesEncans.vue";
+import Encan from "@/components/views/Encan.vue";
 import DetailsLot from "@/components/views/DetailsLot.vue";
 import AffichageVendeur from "@/components/views/AffichageVendeur.vue";
 import VendeurCreation from "@/components/views/VendeurCreation.vue";
@@ -76,12 +75,6 @@ const routes = [
         meta: { requiresAuth: false },
     },
     {
-        path: "/touslesencans",
-        name: "TousLesEncans",
-        component: TousLesEncans,
-        meta: { requiresAuth: false },
-    },
-    {
         path: "/encansfuturs",
         name: "EncansFuturs",
         component: EncansFuturs,
@@ -91,6 +84,12 @@ const routes = [
         path: "/encanspasses",
         name: "EncansPasses",
         component: EncansPasses,
+        meta: { requiresAuth: false },
+    },
+    {
+        path: "/touslesencans",
+        name: "TousLesEncans",
+        component: TousLesEncans,
         meta: { requiresAuth: false },
     },
     {
@@ -251,12 +250,6 @@ const routes = [
         path: "/resultatrechercheencans",
         name: "ResultatRechercheEncans",
         component: ResultatRechercheEncans,
-        meta: { requiresAuth: false },
-    },
-    {
-        path: "/tousleslots",
-        name: "TousLesLots",
-        component: TousLesLots,
         meta: { requiresAuth: false },
     },
 ];
