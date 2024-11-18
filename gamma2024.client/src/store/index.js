@@ -958,6 +958,16 @@ const store = createStore({
             } catch (error) {
                 return "Erreur, veuillez réessayer";
             }
+        },
+        async chercherAdressesClient({ state }) {
+            try {
+                const response = await state.api.get(
+                    "/utilisateurs/chercheradressesclient"
+                );
+                return response;
+            } catch (error) {
+                return "Erreur, veuillez réessayer";
+            }
         }
     },
 
