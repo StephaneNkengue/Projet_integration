@@ -1,6 +1,7 @@
 using Gamma2024.Server.Data;
 using Gamma2024.Server.Models;
 using Gamma2024.Server.ViewModels;
+using Microsoft.EntityFrameworkCore;
 
 namespace Gamma2024.Server.Services
 {
@@ -39,6 +40,12 @@ namespace Gamma2024.Server.Services
                 }).ToList()
             };
             return factureLivraison;
+        }
+
+        public FactureLivraison ChercherFactureLivraison(int idFactureLivraison)
+        {
+            var facture = _context.FactureLivraisons.Include(f => f.Facture.Client).FirstOrDefault(f => f.Id == idFactureLivraison);
+            return facture;
         }
     }
 }
