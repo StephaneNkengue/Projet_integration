@@ -54,13 +54,6 @@
                                     <a class="nav-link"> Encans futurs </a>
                                 </router-link>
                             </li>
-
-                            <li class="nav-item">
-                                <router-link :to="{ name: 'TousLesLots' }"
-                                             class="text-decoration-none">
-                                    <a class="nav-link"> Tous les lots </a>
-                                </router-link>
-                            </li>
                         </ul>
 
                         <div class="d-flex justify-content-center gap-3 mb-2 mb-lg-0 flex-row align-items-center justify-content-center">
@@ -131,8 +124,7 @@
                                          height="25" />
                                 </a>
                                 <ul class="dropdown-menu bleuMarinFond text-center">
-                                    <li v-for="index in 5"
-                                        :key="index">
+                                    <li v-for="index in 5" :key="index">
                                         <router-link :to="{ name: 'Accueil' }"
                                                      class="text-decoration-none text-white d-flex align-items-center gap-3">
                                             <a class="dropdown-item text-white btnSurvolerBleuMoyenFond"
@@ -143,8 +135,7 @@
                                     </li>
                                 </ul>
                             </div>
-                            <div class="dropdown text-white"
-                                 v-if="estConnecte">
+                            <div class="dropdown text-white" v-if="estConnecte">
                                 <a class="nav-link d-flex align-items-center"
                                    role="button"
                                    data-bs-toggle="dropdown"
@@ -174,158 +165,254 @@
                                     </li>
                                 </ul>
                             </div>
-
                         </div>
                     </div>
                 </div>
             </nav>
+            <div v-if="
+          $route.name == 'EncanPresent' ||
+          $route.name == 'Encan' ||
+          $route.name == 'ResultatRechercheLots'
+        ">
+                <nav class="navbar bg-white">
+                    <div class="container-fluid d-flex justify-content-end">
+                        <button class="navbar-toggler"
+                                type="button"
+                                data-bs-toggle="collapse"
+                                data-bs-target="#navbarToggleRechercheAvancee"
+                                aria-controls="navbarToggleRechercheAvancee"
+                                aria-expanded="false"
+                                aria-label="Toggle navigation">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                    </div>
+                </nav>
+                <div class="bg-white">
+                    <div class="container collapse card mb-5 bg-white aucunPaddingPourCarte"
+                         id="navbarToggleRechercheAvancee">
+                        <div class="card-header d-flex justify-content-center">
+                            <h2>Recherche avancée de lots</h2>
+                        </div>
+                        <div class="card-body">
+                            <div class="col mt-2">
+                                <label class="text-nowrap recherchelabel fw-bold"
+                                       for="rechercheLotsNumeroEncan">
+                                    Numéro d'encan
+                                </label>
+                                <div class="row">
+                                    <div class="col-sm-3">
+                                        <select class="form-select py-0"
+                                                id="selectNumeroEncan"
+                                                @change="affichageInputNumeroEncan"
+                                                aria-label="Default select example">
+                                            <option class="py-0" value="0" selected>Égal à</option>
+                                            <option class="py-0"
+                                                    id="selectNumeroEncanEntre"
+                                                    value="1">
+                                                Entre
+                                            </option>
+                                        </select>
+                                    </div>
 
-            <nav class="navbar bg-white navbar-expand-md py-0" data-bs-theme="dark">
-                <div class="container-fluid justify-content-center justify-content-md-between d-flex flex-row-reverse">
-                    <form class="d-flex align-items-center">
-                        <div class="d-flex input-group mt-1" v-if="activationRecherche">
-                            <button class="btn btn-outline bleuMoyenFond text-white butttonNavBar py-0 btnSurvolerBleuMoyenFond dropdown-toggle"
-                                    data-bs-toggle="dropdown"
-                                    v-if="
-                  $route.name == 'EncanPresent' ||
-                  $route.name == 'Encan' ||
-                  $route.name == 'TousLesLots' ||
-                  $route.name == 'ResultatRechercheLots'
-                ">
-                                Critères des lots
-                            </button>
-                            <ul class="dropdown-menu"
-                                v-if="
-                  $route.name == 'EncanPresent' ||
-                  $route.name == 'Encan' ||
-                  $route.name == 'TousLesLots' ||
-                  $route.name == 'ResultatRechercheLots'
-                ">
-                                <li class="d-flex justify-content-start dropdown-item">
-                                    <input class="checkboxTousRecherche d-flex-1"
-                                           type="checkbox"
-                                           id="tousSelectionnerCheckboxRecherche"
-                                           @change="comportementTousSelectionnerRecherche"
-                                           checked />
-                                    <label class="d-flex-1"
-                                           for="tousSelectionnerCheckboxRecherche">
-                                        Tous Sélectionner
+                                    <div class="col-sm">
+                                        <input type="number"
+                                               maxlength="10"
+                                               class="form-control rechercheinput align-self-end"
+                                               id="rechercheLotsNumeroEncan" />
+                                    </div>
+                                    <div class="col-sm-auto inputAAfficher align-items-center"
+                                         id="inputAAfficherNumeroEncan">
+                                        <label class="fs-6">et</label>
+                                    </div>
+                                    <div class="col-sm inputAAfficher"
+                                         id="inputAAfficherNumeroEncan">
+                                        <input type="number"
+                                               maxlength="10"
+                                               class="form-control rechercheinput align-self-end"
+                                               id="rechercheLotsNumeroEncan2" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col mt-2">
+                                <label class="text-nowrap recherchelabel fw-bold"
+                                       for="rechercheLotsValeurEstimee">
+                                    Valeur estimée
+                                </label>
+                                <div class="row">
+                                    <div class="col-sm-3">
+                                        <select class="form-select py-0"
+                                                id="selectValeurEstimee"
+                                                @change="affichageInputValeurEstimee"
+                                                aria-label="Default select example">
+                                            <option class="py-0" value="0" selected>Égale à</option>
+                                            <option class="py-0" value="1">Inférieure à</option>
+                                            <option class="py-0" value="2">Supérieure à</option>
+                                            <option class="py-0"
+                                                    value="3"
+                                                    id="selectValeurEstimeeEntre">
+                                                Entre
+                                            </option>
+                                        </select>
+                                    </div>
+
+                                    <div class="col-sm">
+                                        <input type="number"
+                                               maxlength="10"
+                                               class="form-control rechercheinput align-self-end"
+                                               id="rechercheLotsValeurEstimee" />
+                                    </div>
+                                    <div class="col-sm-auto inputAAfficher align-items-center"
+                                         id="inputAAfficherValeurEstimee">
+                                        <label class="fs-6">et</label>
+                                    </div>
+                                    <div class="col-sm inputAAfficher"
+                                         id="inputAAfficherValeurEstimee">
+                                        <input type="number"
+                                               maxlength="10"
+                                               class="form-control rechercheinput align-self-end"
+                                               id="rechercheLotsValeurEstimee2" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mt-2">
+                                <div class="col-md-4">
+                                    <label class="text-nowrap recherchelabel fw-bold"
+                                           for="rechercheLotsArtiste">
+                                        Artiste
                                     </label>
-                                </li>
-                                <li v-for="(visible, colonne) in colonnesDeCriteresLots"
-                                    :key="colonne"
-                                    class="d-flex justify-content-start dropdown-item">
-                                    <input class="checkboxSeulRecherche d-flex-1"
-                                           type="checkbox"
-                                           :id="`lot${
-                      colonne.charAt(0).toUpperCase() + colonne.slice(1)
-                    }CheckboxRecherche`"
-                                           checked
-                                           disabled />
-                                    <label class="d-flex-1"
-                                           :for="`lot${
-                      colonne.charAt(0).toUpperCase() + colonne.slice(1)
-                    }CheckboxRecherche`">
-                                        {{
-                      (
-                        colonne.charAt(0).toUpperCase() + colonne.slice(1)
-                      ).replace(/([A-Z])/g, " $1")
-                                        }}
+                                    <select class="form-select py-0 align-self-center"
+                                            id="selectArtiste"
+                                            aria-label="Default select example"
+                                            required>
+                                        <option class="py-0 text-muted" value="" selected>
+                                            Pas de choix
+                                        </option>
+                                        <option v-for="artiste in listeDesArtistes" :key="artiste.nomArtiste" class="py-0" :value="artiste.nomArtiste">{{artiste.nomArtiste}}</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="text-nowrap recherchelabel fw-bold"
+                                           for="rechercheLotsCategorie">
+                                        Catégorie
                                     </label>
-                                </li>
-                            </ul>
-                            <button class="btn btn-outline bleuMoyenFond text-white butttonNavBar py-0 btnSurvolerBleuMoyenFond dropdown-toggle"
-                                    data-bs-toggle="dropdown"
-                                    v-if="
-                  $route.name == 'TousLesEncans' ||
-                  $route.name == 'EncansPasses' ||
-                  $route.name == 'EncansFuturs'
-                ">
-                                Critères d'encans
-                            </button>
-                            <ul class="dropdown-menu"
-                                v-if="
-                  $route.name == 'TousLesEncans' ||
-                  $route.name == 'EncansPasses' ||
-                  $route.name == 'EncansFuturs'
-                ">
-                                <li class="d-flex justify-content-start dropdown-item">
-                                    <input class="checkboxTousRecherche d-flex-1"
-                                           type="checkbox"
-                                           id="tousSelectionnerCheckboxRecherche"
-                                           @change="comportementTousSelectionnerRecherche"
-                                           checked />
-                                    <label class="d-flex-1"
-                                           for="tousSelectionnerCheckboxRecherche">
-                                        Tous Sélectionner
+                                    <select class="form-select py-0 align-self-center"
+                                            id="selectCategorie"
+                                            aria-label="Default select example"
+                                            required>
+                                        <option class="py-0 text-muted" value="" selected>
+                                            Pas de choix
+                                        </option>
+                                        <option v-for="categorie in listeDesCategories" :key="categorie.id" class="py-0" :value="categorie.id">{{categorie.nom}}</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="text-nowrap recherchelabel fw-bold"
+                                           for="rechercheLotsMedium">
+                                        Medium
                                     </label>
-                                </li>
-                                <li v-for="(visible, colonne) in colonnesDeCriteresEncans"
-                                    :key="colonne"
-                                    class="d-flex justify-content-start dropdown-item">
-                                    <input class="checkboxSeulRecherche d-flex-1"
-                                           type="checkbox"
-                                           :id="`lot${
-                      colonne.charAt(0).toUpperCase() + colonne.slice(1)
-                    }CheckboxRecherche`"
-                                           checked
-                                           disabled />
-                                    <label class="d-flex-1"
-                                           :for="`lot${
-                      colonne.charAt(0).toUpperCase() + colonne.slice(1)
-                    }CheckboxRecherche`">
-                                        {{
-                      (
-                        colonne.charAt(0).toUpperCase() + colonne.slice(1)
-                      ).replace(/([A-Z])/g, " $1")
-                                        }}
-                                    </label>
-                                </li>
-                            </ul>
-                            <input class="form-control butttonNavBar"
-                                   id="rechercheInput"
-                                   data-bs-theme="light"
-                                   type="search"
-                                   placeholder="Faire une recherche"
-                                   aria-label="Search"
-                                   v-model="stringDeRecherche" />
-                            <button class="btn bleuMoyenFond me-3 text-white butttonNavBar py-0 btnSurvolerBleuMoyenFond"
-                                    v-if="
-                  $route.name == 'EncanPresent' ||
-                  $route.name == 'Encan' ||
-                  $route.name == 'TousLesLots' ||
-                  $route.name == 'ResultatRechercheLots'
-                "
-                                    type="submit"
-                                    @click.prevent="rechercheAvanceeLots">
-                                Rechercher dans les lots
-                            </button>
-                            <button class="btn bleuMoyenFond me-3 text-white butttonNavBar py-0 btnSurvolerBleuMoyenFond"
-                                    v-else-if="
-                  $route.name == 'TousLesEncans' ||
-                  $route.name == 'EncansPasses' ||
-                  $route.name == 'EncansFuturs'
-                "
-                                    type="submit"
-                                    @click.prevent="rechercheAvanceeEncans">
-                                Rechercher dans les encans
-                            </button>
-                            <button class="btn bleuMoyenFond me-3 text-white butttonNavBar py-0 btnSurvolerBleuMoyenFond"
-                                    v-else
-                                    type="submit"
-                                    @click.prevent="rechercheSimple">
-                                Rechercher
+                                    <select class="form-select py-0 align-self-center"
+                                            id="selectMedium"
+                                            aria-label="Default select example"
+                                            required>
+                                        <option class="py-0 text-muted" value="" selected>
+                                            Pas de choix
+                                        </option>
+                                        <option v-for="medium in listeDesMediums" :key="medium.id" class="py-0" :value="medium.id">{{medium.type}}</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="col mt-2">
+                                        <label class="text-nowrap recherchelabel fw-bold"
+                                               for="rechercheLotsHauteur">
+                                            Hauteur
+                                        </label>
+                                        <div class="row">
+                                            <div class="col-sm-4">
+                                                <select class="form-select py-0"
+                                                        id="selectHauteur"
+                                                        @change="affichageInputHauteur"
+                                                        aria-label="Default select example">
+                                                    <option class="py-0" value="0" selected>Égale à</option>
+                                                    <option class="py-0" value="1">Inférieure à</option>
+                                                    <option class="py-0" value="2">Supérieure à</option>
+                                                    <option class="py-0" value="3" id="selectHauteurEntre">
+                                                        Entre
+                                                    </option>
+                                                </select>
+                                            </div>
+                                            <div class="col-sm">
+                                                <input type="number"
+                                                       maxlength="10"
+                                                       class="form-control rechercheinput align-self-end"
+                                                       id="rechercheLotsHauteur" />
+                                            </div>
+                                            <div class="col-sm-auto inputAAfficher align-items-center"
+                                                 id="inputAAfficherHauteur">
+                                                <label class="fs-6">et</label>
+                                            </div>
+                                            <div class="col-sm inputAAfficher" id="inputAAfficherHauteur">
+                                                <input type="number"
+                                                       maxlength="10"
+                                                       class="form-control rechercheinput align-self-end"
+                                                       id="rechercheLotsHauteur2" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="col mt-2">
+                                        <label class="text-nowrap recherchelabel fw-bold"
+                                               for="rechercheLotsLargeur">
+                                            Largeur
+                                        </label>
+                                        <div class="row">
+                                            <div class="col-sm-4">
+                                                <select class="form-select py-0"
+                                                        id="selectLargeur"
+                                                        @change="affichageInputLargeur"
+                                                        aria-label="Default select example">
+                                                    <option class="py-0" value="0" selected>Égale à</option>
+                                                    <option class="py-0" value="1">Inférieure à</option>
+                                                    <option class="py-0" value="2">Supérieure à</option>
+                                                    <option class="py-0" value="3" id="selectLargeurEntre">
+                                                        Entre
+                                                    </option>
+                                                </select>
+                                            </div>
+
+                                            <div class="col-sm">
+                                                <input type="number"
+                                                       maxlength="10"
+                                                       class="form-control rechercheinput align-self-end"
+                                                       id="rechercheLotsLargeur" />
+                                            </div>
+                                            <div class="col-sm-auto inputAAfficher align-items-center"
+                                                 id="inputAAfficherLargeur">
+                                                <label class="fs-6">et</label>
+                                            </div>
+                                            <div class="col-sm inputAAfficher" id="inputAAfficherLargeur">
+                                                <input type="number"
+                                                       maxlength="10"
+                                                       class="form-control rechercheinput align-self-end"
+                                                       id="rechercheLotsLargeur2" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col mt-2 mb-2 d-flex justify-content-center">
+                            <button class="d-flex align-items-center text-center rounded btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
+                                    type="button"
+                                    @click="rechercheAvanceeLots">
+                                Lancer la rechercher
                             </button>
                         </div>
-                        <a @click="activationRecherche = !activationRecherche">
-                            <img src="/icons/IconeRechercheAvanceeBleu.png"
-                                 alt="Icon recherche avancée"
-                                 height="30"
-                                 class="my-1" />
-                        </a>
-                    </form>
+                    </div>
                 </div>
-            </nav>
+            </div>
         </div>
     </header>
 </template>
@@ -347,22 +434,9 @@
 
     const currentUser = ref(null);
 
-    const colonnesDeCriteresLots = ref({
-        encan: true,
-        numero: true,
-        estimationMin: true,
-        estimationMax: true,
-        categorie: true,
-        artiste: true,
-        dimension: true,
-        description: true,
-        medium: true,
-    });
-
-    const colonnesDeCriteresEncans = ref({
-        numero: true,
-        date: true,
-    });
+    const listeDesArtistes = ref([]);
+    const listeDesCategories = ref([]);
+    const listeDesMediums = ref([]);
 
     watch(
         () => store.state.user,
@@ -395,65 +469,142 @@
         }
     );
 
-    function rechercheSimple(e) {
-        e.preventDefault();
-        var texte = document.querySelector("#rechercheInput").value;
-        window.find(texte, null, null, true);
-    }
-
     async function rechercheAvanceeLots() {
+        var stringquery = {};
+        var selectNumeroEncan = document.querySelector("#selectNumeroEncan").value;
+        var stringNumeroEncan = document.querySelector(
+            "#rechercheLotsNumeroEncan"
+        ).value;
+        var stringNumeroEncan2 = document.querySelector(
+            "#rechercheLotsNumeroEncan2"
+        ).value;
+        var selectValeurEstimee = document.querySelector(
+            "#selectValeurEstimee"
+        ).value;
+        var stringValeurEstimee = document.querySelector(
+            "#rechercheLotsValeurEstimee"
+        ).value;
+        var stringValeurEstimee2 = document.querySelector(
+            "#rechercheLotsValeurEstimee2"
+        ).value;
+        var selectArtiste = document.querySelector("#selectArtiste").value;
+        var selectCategorie = document.querySelector("#selectCategorie").value;
+        var selectMedium = document.querySelector("#selectMedium").value;
+        var selectHauteur = document.querySelector("#selectHauteur").value;
+        var stringHauteur = document.querySelector("#rechercheLotsHauteur").value;
+        var stringHauteur2 = document.querySelector("#rechercheLotsHauteur2").value;
+        var selectLargeur = document.querySelector("#selectLargeur").value;
+        var stringLargeur = document.querySelector("#rechercheLotsLargeur").value;
+        var stringLargeur2 = document.querySelector("#rechercheLotsLargeur2").value;
+
+        if (stringNumeroEncan) {
+            stringquery['selectNumeroEncan'] = selectNumeroEncan;
+            stringquery['stringNumeroEncan'] = stringNumeroEncan;
+            if (selectNumeroEncan == 3) {
+                stringquery['stringNumeroEncan2'] = stringNumeroEncan2;
+            }
+        }
+        if (stringValeurEstimee) {
+            stringquery['selectValeurEstimee'] = selectValeurEstimee;
+            stringquery['stringValeurEstimee'] = stringValeurEstimee;
+            if (selectValeurEstimee == 3) {
+                stringquery['stringValeurEstimee2'] = stringValeurEstimee2;
+            }
+        }
+        if (selectArtiste != 0) {
+            stringquery['selectArtiste'] = selectArtiste;
+        }
+        if (selectCategorie != 0) {
+            stringquery['selectCategorie'] = selectCategorie;
+        }
+        if (selectMedium != 0) {
+            stringquery['selectMedium'] = selectMedium;
+        }
+        if (stringHauteur) {
+            stringquery['selectHauteur'] = selectHauteur;
+            stringquery['stringHauteur'] = stringHauteur;
+            if (selectHauteur == 3) {
+                stringquery['stringHauteur2'] = stringHauteur2;
+            }
+        }
+        if (stringLargeur) {
+            stringquery['selectLargeur'] = selectLargeur;
+            stringquery['stringLargeur'] = stringLargeur;
+            if (selectLargeur == 3) {
+                stringquery['stringLargeur2'] = stringLargeur2;
+            }
+        }
+
         router.push({
             path: "/resultatrecherchelots",
             query: {
-                stringDeRecherche: document.querySelector("#rechercheInput").value,
-                encan: document.getElementById("lotEncanCheckboxRecherche").checked,
-                numero: document.getElementById("lotNumeroCheckboxRecherche").checked,
-                estimationMin: document.getElementById(
-                    "lotEstimationMinCheckboxRecherche"
-                ).checked,
-                estimationMax: document.getElementById(
-                    "lotEstimationMaxCheckboxRecherche"
-                ).checked,
-                categorie: document.getElementById("lotCategorieCheckboxRecherche")
-                    .checked,
-                artiste: document.getElementById("lotArtisteCheckboxRecherche").checked,
-                dimension: document.getElementById("lotDimensionCheckboxRecherche")
-                    .checked,
-                description: document.getElementById("lotDescriptionCheckboxRecherche")
-                    .checked,
-                medium: document.getElementById("lotMediumCheckboxRecherche").checked,
+                data: JSON.stringify(stringquery),
             },
         });
     }
 
-    async function rechercheAvanceeEncans() {
-        router.push({
-            path: "/resultatrechercheencans",
-            query: {
-                stringDeRecherche: document.querySelector("#rechercheInput").value,
-                numero: document.getElementById("lotNumeroCheckboxRecherche").checked,
-                date: document.getElementById("lotDateCheckboxRecherche").checked,
-            },
-        });
-    }
-
-    function comportementTousSelectionnerRecherche() {
-        var CheckboxeToutSelectionnerRecherche = document.querySelector(
-            ".checkboxTousRecherche"
-        );
-        var listeDesCheckboxesRecherche = document.querySelectorAll(
-            ".checkboxSeulRecherche"
+    function affichageInputNumeroEncan() {
+        var inputAAfficher = document.querySelectorAll("#inputAAfficherNumeroEncan");
+        var selectNumeroEncanEntre = document.querySelector(
+            "#selectNumeroEncanEntre"
         );
 
-        if (CheckboxeToutSelectionnerRecherche.checked) {
-            listeDesCheckboxesRecherche.forEach((el, index) => {
-                el.checked = true;
-                el.disabled = true;
+        if (selectNumeroEncanEntre.selected) {
+            inputAAfficher.forEach((el, index) => {
+                el.style.display = "inline-block";
             });
-        } else if (!CheckboxeToutSelectionnerRecherche.checked) {
-            listeDesCheckboxesRecherche.forEach((el) => {
-                el.disabled = false;
-                el.checked = false;
+        } else if (!selectNumeroEncanEntre.selected) {
+            inputAAfficher.forEach((el) => {
+                el.style.display = "none";
+            });
+        }
+    }
+
+    function affichageInputValeurEstimee() {
+        var inputAAfficher = document.querySelectorAll(
+            "#inputAAfficherValeurEstimee"
+        );
+        var selectValeurestimeeEntre = document.querySelector(
+            "#selectValeurEstimeeEntre"
+        );
+
+        if (selectValeurEstimeeEntre.selected) {
+            inputAAfficher.forEach((el, index) => {
+                el.style.display = "inline-block";
+            });
+        } else if (!selectValeurEstimeeEntre.selected) {
+            inputAAfficher.forEach((el) => {
+                el.style.display = "none";
+            });
+        }
+    }
+
+    function affichageInputHauteur() {
+        var inputAAfficher = document.querySelectorAll("#inputAAfficherHauteur");
+        var selectHauteurEntre = document.querySelector("#selectHauteurEntre");
+
+        if (selectHauteurEntre.selected) {
+            inputAAfficher.forEach((el, index) => {
+                el.style.display = "inline-block";
+            });
+        } else if (!selectHauteurEntre.selected) {
+            inputAAfficher.forEach((el) => {
+                el.style.display = "none";
+            });
+        }
+    }
+
+    function affichageInputLargeur() {
+        var inputAAfficher = document.querySelectorAll("#inputAAfficherLargeur");
+        var selectLargeurEntre = document.querySelector("#selectLargeurEntre");
+
+        if (selectLargeurEntre.selected) {
+            inputAAfficher.forEach((el, index) => {
+                el.style.display = "inline-block";
+            });
+        } else if (!selectLargeurEntre.selected) {
+            inputAAfficher.forEach((el) => {
+                el.style.display = "none";
             });
         }
     }
@@ -468,10 +619,13 @@
         router.push("/"); // Redirige vers la page d'accueil après la déconnexion
     };
 
-    onMounted(() => {
+    onMounted(async () => {
         document.querySelectorAll(".dropdown-toggle").forEach((dropdownToggle) => {
             new bootstrap.Dropdown(dropdownToggle);
         });
+        listeDesArtistes.value = await store.dispatch('obtenirArtistes');
+        listeDesMediums.value = await store.dispatch('obtenirMediums');
+        listeDesCategories.value = await store.dispatch('obtenirCategories');
     });
 </script>
 <style scoped>
@@ -487,4 +641,78 @@
         width: 40px;
         height: 40px;
     }
+
+    input.form-control {
+        height: 25px !important;
+        font-size: 15px !important;
+    }
+
+    select {
+        width: 100% !important;
+    }
+
+        select.form-select {
+            height: 25px !important;
+            margin-right: 10px !important;
+            font-size: 15px !important;
+        }
+
+        select option {
+            height: 25px !important;
+            font-size: 15px !important;
+        }
+
+    recherchelabel {
+        margin-left: 10px !important;
+        margin-right: 10px !important;
+        font-weight: bold !important;
+    }
+
+    .rechercheinput {
+        margin-right: 10px !important;
+    }
+
+    .margesPourTable {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+
+    .aucunPaddingPourCarte {
+        padding-left: 0px !important;
+        padding-right: 0px !important;
+        width: 1000px;
+    }
+
+    .selectwidth {
+        width: 160px;
+    }
+
+    .inputAAfficher {
+        display: none;
+    }
+
+    .card-body {
+        padding-top: 0px !important;
+        padding-bottom: 10px !important;
+    }
+
+    select,
+    select option {
+        color: #000000;
+    }
+
+        select:invalid,
+        select option[value=""] {
+            color: #999999;
+        }
+
+    /*Pour faire changer l'icone du menu hamburger de la recherche*/
+    /*.navbar-toggler-icon {
+        background-image: none;
+    }
+
+        .navbar-toggler-icon::before {
+            font-family: FontAwesome;
+            content: "\f0c9";*/ /* fa-bars, fa-navicon */
+    /*}*/
 </style>

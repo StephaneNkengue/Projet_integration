@@ -49,7 +49,7 @@
                 </ul>
             </div>
             <div class="d-flex d-flex-1 me-1 gap-1 px-4 align-items-center">
-                <label for="Recherche">Rechercher : </label>
+                <label class="labelRecherche" for="Recherche">Rechercher : </label>
                 <input data-bs-theme="light"
                        type="search"
                        aria-label="Recherche"
@@ -667,7 +667,7 @@
         padding-left: 15px;
     }
 
-    div label {
+    .labelRecherche {
         font-size: 15px;
     }
 
