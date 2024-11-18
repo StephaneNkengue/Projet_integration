@@ -17,11 +17,13 @@ namespace Gamma2024.Server.Controllers
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly FactureService _factureService;
+        private readonly FactureLivraisonService _factureLivraisonService;
 
-        public PaiementController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, FactureService factureService)
+        public PaiementController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, FactureService factureService, FactureLivraisonService factureLivraisonService)
         {
             _userManager = userManager;
             _factureService = factureService;
+            _factureLivraisonService = factureLivraisonService;
         }
 
         [Authorize(Roles = "Client")]
@@ -220,6 +222,137 @@ namespace Gamma2024.Server.Controllers
                     _factureService.PayerFacture(facture.Id);
                 }
             }
+
+            return Ok();
+        }
+
+        [HttpPost("PayerFactureLivraison/{idFactureLivraison}")]
+        public async Task<ActionResult> PayerFactureLivraison(int idFactureLivraison)
+        {
+            var factureLivraison = _factureLivraisonService.ChercherFactureLivraison(idFactureLivraison);
+
+            var productService = new ProductService();
+            var invoiceService = new InvoiceService();
+            var invoiceItemService = new InvoiceItemService();
+            var paymentMethodService = new PaymentMethodService();
+
+            //if (!facture.estPaye)
+            //{
+            var customerId = factureLivraison.Facture.Client.StripeCustomer;
+            var paymentMethodOptions = new PaymentMethodListOptions
+            {
+                Type = "card",
+                Limit = 1,
+                Customer = customerId,
+            };
+
+            StripeList<PaymentMethod> paymentMethods = paymentMethodService.List(paymentMethodOptions);
+
+            var invoiceOptions = new InvoiceCreateOptions
+            {
+                Customer = customerId,
+                CollectionMethod = "charge_automatically",
+                DefaultPaymentMethod = paymentMethods.Data[0].Id,
+                AutomaticTax = new InvoiceAutomaticTaxOptions(),
+            };
+
+            var invoice = invoiceService.Create(invoiceOptions);
+
+            var fraisProdOptions = new ProductCreateOptions
+            {
+                Name = "Frais de livraison",
+                DefaultPriceData = new ProductDefaultPriceDataOptions
+                {
+                    UnitAmount = (long)(factureLivraison.SousTotal * 100),
+                    Currency = "cad",
+                },
+                Expand = new List<string> { "default_price" },
+            };
+            var fraisProd = productService.Create(fraisProdOptions);
+
+            var fraisInvoiceItemOptions = new InvoiceItemCreateOptions
+            {
+                Customer = customerId,
+                Invoice = invoice.Id,
+                Description = "Frais de livraison",
+                Price = fraisProd.DefaultPriceId
+            };
+
+            invoiceItemService.Create(fraisInvoiceItemOptions);
+
+            var tpsProdOptions = new ProductCreateOptions
+            {
+                Name = "TPS",
+                DefaultPriceData = new ProductDefaultPriceDataOptions
+                {
+                    UnitAmount = (long)(factureLivraison.TPS * 100),
+                    Currency = "cad",
+                },
+                Expand = new List<string> { "default_price" },
+            };
+            var tpsProd = productService.Create(tpsProdOptions);
+
+            var tpsInvoiceItemOptions = new InvoiceItemCreateOptions
+            {
+                Customer = customerId,
+                Invoice = invoice.Id,
+                Description = "TPS",
+                Price = tpsProd.DefaultPriceId
+            };
+
+            invoiceItemService.Create(tpsInvoiceItemOptions);
+
+            var tvqProdOptions = new ProductCreateOptions
+            {
+                Name = "TVQ",
+                DefaultPriceData = new ProductDefaultPriceDataOptions
+                {
+                    UnitAmount = (long)(factureLivraison.TVQ * 100),
+                    Currency = "cad",
+                },
+                Expand = new List<string> { "default_price" },
+            };
+            var tvqProd = productService.Create(tvqProdOptions);
+
+            var tvqInvoiceItemOptions = new InvoiceItemCreateOptions
+            {
+                Customer = customerId,
+                Invoice = invoice.Id,
+                Description = "TVQ",
+                Price = tvqProd.DefaultPriceId
+            };
+
+            invoiceItemService.Create(tvqInvoiceItemOptions);
+
+            if (factureLivraison.Don.HasValue)
+            {
+                var donProdOptions = new ProductCreateOptions
+                {
+                    Name = "Don",
+                    DefaultPriceData = new ProductDefaultPriceDataOptions
+                    {
+                        UnitAmount = (long)(factureLivraison.Don * 100),
+                        Currency = "cad",
+                    },
+                    Expand = new List<string> { "default_price" },
+                };
+                var donProd = productService.Create(donProdOptions);
+
+                var donInvoiceItemOptions = new InvoiceItemCreateOptions
+                {
+                    Customer = customerId,
+                    Invoice = invoice.Id,
+                    Description = "Don",
+                    Price = donProd.DefaultPriceId
+                };
+
+                invoiceItemService.Create(donInvoiceItemOptions);
+            }
+
+            invoiceService.Pay(invoice.Id);
+
+            //_factureService.PayerFacture(factureLivraison.Id);
+            //}
 
             return Ok();
         }
