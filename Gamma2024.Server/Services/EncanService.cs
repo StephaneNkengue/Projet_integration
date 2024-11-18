@@ -164,7 +164,7 @@ namespace Gamma2024.Server.Services
         public EncanAffichageVM ChercherEncanEnCours()
         {
             var encan = _context.Encans
-                .FirstOrDefault(e => DateTime.Now > e.DateDebut);
+                .FirstOrDefault(e => DateTime.Now < e.DateFin && DateTime.Now > e.DateDebut);
 
             if (encan != null && encan.EstPublie)
             {
@@ -185,7 +185,7 @@ namespace Gamma2024.Server.Services
         public int ChercherNumeroEncanEnCours()
         {
             var encan = _context.Encans
-                .FirstOrDefault(e => DateTime.Now > e.DateDebut);
+                .FirstOrDefault(e => DateTime.Now < e.DateFin && DateTime.Now > e.DateDebut);
 
             if (encan != null && encan.EstPublie)
             {
@@ -219,7 +219,7 @@ namespace Gamma2024.Server.Services
         public ICollection<EncanAffichageVM> ChercherEncansPasses()
         {
             var encans = _context.Encans
-                .Where(e => e.EstPublie == true)
+                .Where(e => e.EstPublie == true && DateTime.Now > e.DateFin)
                 .OrderByDescending(e => e.DateFin)
                 .ToList()
                 .Select(e => new EncanAffichageVM
