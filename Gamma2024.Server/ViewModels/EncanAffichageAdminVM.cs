@@ -7,7 +7,6 @@ namespace Gamma2024.Server.ViewModels
         public DateTime DateDebut { get; set; }
         public DateTime DateFin { get; set; }
         public DateTime DateDebutSoireeCloture { get; set; }
-        public DateTime DateFinSoireeCloture { get; set; }
         public bool EstPublie { get; set; }
         public int NbLots { get; set; }
     }
