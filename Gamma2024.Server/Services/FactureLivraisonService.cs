@@ -19,15 +19,24 @@ namespace Gamma2024.Server.Services
             {
                 Id = facture.Id,
                 Facture = facture,
+                IdCharite = 1
             };
             factureLivraisonOriginal.CalculerFacture();
 
             var factureLivraison = new FactureLivraisonVM
             {
+                IdFacture = factureLivraisonOriginal.IdFacture,
                 SousTotal = factureLivraisonOriginal.SousTotal,
                 PrixFinal = factureLivraisonOriginal.PrixFinal,
                 TPS = factureLivraisonOriginal.TPS,
                 TVQ = factureLivraisonOriginal.TVQ,
+                Don = factureLivraisonOriginal.Don.Value,
+                PrixFinalSansDon = double.Round(factureLivraisonOriginal.PrixFinal - factureLivraisonOriginal.Don.Value, 2),
+                Charites = _context.Charites.Select(c => new ChariteVM
+                {
+                    Id = c.Id,
+                    NomOrganisme = c.NomOrganisme,
+                }).ToList()
             };
             return factureLivraison;
         }
