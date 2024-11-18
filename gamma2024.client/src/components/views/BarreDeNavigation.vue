@@ -54,13 +54,6 @@
                                     <a class="nav-link"> Encans futurs </a>
                                 </router-link>
                             </li>
-
-                            <li class="nav-item">
-                                <router-link :to="{ name: 'TousLesLots' }"
-                                             class="text-decoration-none">
-                                    <a class="nav-link"> Tous les lots </a>
-                                </router-link>
-                            </li>
                         </ul>
 
                         <div class="d-flex justify-content-center gap-3 mb-2 mb-lg-0 flex-row align-items-center justify-content-center">
