@@ -32,6 +32,7 @@ import TableauDeBordVentes from "@/components/views/TableauDeBordVentes.vue";
 import ResultatRechercheLots from "@/components/views/ResultatRechercheLots.vue";
 import ResultatRechercheEncans from "@/components/views/ResultatRechercheEncans.vue";
 import GestionCartes from "@/components/views/GestionCartes.vue";
+import ChoixLivraison from "@/components/views/ChoixLivraison.vue";
 const routes = [
     {
         path: "/",
@@ -229,6 +230,16 @@ const routes = [
         path: "/cartes",
         name: "GestionCartes",
         component: GestionCartes,
+        props: true,
+        meta: {
+            requiresAuth: true,
+            requiredRole: "Client"
+        },
+    },
+    {
+        path: "/livraison/:idFacture",
+        name: "ChoixLivraison",
+        component: ChoixLivraison,
         props: true,
         meta: {
             requiresAuth: true,
