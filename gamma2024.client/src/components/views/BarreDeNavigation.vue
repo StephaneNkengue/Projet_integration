@@ -194,83 +194,89 @@
                             <h2>Recherche avancée de lots</h2>
                         </div>
                         <div class="card-body">
-                            <div class="col mt-2">
-                                <label class="text-nowrap recherchelabel fw-bold"
-                                       for="rechercheLotsNumeroEncan">
-                                    Numéro d'encan
-                                </label>
-                                <div class="row">
-                                    <div class="col-sm-3">
-                                        <select class="form-select py-0"
-                                                id="selectNumeroEncan"
-                                                @change="affichageInputNumeroEncan"
-                                                aria-label="Default select example">
-                                            <option class="py-0" value="0" selected>Égal à</option>
-                                            <option class="py-0"
-                                                    id="selectNumeroEncanEntre"
-                                                    value="1">
-                                                Entre
-                                            </option>
-                                        </select>
-                                    </div>
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="col mt-2">
+                                        <label class="text-nowrap recherchelabel fw-bold"
+                                               for="rechercheLotsNumeroEncan">
+                                            Numéro d'encan
+                                        </label>
+                                        <div class="row">
+                                            <div class="col-sm-3">
+                                                <select class="form-select py-0"
+                                                        id="selectNumeroEncan"
+                                                        @change="affichageInputNumeroEncan"
+                                                        aria-label="Default select example">
+                                                    <option class="py-0" value="0" selected>Égal à</option>
+                                                    <option class="py-0"
+                                                            id="selectNumeroEncanEntre"
+                                                            value="1">
+                                                        Entre
+                                                    </option>
+                                                </select>
+                                            </div>
 
-                                    <div class="col-sm">
-                                        <input type="number"
-                                               maxlength="10"
-                                               class="form-control rechercheinput align-self-end"
-                                               id="rechercheLotsNumeroEncan" />
-                                    </div>
-                                    <div class="col-sm-auto inputAAfficher align-items-center"
-                                         id="inputAAfficherNumeroEncan">
-                                        <label class="fs-6">et</label>
-                                    </div>
-                                    <div class="col-sm inputAAfficher"
-                                         id="inputAAfficherNumeroEncan">
-                                        <input type="number"
-                                               maxlength="10"
-                                               class="form-control rechercheinput align-self-end"
-                                               id="rechercheLotsNumeroEncan2" />
+                                            <div class="col-sm">
+                                                <input type="number"
+                                                       maxlength="10"
+                                                       class="form-control rechercheinput align-self-end"
+                                                       id="rechercheLotsNumeroEncan" />
+                                            </div>
+                                            <div class="col-sm-auto inputAAfficher align-items-center"
+                                                 id="inputAAfficherNumeroEncan">
+                                                <label class="fs-6">et</label>
+                                            </div>
+                                            <div class="col-sm inputAAfficher"
+                                                 id="inputAAfficherNumeroEncan">
+                                                <input type="number"
+                                                       maxlength="10"
+                                                       class="form-control rechercheinput align-self-end"
+                                                       id="rechercheLotsNumeroEncan2" />
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="col mt-2">
-                                <label class="text-nowrap recherchelabel fw-bold"
-                                       for="rechercheLotsValeurEstimee">
-                                    Valeur estimée
-                                </label>
-                                <div class="row">
-                                    <div class="col-sm-3">
-                                        <select class="form-select py-0"
-                                                id="selectValeurEstimee"
-                                                @change="affichageInputValeurEstimee"
-                                                aria-label="Default select example">
-                                            <option class="py-0" value="0" selected>Égale à</option>
-                                            <option class="py-0" value="1">Inférieure à</option>
-                                            <option class="py-0" value="2">Supérieure à</option>
-                                            <option class="py-0"
-                                                    value="3"
-                                                    id="selectValeurEstimeeEntre">
-                                                Entre
-                                            </option>
-                                        </select>
-                                    </div>
+                                <div class="col-6">
+                                    <div class="col mt-2">
+                                        <label class="text-nowrap recherchelabel fw-bold"
+                                               for="rechercheLotsValeurEstimee">
+                                            Valeur estimée
+                                        </label>
+                                        <div class="row">
+                                            <div class="col-sm-3">
+                                                <select class="form-select py-0"
+                                                        id="selectValeurEstimee"
+                                                        @change="affichageInputValeurEstimee"
+                                                        aria-label="Default select example">
+                                                    <option class="py-0" value="0" selected>Égale à</option>
+                                                    <option class="py-0" value="1">Inférieure à</option>
+                                                    <option class="py-0" value="2">Supérieure à</option>
+                                                    <option class="py-0"
+                                                            value="3"
+                                                            id="selectValeurEstimeeEntre">
+                                                        Entre
+                                                    </option>
+                                                </select>
+                                            </div>
 
-                                    <div class="col-sm">
-                                        <input type="number"
-                                               maxlength="10"
-                                               class="form-control rechercheinput align-self-end"
-                                               id="rechercheLotsValeurEstimee" />
-                                    </div>
-                                    <div class="col-sm-auto inputAAfficher align-items-center"
-                                         id="inputAAfficherValeurEstimee">
-                                        <label class="fs-6">et</label>
-                                    </div>
-                                    <div class="col-sm inputAAfficher"
-                                         id="inputAAfficherValeurEstimee">
-                                        <input type="number"
-                                               maxlength="10"
-                                               class="form-control rechercheinput align-self-end"
-                                               id="rechercheLotsValeurEstimee2" />
+                                            <div class="col-sm">
+                                                <input type="number"
+                                                       maxlength="10"
+                                                       class="form-control rechercheinput align-self-end"
+                                                       id="rechercheLotsValeurEstimee" />
+                                            </div>
+                                            <div class="col-sm-auto inputAAfficher align-items-center"
+                                                 id="inputAAfficherValeurEstimee">
+                                                <label class="fs-6">et</label>
+                                            </div>
+                                            <div class="col-sm inputAAfficher"
+                                                 id="inputAAfficherValeurEstimee">
+                                                <input type="number"
+                                                       maxlength="10"
+                                                       class="form-control rechercheinput align-self-end"
+                                                       id="rechercheLotsValeurEstimee2" />
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
