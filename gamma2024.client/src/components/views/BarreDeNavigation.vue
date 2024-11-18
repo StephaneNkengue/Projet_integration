@@ -172,9 +172,8 @@
             <div v-if="
           $route.name == 'EncanPresent' ||
           $route.name == 'Encan' ||
-          $route.name == 'ResultatRechercheLots'
-        ">
-                <nav class="navbar bg-white">
+          $route.name == 'ResultatRechercheLots'">
+                <nav class="navbar bg-white navbarRechercheAvancee">
                     <div class="container-fluid d-flex justify-content-end">
                         <button class="navbar-toggler"
                                 type="button"
@@ -202,7 +201,7 @@
                                             Numéro d'encan
                                         </label>
                                         <div class="row">
-                                            <div class="col-sm-3">
+                                            <div class="col-sm-4">
                                                 <select class="form-select py-0"
                                                         id="selectNumeroEncan"
                                                         @change="affichageInputNumeroEncan"
@@ -243,7 +242,7 @@
                                             Valeur estimée
                                         </label>
                                         <div class="row">
-                                            <div class="col-sm-3">
+                                            <div class="col-sm-4">
                                                 <select class="form-select py-0"
                                                         id="selectValeurEstimee"
                                                         @change="affichageInputValeurEstimee"
@@ -418,6 +417,9 @@
                         </div>
                     </div>
                 </div>
+            </div>
+            <div v-else class="bg-white aucuneBarreDeRechercheAnvancee">
+
             </div>
         </div>
     </header>
@@ -615,6 +617,16 @@
         }
     }
 
+    // La barre de recherche avancée garde les informations ou non selon le changement de page
+    const routeChangement = computed(() => route)
+    watch(routeChangement, changeRechercheAvanceeInput)
+
+    function changeRechercheAvanceeInput() {
+        if (router.currentRoute == "ResultatRechercheLots") {
+
+        }
+    }
+
     // Définition de activationRecherche
     const activationRecherche = ref(false);
     const activationDropdownProfil = ref(false);
@@ -689,6 +701,10 @@
         width: 1000px;
     }
 
+    .aucuneBarreDeRechercheAnvancee {
+        min-height: 30px;
+    }
+
     .selectwidth {
         width: 160px;
     }
@@ -712,13 +728,27 @@
             color: #999999;
         }
 
-    /*Pour faire changer l'icone du menu hamburger de la recherche*/
-    /*.navbar-toggler-icon {
-        background-image: none;
+    .navbarRechercheAvancee {
+        padding-top: 3px !important;
+        padding-bottom: 2px !important;
+        border: none !important;
     }
 
-        .navbar-toggler-icon::before {
-            font-family: FontAwesome;
-            content: "\f0c9";*/ /* fa-bars, fa-navicon */
-    /*}*/
+    .navbar-toggler {
+        padding-top: 0px !important;
+        padding-bottom: 0px !important;
+        padding-left: 0px !important;
+        padding-right: 0px !important;
+        width: 25px;
+        height: 25px;
+        /*background-image: none;*/
+    }
+    /*Pour faire changer l'icone du menu hamburger de la recherche*/
+    .navbar-toggler-icon {
+        position: relative;
+        top: -1px;
+        width: 20px;
+        height: 20px;
+        background-image: url("/public/icons/Recherche.png");
+    }
 </style>
