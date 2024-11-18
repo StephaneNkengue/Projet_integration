@@ -172,7 +172,6 @@
             <div v-if="
           $route.name == 'EncanPresent' ||
           $route.name == 'Encan' ||
-          $route.name == 'TousLesLots' ||
           $route.name == 'ResultatRechercheLots'
         ">
                 <nav class="navbar bg-white">

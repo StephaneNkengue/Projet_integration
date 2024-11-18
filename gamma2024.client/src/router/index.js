@@ -9,6 +9,7 @@ import TableauDeBordInventaire from "@/components/views/TableauDeBordInventaire.
 import EncanPresent from "@/components/views/EncanPresent.vue";
 import EncansFuturs from "@/components/views/EncansFuturs.vue";
 import EncansPasses from "@/components/views/EncansPasses.vue";
+import TousLesEncans from "@/components/views/TousLesEncans.vue";
 import Encan from "@/components/views/Encan.vue";
 import DetailsLot from "@/components/views/DetailsLot.vue";
 import AffichageVendeur from "@/components/views/AffichageVendeur.vue";
@@ -83,6 +84,12 @@ const routes = [
         path: "/encanspasses",
         name: "EncansPasses",
         component: EncansPasses,
+        meta: { requiresAuth: false },
+    },
+    {
+        path: "/touslesencans",
+        name: "TousLesEncans",
+        component: TousLesEncans,
         meta: { requiresAuth: false },
     },
     {
