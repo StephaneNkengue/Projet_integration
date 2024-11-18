@@ -920,6 +920,15 @@ const store = createStore({
                 throw error;
             }
         },
+        async chercherPrevisualisationLivraison({ state }, idFacture) {
+            try {
+                const response = await state.api.get("/facturesLivraison/GenererFactureLivraison/" + idFacture);
+                return response;
+            } catch (error) {
+                console.error("Erreur détaillée:", error.response || error);
+                throw error;
+            }
+        },
         async creerPaymentIntent({ state }, idFacture) {
             try {
                 const response = await state.api.post(
