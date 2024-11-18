@@ -10,7 +10,6 @@ import EncanPresent from "@/components/views/EncanPresent.vue";
 import EncansFuturs from "@/components/views/EncansFuturs.vue";
 import EncansPasses from "@/components/views/EncansPasses.vue";
 import Encan from "@/components/views/Encan.vue";
-import TousLesEncans from "@/components/views/TousLesEncans.vue";
 import DetailsLot from "@/components/views/DetailsLot.vue";
 import AffichageVendeur from "@/components/views/AffichageVendeur.vue";
 import VendeurCreation from "@/components/views/VendeurCreation.vue";
