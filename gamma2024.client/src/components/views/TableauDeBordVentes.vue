@@ -199,7 +199,7 @@
         return tousLesVentes.value.filter((vente) => {
             const searchLower = searchQuery.value.toLowerCase();
             return (
-                vente.encan.toLowerCase().startsWith(searchLower) ||
+                vente.encan.toString().startsWith(searchLower) ||
                 vente.dateAchat.toLowerCase().startsWith(searchLower) ||
                 vente.prenom.toLowerCase().startsWith(searchLower) ||
                 vente.nom.toLowerCase().startsWith(searchLower) ||

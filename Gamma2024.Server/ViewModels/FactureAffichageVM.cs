@@ -11,7 +11,7 @@ namespace Gamma2024.Server.ViewModels
         public string Pseudonyme { get; set; } = null!;
         public string Courriel { get; set; } = null!;
         public string Telephone { get; set; } = null!;
-        public string Encan { get; set; } = null!;
+        public int Encan { get; set; }
         public DateTime DateAchat { get; set; }
         public ICollection<Lot> Lots { get; set; } = [];
     }
