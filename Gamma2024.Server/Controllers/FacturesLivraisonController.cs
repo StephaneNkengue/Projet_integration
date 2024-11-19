@@ -29,6 +29,11 @@ namespace Gamma2024.Server.Controllers
                 return BadRequest("Aucun facture trouvé");
             }
 
+            if (facture.ChoixLivraison != null)
+            {
+                return BadRequest("Le choix de livraison pour cette facture à déja été fait.");
+            }
+
             var factureLivraison = _facturesLivraisonService.GenererFactureLivraison(facture);
             return Ok(factureLivraison);
         }
