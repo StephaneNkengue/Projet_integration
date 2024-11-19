@@ -82,5 +82,20 @@ namespace Gamma2024.Server.Services
             var facture = _context.FactureLivraisons.Include(f => f.Facture.Client).FirstOrDefault(f => f.Id == idFactureLivraison);
             return facture;
         }
+
+        public bool PayerFactureLivraison(int idFactureLivraison)
+        {
+            var factureLivraison = _context.FactureLivraisons.FirstOrDefault(f => f.Id == idFactureLivraison);
+
+            if (factureLivraison == null)
+            {
+                return false;
+            }
+
+            factureLivraison.EstPaye = true;
+            _context.FactureLivraisons.Update(factureLivraison);
+            _context.SaveChanges();
+            return true;
+        }
     }
 }
