@@ -6,7 +6,7 @@
             <div class="spinner-border" role="status"></div>
         </div>
         <div v-else class="d-flex flex-column">
-            <p>Vos achats sont livrables. Veuillez faire votre choix de livraison.</p>
+            <p>Vos achats durant l'encan {{facture.facture.numeroEncan}} sont livrables. Veuillez faire votre choix de livraison.</p>
 
             <div class="form-check form-check-inline">
                 <input class="form-check-input" type="radio" name="inlineRadioOptions" id="aucuneLivraison" value="aucune" checked @change="montrerFormLivraison = false; siDonation= false">
