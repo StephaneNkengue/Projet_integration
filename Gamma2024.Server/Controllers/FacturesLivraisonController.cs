@@ -49,7 +49,7 @@ namespace Gamma2024.Server.Controllers
             var factureLivraison = _facturesLivraisonService.AjouterFactureLivraison(choixLivraison);
             if (factureLivraison == null)
             {
-                return BadRequest("Erreur d'enregistrement");
+                return Ok();
             }
 
             return Ok(factureLivraison.Id);

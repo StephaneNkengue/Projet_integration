@@ -60,7 +60,7 @@ namespace Gamma2024.Server.Services
                 return null;
             }
 
-            var factureLivraisonOriginal = new FactureLivraison
+            var factureLivraison = new FactureLivraison
             {
                 IdFacture = choix.IdFacture,
                 Facture = _context.Factures.Include(f => f.Lots).First(f => f.Id == choix.IdFacture),
@@ -68,19 +68,19 @@ namespace Gamma2024.Server.Services
                 IdCharite = choix.IdCharite,
                 DateAchat = DateTime.Now,
             };
-            _context.FactureLivraisons.Add(factureLivraisonOriginal);
+            _context.FactureLivraisons.Add(factureLivraison);
             _context.SaveChanges();
 
-            factureLivraisonOriginal.CalculerFacture();
+            factureLivraison.CalculerFacture();
 
-            _context.FactureLivraisons.Update(factureLivraisonOriginal);
+            _context.FactureLivraisons.Update(factureLivraison);
             _context.SaveChanges();
 
-            factureLivraisonOriginal.Facture.ChoixLivraison = true;
-            _context.Factures.Update(factureLivraisonOriginal.Facture);
+            factureLivraison.Facture.ChoixLivraison = true;
+            _context.Factures.Update(factureLivraison.Facture);
             _context.SaveChanges();
 
-            return factureLivraisonOriginal;
+            return factureLivraison;
         }
 
         public FactureLivraison ChercherFactureLivraison(int idFactureLivraison)

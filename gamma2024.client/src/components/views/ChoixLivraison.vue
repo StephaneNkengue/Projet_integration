@@ -69,8 +69,8 @@
             </div>
 
             <button id="submit" class="btn btn-outline bleuMoyenFond text-white btnSurvolerBleuMoyenFond my-2 col-3" @click="enregistrerChoixLivraison">
-                <div class="spinner-grow d-none" id="spinner"></div>
-                <span id="button-text">Enregistrer</span>
+                <div class="spinner-grow" id="spinner" v-if="chargementSauvegarde"></div>
+                <span id="button-text" v-else>Enregistrer</span>
             </button>
         </div>
     </div>
@@ -94,6 +94,7 @@
     })
     const adresses = ref([]);
     const siMessage = ref(false)
+    const chargementSauvegarde = ref(false)
 
     onMounted(async () => {
         try {
@@ -110,35 +111,44 @@
     })
 
     const enregistrerChoixLivraison = ref(async function () {
-        var choixLivraison = {}
-        if (montrerFormLivraison.value) {
-            var chariteSelList = document.getElementById("chariteSelList")
-            var adresseSelList = document.getElementById("adresseSelList")
-            var idChariteSel = null
+        chargementSauvegarde.value = true
+        try {
+            var choixLivraison = {}
+            if (montrerFormLivraison.value) {
+                var chariteSelList = document.getElementById("chariteSelList")
+                var adresseSelList = document.getElementById("adresseSelList")
+                var idChariteSel = null
 
-            if (chariteSelList != undefined) {
-                idChariteSel = chariteSelList.value
+                if (chariteSelList != undefined) {
+                    idChariteSel = chariteSelList.value
+                }
+                choixLivraison =
+                {
+                    don: siDonation.value,
+                    idCharite: idChariteSel,
+                    idFacture: props.idFacture,
+                    idAdresse: adresseSelList.value
+                }
+            } else {
+                choixLivraison = {
+                    don: null,
+                    idCharite: null,
+                    idFacture: props.idFacture,
+                    idAdresse: null
+                }
             }
-            choixLivraison =
-            {
-                don: siDonation.value,
-                idCharite: idChariteSel,
-                idFacture: props.idFacture,
-                idAdresse: adresseSelList.value
-            }
-        } else {
-            choixLivraison = {
-                don: null,
-                idCharite: null,
-                idFacture: props.idFacture,
-                idAdresse: null
-            }
-        }
 
-        const factureLivraisonId = await store.dispatch("enregistrerChoixLivraison", choixLivraison)
+            const factureLivraisonId = await store.dispatch("enregistrerChoixLivraison", choixLivraison)
 
-        if (factureLivraisonId.data != null) {
-            const payment = await store.dispatch("payerFactureLivraison", factureLivraisonId.data)
+            if (factureLivraisonId.data != "") {
+                const payment = await store.dispatch("payerFactureLivraison", factureLivraisonId.data)
+            }
+
+            siMessage.value = true
+            document.getElementById("message").innerText = "Choix de livraison sauvegardé et payé."
+        } catch (error) {
+            siMessage.value = true
+            document.getElementById("message").innerText = error.response.data
         }
     })
 </script>
