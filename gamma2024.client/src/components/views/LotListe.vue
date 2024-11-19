@@ -57,7 +57,7 @@
              @miseConfirmee="onMiseConfirmee" />
 </template>
 <script setup>
-  import { onMounted, ref, computed, watch, onUnmounted } from "vue";
+  import { onMounted, ref, computed, watch, onUnmounted, nextTick } from "vue";
   import { useStore } from "vuex";
   import ModalMise from '@/components/modals/ModalMise.vue';
   import { toast } from 'vue3-toastify';
@@ -115,7 +115,8 @@
 
   const modalMise = ref(null);
 
-
+  // Ajouter la ref pour userLastBid
+  const userLastBid = ref(0);
 
   const ouvrirModalMise = (event) => {
       event.stopPropagation();
@@ -172,15 +173,13 @@
   watch(() => store.state.lots, (newLots) => {
       const lotActuel = store.getters.getLot(props.lotRecu.id);
       if (lotActuel) {
-          lot.value = lotActuel;
+          lot.value = {...lotActuel};
+          nextTick(() => {
+              isUserHighestBidder.value;
+              isUserOutbid.value;
+          });
       }
-  }, { deep: true });
-
-  // Ajouter un watch pour mettre à jour immédiatement
-  watch(() => store.state.lots, () => {
-      // Force la réévaluation du computed
-      isUserHighestBidder.value;
-  }, { immediate: true, deep: true });
+  }, { deep: true, immediate: true });
 
   const isAdmin = computed(() => store.getters.isAdmin);
   const isLoggedIn = computed(() => store.state.isLoggedIn);
@@ -220,39 +219,108 @@
       }
   });
 
-  // Ajouter cette fonction pour gérer la réception des nouvelles mises
-  const handleNewBid = (data) => {
+  // Modifier la computed property isUserOutbid
+  const isUserOutbid = computed(() => {
+      const lotActuel = store.getters.getLot(props.lotRecu.id);
+      const aFaitUneMise = store.getters.hasUserBidOnLot(props.lotRecu.id) || userLastBid.value > 0;
+      const nestPasPlusHautEncherisseur = lotActuel?.idClientMise !== store.state.user?.id;
+      const miseExiste = lotActuel?.mise > 0;
+      const estSurenchere = lotActuel?.mise > userLastBid.value;
+
+      return aFaitUneMise && nestPasPlusHautEncherisseur && miseExiste && estSurenchere;
+  });
+
+  // Modifier le handler SignalR
+  const handleNewBid = async (data) => {
+    console.log('SignalR Received:', {
+      data,
+      currentUserId: store.state.user?.id,
+      userLastBid: userLastBid.value
+    });
+
     if (data.idLot === props.lotRecu.id) {
       store.commit('updateLotMise', {
         idLot: data.idLot,
         montant: data.montant,
-        userId: data.userId
+        userId: data.userId,
+        userLastBid: data.userLastBid
+      });
+
+      // Mettre à jour immédiatement le lot local
+      const lotActuel = store.getters.getLot(props.lotRecu.id);
+      if (lotActuel) {
+        lot.value = {...lotActuel};
+      }
+
+      if (data.userLastBid && data.userLastBid.userId === store.state.user?.id) {
+        console.log('Updating userLastBid:', data.userLastBid.montant);
+        userLastBid.value = data.userLastBid.montant;
+      }
+
+      nextTick(() => {
+        console.log('After nextTick:', {
+          isHighestBidder: isUserHighestBidder.value,
+          isOutbid: isUserOutbid.value,
+          userLastBid: userLastBid.value
+        });
       });
     }
   };
 
+  // Modifier onMounted
   onMounted(async () => {
-      lot.value = props.lotRecu;
+      // Initialisation immédiate avec les données du store
+      const lotActuel = store.getters.getLot(props.lotRecu.id);
+      if (lotActuel) {
+          lot.value = {...lotActuel};
+      } else {
+          lot.value = {...props.lotRecu};
+      }
+      
       urlApi.value = await store.state.api.defaults.baseURL.replace("\api", "");
+      
+      // Récupérer la dernière mise de l'utilisateur
+      if (props.lotRecu.id) {
+          userLastBid.value = await store.dispatch('getUserBidForLot', props.lotRecu.id);
+      }
       
       // S'abonner aux événements de mise
       if (store.state.connection) {
-        store.state.connection.on("ReceiveNewBid", handleNewBid);
+          store.state.connection.on("ReceiveNewBid", handleNewBid);
+      }
+
+      // Forcer une réévaluation des computed properties
+      nextTick(() => {
+          isUserHighestBidder.value;
+          isUserOutbid.value;
+      });
+  });
+
+  // Ajouter le watch pour userLastBid
+  watch(() => store.getters.getLot(props.lotRecu.id)?.mise, async (newMise) => {
+      if (newMise && props.lotRecu.id) {
+          userLastBid.value = await store.dispatch('getUserBidForLot', props.lotRecu.id);
       }
   });
 
+  // Modifier onUnmounted
   onUnmounted(() => {
-    // Se désabonner des événements
-    if (store.state.connection) {
-      store.state.connection.off("ReceiveNewBid", handleNewBid);
-    }
+      if (store.state.connection) {
+          store.state.connection.off("ReceiveNewBid", handleNewBid);
+      }
   });
 
-  const isUserOutbid = computed(() => {
-      const lotActuel = store.getters.getLot(props.lotRecu.id);
-      return store.getters.hasUserBidOnLot(props.lotRecu.id) && 
-             lotActuel?.idClientMise !== store.state.user?.id;
-  });
+  // Au début du composant, après les refs
+  watch(() => props.lotRecu, (newLot) => {
+      if (newLot) {
+          lot.value = {...newLot};
+          // Forcer la mise à jour des données depuis le store
+          const lotActuel = store.getters.getLot(newLot.id);
+          if (lotActuel) {
+              lot.value = {...lotActuel};
+          }
+      }
+  }, { immediate: true, deep: true });
 
 </script>
 <style scoped>

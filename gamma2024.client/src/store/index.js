@@ -113,8 +113,13 @@ const store = createStore({
       // Cette mutation ne fait rien, mais force la mise à jour des getters
       state.userDataVersion = (state.userDataVersion || 0) + 1;
     },
-    updateLotMise(state, { idLot, montant, userId }) {
-      console.log("Mise à jour du lot:", idLot, "avec montant:", montant);
+    updateLotMise(state, { idLot, montant, userId, userLastBid }) {
+      console.log("Store - Mise à jour du lot:", {
+        idLot,
+        montant,
+        userId,
+        userActuel: state.user?.id
+      });
       
       const newLots = { ...state.lots };
       if (!newLots[idLot]) {
@@ -130,13 +135,21 @@ const store = createStore({
           idClientMise: userId,
         };
       }
-      state.lots = newLots; // Forcer la réactivité en réassignant l'objet
+      state.lots = newLots;
 
-      // Mettre à jour userBids seulement si c'est l'utilisateur actuel qui a misé
-      if (userId === state.user?.id) {
+      // Mettre à jour userBids
+      if (userLastBid && userLastBid.userId === state.user?.id) {
         if (!state.userBids.includes(idLot)) {
           state.userBids.push(idLot);
         }
+      }
+
+      // Mettre à jour l'historique des mises
+      if (userLastBid) {
+        if (!state.userBidHistory[idLot]) {
+          state.userBidHistory[idLot] = {};
+        }
+        state.userBidHistory[idLot][userLastBid.userId] = userLastBid.montant;
       }
     },
 
@@ -908,6 +921,8 @@ const store = createStore({
 
     async placerMise({ state, commit, dispatch }, miseData) {
       try {
+        console.log('Store - Début placerMise:', miseData);
+        
         const response = await state.api.post("/lots/placerMise", {
           LotId: miseData.lotId,
           Montant: parseFloat(miseData.montant),
@@ -915,9 +930,15 @@ const store = createStore({
           MontantMaximal: miseData.montantMaximal
         });
 
+        console.log('Store - Réponse placerMise:', response.data);
         return response.data;
       } catch (error) {
-        console.error("Erreur lors de la mise:", error);
+        console.error("Store - Erreur lors de la mise:", error);
+        console.log('Store - Détails de l\'erreur:', {
+          status: error.response?.status,
+          data: error.response?.data,
+          message: error.message
+        });
         return {
           success: false,
           message: error.response?.data?.message || "Erreur lors de la mise"
