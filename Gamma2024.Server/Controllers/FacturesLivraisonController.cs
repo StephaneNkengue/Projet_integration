@@ -31,7 +31,12 @@ namespace Gamma2024.Server.Controllers
         public IActionResult EnregistrerChoixLivraison([FromBody] FactureLivraisonAjoutVM choixLivraison)
         {
             var factureLivraison = _facturesLivraisonService.AjouterFactureLivraison(choixLivraison);
-            return Ok();
+            if (factureLivraison == null)
+            {
+                return BadRequest("Erreur d'enregistrement");
+            }
+
+            return Ok(factureLivraison.Id);
         }
     }
 }
