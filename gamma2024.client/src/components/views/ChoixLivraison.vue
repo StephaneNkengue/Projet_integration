@@ -2,10 +2,12 @@
     <div class="container">
         <h1>Choix de livraison</h1>
 
+        <p id="message" v-show="siMessage"></p>
+
         <div v-if="chargement">
             <div class="spinner-border" role="status"></div>
         </div>
-        <div v-else class="d-flex flex-column">
+        <div v-else-if="!siMessage" class="d-flex flex-column">
             <p>Vos achats durant l'encan {{facture.facture.numeroEncan}} sont livrables. Veuillez faire votre choix de livraison.</p>
 
             <div class="form-check form-check-inline">
@@ -91,14 +93,19 @@
         siDonation.value = document.getElementById('donationCheck').checked
     })
     const adresses = ref([]);
+    const siMessage = ref(false)
 
     onMounted(async () => {
-        const response = await store.dispatch("chercherPrevisualisationLivraison", parseInt(props.idFacture))
-        facture.value = response.data
+        try {
+            const response = await store.dispatch("chercherPrevisualisationLivraison", parseInt(props.idFacture))
+            facture.value = response.data
 
-        const adresseResponse = await store.dispatch("chercherAdressesClient");
-        adresses.value = adresseResponse.data
-
+            const adresseResponse = await store.dispatch("chercherAdressesClient");
+            adresses.value = adresseResponse.data
+        } catch (error) {
+            siMessage.value = true
+            document.getElementById("message").innerText = error.response.data
+        }
         chargement.value = false
     })
 

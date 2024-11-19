@@ -16,31 +16,38 @@ namespace Gamma2024.Server.Services
 
         public FactureLivraisonVM GenererFactureLivraison(Facture facture)
         {
-            var factureLivraisonOriginal = new FactureLivraison
+            var factureExistant = _context.FactureLivraisons.FirstOrDefault(fl => fl.IdFacture == facture.Id);
+            if (factureExistant == null)
             {
-                Id = facture.Id,
-                Facture = facture,
-                IdCharite = 1
-            };
-            factureLivraisonOriginal.CalculerFacture();
-
-            var factureLivraison = new FactureLivraisonVM
-            {
-                IdFacture = factureLivraisonOriginal.IdFacture,
-                Facture = facture,
-                SousTotal = factureLivraisonOriginal.SousTotal,
-                PrixFinal = factureLivraisonOriginal.PrixFinal,
-                TPS = factureLivraisonOriginal.TPS,
-                TVQ = factureLivraisonOriginal.TVQ,
-                Don = factureLivraisonOriginal.Don.Value,
-                PrixFinalSansDon = double.Round(factureLivraisonOriginal.PrixFinal - factureLivraisonOriginal.Don.Value, 2),
-                Charites = _context.Charites.Select(c => new ChariteVM
+                var factureLivraisonOriginal = new FactureLivraison
                 {
-                    Id = c.Id,
-                    NomOrganisme = c.NomOrganisme,
-                }).ToList()
-            };
-            return factureLivraison;
+                    Id = facture.Id,
+                    Facture = facture,
+                    IdCharite = 1
+                };
+                factureLivraisonOriginal.CalculerFacture();
+
+                var factureLivraison = new FactureLivraisonVM
+                {
+                    IdFacture = factureLivraisonOriginal.IdFacture,
+                    Facture = facture,
+                    SousTotal = factureLivraisonOriginal.SousTotal,
+                    PrixFinal = factureLivraisonOriginal.PrixFinal,
+                    TPS = factureLivraisonOriginal.TPS,
+                    TVQ = factureLivraisonOriginal.TVQ,
+                    Don = factureLivraisonOriginal.Don.Value,
+                    PrixFinalSansDon = double.Round(factureLivraisonOriginal.PrixFinal - factureLivraisonOriginal.Don.Value, 2),
+                    Charites = _context.Charites.Select(c => new ChariteVM
+                    {
+                        Id = c.Id,
+                        NomOrganisme = c.NomOrganisme,
+                    }).ToList()
+                };
+                return factureLivraison;
+            }
+
+
+            return new FactureLivraisonVM();
         }
 
         public FactureLivraison AjouterFactureLivraison(FactureLivraisonAjoutVM choix)

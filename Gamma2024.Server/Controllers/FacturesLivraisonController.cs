@@ -1,6 +1,7 @@
 using Gamma2024.Server.Services;
 using Gamma2024.Server.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace Gamma2024.Server.Controllers
 {
@@ -19,12 +20,17 @@ namespace Gamma2024.Server.Controllers
         }
 
         [HttpGet("GenererFactureLivraison/{idFacture}")]
-        public FactureLivraisonVM GenererFactureLivraison(int idFacture)
+        public IActionResult GenererFactureLivraison(int idFacture)
         {
             var facture = _factureService.ChercherFacture(idFacture);
 
+            if (facture.IdClient != User.FindFirstValue(ClaimTypes.NameIdentifier))
+            {
+                return BadRequest("Aucun facture trouvé");
+            }
+
             var factureLivraison = _facturesLivraisonService.GenererFactureLivraison(facture);
-            return factureLivraison;
+            return Ok(factureLivraison);
         }
 
         [HttpPost("EnregistrerChoixLivraison")]
