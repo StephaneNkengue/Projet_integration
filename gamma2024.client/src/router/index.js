@@ -31,6 +31,8 @@ import TableauDeBordVentes from "@/components/views/TableauDeBordVentes.vue";
 import ResultatRechercheLots from "@/components/views/ResultatRechercheLots.vue";
 import ResultatRechercheEncans from "@/components/views/ResultatRechercheEncans.vue";
 import GestionCartes from "@/components/views/GestionCartes.vue";
+import ConditionsCompagnie from "@/components/views/ConditionsCompagnie.vue"
+
 const routes = [
     {
         path: "/",
@@ -250,6 +252,12 @@ const routes = [
         path: "/resultatrechercheencans",
         name: "ResultatRechercheEncans",
         component: ResultatRechercheEncans,
+        meta: { requiresAuth: false },
+    },
+    {
+        path: "/conditionsCompagnie",
+        name: "ConditionsCompagnie",
+        component: ConditionsCompagnie,
         meta: { requiresAuth: false },
     },
 ];
