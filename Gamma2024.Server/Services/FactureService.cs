@@ -22,6 +22,7 @@ namespace Gamma2024.Server.Services
                 IdClient = f.IdClient,
                 DateAchat = f.DateAchat,
                 Lots = f.Lots,
+                Encan = f.NumeroEncan,
             }).ToList();
 
             foreach (FactureAffichageVM facture in factures)
@@ -32,18 +33,6 @@ namespace Gamma2024.Server.Services
                 facture.Pseudonyme = client.UserName;
                 facture.Courriel = client.Email;
                 facture.Telephone = client.PhoneNumber;
-
-                var numerosEncans = _context.Factures.Where(f => f.Id == facture.Id)
-                                                     .SelectMany(f => f.Lots)
-                                                     .SelectMany(l => l.EncanLots)
-                                                     .Select(el => el.Encan.NumeroEncan)
-                                                     .Distinct()
-                                                     .ToList();
-
-                foreach (var numero in numerosEncans)
-                {
-                    facture.Encan = numero.ToString();
-                }
             }
 
             return factures;

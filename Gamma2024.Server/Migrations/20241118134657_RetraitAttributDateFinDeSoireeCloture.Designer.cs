@@ -4,6 +4,7 @@ using Gamma2024.Server.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Gamma2024.Server.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241118134657_RetraitAttributDateFinDeSoireeCloture")]
+    partial class RetraitAttributDateFinDeSoireeCloture
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -67,7 +70,7 @@ namespace Gamma2024.Server.Migrations
 
                     b.HasIndex("IdApplicationUser");
 
-                    b.ToTable("Adresses", (string)null);
+                    b.ToTable("Adresses");
 
                     b.HasData(
                         new
@@ -234,7 +237,7 @@ namespace Gamma2024.Server.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categories", (string)null);
+                    b.ToTable("Categories");
                 });
 
             modelBuilder.Entity("Gamma2024.Server.Models.Charite", b =>
@@ -251,7 +254,7 @@ namespace Gamma2024.Server.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Charites", (string)null);
+                    b.ToTable("Charites");
                 });
 
             modelBuilder.Entity("Gamma2024.Server.Models.Encan", b =>
@@ -277,10 +280,10 @@ namespace Gamma2024.Server.Migrations
                     b.Property<int>("NumeroEncan")
                         .HasColumnType("int");
 
-                    b.Property<int>("PasLot")
+                    b.Property<int>("pasLot")
                         .HasColumnType("int");
 
-                    b.Property<int>("PasMise")
+                    b.Property<int>("pasMise")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -288,7 +291,7 @@ namespace Gamma2024.Server.Migrations
                     b.HasIndex("NumeroEncan")
                         .IsUnique();
 
-                    b.ToTable("Encans", (string)null);
+                    b.ToTable("Encans");
                 });
 
             modelBuilder.Entity("Gamma2024.Server.Models.EncanLot", b =>
@@ -303,7 +306,7 @@ namespace Gamma2024.Server.Migrations
 
                     b.HasIndex("IdLot");
 
-                    b.ToTable("EncanLots", (string)null);
+                    b.ToTable("EncanLots");
                 });
 
             modelBuilder.Entity("Gamma2024.Server.Models.Facture", b =>
@@ -359,7 +362,7 @@ namespace Gamma2024.Server.Migrations
                         .IsUnique()
                         .HasFilter("[IdFactureLivraison] IS NOT NULL");
 
-                    b.ToTable("Factures", (string)null);
+                    b.ToTable("Factures");
                 });
 
             modelBuilder.Entity("Gamma2024.Server.Models.FactureLivraison", b =>
@@ -403,7 +406,7 @@ namespace Gamma2024.Server.Migrations
 
                     b.HasIndex("IdCharite");
 
-                    b.ToTable("FactureLivraisons", (string)null);
+                    b.ToTable("FactureLivraisons");
                 });
 
             modelBuilder.Entity("Gamma2024.Server.Models.Lot", b =>
@@ -492,7 +495,7 @@ namespace Gamma2024.Server.Migrations
 
                     b.HasIndex("IdVendeur");
 
-                    b.ToTable("Lots", (string)null);
+                    b.ToTable("Lots");
                 });
 
             modelBuilder.Entity("Gamma2024.Server.Models.Medium", b =>
@@ -509,7 +512,7 @@ namespace Gamma2024.Server.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Mediums", (string)null);
+                    b.ToTable("Mediums");
                 });
 
             modelBuilder.Entity("Gamma2024.Server.Models.Photo", b =>
@@ -531,7 +534,7 @@ namespace Gamma2024.Server.Migrations
 
                     b.HasIndex("IdLot");
 
-                    b.ToTable("Photos", (string)null);
+                    b.ToTable("Photos");
                 });
 
             modelBuilder.Entity("Gamma2024.Server.Models.Vendeur", b =>
@@ -565,7 +568,7 @@ namespace Gamma2024.Server.Migrations
 
                     b.HasIndex("AdresseId");
 
-                    b.ToTable("Vendeurs", (string)null);
+                    b.ToTable("Vendeurs");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>

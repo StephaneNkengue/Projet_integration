@@ -342,8 +342,9 @@ encans.Add(new Encan
     DateDebut = new DateTime(2005, 3, 15, 6, 0, 0),
     DateFin = new DateTime(2005, 3, 18, 6, 0, 0),
     DateDebutSoireeCloture = new DateTime(2005, 3, 18, 6, 0, 1),
-    DateFinSoireeCloture = new DateTime(2005, 3, 18, 6, 0, 1),
-    EstPublie = true
+    EstPublie = true,
+    PasLot = 30,
+    PasMise = 120
 });
 
 encans.Add(new Encan
@@ -352,8 +353,9 @@ encans.Add(new Encan
     DateDebut = new DateTime(2024, 3, 15, 6, 0, 0),
     DateFin = new DateTime(2025, 3, 18, 6, 0, 0),
     DateDebutSoireeCloture = new DateTime(2025, 3, 18, 6, 0, 1),
-    DateFinSoireeCloture = new DateTime(2025, 3, 18, 6, 0, 1),
-    EstPublie = true
+    EstPublie = true,
+    PasLot = 10,
+    PasMise = 120
 });
 
 encans.Add(new Encan
@@ -362,8 +364,9 @@ encans.Add(new Encan
     DateDebut = new DateTime(2027, 3, 15, 6, 0, 0),
     DateFin = new DateTime(2027, 3, 18, 6, 0, 0),
     DateDebutSoireeCloture = new DateTime(2027, 3, 18, 6, 0, 1),
-    DateFinSoireeCloture = new DateTime(2027, 3, 18, 6, 0, 1),
-    EstPublie = true
+    EstPublie = true,
+    PasLot = 20,
+    PasMise = 120
 });
 
 encans.Add(new Encan
@@ -372,8 +375,9 @@ encans.Add(new Encan
     DateDebut = new DateTime(2008, 3, 15, 6, 0, 0),
     DateFin = new DateTime(2008, 3, 18, 6, 0, 0),
     DateDebutSoireeCloture = new DateTime(2008, 3, 18, 6, 0, 1),
-    DateFinSoireeCloture = new DateTime(2008, 3, 18, 6, 0, 1),
-    EstPublie = true
+    EstPublie = true,
+    PasLot = 30,
+    PasMise = 120
 });
 
 
@@ -392,8 +396,6 @@ foreach (var item in lots232)
         Encan = encans[0],
         IdEncan = encans[0].Id
     });
-
-    encans[0].DateFinSoireeCloture = encans[0].DateFinSoireeCloture.AddSeconds(30);
 }
 
 context.Encans.Update(encans[0]);
@@ -408,7 +410,6 @@ foreach (var item in lots233)
         Encan = encans[1],
         IdEncan = encans[1].Id
     });
-    encans[1].DateFinSoireeCloture = encans[1].DateFinSoireeCloture.AddSeconds(30);
 }
 
 context.Encans.Update(encans[1]);
