@@ -35,6 +35,11 @@ namespace Gamma2024.Server.Controllers
             }
 
             var factureLivraison = _facturesLivraisonService.GenererFactureLivraison(facture);
+
+            if (factureLivraison == null)
+            {
+                return BadRequest("Erreur lors de la génration de la facture de livraison.");
+            }
             return Ok(factureLivraison);
         }
 

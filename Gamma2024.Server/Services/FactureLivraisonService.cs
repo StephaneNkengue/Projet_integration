@@ -45,9 +45,7 @@ namespace Gamma2024.Server.Services
                 };
                 return factureLivraison;
             }
-
-
-            return new FactureLivraisonVM();
+            return null;
         }
 
         public FactureLivraison AjouterFactureLivraison(FactureLivraisonAjoutVM choix)
