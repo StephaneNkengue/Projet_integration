@@ -51,7 +51,7 @@
                     <div class="accordion-item" v-for="encan in numerosEncans" :key="encan">
                         <div v-if="filteredVentes.filter((x) => x.encan == encan.encan) != 0 ">
                             <h2 class="accordion-header px-0 d-flex" :style="{border: styleBorder}">
-                                <button class="accordion-button h-52" type="button" data-bs-toggle="collapse" :data-bs-target="'#collapse' + encan.encan" 
+                                <button class="accordion-button h-52" type="button" data-bs-toggle="collapse" :data-bs-target="'#collapse' + encan.encan"
                                         aria-expanded="true" :aria-controls="'collapse' + encan.encan">
                                     <div class="col-11">
                                         {{ encan.encan }} ({{ encan.dateAchat.split("T")[0] }})
@@ -181,7 +181,8 @@
             const searchLower = searchQuery.value.toLowerCase();
             return (
                 vente.encan.toString().startsWith(searchLower) ||
-                vente.dateAchat.toLowerCase().startsWith(searchLower)
+                vente.dateAchat.toLowerCase().startsWith(searchLower) || 
+                vente.lots.find(l => l.numero.startsWith(searchLower))
             );
         });
     });
@@ -301,7 +302,7 @@
         --bs-accordion-active-bg: none;
     }
 
-    .h-52{
+    .h-52 {
         height: 52px;
     }
 </style>
