@@ -7,13 +7,6 @@
 
         <div class="col-md-7">
             <ul class="nav justify-content-end d-flex align-items-center flex-column flex-md-row">
-                <li class="nav-item">
-                    <router-link :to="{ name: 'Accueil' }" class="text-decoration-none">
-                        <a class="nav-link text-white">
-                            Déroulement d'un encan
-                        </a>
-                    </router-link>
-                </li>
                 <li>
                     <router-link :to="{ name: 'Accueil' }" class="text-decoration-none">
                         <a class="nav-link text-white">
