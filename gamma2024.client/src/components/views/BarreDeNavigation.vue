@@ -152,7 +152,7 @@
                                          alt="Avatar"
                                          class="imgProfile rounded-circle" />
                                 </a>
-                                <ul class="dropdown-menu bleuMarinFond text-center end-0 top-100">
+                                <ul class="dropdown-menu dropdown-menu-end bleuMarinFond text-center end-0 top-100">
                                     <li>
                                         <router-link v-if="estClient"
                                                      :to="{ name: 'ModificationProfilUtilisateur' }"
