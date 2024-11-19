@@ -476,22 +476,22 @@ foreach (var item in utilisateurs)
         context.Factures.Add(facture);
         context.SaveChanges();
 
-        if (facture.Livrable)
-        {
-            var factureLivraison = new FactureLivraison
-            {
-                IdFacture = facture.Id,
-                Facture = facture,
-                Charite = charites[0],
-                IdCharite = charites[0].Id,
-                Adresse = facture.Client.Adresses.First(),
-                DateAchat = DateTime.Now,
-            };
-            factureLivraison.CalculerFacture();
+        //if (facture.Livrable)
+        //{
+        //    var factureLivraison = new FactureLivraison
+        //    {
+        //        IdFacture = facture.Id,
+        //        Facture = facture,
+        //        Charite = charites[0],
+        //        IdCharite = charites[0].Id,
+        //        Adresse = facture.Client.Adresses.First(),
+        //        DateAchat = DateTime.Now,
+        //    };
+        //    factureLivraison.CalculerFacture();
 
-            context.FactureLivraisons.Add(factureLivraison);
-            context.SaveChanges();
-        }
+        //    context.FactureLivraisons.Add(factureLivraison);
+        //    context.SaveChanges();
+        //}
 
         infoFactures.RemoveAll(i => i.Pseudonyme == item.UserName);
     }
