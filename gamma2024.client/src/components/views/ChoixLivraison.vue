@@ -23,19 +23,19 @@
                         <tbody>
                             <tr>
                                 <th scope="col" class="text-start">Frais de livraison</th>
-                                <td scope="col" class="text-start">{{facture.sousTotal}}</td>
+                                <td scope="col" class="text-end">{{facture.sousTotal.toFixed(2)}} $</td>
                             </tr>
                             <tr>
                                 <th scope="col" class="text-start">TPS</th>
-                                <td scope="col" class="text-start"> {{facture.tps}}</td>
+                                <td scope="col" class="text-end"> {{facture.tps.toFixed(2)}} $</td>
                             </tr>
                             <tr>
                                 <th scope="col" class="text-start">TVQ</th>
-                                <td scope="col" class="text-start">{{facture.tvq}}</td>
+                                <td scope="col" class="text-end">{{facture.tvq.toFixed(2)}} $</td>
                             </tr>
                             <tr v-if="siDonation">
                                 <th scope="col" class="text-start">Don</th>
-                                <td scope="col" class="text-start">{{facture.don}}</td>
+                                <td scope="col" class="text-end">{{facture.don.toFixed(2)}} $</td>
                             </tr>
                         </tbody>
                     </table>
@@ -49,21 +49,24 @@
 
                     <div v-if="siDonation">
                         <select class="form-select py-0"
-                                id="selectLargeur"
-                                @change="affichageInputLargeur"
-                                aria-label="Default select example">
+                                aria-label="Charite select"
+                                id="chariteSelList">
                             <option v-for="charite in facture.charites" class="py-0" :value="charite.id" selected>{{charite.nomOrganisme}}</option>
                         </select>
                     </div>
 
+                    <select class="form-select py-0"
+                            aria-label="Default select example"
+                            id="adresseSelList">
+                        <option v-for="adresse in adresses" class="py-0" :value="adresse.id" selected>{{adresse.appartement}} {{adresse.numeroCivique}} {{adresse.rue}}, {{adresse.ville}}, {{adresse.province}}, {{adresse.pays}}, {{adresse.codePostal}}</option>
+                    </select>
 
-
-                    <h2 v-if="siDonation">TOTAL: {{facture.prixFinal}}</h2>
-                    <h2 v-else>TOTAL: {{facture.prixFinalSansDon}}</h2>
+                    <h2 v-if="siDonation">TOTAL: {{facture.prixFinal.toFixed(2)}} $</h2>
+                    <h2 v-else>TOTAL: {{facture.prixFinalSansDon.toFixed(2)}} $</h2>
                 </div>
             </div>
 
-            <button id="submit" class="btn btn-outline bleuMoyenFond text-white btnSurvolerBleuMoyenFond my-2 col-3">
+            <button id="submit" class="btn btn-outline bleuMoyenFond text-white btnSurvolerBleuMoyenFond my-2 col-3" @click="enregistrerChoixLivraison">
                 <div class="spinner-grow d-none" id="spinner"></div>
                 <span id="button-text">Enregistrer</span>
             </button>
@@ -78,24 +81,56 @@
 
     const store = useStore();
     const props = defineProps({
-        idFacture: Number
+        idFacture: String
     })
     const facture = ref({})
-    const factureLivraison = ref({})
     const chargement = ref(true)
     const montrerFormLivraison = ref(false)
     const siDonation = ref(false)
     const toggleDonation = ref(function () {
         siDonation.value = document.getElementById('donationCheck').checked
     })
+    const adresses = ref([]);
 
     onMounted(async () => {
-        const response = await store.dispatch("chercherPrevisualisationLivraison", props.idFacture)
-
+        const response = await store.dispatch("chercherPrevisualisationLivraison", parseInt(props.idFacture))
         facture.value = response.data
-        console.log(facture.value)
+
+        const adresseResponse = await store.dispatch("chercherAdressesClient");
+        adresses.value = adresseResponse.data
 
         chargement.value = false
+    })
+
+    const enregistrerChoixLivraison = ref(async function () {
+        var choixLivraison = {}
+        if (montrerFormLivraison.value) {
+            var chariteSelList = document.getElementById("chariteSelList")
+            var adresseSelList = document.getElementById("adresseSelList")
+            var idChariteSel = null
+
+            if (chariteSelList != undefined) {
+                idChariteSel = chariteSelList.value
+            }
+            choixLivraison =
+            {
+                don: siDonation.value,
+                idCharite: idChariteSel,
+                idFacture: props.idFacture,
+                idAdresse: adresseSelList.value
+            }
+        } else {
+            choixLivraison = {
+                don: null,
+                idCharite: null,
+                idFacture: props.idFacture,
+                idAdresse: null
+            }
+        }
+
+        const a = await store.dispatch("enregistrerChoixLivraison", choixLivraison)
+
+        console.log(choixLivraison)
     })
 </script>
 <style></style>
