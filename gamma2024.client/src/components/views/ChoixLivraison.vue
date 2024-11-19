@@ -128,9 +128,11 @@
             }
         }
 
-        const a = await store.dispatch("enregistrerChoixLivraison", choixLivraison)
+        const factureLivraisonId = await store.dispatch("enregistrerChoixLivraison", choixLivraison)
 
-        console.log(choixLivraison)
+        if (factureLivraisonId.data != null) {
+            const payment = await store.dispatch("payerFactureLivraison", factureLivraisonId.data)
+        }
     })
 </script>
 <style></style>
