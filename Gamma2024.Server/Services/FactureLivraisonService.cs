@@ -27,6 +27,7 @@ namespace Gamma2024.Server.Services
             var factureLivraison = new FactureLivraisonVM
             {
                 IdFacture = factureLivraisonOriginal.IdFacture,
+                Facture = facture,
                 SousTotal = factureLivraisonOriginal.SousTotal,
                 PrixFinal = factureLivraisonOriginal.PrixFinal,
                 TPS = factureLivraisonOriginal.TPS,
