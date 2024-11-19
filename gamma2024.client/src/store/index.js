@@ -968,6 +968,16 @@ const store = createStore({
             } catch (error) {
                 return "Erreur, veuillez réessayer";
             }
+        },
+        async enregistrerChoixLivraison({ state }, choixLivraison) {
+            try {
+                const response = await state.api.post(
+                    "/facturesLivraison/enregistrerChoixLivraison", choixLivraison
+                );
+                return response;
+            } catch (error) {
+                return "Erreur, veuillez réessayer";
+            }
         }
     },
 

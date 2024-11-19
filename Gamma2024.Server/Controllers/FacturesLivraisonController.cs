@@ -26,5 +26,12 @@ namespace Gamma2024.Server.Controllers
             var factureLivraison = _facturesLivraisonService.GenererFactureLivraison(facture);
             return factureLivraison;
         }
+
+        [HttpPost("EnregistrerChoixLivraison")]
+        public IActionResult EnregistrerChoixLivraison([FromBody] FactureLivraisonAjoutVM choixLivraison)
+        {
+            var factureLivraison = _facturesLivraisonService.AjouterFactureLivraison(choixLivraison);
+            return Ok();
+        }
     }
 }
