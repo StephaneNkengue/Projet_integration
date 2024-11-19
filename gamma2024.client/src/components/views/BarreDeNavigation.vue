@@ -106,22 +106,26 @@
                 v-if="estAdmin"
               >
                 <a
-                  class="nav-link dropdown-toggle"
+                  class="nav-link d-flex align-items-center gap-1"
                   role="button"
-                  data-bs-toggle="dropdown"
-                  aria-expanded="false"
+                  @click.stop="isTableauBordDropdownOpen = !isTableauBordDropdownOpen"
                 >
                   Tableau de bord
+                  <i class="bi" :class="isTableauBordDropdownOpen ? 'bi-chevron-up' : 'bi-chevron-down'"></i>
                 </a>
-                <ul class="dropdown-menu bleuMarinFond text-center">
+                <ul
+                  v-show="isTableauBordDropdownOpen"
+                  class="dropdown-menu bleuMarinFond text-center"
+                  :class="{ 'show': isTableauBordDropdownOpen }"
+                  style="position: absolute; top: 100%;"
+                >
                   <li>
                     <router-link
                       :to="{ name: 'TableauDeBordInventaire' }"
                       class="text-decoration-none"
+                      @click="isTableauBordDropdownOpen = false"
                     >
-                      <a class="dropdown-item contenuListeDropdown"
-                        >Inventaire</a
-                      >
+                      <a class="dropdown-item contenuListeDropdown">Inventaire</a>
                     </router-link>
                   </li>
                   <li>
@@ -168,7 +172,7 @@
                 <button
                   class="nav-link d-flex align-items-center justify-content-center position-relative"
                   role="button"
-                  @click="toggleNotificationDropdown"
+                  @click.stop="toggleNotifications"
                 >
                   <img
                     src="/icons/IconeCloche.png"
@@ -184,42 +188,34 @@
                   </span>
                 </button>
 
-                <!-- Dropdown des notifications -->
-                <div v-if="notificationDropdown" class="notification-dropdown">
-                  <ul class="list-group">
-                    <li
-                      v-for="notification in notifications"
-                      :key="notification.id"
-                      class="list-group-item"
+                <ul
+                  v-show="isNotificationDropdownOpen"
+                  class="dropdown-menu bleuMarinFond text-center end-0"
+                  :class="{ 'show': isNotificationDropdownOpen }"
+                  style="position: absolute; top: 100%;"
+                >
+                  <li
+                    v-for="notification in notifications"
+                    :key="notification.id"
+                    class="list-group-item bleuMarinFond text-white border-bottom"
+                  >
+                    <a 
+                      class="dropdown-item text-white btnSurvolerBleuMoyenFond"
+                      @click="isNotificationDropdownOpen = false"
                     >
                       {{ notification.message }}
-                    </li>
-                  </ul>
-                </div>
-
-                <!--  -->
-                <ul class="dropdown-menu bleuMarinFond text-center">
-                  <li v-for="index in 5" :key="index">
-                    <router-link
-                      :to="{ name: 'Accueil' }"
-                      class="text-decoration-none text-white d-flex align-items-center gap-3"
-                    >
-                      <a
-                        class="dropdown-item text-white btnSurvolerBleuMoyenFond"
-                        @click="notification = false"
-                      >
-                        test
-                      </a>
-                    </router-link>
+                    </a>
+                  </li>
+                  <li v-if="notifications.length === 0" class="text-white p-2">
+                    Aucune notification
                   </li>
                 </ul>
               </div>
-              <div class="dropdown text-white" v-if="estConnecte">
+              <div class="dropdown text-white position-relative" v-if="estConnecte">
                 <a
                   class="nav-link d-flex align-items-center"
                   role="button"
-                  data-bs-toggle="dropdown"
-                  aria-expanded="false"
+                  @click.stop="isProfileDropdownOpen = !isProfileDropdownOpen"
                 >
                   <p class="m-0 me-1">{{ username }}</p>
                   <img
@@ -228,19 +224,22 @@
                     class="imgProfile rounded-circle"
                   />
                 </a>
+                
+                <!-- Utiliser v-show ou v-if pour le menu -->
                 <ul
-                  class="dropdown-menu bleuMarinFond text-center end-0 top-100"
+                  v-show="isProfileDropdownOpen"
+                  class="dropdown-menu bleuMarinFond text-center end-0"
+                  :class="{ 'show': isProfileDropdownOpen }"
+                  style="position: absolute; top: 100%;"
                 >
                   <li>
                     <router-link
                       v-if="estClient"
                       :to="{ name: 'ModificationProfilUtilisateur' }"
                       class="text-decoration-none text-white d-flex align-items-center gap-3"
+                      @click="isProfileDropdownOpen = false"
                     >
-                      <a
-                        class="dropdown-item text-white btnSurvolerBleuMoyenFond"
-                        @click="activationDropdownProfil = false"
-                      >
+                      <a class="dropdown-item text-white btnSurvolerBleuMoyenFond">
                         Profil
                       </a>
                     </router-link>
@@ -454,7 +453,7 @@
 import { computed, watch, ref } from "vue";
 import { useStore } from "vuex";
 import { useRouter, useRoute } from "vue-router";
-import { onMounted } from "vue";
+import { onMounted, onUnmounted } from "vue";
 
 const store = useStore();
 const router = useRouter();
@@ -613,6 +612,37 @@ onMounted(() => {
     new bootstrap.Dropdown(dropdownToggle);
   });
 });
+
+const isProfileDropdownOpen = ref(false);
+const isTableauBordDropdownOpen = ref(false);
+const isNotificationDropdownOpen = ref(false);
+
+// Fonction pour fermer les dropdowns quand on clique ailleurs
+const closeDropdowns = (e) => {
+  if (!e.target.closest('.dropdown')) {
+    isProfileDropdownOpen.value = false;
+    isTableauBordDropdownOpen.value = false;
+    isNotificationDropdownOpen.value = false;
+  }
+};
+
+// Gestionnaire pour les notifications
+const toggleNotifications = () => {
+  isNotificationDropdownOpen.value = !isNotificationDropdownOpen.value;
+  if (isNotificationDropdownOpen.value) {
+    store.commit("MARK_ALL_AS_READ");
+  }
+};
+
+// Ajouter l'event listener au montage
+onMounted(() => {
+  document.addEventListener('click', closeDropdowns);
+});
+
+// Nettoyer l'event listener
+onUnmounted(() => {
+  document.removeEventListener('click', closeDropdowns);
+});
 </script>
 <style scoped>
 .ms-7 {
@@ -626,5 +656,46 @@ onMounted(() => {
 .imgProfile {
   width: 40px;
   height: 40px;
+}
+
+.dropdown-menu.show {
+  display: block;
+}
+
+.dropdown-menu {
+  z-index: 1000;
+  min-width: 10rem;
+  margin: 0;
+  border: 1px solid rgba(0,0,0,.15);
+}
+
+.dropdown-menu {
+  z-index: 1000;
+  min-width: 10rem;
+  margin: 0;
+  border: 1px solid rgba(0,0,0,.15);
+  position: absolute;
+}
+
+.dropdown-menu.show {
+  display: block;
+}
+
+.list-group-item {
+  background-color: transparent;
+}
+
+.list-group-item:last-child {
+  border-bottom: none !important;
+}
+
+/* Animation optionnelle pour les dropdowns */
+.dropdown-menu {
+  transition: opacity 0.2s ease-in-out;
+  opacity: 0;
+}
+
+.dropdown-menu.show {
+  opacity: 1;
 }
 </style>
