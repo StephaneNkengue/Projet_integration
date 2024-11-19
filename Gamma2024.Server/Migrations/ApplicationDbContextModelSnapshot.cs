@@ -67,7 +67,7 @@ namespace Gamma2024.Server.Migrations
 
                     b.HasIndex("IdApplicationUser");
 
-                    b.ToTable("Adresses");
+                    b.ToTable("Adresses", (string)null);
 
                     b.HasData(
                         new
@@ -234,7 +234,7 @@ namespace Gamma2024.Server.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categories");
+                    b.ToTable("Categories", (string)null);
                 });
 
             modelBuilder.Entity("Gamma2024.Server.Models.Charite", b =>
@@ -251,7 +251,7 @@ namespace Gamma2024.Server.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Charites");
+                    b.ToTable("Charites", (string)null);
                 });
 
             modelBuilder.Entity("Gamma2024.Server.Models.Encan", b =>
@@ -285,7 +285,7 @@ namespace Gamma2024.Server.Migrations
                     b.HasIndex("NumeroEncan")
                         .IsUnique();
 
-                    b.ToTable("Encans");
+                    b.ToTable("Encans", (string)null);
                 });
 
             modelBuilder.Entity("Gamma2024.Server.Models.EncanLot", b =>
@@ -300,7 +300,7 @@ namespace Gamma2024.Server.Migrations
 
                     b.HasIndex("IdLot");
 
-                    b.ToTable("EncanLots");
+                    b.ToTable("EncanLots", (string)null);
                 });
 
             modelBuilder.Entity("Gamma2024.Server.Models.Facture", b =>
@@ -310,9 +310,6 @@ namespace Gamma2024.Server.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<bool?>("ChoixLivraison")
-                        .HasColumnType("bit");
 
                     b.Property<DateTime>("DateAchat")
                         .HasColumnType("datetime2");
@@ -359,7 +356,7 @@ namespace Gamma2024.Server.Migrations
                         .IsUnique()
                         .HasFilter("[IdFactureLivraison] IS NOT NULL");
 
-                    b.ToTable("Factures");
+                    b.ToTable("Factures", (string)null);
                 });
 
             modelBuilder.Entity("Gamma2024.Server.Models.FactureLivraison", b =>
@@ -403,7 +400,7 @@ namespace Gamma2024.Server.Migrations
 
                     b.HasIndex("IdCharite");
 
-                    b.ToTable("FactureLivraisons");
+                    b.ToTable("FactureLivraisons", (string)null);
                 });
 
             modelBuilder.Entity("Gamma2024.Server.Models.Lot", b =>
@@ -492,7 +489,7 @@ namespace Gamma2024.Server.Migrations
 
                     b.HasIndex("IdVendeur");
 
-                    b.ToTable("Lots");
+                    b.ToTable("Lots", (string)null);
                 });
 
             modelBuilder.Entity("Gamma2024.Server.Models.Medium", b =>
@@ -509,7 +506,7 @@ namespace Gamma2024.Server.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Mediums");
+                    b.ToTable("Mediums", (string)null);
                 });
 
             modelBuilder.Entity("Gamma2024.Server.Models.Photo", b =>
@@ -531,7 +528,7 @@ namespace Gamma2024.Server.Migrations
 
                     b.HasIndex("IdLot");
 
-                    b.ToTable("Photos");
+                    b.ToTable("Photos", (string)null);
                 });
 
             modelBuilder.Entity("Gamma2024.Server.Models.Vendeur", b =>
@@ -565,7 +562,7 @@ namespace Gamma2024.Server.Migrations
 
                     b.HasIndex("AdresseId");
 
-                    b.ToTable("Vendeurs");
+                    b.ToTable("Vendeurs", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
