@@ -31,6 +31,8 @@ import TableauDeBordVentes from "@/components/views/TableauDeBordVentes.vue";
 import ResultatRechercheLots from "@/components/views/ResultatRechercheLots.vue";
 import ResultatRechercheEncans from "@/components/views/ResultatRechercheEncans.vue";
 import GestionCartes from "@/components/views/GestionCartes.vue";
+import HistoriqueAchatsParMembre from "@/components/views/HistoriqueAchatsParMembre.vue"
+
 const routes = [
     {
         path: "/",
@@ -251,6 +253,12 @@ const routes = [
         name: "ResultatRechercheEncans",
         component: ResultatRechercheEncans,
         meta: { requiresAuth: false },
+    },
+    {
+        path: "/historiqueAchatsParMembre",
+        name: "HistoriqueAchatsParMembre",
+        component: HistoriqueAchatsParMembre,
+        meta: { requiresAuth: true, requiredRole: "Client" },
     },
 ];
 
