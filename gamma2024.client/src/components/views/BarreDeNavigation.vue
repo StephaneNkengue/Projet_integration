@@ -187,7 +187,7 @@
                     </div>
                 </nav>
                 <div class="bg-white">
-                    <div class="container collapse card mb-5 bg-white aucunPaddingPourCarte"
+                    <div class="container collapse card mb-5 bg-white aucunPaddingPourCarteLots"
                          id="navbarToggleRechercheAvancee">
                         <div class="card-header d-flex justify-content-center">
                             <h2>Recherche avancée de lots</h2>
@@ -206,7 +206,7 @@
                                                         id="selectNumeroEncan"
                                                         @change="affichageInputNumeroEncan"
                                                         aria-label="Default select example">
-                                                    <option class="py-0" value="0" selected>Égal à</option>
+                                                    <option class="py-0 optionParDefaut" value="0" selected>Égal à</option>
                                                     <option class="py-0"
                                                             id="selectNumeroEncanEntre"
                                                             value="1">
@@ -247,7 +247,7 @@
                                                         id="selectValeurEstimee"
                                                         @change="affichageInputValeurEstimee"
                                                         aria-label="Default select example">
-                                                    <option class="py-0" value="0" selected>Égale à</option>
+                                                    <option class="py-0 optionParDefaut" value="0" selected>Égale à</option>
                                                     <option class="py-0" value="1">Inférieure à</option>
                                                     <option class="py-0" value="2">Supérieure à</option>
                                                     <option class="py-0"
@@ -289,7 +289,7 @@
                                             id="selectArtiste"
                                             aria-label="Default select example"
                                             required>
-                                        <option class="py-0 text-muted" value="" selected>
+                                        <option class="py-0 text-muted optionParDefaut" value="" selected>
                                             Pas de choix
                                         </option>
                                         <option v-for="artiste in listeDesArtistes" :key="artiste.nomArtiste" class="py-0" :value="artiste.nomArtiste">{{artiste.nomArtiste}}</option>
@@ -304,7 +304,7 @@
                                             id="selectCategorie"
                                             aria-label="Default select example"
                                             required>
-                                        <option class="py-0 text-muted" value="" selected>
+                                        <option class="py-0 text-muted optionParDefaut" value="" selected>
                                             Pas de choix
                                         </option>
                                         <option v-for="categorie in listeDesCategories" :key="categorie.id" class="py-0" :value="categorie.id">{{categorie.nom}}</option>
@@ -319,7 +319,7 @@
                                             id="selectMedium"
                                             aria-label="Default select example"
                                             required>
-                                        <option class="py-0 text-muted" value="" selected>
+                                        <option class="py-0 text-muted optionParDefaut" value="" selected>
                                             Pas de choix
                                         </option>
                                         <option v-for="medium in listeDesMediums" :key="medium.id" class="py-0" :value="medium.id">{{medium.type}}</option>
@@ -339,7 +339,7 @@
                                                         id="selectHauteur"
                                                         @change="affichageInputHauteur"
                                                         aria-label="Default select example">
-                                                    <option class="py-0" value="0" selected>Égale à</option>
+                                                    <option class="py-0 optionParDefaut" value="0" selected>Égale à</option>
                                                     <option class="py-0" value="1">Inférieure à</option>
                                                     <option class="py-0" value="2">Supérieure à</option>
                                                     <option class="py-0" value="3" id="selectHauteurEntre">
@@ -378,7 +378,7 @@
                                                         id="selectLargeur"
                                                         @change="affichageInputLargeur"
                                                         aria-label="Default select example">
-                                                    <option class="py-0" value="0" selected>Égale à</option>
+                                                    <option class="py-0 optionParDefaut" value="0" selected>Égale à</option>
                                                     <option class="py-0" value="1">Inférieure à</option>
                                                     <option class="py-0" value="2">Supérieure à</option>
                                                     <option class="py-0" value="3" id="selectLargeurEntre">
@@ -418,6 +418,140 @@
                     </div>
                 </div>
             </div>
+            <div v-else-if="
+          $route.name == 'EncansPasses' ||
+          $route.name == 'EncansFuturs' ||
+          $route.name == 'TousLesEncans' ||
+          $route.name == 'ResultatRechercheEncans'">
+                <nav class="navbar bg-white navbarRechercheAvancee">
+                    <div class="container-fluid d-flex justify-content-end">
+                        <button class="navbar-toggler"
+                                type="button"
+                                data-bs-toggle="collapse"
+                                data-bs-target="#navbarToggleRechercheAvancee"
+                                aria-controls="navbarToggleRechercheAvancee"
+                                aria-expanded="false"
+                                aria-label="Toggle navigation">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                    </div>
+                </nav>
+                <div class="bg-white">
+                    <div class="container collapse card mb-5 bg-white aucunPaddingPourCarteEncans"
+                         id="navbarToggleRechercheAvancee">
+                        <div class="card-header d-flex justify-content-center">
+                            <h2>Recherche avancée d'encans</h2>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-5">
+                                    <div class="col mt-2">
+                                        <label class="text-nowrap recherchelabel fw-bold"
+                                               for="rechercheEncansNumeroEncan">
+                                            Numéro d'encan
+                                        </label>
+                                        <div class="row">
+                                            <div class="col-sm-4">
+                                                <select class="form-select py-0"
+                                                        id="selectNumeroEncan"
+                                                        @change="affichageInputNumeroEncan"
+                                                        aria-label="Default select example">
+                                                    <option class="py-0 optionParDefaut" value="0" selected>Égal à</option>
+                                                    <option class="py-0"
+                                                            id="selectNumeroEncanEntre"
+                                                            value="1">
+                                                        Entre
+                                                    </option>
+                                                </select>
+                                            </div>
+
+                                            <div class="col-sm">
+                                                <input type="number"
+                                                       maxlength="10"
+                                                       class="form-control rechercheinput align-self-end"
+                                                       id="rechercheEncansNumeroEncan" />
+                                            </div>
+                                            <div class="col-sm-auto inputAAfficher align-items-center"
+                                                 id="inputAAfficherNumeroEncan">
+                                                <label class="fs-6">et</label>
+                                            </div>
+                                            <div class="col-sm inputAAfficher"
+                                                 id="inputAAfficherNumeroEncan">
+                                                <input type="number"
+                                                       maxlength="10"
+                                                       class="form-control rechercheinput align-self-end"
+                                                       id="rechercheEncansNumeroEncan2" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-7">
+                                    <div class="col mt-2">
+                                        <label class="text-nowrap recherchelabel fw-bold"
+                                               for="rechercheEncansDate">
+                                            Date
+                                        </label>
+                                        <div class="row">
+                                            <div class="col-sm-4">
+                                                <select class="form-select py-0"
+                                                        id="selectDate"
+                                                        @change="affichageInputDate"
+                                                        aria-label="Default select example">
+                                                    <option class="py-0 optionParDefaut" value="0" selected>Égale à</option>
+                                                    <option class="py-0" value="1">Inférieure à</option>
+                                                    <option class="py-0" value="2">Supérieure à</option>
+                                                    <option class="py-0"
+                                                            value="3"
+                                                            id="selectDateEntre">
+                                                        Entre
+                                                    </option>
+                                                </select>
+                                            </div>
+                                            <VueDatePicker type="date"
+                                                           v-model="rechercheEncansDate1"
+                                                           id="rechercheEncansDate"
+                                                           class="col-sm"
+                                                           :max-date="desacDateDebutEntre"
+                                                           :enable-time-picker="false"
+                                                           select-text="Choisir"
+                                                           cancel-text="Annuler"
+                                                           now-button-label="Aujourd'hui"
+                                                           :clearable="true"
+                                                           :action-row="{ showNow: true }"
+                                                           :format-locale="fr"
+                                                           :year-range="[new Date().getFullYear(), new Date().getFullYear() + 1000]" />
+                                            <div class="col-sm-auto inputAAfficher inputAAfficherDate align-items-center"
+                                                 id="inputAAfficherDate">
+                                                <label class="fs-6">et</label>
+                                            </div>
+                                            <VueDatePicker type="date"
+                                                           v-model="rechercheEncansDate2"
+                                                           id="rechercheEncansDate2"
+                                                           class="col-sm inputAAfficher inputAAfficherDate"
+                                                           :min-date="desacDateFinEntre"
+                                                           :enable-time-picker="false"
+                                                           select-text="Choisir"
+                                                           cancel-text="Annuler"
+                                                           now-button-label="Aujourd'hui"
+                                                           :clearable="true"
+                                                           :action-row="{ showNow: true }"
+                                                           :format-locale="fr"
+                                                           :year-range="[new Date().getFullYear(), new Date().getFullYear() + 1000]" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col mt-2 mb-2 d-flex justify-content-center">
+                            <button class="d-flex align-items-center text-center rounded btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
+                                    type="button"
+                                    @click="rechercheAvanceeEncans">
+                                Lancer la rechercher
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div v-else class="bg-white aucuneBarreDeRechercheAnvancee">
 
             </div>
@@ -425,10 +559,11 @@
     </header>
 </template>
 <script setup>
-    import { computed, watch, ref } from "vue";
+    import { computed, watch, reactive, ref, onMounted } from "vue";
     import { useStore } from "vuex";
     import { useRouter, useRoute } from "vue-router";
-    import { onMounted } from "vue";
+    import VueDatePicker from '@vuepic/vue-datepicker';
+    import '@vuepic/vue-datepicker/dist/main.css'
 
     const store = useStore();
     const router = useRouter();
@@ -445,6 +580,9 @@
     const listeDesArtistes = ref([]);
     const listeDesCategories = ref([]);
     const listeDesMediums = ref([]);
+
+    const rechercheEncansDate1 = ref();
+    const rechercheEncansDate2 = ref();
 
     watch(
         () => store.state.user,
@@ -618,12 +756,175 @@
     }
 
     // La barre de recherche avancée garde les informations ou non selon le changement de page
-    const routeChangement = computed(() => route)
-    watch(routeChangement, changeRechercheAvanceeInput)
+    router.beforeEach((to, from, next) => {
+        if (from.name == 'ResultatRechercheLots' || from.name == 'Encan' || from.name == 'EncanPresent') {
+            var stringNumeroEncan = document.querySelector(
+                "#rechercheLotsNumeroEncan"
+            ).value;
+            var stringNumeroEncan2 = document.querySelector(
+                "#rechercheLotsNumeroEncan2"
+            ).value;
+            var stringValeurEstimee = document.querySelector(
+                "#rechercheLotsValeurEstimee"
+            ).value;
+            var stringValeurEstimee2 = document.querySelector(
+                "#rechercheLotsValeurEstimee2"
+            ).value;
+            var stringHauteur = document.querySelector("#rechercheLotsHauteur").value;
+            var stringHauteur2 = document.querySelector("#rechercheLotsHauteur2").value;
+            var stringLargeur = document.querySelector("#rechercheLotsLargeur").value;
+            var stringLargeur2 = document.querySelector("#rechercheLotsLargeur2").value;
+            var allOptionsParDefaut = document.querySelectorAll(".optionParDefaut");
 
-    function changeRechercheAvanceeInput() {
-        if (router.currentRoute == "ResultatRechercheLots") {
+            if (to.name == 'ResultatRechercheLots') {
+                next()
+            }
+            else if (to.name == 'Encan') {
+                if (allOptionsParDefaut) {
+                    allOptionsParDefaut.forEach((optionParDefaut) => {
+                        optionParDefaut.selected = true;
+                    });
+                }
+                if (stringNumeroEncan) {
+                    stringNumeroEncan = "";
+                }
+                if (stringNumeroEncan2) {
+                    stringNumeroEncan2 = "";
+                }
+                if (stringValeurEstimee) {
+                    stringValeurEstimee = "";
+                }
+                if (stringValeurEstimee2) {
+                    stringValeurEstimee2 = "";
+                }
+                if (stringHauteur) {
+                    stringHauteur = "";
+                }
+                if (stringHauteur2) {
+                    stringHauteur2 = "";
+                }
+                if (stringLargeur) {
+                    stringLargeur = "";
+                }
+                if (stringLargeur2) {
+                    stringLargeur2 = "";
+                }
+                next()
+            }
+            else {
+                if (allOptionsParDefaut) {
+                    allOptionsParDefaut.forEach((optionParDefaut) => {
+                        optionParDefaut.selected = true;
+                    });
+                }
+                if (stringNumeroEncan) {
+                    stringNumeroEncan = "";
+                }
+                if (stringNumeroEncan2) {
+                    stringNumeroEncan2 = "";
+                }
+                if (stringValeurEstimee) {
+                    stringValeurEstimee = "";
+                }
+                if (stringValeurEstimee2) {
+                    stringValeurEstimee2 = "";
+                }
+                if (stringHauteur) {
+                    stringHauteur = "";
+                }
+                if (stringHauteur2) {
+                    stringHauteur2 = "";
+                }
+                if (stringLargeur) {
+                    stringLargeur = "";
+                }
+                if (stringLargeur2) {
+                    stringLargeur2 = "";
+                }
+                next()
+            }
+        }
+        else {
+            next()
+        }
+    })
 
+    const desacDateFinEntre = computed(() => {
+        const debutDate = rechercheEncansDate1;
+
+        if (debutDate != "") {
+            const dateDebutDesac = new Date(debutDate);
+            dateDebutDesac.setDate(dateDebutDesac.getDate() + 1);
+
+            return [dateDebutDesac];
+        }
+        return [new Date()];
+    });
+
+    const desacDateDebutEntre = computed(() => {
+        const finDate = rechercheEncansDate2;
+
+        if (finDate != "") {
+            const dateFinDesac = new Date(finDate);
+            dateFinDesac.setDate(dateFinDesac.getDate() - 1);
+
+            return [dateFinDesac];
+        }
+        return null;
+    });
+
+    async function rechercheAvanceeEncans() {
+        var stringquery = {};
+        var selectNumeroEncan = document.querySelector("#selectNumeroEncan").value;
+        var stringNumeroEncan = document.querySelector(
+            "#rechercheEncansNumeroEncan"
+        ).value;
+        var stringNumeroEncan2 = document.querySelector(
+            "#rechercheEncansNumeroEncan2"
+        ).value;
+        var selectDate = document.querySelector(
+            "#selectDate"
+        ).value;
+        var stringDate = rechercheEncansDate1.value;
+        var stringDate2 = rechercheEncansDate2.value;
+
+        if (stringNumeroEncan) {
+            stringquery['selectNumeroEncan'] = selectNumeroEncan;
+            stringquery['stringNumeroEncan'] = stringNumeroEncan;
+            if (selectNumeroEncan == 3) {
+                stringquery['stringNumeroEncan2'] = stringNumeroEncan2;
+            }
+        }
+        if (stringDate) {
+            stringquery['selectDate'] = selectDate;
+            stringquery['stringDate'] = stringDate.toString().slice(4, 15);
+            if (selectDate == 3) {
+                stringquery['stringDate2'] = stringDate2.toString().slice(4, 15);
+            }
+        }
+
+        router.push({
+            path: "/resultatrechercheencans",
+            query: {
+                data: JSON.stringify(stringquery),
+            },
+        });
+    }
+
+    function affichageInputDate() {
+        var inputAAfficher = document.querySelectorAll(".inputAAfficherDate");
+        var selectDateEntre = document.querySelector(
+            "#selectDateEntre"
+        );
+
+        if (selectDateEntre.selected) {
+            inputAAfficher.forEach((el, index) => {
+                el.style.display = "inline-block";
+            });
+        } else if (!selectDateEntre.selected) {
+            inputAAfficher.forEach((el) => {
+                el.style.display = "none";
+            });
         }
     }
 
@@ -695,10 +996,16 @@
         padding-right: 15px;
     }
 
-    .aucunPaddingPourCarte {
+    .aucunPaddingPourCarteLots {
         padding-left: 0px !important;
         padding-right: 0px !important;
         width: 1000px;
+    }
+
+    .aucunPaddingPourCarteEncans {
+        padding-left: 0px !important;
+        padding-right: 0px !important;
+        width: 1100px;
     }
 
     .aucuneBarreDeRechercheAnvancee {
@@ -749,6 +1056,6 @@
         top: -1px;
         width: 20px;
         height: 20px;
-        background-image: url("/public/icons/Recherche.png");
+        background-image: url("/icons/Recherche.png");
     }
 </style>
