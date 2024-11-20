@@ -655,9 +655,12 @@ namespace Gamma2024.Server.Services
                 }
 
                 // Vérification du pas d'enchère
-                if (!EstMiseValide(lot.Mise ?? 0, mise.Montant))
+                if (!EstMiseValide(lot.Mise ?? 0, mise.Montant, mise.MontantMaximal.HasValue))
                 {
-                    return (false, "La mise ne respecte pas le pas d'enchère");
+                    string message = mise.MontantMaximal.HasValue 
+                        ? "La mise automatique doit être d'au moins 2 pas d'enchère"
+                        : "La mise ne respecte pas le pas d'enchère";
+                    return (false, message);
                 }
 
                 // Création de l'entrée dans l'historique des mises
@@ -711,9 +714,17 @@ namespace Gamma2024.Server.Services
             }
         }
 
-        private bool EstMiseValide(double miseActuelle, decimal nouvelleMise)
+        private bool EstMiseValide(double miseActuelle, decimal nouvelleMise, bool estMiseAutomatique = false)
         {
             decimal pasEnchere = CalculerPasEnchere((decimal)miseActuelle);
+            
+            // Pour une mise automatique, on exige un minimum de 2 pas d'enchère
+            if (estMiseAutomatique)
+            {
+                return nouvelleMise >= (decimal)miseActuelle + (pasEnchere * 2);
+            }
+            
+            // Pour une mise normale, on garde le comportement actuel
             return nouvelleMise >= (decimal)miseActuelle + pasEnchere;
         }
 
