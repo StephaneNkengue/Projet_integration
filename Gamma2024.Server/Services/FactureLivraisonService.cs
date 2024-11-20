@@ -63,7 +63,7 @@ namespace Gamma2024.Server.Services
             var factureLivraison = new FactureLivraison
             {
                 IdFacture = choix.IdFacture,
-                Facture = _context.Factures.Include(f => f.Lots).First(f => f.Id == choix.IdFacture),
+                Facture = _context.Factures.Include(f => f.Lots).Include(f => f.Client).First(f => f.Id == choix.IdFacture),
                 IdAdresse = choix.IdAdresse.Value,
                 IdCharite = choix.IdCharite,
                 DateAchat = DateTime.Now,
