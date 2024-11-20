@@ -564,6 +564,8 @@
     import { useRouter, useRoute } from "vue-router";
     import VueDatePicker from '@vuepic/vue-datepicker';
     import '@vuepic/vue-datepicker/dist/main.css'
+    import { fr } from "date-fns/locale";
+    import moment from "moment";
 
     const store = useStore();
     const router = useRouter();
@@ -885,8 +887,8 @@
         var selectDate = document.querySelector(
             "#selectDate"
         ).value;
-        var stringDate = rechercheEncansDate1.value;
-        var stringDate2 = rechercheEncansDate2.value;
+        var stringDate = moment(rechercheEncansDate1.value).format('yyyy-MM-DD');
+        var stringDate2 = moment(rechercheEncansDate2.value).format('yyyy-MM-DD');
 
         if (stringNumeroEncan) {
             stringquery['selectNumeroEncan'] = selectNumeroEncan;
@@ -897,9 +899,9 @@
         }
         if (stringDate) {
             stringquery['selectDate'] = selectDate;
-            stringquery['stringDate'] = stringDate.toString().slice(4, 15);
+            stringquery['stringDate'] = stringDate;
             if (selectDate == 3) {
-                stringquery['stringDate2'] = stringDate2.toString().slice(4, 15);
+                stringquery['stringDate2'] = stringDate2;
             }
         }
 

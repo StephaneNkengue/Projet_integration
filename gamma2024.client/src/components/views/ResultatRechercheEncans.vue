@@ -76,6 +76,7 @@
     import { computed, ref, watch, onMounted } from "vue";
     import { useRouter, useRoute } from "vue-router";
     import { useStore } from "vuex";
+    import moment from "moment";
 
     const store = useStore();
     const router = useRouter();
@@ -91,6 +92,10 @@
     const encansAffiche = ref();
     const nbPages = ref();
     const chargement = ref(true);
+
+    const mois = [
+
+    ];
 
     onMounted(async () => {
         try {
@@ -146,36 +151,38 @@
     };
 
     function filtrerLesEncansParDate() {
-        //    var stringquery = JSON.parse(route.query.data);
-        //    encansFiltres.value = encansFiltres.value.filter((lot) => {
-        //        if (stringquery.stringDate) {
-        //            if (stringquery.selectDate == 0) {
-        //                if (encan.dateDebut.valueOf() <= stringquery.stringValeurEstimee && lot.valeurEstimeMax.valueOf() >= stringquery.stringValeurEstimee) {
-        //                    return true
-        //                }
-        //                return false
-        //            }
-        //            if (stringquery.selectDatee == 1) {
-        //                if (lot.valeurEstimeMin.valueOf() <= stringquery.stringValeurEstimee) {
-        //                    return true
-        //                }
-        //                return false
-        //            }
-        //            if (stringquery.selectValeurEstimee == 2) {
-        //                if (lot.valeurEstimeMax.valueOf() >= stringquery.stringValeurEstimee) {
-        //                    return true
-        //                }
-        //                return false
-        //            }
-        //            if (stringquery.selectValeurEstimee == 3 && stringquery.stringValeurEstimee2) {
-        //                if (lot.valeurEstimeMax.valueOf() >= stringquery.stringValeurEstimee && lot.valeurEstimeMin.valueOf() <= stringquery.stringValeurEstimee2) {
-        //                    return true
-        //                }
-        //                return false
-        //            }
-        //        }
-        //        return true
-        //    });
+        var stringquery = JSON.parse(route.query.data);
+        encansFiltres.value = encansFiltres.value.filter((encan) => {
+            var encanDateDebut = moment(encan.dateDebut.value).format('yyyy-MM-DD');
+            var encanDateFin = moment(encan.dateFin.value).format('yyyy-MM-DD');
+            if (stringquery.stringDate) {
+                if (stringquery.selectDate == 0) {
+                    if (moment(encanDateDebut).isSameOrBefore(stringquery.stringDate) && moment(encanDateFin).isSameOrAfter(stringquery.stringDate)) {
+                        return true
+                    }
+                    return false
+                }
+                //if (stringquery.selectdatee == 1) {
+                //    if (lot.valeurestimemin.valueof() <= stringquery.stringvaleurestimee) {
+                //        return true
+                //    }
+                //    return false
+                //}
+                //if (stringquery.selectvaleurestimee == 2) {
+                //    if (lot.valeurestimemax.valueof() >= stringquery.stringvaleurestimee) {
+                //        return true
+                //    }
+                //    return false
+                //}
+                //if (stringquery.selectvaleurestimee == 3 && stringquery.stringvaleurestimee2) {
+                //    if (lot.valeurestimemax.valueof() >= stringquery.stringvaleurestimee && lot.valeurestimemin.valueof() <= stringquery.stringvaleurestimee2) {
+                //        return true
+                //    }
+                //    return false
+                //}
+            }
+            return true
+        });
     };
 
     watch(pageCourante, () => {
