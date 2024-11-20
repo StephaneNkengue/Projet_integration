@@ -989,7 +989,17 @@ const store = createStore({
             } catch (error) {
                 return "Erreur, veuillez réessayer";
             }
-        }
+        },
+        async supprimerCarte({ state }, pmId) {
+            try {
+                const response = await state.api.post(
+                    "/paiement/supprimerCarte/" + pmId
+                );
+                return response;
+            } catch (error) {
+                return "Erreur, veuillez réessayer";
+            }
+        },
     },
 
     getters: {
