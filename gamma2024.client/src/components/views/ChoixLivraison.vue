@@ -67,6 +67,14 @@
                     </div>
 
                     <div class="mt-15">
+                        <select class="form-select py-0"
+                                aria-label="Default select example"
+                                id="carteSelList">
+                            <option v-for="carte in cartes" class="py-0" :value="carte.paymentMethodId" selected>{{carte.marque.toUpperCase()}} - {{carte.dernier4Numero}} ({{carte.expirationDate}})</option>
+                        </select>
+                    </div>
+
+                    <div class="mt-15">
                         <h2 v-if="siDonation" class="ps-0 mb-0">TOTAL: {{facture.prixFinal.toFixed(2)}} $</h2>
                         <h2 v-else class="ps-0 mb-0">TOTAL: {{facture.prixFinalSansDon.toFixed(2)}} $</h2>
                     </div>
@@ -102,6 +110,7 @@
     const adresses = ref([]);
     const siMessage = ref(false)
     const chargementSauvegarde = ref(false)
+    const cartes = ref([])
 
     onMounted(async () => {
         try {
@@ -110,6 +119,9 @@
 
             const adresseResponse = await store.dispatch("chercherAdressesClient");
             adresses.value = adresseResponse.data
+
+            const cartesResponse = await store.dispatch("chercherCartesUser")
+            cartes.value = cartesResponse.data
         } catch (error) {
             siMessage.value = true
             document.getElementById("message").innerText = error.response.data
@@ -124,6 +136,7 @@
             if (montrerFormLivraison.value) {
                 var chariteSelList = document.getElementById("chariteSelList")
                 var adresseSelList = document.getElementById("adresseSelList")
+                var carteSelList = document.getElementById("carteSelList")
                 var idChariteSel = null
 
                 if (chariteSelList != undefined) {
@@ -134,14 +147,16 @@
                     don: siDonation.value,
                     idCharite: idChariteSel,
                     idFacture: props.idFacture,
-                    idAdresse: adresseSelList.value
+                    idAdresse: adresseSelList.value,
+                    pmId: carteSelList.value
                 }
             } else {
                 choixLivraison = {
                     don: null,
                     idCharite: null,
                     idFacture: props.idFacture,
-                    idAdresse: null
+                    idAdresse: null,
+                    pmId: null
                 }
             }
 
