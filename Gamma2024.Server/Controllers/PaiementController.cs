@@ -87,7 +87,8 @@ namespace Gamma2024.Server.Controllers
                 {
                     Dernier4Numero = paymentMethod.Card.Last4,
                     ExpirationDate = paymentMethod.Card.ExpMonth + "/" + paymentMethod.Card.ExpYear,
-                    Marque = paymentMethod.Card.Brand
+                    Marque = paymentMethod.Card.Brand,
+                    PaymentMethodId = User.IsInRole("Client") ? paymentMethod.Id : null,
                 });
             }
             return Ok(cartes);
