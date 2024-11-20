@@ -29,6 +29,7 @@ namespace Gamma2024.Server.Models
         public Charite? Charite { get; set; }
         public int IdFacture { get; set; }
         public Facture Facture { get; set; } = null!;
+        public bool EstPaye { get; set; } = false;
 
         public void CalculerFacture()
         {

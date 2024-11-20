@@ -17,11 +17,13 @@ namespace Gamma2024.Server.Controllers
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly FactureService _factureService;
+        private readonly FactureLivraisonService _factureLivraisonService;
 
-        public PaiementController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, FactureService factureService)
+        public PaiementController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, FactureService factureService, FactureLivraisonService factureLivraisonService)
         {
             _userManager = userManager;
             _factureService = factureService;
+            _factureLivraisonService = factureLivraisonService;
         }
 
         [Authorize(Roles = "Client")]
@@ -85,7 +87,8 @@ namespace Gamma2024.Server.Controllers
                 {
                     Dernier4Numero = paymentMethod.Card.Last4,
                     ExpirationDate = paymentMethod.Card.ExpMonth + "/" + paymentMethod.Card.ExpYear,
-                    Marque = paymentMethod.Card.Brand
+                    Marque = paymentMethod.Card.Brand,
+                    PaymentMethodId = User.IsInRole("Client") ? paymentMethod.Id : null,
                 });
             }
             return Ok(cartes);
@@ -131,7 +134,7 @@ namespace Gamma2024.Server.Controllers
                             Name = lot.Description,
                             DefaultPriceData = new ProductDefaultPriceDataOptions
                             {
-                                UnitAmount = (long)lot.Mise.Value * 100,
+                                UnitAmount = (long)(lot.Mise.Value * 100),
                                 Currency = "cad",
                             },
                             Expand = new List<string> { "default_price" },
@@ -154,7 +157,7 @@ namespace Gamma2024.Server.Controllers
                         Name = "Frais d'encanteur",
                         DefaultPriceData = new ProductDefaultPriceDataOptions
                         {
-                            UnitAmount = (long)facture.FraisEncanteur * 100,
+                            UnitAmount = (long)(facture.FraisEncanteur * 100),
                             Currency = "cad",
                         },
                         Expand = new List<string> { "default_price" },
@@ -176,7 +179,7 @@ namespace Gamma2024.Server.Controllers
                         Name = "TPS",
                         DefaultPriceData = new ProductDefaultPriceDataOptions
                         {
-                            UnitAmount = (long)facture.TPS * 100,
+                            UnitAmount = (long)(facture.TPS * 100),
                             Currency = "cad",
                         },
                         Expand = new List<string> { "default_price" },
@@ -198,7 +201,7 @@ namespace Gamma2024.Server.Controllers
                         Name = "TVQ",
                         DefaultPriceData = new ProductDefaultPriceDataOptions
                         {
-                            UnitAmount = (long)facture.TVQ * 100,
+                            UnitAmount = (long)(facture.TVQ * 100),
                             Currency = "cad",
                         },
                         Expand = new List<string> { "default_price" },
@@ -216,10 +219,28 @@ namespace Gamma2024.Server.Controllers
                     invoiceItemService.Create(tvqInvoiceItemOptions);
 
                     invoiceService.Pay(invoice.Id);
+
+                    _factureService.PayerFacture(facture.Id);
                 }
             }
 
             return Ok();
+        }
+
+        [HttpPost("SupprimerCarte/{idPaymentMethod}")]
+        [Authorize(Roles = "Client")]
+        public async Task<ActionResult> SupprimerCarte(string idPaymentMethod)
+        {
+            var service = new PaymentMethodService();
+
+            var carteSupprime = service.Detach(idPaymentMethod);
+
+            if (carteSupprime != null)
+            {
+                return Ok();
+            }
+
+            return BadRequest("Erreur lors de la suppression de la carte");
         }
     }
 }
