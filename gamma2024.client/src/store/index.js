@@ -920,6 +920,26 @@ const store = createStore({
                 throw error;
             }
         },
+        async fetchFactureInfoMembre({ commit, state }) {
+            try {
+                const response = await state.api.get("/factures/chercherFacturesMembre");
+                console.log("Données reçues de l'API:", response.data); // Pour le débogage
+
+                return response.data;
+            } catch (error) {
+                console.error("Erreur détaillée:", error.response || error);
+                throw error;
+            }
+        },
+        async chercherPrevisualisationLivraison({ state }, idFacture) {
+            try {
+                const response = await state.api.get("/facturesLivraison/GenererFactureLivraison/" + idFacture);
+                return response;
+            } catch (error) {
+                console.error("Erreur détaillée:", error.response || error);
+                throw error;
+            }
+        },
         async creerPaymentIntent({ state }, idFacture) {
             try {
                 const response = await state.api.post(
@@ -949,7 +969,37 @@ const store = createStore({
             } catch (error) {
                 return "Erreur, veuillez réessayer";
             }
-        }
+        },
+        async chercherAdressesClient({ state }) {
+            try {
+                const response = await state.api.get(
+                    "/utilisateurs/chercheradressesclient"
+                );
+                return response;
+            } catch (error) {
+                return "Erreur, veuillez réessayer";
+            }
+        },
+        async enregistrerChoixLivraison({ state }, choixLivraison) {
+            try {
+                const response = await state.api.post(
+                    "/facturesLivraison/enregistrerChoixLivraison", choixLivraison
+                );
+                return response;
+            } catch (error) {
+                return "Erreur, veuillez réessayer";
+            }
+        },
+        async supprimerCarte({ state }, pmId) {
+            try {
+                const response = await state.api.post(
+                    "/paiement/supprimerCarte/" + pmId
+                );
+                return response;
+            } catch (error) {
+                return "Erreur, veuillez réessayer";
+            }
+        },
     },
 
     getters: {

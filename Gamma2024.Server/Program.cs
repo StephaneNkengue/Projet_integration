@@ -52,6 +52,7 @@ builder.Services.AddScoped<VendeurService>();
 builder.Services.AddScoped<AdministrateurService>();
 builder.Services.AddScoped<LotService>();
 builder.Services.AddScoped<FactureService>();
+builder.Services.AddScoped<FactureLivraisonService>();
 
 builder.Services.Configure<EmailConfiguration>(
     builder.Configuration.GetSection("EmailConfiguration"));
