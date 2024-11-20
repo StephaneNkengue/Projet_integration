@@ -978,16 +978,6 @@ const store = createStore({
             } catch (error) {
                 return "Erreur, veuillez réessayer";
             }
-        },
-        async payerFactureLivraison({ state }, idFactureLivraison) {
-            try {
-                const response = await state.api.post(
-                    "/paiement/payerFactureLivraison/" + idFactureLivraison
-                );
-                return response;
-            } catch (error) {
-                return "Erreur, veuillez réessayer";
-            }
         }
     },
 

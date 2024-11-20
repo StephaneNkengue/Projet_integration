@@ -140,10 +140,6 @@
 
             const factureLivraisonId = await store.dispatch("enregistrerChoixLivraison", choixLivraison)
 
-            if (factureLivraisonId.data != "") {
-                const payment = await store.dispatch("payerFactureLivraison", factureLivraisonId.data)
-            }
-
             siMessage.value = true
             document.getElementById("message").innerText = "Choix de livraison sauvegardé et payé."
         } catch (error) {
