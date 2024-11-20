@@ -1103,7 +1103,7 @@ const store = createStore({
                 console.error("Erreur détaillée:", error.response || error);
                 throw error;
             }
-        }
+        },
 
 async chercherAdressesClient({ state }) {
             try {
@@ -1114,7 +1114,7 @@ async chercherAdressesClient({ state }) {
             } catch (error) {
                 return "Erreur, veuillez réessayer";
             }
-        }
+        },
 
 async enregistrerChoixLivraison({ state }, choixLivraison) {
             try {
@@ -1125,7 +1125,7 @@ async enregistrerChoixLivraison({ state }, choixLivraison) {
             } catch (error) {
                 return "Erreur, veuillez réessayer";
             }
-        }
+        },
 
 async supprimerCarte({ state }, pmId) {
             try {
