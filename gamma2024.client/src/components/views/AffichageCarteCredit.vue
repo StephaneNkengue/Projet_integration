@@ -7,11 +7,10 @@
                     <label for="numeroCarte">Dernier 4 chiffres de la carte</label>
                     <div class="input-wrapper">
                         <input type="text"
-                               mask="9999"
                                id="numeroCarte"
                                disabled
                                class="form-control"
-                               v-model="carte.dernier4Numero" />
+                               :value="'**********'+carte.dernier4Numero" />
                     </div>
                 </div>
                 <div class="col-md-6">
@@ -27,12 +26,26 @@
                     </div>
                 </div>
             </div>
+            <button class="btn btn-danger mt-3" @click="supprimerCarte" v-if="estClient">
+                Supprimer
+            </button>
         </div>
     </div>
 </template>
 <script setup>
+    import { ref, computed } from "vue";
+    import { useStore } from "vuex";
+
+    const store = useStore();
+
+    const estClient = computed(() => store.getters.isClient)
     const props = defineProps({
         carte: Object
     });
+    const emit = defineEmits(['supprimerCarte'])
+
+    const supprimerCarte = ref(function () {
+        emit('supprimerCarte', props.carte.paymentMethodId)
+    })
 </script>
 <style></style>

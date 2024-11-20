@@ -97,5 +97,13 @@ namespace Gamma2024.Server.Controllers
             ICollection<FactureAffichageMembreVM> factures = _factureService.ChercherFacturesMembre(userId);
             return factures;
         }
+
+        [HttpPost("CreerFacturesParEncan/{numeroEncan}")]
+        public ICollection<Facture> CreerFacturesParEncan(int numeroEncan)
+        {
+            ICollection<Facture> factures = _factureService.CreerFacturesParEncan(numeroEncan);
+
+            return factures;
+        }
     }
 }

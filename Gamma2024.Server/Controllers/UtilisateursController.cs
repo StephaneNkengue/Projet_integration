@@ -265,6 +265,34 @@ namespace Gamma2024.Server.Controllers
                 return BadRequest(ex);
             }
         }
+
+        [HttpGet("ChercherAdressesClient")]
+        public async Task<List<AdresseInfoVM>> ChercherAdressesClient()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (string.IsNullOrEmpty(userId))
+            {
+                return null;
+            }
+
+            var user = await _userManager.Users
+                .OfType<ApplicationUser>()
+                .Include(u => u.Adresses)
+                .FirstOrDefaultAsync(u => u.Id == userId);
+
+            return user.Adresses.Select(a => new AdresseInfoVM
+            {
+                Appartement = a.Appartement,
+                CodePostal = a.CodePostal,
+                NumeroCivique = a.Numero,
+                Pays = a.Pays,
+                Province = a.Province,
+                Rue = a.Rue,
+                Ville = a.Ville,
+                Id = a.Id
+            }).ToList();
+        }
     }
 
 }
