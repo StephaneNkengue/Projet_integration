@@ -226,5 +226,21 @@ namespace Gamma2024.Server.Controllers
 
             return Ok();
         }
+
+        [HttpPost("SupprimerCarte/{idPaymentMethod}")]
+        [Authorize(Roles = "Client")]
+        public async Task<ActionResult> SupprimerCarte(string idPaymentMethod)
+        {
+            var service = new PaymentMethodService();
+
+            var carteSupprime = service.Detach(idPaymentMethod);
+
+            if (carteSupprime != null)
+            {
+                return Ok();
+            }
+
+            return BadRequest("Erreur lors de la suppression de la carte");
+        }
     }
 }
