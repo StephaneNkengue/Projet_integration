@@ -87,7 +87,7 @@
                 router.push({ name: 'GestionCartes' })
             }
             else {
-                router.push({ name: "Accueil" })
+                router.push({ name: "EncanPresent" })
             }
         }
         setLoading(false);

@@ -152,7 +152,26 @@
 
                         this.messageSucces = `Connexion réussie en tant que ${rolesString}`;
                         // Redirection immédiate vers la page d'accueil
-                        this.$router.push("/");
+                        if(rolesString == 'Administrateur'){
+                            this.$router.push({ name: 'Accueil' });
+                        }
+                        else if(rolesString == 'Client'){
+
+                            let response = await this.$store.dispatch("chercherCartesUser");
+                               
+                            if(response.data.length < 1){
+                                this.$router.push({ name: 'EnregistrerCarte' });
+                            }
+                            else{
+                                this.$router.push({ name: 'EncanPresent' });
+                            }
+
+                        }
+                        else{
+                            this.$router.push({name: 'Accueil'})
+                        }
+
+
                     } else {
                         if (result.element == "password") {
                             this.passwordError = result.error;
