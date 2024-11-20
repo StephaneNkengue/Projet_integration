@@ -1,5 +1,5 @@
 <template>
-    <div class="container">
+    <div class="container d-flex flex-column align-items-center">
         <h1>Choix de livraison</h1>
 
         <p id="message" v-show="siMessage"></p>
@@ -10,17 +10,18 @@
         <div v-else-if="!siMessage" class="d-flex flex-column">
             <p>Vos achats durant l'encan {{facture.facture.numeroEncan}} sont livrables. Veuillez faire votre choix de livraison.</p>
 
+
             <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="inlineRadioOptions" id="aucuneLivraison" value="aucune" checked @change="montrerFormLivraison = false; siDonation= false">
+                <input class="form-check-input mt-7" type="radio" name="inlineRadioOptions" id="aucuneLivraison" value="aucune" checked @change="montrerFormLivraison = false; siDonation= false">
                 <label class="form-check-label" for="aucuneLivraison">Aucune livraison</label>
             </div>
             <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="inlineRadioOptions" id="livraison" value="livraison" @change="montrerFormLivraison = true">
+                <input class="form-check-input mt-7" type="radio" name="inlineRadioOptions" id="livraison" value="livraison" @change="montrerFormLivraison = true">
                 <label class="form-check-label" for="livraison">Livraison</label>
             </div>
 
-            <div v-if="montrerFormLivraison" class="d-flex">
-                <div class="col-md-6">
+            <div v-if="montrerFormLivraison">
+                <div>
                     <table class="table">
                         <tbody>
                             <tr>
@@ -43,7 +44,7 @@
                     </table>
 
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="" id="donationCheck" @change="toggleDonation">
+                        <input class="form-check-input mt-7" type="checkbox" value="" id="donationCheck" @change="toggleDonation">
                         <label class="form-check-label" for="donationCheck">
                             Donation
                         </label>
@@ -57,21 +58,27 @@
                         </select>
                     </div>
 
-                    <select class="form-select py-0"
-                            aria-label="Default select example"
-                            id="adresseSelList">
-                        <option v-for="adresse in adresses" class="py-0" :value="adresse.id" selected>{{adresse.appartement}} {{adresse.numeroCivique}} {{adresse.rue}}, {{adresse.ville}}, {{adresse.province}}, {{adresse.pays}}, {{adresse.codePostal}}</option>
-                    </select>
+                    <div class="mt-15">
+                        <select class="form-select py-0"
+                                aria-label="Default select example"
+                                id="adresseSelList">
+                            <option v-for="adresse in adresses" class="py-0" :value="adresse.id" selected>{{adresse.appartement}} {{adresse.numeroCivique}} {{adresse.rue}}, {{adresse.ville}}, {{adresse.province}}, {{adresse.pays}}, {{adresse.codePostal}}</option>
+                        </select>
+                    </div>
 
-                    <h2 v-if="siDonation">TOTAL: {{facture.prixFinal.toFixed(2)}} $</h2>
-                    <h2 v-else>TOTAL: {{facture.prixFinalSansDon.toFixed(2)}} $</h2>
+                    <div class="mt-15">
+                        <h2 v-if="siDonation" class="ps-0 mb-0">TOTAL: {{facture.prixFinal.toFixed(2)}} $</h2>
+                        <h2 v-else class="ps-0 mb-0">TOTAL: {{facture.prixFinalSansDon.toFixed(2)}} $</h2>
+                    </div>
                 </div>
             </div>
 
-            <button id="submit" class="btn btn-outline bleuMoyenFond text-white btnSurvolerBleuMoyenFond my-2 col-3" @click="enregistrerChoixLivraison">
-                <div class="spinner-grow" id="spinner" v-if="chargementSauvegarde"></div>
-                <span id="button-text" v-else>Enregistrer</span>
-            </button>
+            <div class="mt-7">
+                <button id="submit" class="btn btn-outline bleuMoyenFond text-white btnSurvolerBleuMoyenFond my-2 col-3" @click="enregistrerChoixLivraison">
+                    <div class="spinner-grow" id="spinner" v-if="chargementSauvegarde"></div>
+                    <span id="button-text" v-else>Enregistrer</span>
+                </button>
+            </div>
         </div>
     </div>
 
@@ -148,4 +155,12 @@
         }
     })
 </script>
-<style></style>
+<style>
+    .mt-7 {
+        margin-top: 7px;
+    }
+
+    .mt-15 {
+        margin-top: 15px;
+    }
+</style>
