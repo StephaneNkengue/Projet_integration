@@ -41,10 +41,6 @@
             <p class="justifyText mb-0">
                 Les membres peuvent parcourir les lots d'œuvres d'art, faire des mises et des surenchères pendant la durée de l'encan, avec une soirée de clôture en direct. Pendant cette soirée, chaque lot est soumis à un intervalle de temps avant la fermeture définitive, avec la possibilité d'ajouter une minute en cas de surenchère. Un effet visuel indique les 20 dernières secondes pour chaque lot, et une notification par courriel est envoyée en cas de surenchère ou d'achat conclu.
             </p>
-
-            <router-link to="Accueil" class="text-decoration-none text-white">
-                <a>Lire plus ⮞</a>
-            </router-link>
         </div>
     </div>
 </template>

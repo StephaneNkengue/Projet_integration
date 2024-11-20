@@ -33,6 +33,8 @@ import ResultatRechercheEncans from "@/components/views/ResultatRechercheEncans.
 import GestionCartes from "@/components/views/GestionCartes.vue";
 import HistoriqueAchatsParMembre from "@/components/views/HistoriqueAchatsParMembre.vue"
 
+import ConditionsCompagnie from "@/components/views/ConditionsCompagnie.vue"
+
 const routes = [
     {
         path: "/",
@@ -259,6 +261,12 @@ const routes = [
         name: "HistoriqueAchatsParMembre",
         component: HistoriqueAchatsParMembre,
         meta: { requiresAuth: true, requiredRole: "Client" },
+    },
+    {
+        path: "/conditionsCompagnie",
+        name: "ConditionsCompagnie",
+        component: ConditionsCompagnie,
+        meta: { requiresAuth: false },
     },
 ];
 
