@@ -5,8 +5,10 @@ using Gamma2024.Server.Services;
 using Gamma2024.Server.ViewModels;
 using jsreport.AspNetCore;
 using jsreport.Types;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace Gamma2024.Server.Controllers
 {
@@ -42,7 +44,7 @@ namespace Gamma2024.Server.Controllers
                 Data = new
                 {
                     idFacture = model.Id,
-                    adresse = _context.Adresses.FindAsync(model.IdAdresse),
+                    adresse = _context.Adresses.FindAsync(model.Client.Adresses.First().Id),
                     user = _context.Users.FindAsync(model.IdClient),
 
                 }
@@ -79,6 +81,20 @@ namespace Gamma2024.Server.Controllers
         public ICollection<FactureAffichageVM> ChercherFactures()
         {
             ICollection<FactureAffichageVM> factures = _factureService.ChercherFactures();
+            return factures;
+        }
+
+        [Authorize(Roles = "Client")]
+        [HttpGet("chercherFacturesMembre")]
+        public ICollection<FactureAffichageMembreVM> ChercherFacturesMembre()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId))
+            {
+                return null;
+            }
+
+            ICollection<FactureAffichageMembreVM> factures = _factureService.ChercherFacturesMembre(userId);
             return factures;
         }
     }

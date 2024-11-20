@@ -4,7 +4,6 @@ namespace Gamma2024.Server.ViewModels
     {
 
         public InfoGenerale GeneralInfo { get; set; } = null!;
-        public CarteCreditVM CarteCredit { get; set; } = null!;
         public AdresseVM Adresse { get; set; } = null!;
 
     }
@@ -19,14 +18,6 @@ namespace Gamma2024.Server.ViewModels
         public string MotDePasse { get; set; } = null!;
 
         public string ConfirmMotPasse { get; set; } = null!;
-    }
-
-    public class CarteCreditVM
-    {
-        public string NomProprio { get; set; } = null!;
-        public string NumeroCarte { get; set; } = null!;
-        public string DateExpiration { get; set; } = null!;
-
     }
 
     public class AdresseVM

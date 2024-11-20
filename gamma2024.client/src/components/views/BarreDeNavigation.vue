@@ -1,18 +1,11 @@
 <template>
   <header class="sticky-top">
     <div>
-      <nav
-        class="navbar navbar-expand-lg bleuMarinSecondaireFond py-0"
-        data-bs-theme="dark"
-      >
+      <nav class="navbar navbar-expand-lg bleuMarinSecondaireFond py-0" data-bs-theme="dark">
         <div class="container-fluid justify-content-between">
           <router-link :to="{ name: 'Accueil' }" class="text-decoration-none">
             <a class="navbar-brand d-flex align-items-center fs-6">
-              <img
-                src="/images/Logo.png"
-                alt="Les Encans de Nantes"
-                height="40"
-              />
+              <img src="/images/Logo.png" alt="Les Encans de Nantes" height="40" />
               Les Encans de Nantes <br />au Québec
             </a>
           </router-link>
@@ -30,82 +23,58 @@
             <span class="navbar-toggler-icon"></span>
           </button>
 
-          <div
-            class="collapse navbar-collapse justify-content-between"
-            id="navbarSupportedContent"
-          >
+          <div class="collapse navbar-collapse justify-content-between" id="navbarSupportedContent">
             <ul class="navbar-nav text-center">
               <li class="nav-item">
-                <router-link
-                  :to="{ name: 'Accueil' }"
-                  class="text-decoration-none"
-                >
+                <router-link :to="{ name: 'Accueil' }" class="text-decoration-none">
                   <a class="nav-link active"> Accueil </a>
                 </router-link>
               </li>
 
               <li class="nav-item">
-                <router-link
-                  :to="{ name: 'EncanPresent' }"
-                  class="text-decoration-none"
-                >
+                <router-link :to="{ name: 'EncanPresent' }" class="text-decoration-none">
                   <a class="nav-link"> Encan courant </a>
                 </router-link>
               </li>
 
               <li class="nav-item">
-                <router-link
-                  :to="{ name: 'EncansPasses' }"
-                  class="text-decoration-none"
-                >
+                <router-link :to="{ name: 'EncansPasses' }" class="text-decoration-none">
                   <a class="nav-link"> Encans passés </a>
                 </router-link>
               </li>
 
               <li class="nav-item">
-                <router-link
-                  :to="{ name: 'EncansFuturs' }"
-                  class="text-decoration-none"
-                >
+                <router-link :to="{ name: 'EncansFuturs' }" class="text-decoration-none">
                   <a class="nav-link"> Encans futurs </a>
                 </router-link>
               </li>
 
-              <li class="nav-item">
-                <router-link
-                  :to="{ name: 'TousLesLots' }"
-                  class="text-decoration-none"
-                >
-                  <a class="nav-link"> Tous les lots </a>
+              <li class="nav-item" v-if="estConnecte && estClient">
+                <router-link :to="{ name: 'HistoriqueAchatsParMembre' }" class="text-decoration-none">
+                  <a class="nav-link"> Historique des achats </a>
                 </router-link>
               </li>
             </ul>
 
-            <div
-              class="d-flex justify-content-center gap-3 mb-2 mb-lg-0 flex-row align-items-center justify-content-center"
-            >
+            <div class="d-flex justify-content-center gap-3 mb-2 mb-lg-0 flex-row align-items-center justify-content-center">
+              <!-- Boutons Inscription/Connexion -->
               <router-link :to="{ name: 'Inscription' }" v-if="!estConnecte">
-                <button
-                  class="btn btn-outline bleuMoyenFond text-white py-0 butttonNavBar btnSurvolerBleuMoyenFond"
-                  type="button"
-                >
+                <button class="btn btn-outline bleuMoyenFond text-white py-0 butttonNavBar btnSurvolerBleuMoyenFond">
                   Inscription
                 </button>
               </router-link>
               <router-link :to="{ name: 'Connexion' }" v-if="!estConnecte">
-                <button
-                  class="btn btn-outline bleuMoyenFond text-white py-0 butttonNavBar btnSurvolerBleuMoyenFond"
-                  type="button"
-                >
+                <button class="btn btn-outline bleuMoyenFond text-white py-0 butttonNavBar btnSurvolerBleuMoyenFond">
                   Connexion
                 </button>
               </router-link>
 
-              <div
+              <!-- Dropdown Tableau de bord (Admin) -->
+              <div 
                 class="dropdown text-white align-self-stretch justify-content-center align-items-center d-flex"
                 v-if="estAdmin"
               >
-                <a
+                <a 
                   class="nav-link d-flex align-items-center gap-1"
                   role="button"
                   @click.stop="isTableauBordDropdownOpen = !isTableauBordDropdownOpen"
@@ -120,7 +89,7 @@
                   style="position: absolute; top: 100%;"
                 >
                   <li>
-                    <router-link
+                    <router-link 
                       :to="{ name: 'TableauDeBordInventaire' }"
                       class="text-decoration-none"
                       @click="isTableauBordDropdownOpen = false"
@@ -129,43 +98,45 @@
                     </router-link>
                   </li>
                   <li>
-                    <router-link
+                    <router-link 
                       :to="{ name: 'TableauDeBordEncans' }"
                       class="text-decoration-none"
+                      @click="isTableauBordDropdownOpen = false"
                     >
                       <a class="dropdown-item contenuListeDropdown">Encans</a>
                     </router-link>
                   </li>
                   <li>
-                    <router-link
+                    <router-link 
                       :to="{ name: 'AffichageVendeurs' }"
                       class="text-decoration-none"
+                      @click="isTableauBordDropdownOpen = false"
                     >
                       <a class="dropdown-item contenuListeDropdown">Vendeurs</a>
                     </router-link>
                   </li>
                   <li>
-                    <router-link
+                    <router-link 
                       :to="{ name: 'TableauDeBordVentes' }"
                       class="text-decoration-none"
+                      @click="isTableauBordDropdownOpen = false"
                     >
                       <a class="dropdown-item contenuListeDropdown">Ventes</a>
                     </router-link>
                   </li>
                   <li>
-                    <router-link
+                    <router-link 
                       :to="{ name: 'GestionMembre' }"
                       class="text-decoration-none"
+                      @click="isTableauBordDropdownOpen = false"
                     >
-                      <a class="dropdown-item contenuListeDropdown"
-                        >Profils de membre</a
-                      >
+                      <a class="dropdown-item contenuListeDropdown">Profils de membre</a>
                     </router-link>
                   </li>
                 </ul>
               </div>
-
-              <div
+              <!-- Dropdown Notifications -->
+              <div 
                 class="dropdown text-white align-self-stretch justify-content-center align-items-center d-flex"
                 v-if="estConnecte && !estAdmin"
               >
@@ -174,11 +145,7 @@
                   role="button"
                   @click.stop="toggleNotifications"
                 >
-                  <img
-                    src="/icons/IconeCloche.png"
-                    alt="Icon cloche"
-                    height="25"
-                  />
+                  <img src="/icons/IconeCloche.png" alt="Icon cloche" height="25" />
                   <span
                     v-if="unreadCount > 0"
                     class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
@@ -211,6 +178,8 @@
                   </li>
                 </ul>
               </div>
+
+              <!-- Dropdown Profil -->
               <div class="dropdown text-white position-relative" v-if="estConnecte">
                 <a
                   class="nav-link d-flex align-items-center"
@@ -225,7 +194,6 @@
                   />
                 </a>
                 
-                <!-- Utiliser v-show ou v-if pour le menu -->
                 <ul
                   v-show="isProfileDropdownOpen"
                   class="dropdown-menu bleuMarinFond text-center end-0"
@@ -260,181 +228,305 @@
         </div>
       </nav>
 
+      <!-- Barre de recherche et recherche avancée -->
       <nav class="navbar bg-white navbar-expand-md py-0" data-bs-theme="dark">
-        <div
-          class="container-fluid justify-content-center justify-content-md-between d-flex flex-row-reverse"
-        >
+        <div class="container-fluid justify-content-center justify-content-md-between d-flex flex-row-reverse">
           <form class="d-flex align-items-center">
             <div class="d-flex input-group mt-1" v-if="activationRecherche">
+              <!-- Dropdown des critères -->
               <button
                 class="btn btn-outline bleuMoyenFond text-white butttonNavBar py-0 btnSurvolerBleuMoyenFond dropdown-toggle"
-                data-bs-toggle="dropdown"
-                v-if="
-                  $route.name == 'EncanPresent' ||
-                  $route.name == 'Encan' ||
-                  $route.name == 'TousLesLots' ||
-                  $route.name == 'ResultatRechercheLots'
-                "
+                type="button"
+                @click="toggleCriteresDropdown"
+                v-if="showCriteresButton"
               >
-                Critères des lots
+                {{ getCriteresButtonText }}
               </button>
-              <ul
-                class="dropdown-menu"
-                v-if="
-                  $route.name == 'EncanPresent' ||
-                  $route.name == 'Encan' ||
-                  $route.name == 'TousLesLots' ||
-                  $route.name == 'ResultatRechercheLots'
-                "
-              >
-                <li class="d-flex justify-content-start dropdown-item">
-                  <input
-                    class="checkboxTousRecherche d-flex-1"
-                    type="checkbox"
-                    id="tousSelectionnerCheckboxRecherche"
-                    @change="comportementTousSelectionnerRecherche"
-                    checked
-                  />
-                  <label
-                    class="d-flex-1"
-                    for="tousSelectionnerCheckboxRecherche"
+              <!-- Section recherche avancée -->
+              <div v-if="$route.name == 'EncanPresent' || $route.name == 'Encan' || $route.name == 'ResultatRechercheLots'">
+                <nav class="navbar bg-white">
+                  <div class="container-fluid d-flex justify-content-end">
+                    <button
+                      class="navbar-toggler"
+                      type="button"
+                      data-bs-toggle="collapse"
+                      data-bs-target="#navbarToggleRechercheAvancee"
+                      aria-controls="navbarToggleRechercheAvancee"
+                      aria-expanded="false"
+                      aria-label="Toggle navigation"
+                    >
+                      <span class="navbar-toggler-icon"></span>
+                    </button>
+                  </div>
+                </nav>
+                <div class="bg-white">
+                  <div
+                    class="container collapse card mb-5 bg-white aucunPaddingPourCarte"
+                    id="navbarToggleRechercheAvancee"
                   >
-                    Tous Sélectionner
-                  </label>
-                </li>
-                <li
-                  v-for="(visible, colonne) in colonnesDeCriteresLots"
-                  :key="colonne"
-                  class="d-flex justify-content-start dropdown-item"
-                >
-                  <input
-                    class="checkboxSeulRecherche d-flex-1"
-                    type="checkbox"
-                    :id="`lot${
-                      colonne.charAt(0).toUpperCase() + colonne.slice(1)
-                    }CheckboxRecherche`"
-                    checked
-                    disabled
-                  />
-                  <label
-                    class="d-flex-1"
-                    :for="`lot${
-                      colonne.charAt(0).toUpperCase() + colonne.slice(1)
-                    }CheckboxRecherche`"
-                  >
-                    {{
-                      (
-                        colonne.charAt(0).toUpperCase() + colonne.slice(1)
-                      ).replace(/([A-Z])/g, " $1")
-                    }}
-                  </label>
-                </li>
-              </ul>
-              <button
-                class="btn btn-outline bleuMoyenFond text-white butttonNavBar py-0 btnSurvolerBleuMoyenFond dropdown-toggle"
-                data-bs-toggle="dropdown"
-                v-if="
-                  $route.name == 'TousLesEncans' ||
-                  $route.name == 'EncansPasses' ||
-                  $route.name == 'EncansFuturs'
-                "
-              >
-                Critères d'encans
-              </button>
-              <ul
-                class="dropdown-menu"
-                v-if="
-                  $route.name == 'TousLesEncans' ||
-                  $route.name == 'EncansPasses' ||
-                  $route.name == 'EncansFuturs'
-                "
-              >
-                <li class="d-flex justify-content-start dropdown-item">
-                  <input
-                    class="checkboxTousRecherche d-flex-1"
-                    type="checkbox"
-                    id="tousSelectionnerCheckboxRecherche"
-                    @change="comportementTousSelectionnerRecherche"
-                    checked
-                  />
-                  <label
-                    class="d-flex-1"
-                    for="tousSelectionnerCheckboxRecherche"
-                  >
-                    Tous Sélectionner
-                  </label>
-                </li>
-                <li
-                  v-for="(visible, colonne) in colonnesDeCriteresEncans"
-                  :key="colonne"
-                  class="d-flex justify-content-start dropdown-item"
-                >
-                  <input
-                    class="checkboxSeulRecherche d-flex-1"
-                    type="checkbox"
-                    :id="`lot${
-                      colonne.charAt(0).toUpperCase() + colonne.slice(1)
-                    }CheckboxRecherche`"
-                    checked
-                    disabled
-                  />
-                  <label
-                    class="d-flex-1"
-                    :for="`lot${
-                      colonne.charAt(0).toUpperCase() + colonne.slice(1)
-                    }CheckboxRecherche`"
-                  >
-                    {{
-                      (
-                        colonne.charAt(0).toUpperCase() + colonne.slice(1)
-                      ).replace(/([A-Z])/g, " $1")
-                    }}
-                  </label>
-                </li>
-              </ul>
-              <input
-                class="form-control butttonNavBar"
-                id="rechercheInput"
-                data-bs-theme="light"
-                type="search"
-                placeholder="Faire une recherche"
-                aria-label="Search"
-                v-model="stringDeRecherche"
-              />
-              <button
-                class="btn bleuMoyenFond me-3 text-white butttonNavBar py-0 btnSurvolerBleuMoyenFond"
-                v-if="
-                  $route.name == 'EncanPresent' ||
-                  $route.name == 'Encan' ||
-                  $route.name == 'TousLesLots' ||
-                  $route.name == 'ResultatRechercheLots'
-                "
-                type="submit"
-                @click.prevent="rechercheAvanceeLots"
-              >
-                Rechercher dans les lots
-              </button>
-              <button
-                class="btn bleuMoyenFond me-3 text-white butttonNavBar py-0 btnSurvolerBleuMoyenFond"
-                v-else-if="
-                  $route.name == 'TousLesEncans' ||
-                  $route.name == 'EncansPasses' ||
-                  $route.name == 'EncansFuturs'
-                "
-                type="submit"
-                @click.prevent="rechercheAvanceeEncans"
-              >
-                Rechercher dans les encans
-              </button>
-              <button
-                class="btn bleuMoyenFond me-3 text-white butttonNavBar py-0 btnSurvolerBleuMoyenFond"
-                v-else
-                type="submit"
-                @click.prevent="rechercheSimple"
-              >
-                Rechercher
-              </button>
+                    <div class="card-header d-flex justify-content-center">
+                      <h2>Recherche avancée de lots</h2>
+                    </div>
+                    <div class="card-body">
+                      <!-- Numéro d'encan -->
+                      <div class="col mt-2">
+                        <label class="text-nowrap recherchelabel fw-bold" for="rechercheLotsNumeroEncan">
+                          Numéro d'encan
+                        </label>
+                        <div class="row">
+                          <div class="col-sm-3">
+                            <select
+                              class="form-select py-0"
+                              id="selectNumeroEncan"
+                              @change="affichageInputNumeroEncan"
+                              aria-label="Default select example"
+                            >
+                              <option class="py-0" value="0" selected>Égal à</option>
+                              <option class="py-0" id="selectNumeroEncanEntre" value="1">Entre</option>
+                            </select>
+                          </div>
+                          <div class="col-sm">
+                            <input
+                              type="number"
+                              maxlength="10"
+                              class="form-control rechercheinput align-self-end"
+                              id="rechercheLotsNumeroEncan"
+                            />
+                          </div>
+                          <div
+                            class="col-sm-auto inputAAfficher align-items-center"
+                            id="inputAAfficherNumeroEncan"
+                          >
+                            <label class="fs-6">et</label>
+                          </div>
+                          <div class="col-sm inputAAfficher" id="inputAAfficherNumeroEncan">
+                            <input
+                              type="number"
+                              maxlength="10"
+                              class="form-control rechercheinput align-self-end"
+                              id="rechercheLotsNumeroEncan2"
+                            />
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- Valeur estimée -->
+                      <div class="col mt-2">
+                        <label class="text-nowrap recherchelabel fw-bold" for="rechercheLotsValeurEstimee">
+                          Valeur estimée
+                        </label>
+                        <div class="row">
+                          <div class="col-sm-3">
+                            <select
+                              class="form-select py-0"
+                              id="selectValeurEstimee"
+                              @change="affichageInputValeurEstimee"
+                              aria-label="Default select example"
+                            >
+                              <option class="py-0" value="0" selected>Égale à</option>
+                              <option class="py-0" value="1">Inférieure à</option>
+                              <option class="py-0" value="2">Supérieure à</option>
+                              <option class="py-0" value="3" id="selectValeurEstimeeEntre">Entre</option>
+                            </select>
+                          </div>
+                          <div class="col-sm">
+                            <input
+                              type="number"
+                              maxlength="10"
+                              class="form-control rechercheinput align-self-end"
+                              id="rechercheLotsValeurEstimee"
+                            />
+                          </div>
+                          <div
+                            class="col-sm-auto inputAAfficher align-items-center"
+                            id="inputAAfficherValeurEstimee"
+                          >
+                            <label class="fs-6">et</label>
+                          </div>
+                          <div class="col-sm inputAAfficher" id="inputAAfficherValeurEstimee">
+                            <input
+                              type="number"
+                              maxlength="10"
+                              class="form-control rechercheinput align-self-end"
+                              id="rechercheLotsValeurEstimee2"
+                            />
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- Sélecteurs (Artiste, Catégorie, Medium) -->
+                      <div class="row mt-2">
+                        <div class="col-md-4">
+                          <label class="text-nowrap recherchelabel fw-bold" for="rechercheLotsArtiste">
+                            Artiste
+                          </label>
+                          <select
+                            class="form-select py-0 align-self-center"
+                            id="selectArtiste"
+                            aria-label="Default select example"
+                            required
+                          >
+                            <option class="py-0 text-muted" value="" selected>Pas de choix</option>
+                            <option
+                              v-for="artiste in listeDesArtistes"
+                              :key="artiste.nomArtiste"
+                              class="py-0"
+                              :value="artiste.nomArtiste"
+                            >
+                              {{artiste.nomArtiste}}
+                            </option>
+                          </select>
+                        </div>
+                        <div class="col-md-4">
+                          <label class="text-nowrap recherchelabel fw-bold" for="rechercheLotsCategorie">
+                            Catégorie
+                          </label>
+                          <select
+                            class="form-select py-0 align-self-center"
+                            id="selectCategorie"
+                            aria-label="Default select example"
+                            required
+                          >
+                            <option class="py-0 text-muted" value="" selected>Pas de choix</option>
+                            <option
+                              v-for="categorie in listeDesCategories"
+                              :key="categorie.id"
+                              class="py-0"
+                              :value="categorie.id"
+                            >
+                              {{categorie.nom}}
+                            </option>
+                          </select>
+                        </div>
+                        <div class="col-md-4">
+                          <label class="text-nowrap recherchelabel fw-bold" for="rechercheLotsMedium">
+                            Medium
+                          </label>
+                          <select
+                            class="form-select py-0 align-self-center"
+                            id="selectMedium"
+                            aria-label="Default select example"
+                            required
+                          >
+                            <option class="py-0 text-muted" value="" selected>Pas de choix</option>
+                            <option
+                              v-for="medium in listeDesMediums"
+                              :key="medium.id"
+                              class="py-0"
+                              :value="medium.id"
+                            >
+                              {{medium.type}}
+                            </option>
+                          </select>
+                        </div>
+                      </div>
+                      <!-- Dimensions (Hauteur et Largeur) -->
+                      <div class="row">
+                        <div class="col-6">
+                          <div class="col mt-2">
+                            <label class="text-nowrap recherchelabel fw-bold" for="rechercheLotsHauteur">
+                              Hauteur
+                            </label>
+                            <div class="row">
+                              <div class="col-sm-4">
+                                <select
+                                  class="form-select py-0"
+                                  id="selectHauteur"
+                                  @change="affichageInputHauteur"
+                                  aria-label="Default select example"
+                                >
+                                  <option class="py-0" value="0" selected>Égale à</option>
+                                  <option class="py-0" value="1">Inférieure à</option>
+                                  <option class="py-0" value="2">Supérieure à</option>
+                                  <option class="py-0" value="3" id="selectHauteurEntre">Entre</option>
+                                </select>
+                              </div>
+                              <div class="col-sm">
+                                <input
+                                  type="number"
+                                  maxlength="10"
+                                  class="form-control rechercheinput align-self-end"
+                                  id="rechercheLotsHauteur"
+                                />
+                              </div>
+                              <div
+                                class="col-sm-auto inputAAfficher align-items-center"
+                                id="inputAAfficherHauteur"
+                              >
+                                <label class="fs-6">et</label>
+                              </div>
+                              <div class="col-sm inputAAfficher" id="inputAAfficherHauteur">
+                                <input
+                                  type="number"
+                                  maxlength="10"
+                                  class="form-control rechercheinput align-self-end"
+                                  id="rechercheLotsHauteur2"
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-6">
+                          <div class="col mt-2">
+                            <label class="text-nowrap recherchelabel fw-bold" for="rechercheLotsLargeur">
+                              Largeur
+                            </label>
+                            <div class="row">
+                              <div class="col-sm-4">
+                                <select
+                                  class="form-select py-0"
+                                  id="selectLargeur"
+                                  @change="affichageInputLargeur"
+                                  aria-label="Default select example"
+                                >
+                                  <option class="py-0" value="0" selected>Égale à</option>
+                                  <option class="py-0" value="1">Inférieure à</option>
+                                  <option class="py-0" value="2">Supérieure à</option>
+                                  <option class="py-0" value="3" id="selectLargeurEntre">Entre</option>
+                                </select>
+                              </div>
+                              <div class="col-sm">
+                                <input
+                                  type="number"
+                                  maxlength="10"
+                                  class="form-control rechercheinput align-self-end"
+                                  id="rechercheLotsLargeur"
+                                />
+                              </div>
+                              <div
+                                class="col-sm-auto inputAAfficher align-items-center"
+                                id="inputAAfficherLargeur"
+                              >
+                                <label class="fs-6">et</label>
+                              </div>
+                              <div class="col-sm inputAAfficher" id="inputAAfficherLargeur">
+                                <input
+                                  type="number"
+                                  maxlength="10"
+                                  class="form-control rechercheinput align-self-end"
+                                  id="rechercheLotsLargeur2"
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- Bouton de recherche -->
+                    <div class="col mt-2 mb-2 d-flex justify-content-center">
+                      <button
+                        class="d-flex align-items-center text-center rounded btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
+                        type="button"
+                        @click="rechercheAvanceeLots"
+                      >
+                        Lancer la recherche
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
+            <!-- Bouton d'activation de la recherche -->
             <a @click="activationRecherche = !activationRecherche">
               <img
                 src="/icons/IconeRechercheAvanceeBleu.png"
@@ -449,24 +541,310 @@
     </div>
   </header>
 </template>
+
+<style scoped>
+/* Styles généraux */
+.ms-7 {
+  margin-left: 7.9rem;
+}
+
+.start-79 {
+  left: 79%;
+}
+
+/* Styles du profil et avatar */
+.imgProfile {
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+  border: 2px solid white;
+}
+
+/* Styles des dropdowns */
+.dropdown {
+  position: relative;
+}
+
+.dropdown-menu {
+  z-index: 1000;
+  min-width: 10rem;
+  margin: 0;
+  border: 1px solid rgba(0,0,0,.15);
+  position: absolute;
+  transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out;
+  opacity: 0;
+  transform: translateY(-10px);
+  background-color: var(--bleu-marin);
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.dropdown-menu.show {
+  display: block;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.dropdown-item {
+  padding: 0.5rem 1rem;
+  color: white;
+  transition: background-color 0.2s ease;
+}
+
+.dropdown-item:hover {
+  background-color: var(--bleu-moyen);
+}
+
+.list-group-item {
+  background-color: transparent;
+  border-bottom: 1px solid rgba(255,255,255,0.1) !important;
+}
+
+.list-group-item:last-child {
+  border-bottom: none !important;
+}
+
+/* Styles de la recherche avancée */
+input.form-control {
+  height: 25px !important;
+  font-size: 15px !important;
+  border-radius: 4px;
+}
+
+select {
+  width: 100% !important;
+}
+
+select.form-select {
+  height: 25px !important;
+  margin-right: 10px !important;
+  font-size: 15px !important;
+  padding: 0 0.5rem;
+}
+
+select option {
+  height: 25px !important;
+  font-size: 15px !important;
+  padding: 4px;
+}
+
+.recherchelabel {
+  margin-left: 10px !important;
+  margin-right: 10px !important;
+  font-weight: bold !important;
+  color: #333;
+}
+
+.rechercheinput {
+  margin-right: 10px !important;
+}
+
+.margesPourTable {
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+.aucunPaddingPourCarte {
+  padding-left: 0px !important;
+  padding-right: 0px !important;
+  width: 1000px;
+  margin: auto;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.selectwidth {
+  width: 160px;
+}
+
+.inputAAfficher {
+  display: none;
+}
+
+.card-body {
+  padding-top: 0px !important;
+  padding-bottom: 10px !important;
+}
+
+/* Styles des selects */
+select,
+select option {
+  color: #000000;
+}
+
+select:invalid,
+select option[value=""] {
+  color: #999999;
+}
+
+/* Styles des notifications */
+.notification-badge {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background-color: red;
+  color: white;
+  border-radius: 50%;
+  padding: 2px 6px;
+  font-size: 12px;
+  min-width: 20px;
+  text-align: center;
+}
+
+/* Styles des boutons */
+.butttonNavBar {
+  height: 30px;
+  display: flex;
+  align-items: center;
+  padding: 0 1rem;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+}
+
+.btnSurvolerBleuMoyenFond {
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.btnSurvolerBleuMoyenFond:hover {
+  background-color: var(--bleu-moyen-hover) !important;
+  border-color: var(--bleu-moyen-hover) !important;
+  transform: translateY(-1px);
+}
+
+.btnSurvolerBleuMoyenFond:active {
+  transform: translateY(0);
+}
+
+.btnDesactiverBleuMoyenFond:disabled {
+  background-color: var(--bleu-moyen-disabled) !important;
+  border-color: var(--bleu-moyen-disabled) !important;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+/* Animation des dropdowns */
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.dropdown-menu.show {
+  animation: fadeInDown 0.2s ease-out forwards;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .dropdown-menu {
+    position: static;
+    float: none;
+    width: 100%;
+    margin-top: 0.5rem;
+    background-color: var(--bleu-marin);
+    box-shadow: none;
+    border: none;
+  }
+
+  .aucunPaddingPourCarte {
+    width: 100%;
+    margin: 0;
+    border-radius: 0;
+  }
+
+  .rechercheinput,
+  select.form-select {
+    margin-right: 0 !important;
+    margin-bottom: 0.5rem;
+  }
+
+  .col-sm-3,
+  .col-sm-4 {
+    width: 100%;
+    margin-bottom: 0.5rem;
+  }
+
+  .row {
+    margin: 0;
+  }
+}
+
+/* Styles spécifiques pour les écrans très petits */
+@media (max-width: 576px) {
+  .imgProfile {
+    width: 32px;
+    height: 32px;
+  }
+
+  .butttonNavBar {
+    padding: 0 0.5rem;
+  }
+
+  .navbar-brand {
+    font-size: 0.9rem;
+  }
+}
+
+/* Styles d'accessibilité */
+.btn:focus,
+.form-control:focus,
+.form-select:focus {
+  box-shadow: 0 0 0 0.2rem rgba(var(--bleu-moyen-rgb), 0.25);
+  outline: none;
+}
+
+/* Styles pour le mode sombre si nécessaire */
+@media (prefers-color-scheme: dark) {
+  .bg-white {
+    background-color: #1a1a1a !important;
+  }
+
+  .text-dark {
+    color: #ffffff !important;
+  }
+
+  .card {
+    background-color: #2d2d2d;
+    border-color: #404040;
+  }
+}
+</style>
+
 <script setup>
-import { computed, watch, ref } from "vue";
+import { computed, watch, ref, onMounted, onUnmounted } from "vue";
 import { useStore } from "vuex";
 import { useRouter, useRoute } from "vue-router";
-import { onMounted, onUnmounted } from "vue";
 
 const store = useStore();
 const router = useRouter();
 const route = useRoute();
 
+// Computed properties
 const estConnecte = computed(() => store.state.isLoggedIn);
 const estAdmin = computed(() => store.getters.isAdmin);
 const estClient = computed(() => store.getters.isClient);
 const username = computed(() => store.getters.username);
 const avatarUrl = computed(() => store.getters.avatarUrl);
+const notifications = computed(() => store.state.notifications);
+const unreadCount = computed(() => notifications.value.filter(n => !n.read).length);
 
+// Refs pour les données
 const currentUser = ref(null);
+const listeDesArtistes = ref([]);
+const listeDesCategories = ref([]);
+const listeDesMediums = ref([]);
+const stringDeRecherche = ref("");
 
+// Refs pour les états UI
+const activationRecherche = ref(false);
+const isProfileDropdownOpen = ref(false);
+const isTableauBordDropdownOpen = ref(false);
+const isNotificationDropdownOpen = ref(false);
+
+// Refs pour les critères de recherche
 const colonnesDeCriteresLots = ref({
   encan: true,
   numero: true,
@@ -484,25 +862,20 @@ const colonnesDeCriteresEncans = ref({
   date: true,
 });
 
-// Références pour gérer l'état local
-const notificationDropdown = ref(false);
-
-// Fonction pour basculer le dropdown
-const toggleNotificationDropdown = () => {
-  notificationDropdown.value = !notificationDropdown.value;
-};
-
-// Accéder aux notifications et compter celles qui sont non lues
-const notifications = computed(() => store.state.notifications);
-const unreadCount = computed(() => notifications.value.length);
-
-// Marquer toutes les notifications comme lues quand le dropdown s'affiche
-onMounted(() => {
-  if (notificationDropdown.value) {
-    store.commit("MARK_ALL_AS_READ");
-  }
+// Computed pour les conditions d'affichage
+const showCriteresButton = computed(() => {
+  return ['EncanPresent', 'Encan', 'TousLesLots', 'ResultatRechercheLots', 
+          'TousLesEncans', 'EncansPasses', 'EncansFuturs'].includes(route.name);
 });
 
+const getCriteresButtonText = computed(() => {
+  if (['EncanPresent', 'Encan', 'TousLesLots', 'ResultatRechercheLots'].includes(route.name)) {
+    return 'Critères des lots';
+  }
+  return 'Critères d\'encans';
+});
+
+// Watchers
 watch(
   () => store.state.user,
   (newUser) => {
@@ -511,20 +884,6 @@ watch(
   { deep: true, immediate: true }
 );
 
-const refreshUserInfo = async () => {
-  if (store.state.isLoggedIn) {
-    try {
-      await store.dispatch("fetchClientInfo");
-    } catch (error) {
-      console.error(
-        "Erreur lors de la récupération des informations client:",
-        error
-      );
-    }
-  }
-};
-
-// Appelez refreshUserInfo lorsque l'utilisateur se connecte
 watch(
   () => store.state.isLoggedIn,
   (newValue) => {
@@ -534,90 +893,28 @@ watch(
   }
 );
 
-function rechercheSimple(e) {
-  e.preventDefault();
-  var texte = document.querySelector("#rechercheInput").value;
-  window.find(texte, null, null, true);
-}
-
-async function rechercheAvanceeLots() {
-  router.push({
-    path: "/resultatrecherchelots",
-    query: {
-      stringDeRecherche: document.querySelector("#rechercheInput").value,
-      encan: document.getElementById("lotEncanCheckboxRecherche").checked,
-      numero: document.getElementById("lotNumeroCheckboxRecherche").checked,
-      estimationMin: document.getElementById(
-        "lotEstimationMinCheckboxRecherche"
-      ).checked,
-      estimationMax: document.getElementById(
-        "lotEstimationMaxCheckboxRecherche"
-      ).checked,
-      categorie: document.getElementById("lotCategorieCheckboxRecherche")
-        .checked,
-      artiste: document.getElementById("lotArtisteCheckboxRecherche").checked,
-      dimension: document.getElementById("lotDimensionCheckboxRecherche")
-        .checked,
-      description: document.getElementById("lotDescriptionCheckboxRecherche")
-        .checked,
-      medium: document.getElementById("lotMediumCheckboxRecherche").checked,
-    },
-  });
-}
-
-async function rechercheAvanceeEncans() {
-  router.push({
-    path: "/resultatrechercheencans",
-    query: {
-      stringDeRecherche: document.querySelector("#rechercheInput").value,
-      numero: document.getElementById("lotNumeroCheckboxRecherche").checked,
-      date: document.getElementById("lotDateCheckboxRecherche").checked,
-    },
-  });
-}
-
-function comportementTousSelectionnerRecherche() {
-  var CheckboxeToutSelectionnerRecherche = document.querySelector(
-    ".checkboxTousRecherche"
-  );
-  var listeDesCheckboxesRecherche = document.querySelectorAll(
-    ".checkboxSeulRecherche"
-  );
-
-  if (CheckboxeToutSelectionnerRecherche.checked) {
-    listeDesCheckboxesRecherche.forEach((el, index) => {
-      el.checked = true;
-      el.disabled = true;
-    });
-  } else if (!CheckboxeToutSelectionnerRecherche.checked) {
-    listeDesCheckboxesRecherche.forEach((el) => {
-      el.disabled = false;
-      el.checked = false;
-    });
+// Méthodes de gestion des utilisateurs
+const refreshUserInfo = async () => {
+  if (store.state.isLoggedIn) {
+    try {
+      await store.dispatch("fetchClientInfo");
+    } catch (error) {
+      console.error("Erreur lors de la récupération des informations client:", error);
+    }
   }
-}
-
-// Définition de activationRecherche
-const activationRecherche = ref(false);
-const activationDropdownProfil = ref(false);
-const notification = ref(false);
-
-const deconnecter = async () => {
-  await store.dispatch("logout");
-  router.push("/"); // Redirige vers la page d'accueil après la déconnexion
 };
 
-onMounted(() => {
-  document.querySelectorAll(".dropdown-toggle").forEach((dropdownToggle) => {
-    new bootstrap.Dropdown(dropdownToggle);
-  });
-});
+const deconnecter = async () => {
+  try {
+    await store.dispatch("logout");
+    router.push("/");
+    isProfileDropdownOpen.value = false;
+  } catch (error) {
+    console.error("Erreur lors de la déconnexion:", error);
+  }
+};
 
-const isProfileDropdownOpen = ref(false);
-const isTableauBordDropdownOpen = ref(false);
-const isNotificationDropdownOpen = ref(false);
-
-// Fonction pour fermer les dropdowns quand on clique ailleurs
+// Méthodes de gestion des dropdowns
 const closeDropdowns = (e) => {
   if (!e.target.closest('.dropdown')) {
     isProfileDropdownOpen.value = false;
@@ -626,7 +923,6 @@ const closeDropdowns = (e) => {
   }
 };
 
-// Gestionnaire pour les notifications
 const toggleNotifications = () => {
   isNotificationDropdownOpen.value = !isNotificationDropdownOpen.value;
   if (isNotificationDropdownOpen.value) {
@@ -634,68 +930,139 @@ const toggleNotifications = () => {
   }
 };
 
-// Ajouter l'event listener au montage
-onMounted(() => {
+// Méthodes de recherche
+const rechercheSimple = (e) => {
+  e.preventDefault();
+  const texte = stringDeRecherche.value;
+  window.find(texte, false, false, true);
+};
+
+const rechercheAvanceeLots = async () => {
+  const stringquery = {};
+  const selectNumeroEncan = document.querySelector("#selectNumeroEncan").value;
+  const stringNumeroEncan = document.querySelector("#rechercheLotsNumeroEncan").value;
+  const stringNumeroEncan2 = document.querySelector("#rechercheLotsNumeroEncan2").value;
+  const selectValeurEstimee = document.querySelector("#selectValeurEstimee").value;
+  const stringValeurEstimee = document.querySelector("#rechercheLotsValeurEstimee").value;
+  const stringValeurEstimee2 = document.querySelector("#rechercheLotsValeurEstimee2").value;
+  const selectArtiste = document.querySelector("#selectArtiste").value;
+  const selectCategorie = document.querySelector("#selectCategorie").value;
+  const selectMedium = document.querySelector("#selectMedium").value;
+  const selectHauteur = document.querySelector("#selectHauteur").value;
+  const stringHauteur = document.querySelector("#rechercheLotsHauteur").value;
+  const stringHauteur2 = document.querySelector("#rechercheLotsHauteur2").value;
+  const selectLargeur = document.querySelector("#selectLargeur").value;
+  const stringLargeur = document.querySelector("#rechercheLotsLargeur").value;
+  const stringLargeur2 = document.querySelector("#rechercheLotsLargeur2").value;
+
+  // Construction de la requête
+  if (stringNumeroEncan) {
+    stringquery.selectNumeroEncan = selectNumeroEncan;
+    stringquery.stringNumeroEncan = stringNumeroEncan;
+    if (selectNumeroEncan === "1") {
+      stringquery.stringNumeroEncan2 = stringNumeroEncan2;
+    }
+  }
+
+  if (stringValeurEstimee) {
+    stringquery.selectValeurEstimee = selectValeurEstimee;
+    stringquery.stringValeurEstimee = stringValeurEstimee;
+    if (selectValeurEstimee === "3") {
+      stringquery.stringValeurEstimee2 = stringValeurEstimee2;
+    }
+  }
+
+  if (selectArtiste) stringquery.selectArtiste = selectArtiste;
+  if (selectCategorie) stringquery.selectCategorie = selectCategorie;
+  if (selectMedium) stringquery.selectMedium = selectMedium;
+
+  if (stringHauteur) {
+    stringquery.selectHauteur = selectHauteur;
+    stringquery.stringHauteur = stringHauteur;
+    if (selectHauteur === "3") {
+      stringquery.stringHauteur2 = stringHauteur2;
+    }
+  }
+
+  if (stringLargeur) {
+    stringquery.selectLargeur = selectLargeur;
+    stringquery.stringLargeur = stringLargeur;
+    if (selectLargeur === "3") {
+      stringquery.stringLargeur2 = stringLargeur2;
+    }
+  }
+
+  router.push({
+    path: "/resultatrecherchelots",
+    query: {
+      data: JSON.stringify(stringquery),
+    },
+  });
+};
+
+// Méthodes d'affichage des inputs
+const affichageInputNumeroEncan = () => {
+  const inputAAfficher = document.querySelectorAll("#inputAAfficherNumeroEncan");
+  const selectNumeroEncanEntre = document.querySelector("#selectNumeroEncanEntre");
+  
+  inputAAfficher.forEach(el => {
+    el.style.display = selectNumeroEncanEntre.selected ? "inline-block" : "none";
+  });
+};
+
+const affichageInputValeurEstimee = () => {
+  const inputAAfficher = document.querySelectorAll("#inputAAfficherValeurEstimee");
+  const selectValeurEstimeeEntre = document.querySelector("#selectValeurEstimeeEntre");
+  
+  inputAAfficher.forEach(el => {
+    el.style.display = selectValeurEstimeeEntre.selected ? "inline-block" : "none";
+  });
+};
+
+const affichageInputHauteur = () => {
+  const inputAAfficher = document.querySelectorAll("#inputAAfficherHauteur");
+  const selectHauteurEntre = document.querySelector("#selectHauteurEntre");
+  
+  inputAAfficher.forEach(el => {
+    el.style.display = selectHauteurEntre.selected ? "inline-block" : "none";
+  });
+};
+
+const affichageInputLargeur = () => {
+  const inputAAfficher = document.querySelectorAll("#inputAAfficherLargeur");
+  const selectLargeurEntre = document.querySelector("#selectLargeurEntre");
+  
+  inputAAfficher.forEach(el => {
+    el.style.display = selectLargeurEntre.selected ? "inline-block" : "none";
+  });
+};
+
+// Gestion des checkboxes
+const comportementTousSelectionnerRecherche = () => {
+  const checkboxToutSelectionner = document.querySelector(".checkboxTousRecherche");
+  const checkboxesSeules = document.querySelectorAll(".checkboxSeulRecherche");
+  
+  checkboxesSeules.forEach(el => {
+    el.checked = checkboxToutSelectionner.checked;
+    el.disabled = checkboxToutSelectionner.checked;
+  });
+};
+
+// Lifecycle hooks
+onMounted(async () => {
   document.addEventListener('click', closeDropdowns);
+  
+  try {
+    // Chargement des données pour la recherche avancée
+    listeDesArtistes.value = await store.dispatch('obtenirArtistes');
+    listeDesMediums.value = await store.dispatch('obtenirMediums');
+    listeDesCategories.value = await store.dispatch('obtenirCategories');
+  } catch (error) {
+    console.error("Erreur lors du chargement des données:", error);
+  }
 });
 
-// Nettoyer l'event listener
 onUnmounted(() => {
   document.removeEventListener('click', closeDropdowns);
 });
 </script>
-<style scoped>
-.ms-7 {
-  margin-left: 7.9rem;
-}
-
-.start-79 {
-  left: 79%;
-}
-
-.imgProfile {
-  width: 40px;
-  height: 40px;
-}
-
-.dropdown-menu.show {
-  display: block;
-}
-
-.dropdown-menu {
-  z-index: 1000;
-  min-width: 10rem;
-  margin: 0;
-  border: 1px solid rgba(0,0,0,.15);
-}
-
-.dropdown-menu {
-  z-index: 1000;
-  min-width: 10rem;
-  margin: 0;
-  border: 1px solid rgba(0,0,0,.15);
-  position: absolute;
-}
-
-.dropdown-menu.show {
-  display: block;
-}
-
-.list-group-item {
-  background-color: transparent;
-}
-
-.list-group-item:last-child {
-  border-bottom: none !important;
-}
-
-/* Animation optionnelle pour les dropdowns */
-.dropdown-menu {
-  transition: opacity 0.2s ease-in-out;
-  opacity: 0;
-}
-
-.dropdown-menu.show {
-  opacity: 1;
-}
-</style>

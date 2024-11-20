@@ -9,9 +9,8 @@ import TableauDeBordInventaire from "@/components/views/TableauDeBordInventaire.
 import EncanPresent from "@/components/views/EncanPresent.vue";
 import EncansFuturs from "@/components/views/EncansFuturs.vue";
 import EncansPasses from "@/components/views/EncansPasses.vue";
-import TousLesLots from "@/components/views/TousLesLots.vue";
-import Encan from "@/components/views/Encan.vue";
 import TousLesEncans from "@/components/views/TousLesEncans.vue";
+import Encan from "@/components/views/Encan.vue";
 import DetailsLot from "@/components/views/DetailsLot.vue";
 import AffichageVendeur from "@/components/views/AffichageVendeur.vue";
 import VendeurCreation from "@/components/views/VendeurCreation.vue";
@@ -27,10 +26,13 @@ import ReinitialisationMotDePasse from "@/components/views/ReinitialisationMotDe
 import TableauDeBordEncans from "@/components/views/TableauDeBordEncans.vue";
 import TableauDeBordEncansAjout from "@/components/views/TableauDeBordEncansAjout.vue";
 import ModificationEncan from "@/components/views/ModificationEncan.vue";
-import Paiement from "@/components/views/Paiement.vue";
+import EnregistrerCarte from "@/components/views/EnregistrerCarte.vue";
 import TableauDeBordVentes from "@/components/views/TableauDeBordVentes.vue";
 import ResultatRechercheLots from "@/components/views/ResultatRechercheLots.vue";
 import ResultatRechercheEncans from "@/components/views/ResultatRechercheEncans.vue";
+import GestionCartes from "@/components/views/GestionCartes.vue";
+import HistoriqueAchatsParMembre from "@/components/views/HistoriqueAchatsParMembre.vue"
+
 const routes = [
     {
         path: "/",
@@ -75,12 +77,6 @@ const routes = [
         meta: { requiresAuth: false },
     },
     {
-        path: "/touslesencans",
-        name: "TousLesEncans",
-        component: TousLesEncans,
-        meta: { requiresAuth: false },
-    },
-    {
         path: "/encansfuturs",
         name: "EncansFuturs",
         component: EncansFuturs,
@@ -90,6 +86,12 @@ const routes = [
         path: "/encanspasses",
         name: "EncansPasses",
         component: EncansPasses,
+        meta: { requiresAuth: false },
+    },
+    {
+        path: "/touslesencans",
+        name: "TousLesEncans",
+        component: TousLesEncans,
         meta: { requiresAuth: false },
     },
     {
@@ -108,7 +110,7 @@ const routes = [
     {
         path: "/modificationprofilutilisateur",
         name: "ModificationProfilUtilisateur",
-        component: () => ModificationProfilUtilisateur,
+        component: ModificationProfilUtilisateur,
         meta: { requiresAuth: true, requiredRole: "Client" },
         beforeEnter: async (to, from, next) => {
             if (store.state.isLoggedIn) {
@@ -215,12 +217,23 @@ const routes = [
         component: ReinitialisationMotDePasse,
     },
     {
-        path: "/Paiement/:idFacture",
-        name: "Paiement",
-        component: Paiement,
+        path: "/cartes/enregistrer",
+        name: "EnregistrerCarte",
+        component: EnregistrerCarte,
         props: true,
         meta: {
-            requiresAuth: false,
+            requiresAuth: true,
+            requiredRole: "Client"
+        },
+    },
+    {
+        path: "/cartes",
+        name: "GestionCartes",
+        component: GestionCartes,
+        props: true,
+        meta: {
+            requiresAuth: true,
+            requiredRole: "Client"
         },
     },
     {
@@ -242,15 +255,15 @@ const routes = [
         meta: { requiresAuth: false },
     },
     {
-        path: "/tousleslots",
-        name: "TousLesLots",
-        component: TousLesLots,
-        meta: { requiresAuth: false },
+        path: "/historiqueAchatsParMembre",
+        name: "HistoriqueAchatsParMembre",
+        component: HistoriqueAchatsParMembre,
+        meta: { requiresAuth: true, requiredRole: "Client" },
     },
 ];
 
 const router = createRouter({
-    history: createWebHistory("/2162067"),
+    history: createWebHistory(import.meta.env.BASE_URL),
     routes,
     scrollBehavior(to, from, savedPosition) {
         return { top: 0 };

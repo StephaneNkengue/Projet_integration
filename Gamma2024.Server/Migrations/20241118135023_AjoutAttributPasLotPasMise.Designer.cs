@@ -4,6 +4,7 @@ using Gamma2024.Server.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Gamma2024.Server.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241118135023_AjoutAttributPasLotPasMise")]
+    partial class AjoutAttributPasLotPasMise
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -512,42 +515,6 @@ namespace Gamma2024.Server.Migrations
                     b.ToTable("Mediums");
                 });
 
-            modelBuilder.Entity("Gamma2024.Server.Models.MiseAutomatique", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("DateMise")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("EstMiseAutomatique")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("LotId")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("Montant")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal?>("MontantMaximal")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("LotId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("MiseAutomatiques");
-                });
-
             modelBuilder.Entity("Gamma2024.Server.Models.Photo", b =>
                 {
                     b.Property<int>("Id")
@@ -875,25 +842,6 @@ namespace Gamma2024.Server.Migrations
                     b.Navigation("Vendeur");
                 });
 
-            modelBuilder.Entity("Gamma2024.Server.Models.MiseAutomatique", b =>
-                {
-                    b.HasOne("Gamma2024.Server.Models.Lot", "Lot")
-                        .WithMany("MisesAutomatiques")
-                        .HasForeignKey("LotId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Gamma2024.Server.Models.ApplicationUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Lot");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("Gamma2024.Server.Models.Photo", b =>
                 {
                     b.HasOne("Gamma2024.Server.Models.Lot", "Lot")
@@ -1006,8 +954,6 @@ namespace Gamma2024.Server.Migrations
             modelBuilder.Entity("Gamma2024.Server.Models.Lot", b =>
                 {
                     b.Navigation("EncanLots");
-
-                    b.Navigation("MisesAutomatiques");
 
                     b.Navigation("Photos");
                 });

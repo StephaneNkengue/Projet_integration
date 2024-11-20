@@ -18,8 +18,8 @@ namespace Gamma2024.Server.Data
         public DbSet<Categorie> Categories { get; set; } = default!;
         public DbSet<Photo> Photos { get; set; } = default!;
         public DbSet<Facture> Factures { get; set; } = default!;
+        public DbSet<FactureLivraison> FactureLivraisons { get; set; } = default!;
         public DbSet<Vendeur> Vendeurs { get; set; } = default!;
-        public DbSet<CarteCredit> CartesCredits { get; set; } = default!;
         public DbSet<Adresse> Adresses { get; set; } = default!;
         public DbSet<Medium> Mediums { get; set; } = default!;
         public DbSet<Charite> Charites { get; set; } = default!;
@@ -44,12 +44,6 @@ namespace Gamma2024.Server.Data
                 .HasMany(au => au.Adresses)
                 .WithOne(a => a.ApplicationUser)
                 .HasForeignKey(a => a.IdApplicationUser)
-                .OnDelete(DeleteBehavior.NoAction);
-
-            builder.Entity<ApplicationUser>()
-                .HasMany(au => au.CarteCredits)
-                .WithOne(cc => cc.ApplicationUser)
-                .HasForeignKey(cc => cc.IdApplicationUser)
                 .OnDelete(DeleteBehavior.NoAction);
 
             // Vendeur
@@ -100,16 +94,29 @@ namespace Gamma2024.Server.Data
             .OnDelete(DeleteBehavior.NoAction);
 
             builder.Entity<Facture>()
-                .HasOne(f => f.Adresse)
-                .WithMany(a => a.Factures)
-                .HasForeignKey(f => f.IdAdresse)
-                .OnDelete(DeleteBehavior.NoAction);
-
-            builder.Entity<Facture>()
                 .HasOne(f => f.Client)
                 .WithMany()
                 .HasForeignKey(f => f.IdClient)
                 .OnDelete(DeleteBehavior.NoAction);
+
+            builder.Entity<FactureLivraison>()
+                .HasOne(fl => fl.Facture)
+                .WithOne(f => f.FactureLivraison)
+                .HasForeignKey<Facture>(f => f.IdFactureLivraison)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            builder.Entity<FactureLivraison>()
+                .HasOne(fl => fl.Charite)
+                .WithMany(fl => fl.FacturesLivraisons)
+                .HasForeignKey(fl => fl.IdCharite)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            builder.Entity<FactureLivraison>()
+                .HasOne(fl => fl.Adresse)
+                .WithMany(a => a.FacturesLivraisons)
+                .HasForeignKey(f => f.IdAdresse)
+                .OnDelete(DeleteBehavior.NoAction);
+
 
             // Photo
             builder.Entity<Photo>()
@@ -125,13 +132,6 @@ namespace Gamma2024.Server.Data
                 .HasForeignKey(l => l.IdMedium)
                 .OnDelete(DeleteBehavior.Restrict);
 
-
-            // CarteCredit
-            builder.Entity<CarteCredit>()
-                .HasOne(cc => cc.ApplicationUser)
-                .WithMany(c => c.CarteCredits)
-                .HasForeignKey(cc => cc.IdApplicationUser)
-                .OnDelete(DeleteBehavior.NoAction);
 
             // Configuration pour MiseAutomatique
             builder.Entity<MiseAutomatique>()
@@ -199,27 +199,6 @@ namespace Gamma2024.Server.Data
                 }
             );
 
-            builder.Entity<CarteCredit>().HasData(
-                new CarteCredit
-                {
-                    Id = 1,
-                    AnneeExpiration = (DateTime.Now.Year + 1),
-                    IdApplicationUser = adminId,
-                    Nom = "Admin Admin",
-                    MoisExpiration = 12,
-                    Numero = "5555555555554444"
-                },
-                new CarteCredit
-                {
-                    Id = 2,
-                    AnneeExpiration = (DateTime.Now.Year + 2),
-                    IdApplicationUser = clientId,
-                    Nom = "Jean Dupont",
-                    MoisExpiration = 12,
-                    Numero = "4242424242424242"
-                }
-            ); ;
-
             // Création de l'administrateur et du client
             var passwordHasher = new PasswordHasher<ApplicationUser>();
 
@@ -237,8 +216,8 @@ namespace Gamma2024.Server.Data
                 Avatar = "avatars/default.png",
                 PhoneNumber = "466-666-6666",
                 ConcurrencyStamp = "f1f3de20-69b9-491d-bc82-b484b44cd47f",
-                PasswordHash = "AQAAAAIAAYagAAAAEImrQqIdpN3WKyTx0Ys/9QQXVKT5jTAyfxsPYj6ljA7MwE8U/IWotqFi5RT5o5V7VQ=="
-
+                PasswordHash = "AQAAAAIAAYagAAAAEImrQqIdpN3WKyTx0Ys/9QQXVKT5jTAyfxsPYj6ljA7MwE8U/IWotqFi5RT5o5V7VQ==",
+                StripeCustomer = ""
             };
             //clientUser.PasswordHash = passwordHasher.HashPassword(clientUser, "MotDePasseClient123!");
 
@@ -257,7 +236,8 @@ namespace Gamma2024.Server.Data
                 Avatar = "avatars/default.png",
                 PhoneNumber = "455-555-5555",
                 ConcurrencyStamp = "ff176598-423c-4557-bfc4-48e928f579e9",
-                PasswordHash = "AQAAAAIAAYagAAAAEBCLhDAVClAVnNnHmZ3ahe6KYsdJa/tTtcmHC64QlZsy07wt7VRMIl+nfrP0UJ8oKw=="
+                PasswordHash = "AQAAAAIAAYagAAAAEBCLhDAVClAVnNnHmZ3ahe6KYsdJa/tTtcmHC64QlZsy07wt7VRMIl+nfrP0UJ8oKw==",
+                StripeCustomer = ""
             };
             //adminUser.PasswordHash = passwordHasher.HashPassword(adminUser, "MotDePasseAdmin123!");
 

@@ -813,5 +813,16 @@ namespace Gamma2024.Server.Services
                 .FirstOrDefaultAsync();
         }
 
+        public ICollection<ArtisteVM> ObtenirTousArtistes()
+        {
+            var artistes = _context.Lots
+                .GroupBy(x => x.Artiste)
+                .Select(l => new ArtisteVM()
+                {
+                    NomArtiste = l.Key,
+                }).ToList();
+            return artistes;
+        }
+
     }
 }

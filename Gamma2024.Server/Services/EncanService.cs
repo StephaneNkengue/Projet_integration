@@ -23,7 +23,6 @@ namespace Gamma2024.Server.Services
                     NumeroEncan = e.NumeroEncan,
                     DateDebut = e.DateDebut,
                     DateFin = e.DateFin,
-                    DateFinSoireeCloture = e.DateFinSoireeCloture,
                     DateDebutSoireeCloture = e.DateDebutSoireeCloture,
                     EstPublie = e.EstPublie,
                     NbLots = _context.EncanLots.Count(el => el.IdEncan == e.Id)
@@ -42,7 +41,6 @@ namespace Gamma2024.Server.Services
                     NumeroEncan = e.NumeroEncan,
                     DateDebut = e.DateDebut,
                     DateFin = e.DateFin,
-                    DateFinSoireeCloture = e.DateFinSoireeCloture,
                     DateDebutSoireeCloture = e.DateDebutSoireeCloture
                 }).ToList();
 
@@ -73,9 +71,10 @@ namespace Gamma2024.Server.Services
                 DateDebut = vm.DateDebut,
                 DateFin = vm.DateFin,
                 DateDebutSoireeCloture = vm.DateFin,
-                DateFinSoireeCloture = vm.DateFin.AddDays(1), //à modifier, doit être dynamique
                 EncanLots = [],
                 EstPublie = false,
+                PasLot = vm.PasLot,
+                PasMise = vm.PasMise
             };
 
             _context.Encans.Add(encan);
@@ -154,7 +153,6 @@ namespace Gamma2024.Server.Services
                     NumeroEncan = encan.NumeroEncan,
                     DateDebut = encan.DateDebut,
                     DateFin = encan.DateFin,
-                    DateFinSoireeCloture = encan.DateFinSoireeCloture,
                     DateDebutSoireeCloture = encan.DateDebutSoireeCloture
                 };
 
@@ -166,7 +164,7 @@ namespace Gamma2024.Server.Services
         public EncanAffichageVM ChercherEncanEnCours()
         {
             var encan = _context.Encans
-                .FirstOrDefault(e => DateTime.Now < e.DateFinSoireeCloture && DateTime.Now > e.DateDebut);
+                .FirstOrDefault(e => DateTime.Now < e.DateFin && DateTime.Now > e.DateDebut);
 
             if (encan != null && encan.EstPublie)
             {
@@ -176,7 +174,6 @@ namespace Gamma2024.Server.Services
                     NumeroEncan = encan.NumeroEncan,
                     DateDebut = encan.DateDebut,
                     DateFin = encan.DateFin,
-                    DateFinSoireeCloture = encan.DateFinSoireeCloture,
                     DateDebutSoireeCloture = encan.DateDebutSoireeCloture
                 };
 
@@ -188,7 +185,7 @@ namespace Gamma2024.Server.Services
         public int ChercherNumeroEncanEnCours()
         {
             var encan = _context.Encans
-                .FirstOrDefault(e => DateTime.Now < e.DateFinSoireeCloture && DateTime.Now > e.DateDebut);
+                .FirstOrDefault(e => DateTime.Now < e.DateFin && DateTime.Now > e.DateDebut);
 
             if (encan != null && encan.EstPublie)
             {
@@ -212,7 +209,6 @@ namespace Gamma2024.Server.Services
                     NumeroEncan = e.NumeroEncan,
                     DateDebut = e.DateDebut,
                     DateFin = e.DateFin,
-                    DateFinSoireeCloture = e.DateFinSoireeCloture,
                     DateDebutSoireeCloture = e.DateDebutSoireeCloture
                 })
                 .ToList();
@@ -223,9 +219,8 @@ namespace Gamma2024.Server.Services
         public ICollection<EncanAffichageVM> ChercherEncansPasses()
         {
             var encans = _context.Encans
-                .Where(e => DateTime.Now > e.DateFinSoireeCloture)
-                .Where(e => e.EstPublie == true)
-                .OrderByDescending(e => e.DateFinSoireeCloture)
+                .Where(e => e.EstPublie == true && DateTime.Now > e.DateFin)
+                .OrderByDescending(e => e.DateFin)
                 .ToList()
                 .Select(e => new EncanAffichageVM
                 {
@@ -233,7 +228,6 @@ namespace Gamma2024.Server.Services
                     NumeroEncan = e.NumeroEncan,
                     DateDebut = e.DateDebut,
                     DateFin = e.DateFin,
-                    DateFinSoireeCloture = e.DateFinSoireeCloture,
                     DateDebutSoireeCloture = e.DateDebutSoireeCloture
                 })
                 .ToList();

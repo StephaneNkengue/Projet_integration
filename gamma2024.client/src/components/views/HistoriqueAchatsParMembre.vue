@@ -1,12 +1,14 @@
 <template>
     <div class="container mt-5">
         <h3 class="text-center">Rechercher une vente</h3>
+
         <input v-model="searchQuery"
                class="form-control row col-10 ms-1"
                type="search"
                placeholder="Rechercher une vente"
                aria-label="Search" />
-        <h1 class="text-center mt-5">Liste des ventes</h1>
+
+        <h1 class="text-center mt-5">Liste des achats</h1>
 
         <div class="d-flex flex-row gap-2 justify-content-end mb-3">
             <button class="d-flex align-items-center text-center rounded btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
@@ -47,15 +49,19 @@
             <div v-else class="mb-5">
                 <div class="accordion" id="accordionEncan">
                     <div class="accordion-item" v-for="encan in numerosEncans" :key="encan">
-                        <div v-if="filteredVentes.filter((x) => x.encan == encan.encan) != 0">
-                            <h2 class="accordion-header px-0" :style="{border: styleBorder}">
-                                <button class="accordion-button"
-                                        type="button"
-                                        data-bs-toggle="collapse"
-                                        :data-bs-target="'#collapse' + encan.encan"
-                                        aria-expanded="true"
-                                        :aria-controls="'collapse' + encan.encan">
-                                    {{ encan.encan }} ({{ encan.dateAchat.split("T")[0] }})
+                        <div v-if="filteredVentes.filter((x) => x.encan == encan.encan) != 0 ">
+                            <h2 class="accordion-header px-0 d-flex" :style="{border: styleBorder}">
+                                <button class="accordion-button h-52" type="button" data-bs-toggle="collapse" :data-bs-target="'#collapse' + encan.encan"
+                                        aria-expanded="true" :aria-controls="'collapse' + encan.encan">
+                                    <div class="col-11">
+                                        {{ encan.encan }} ({{ encan.dateAchat.split("T")[0] }})
+                                    </div>
+
+                                    <div class="col">
+                                        <button class="btn btn-info">
+                                            <img src="/images/ice.png" class="btnVisuel img-fluid" alt="..." />
+                                        </button>
+                                    </div>
                                 </button>
                             </h2>
                             <!--Changer le 233 en le numero de l'encan le plus récent-->
@@ -65,51 +71,26 @@
                                  data-bs-parent="#accordionEncan">
                                 <div class="accordion-body">
                                     <div class="accordion" id="accordionClient" v-for="facture in ventesAffiche.filter((x)=> x.encan == encan.encan)" :key="facture.id">
-                                        <div class="accordion-item">
-                                            <h2 class="accordion-header px-0">
-                                                <button class="accordion-button d-flex"
-                                                        type="button"
-                                                        data-bs-toggle="collapse"
-                                                        :data-bs-target="'#collapseFacture' + facture.id"
-                                                        aria-expanded="true"
-                                                        :aria-controls="'collapseFacture' + facture.id">
-                                                    <div class="col-11">
-                                                        {{ facture.prenom }} {{ facture.nom }} ({{facture.pseudonyme}})<br />{{ facture.courriel }}<br />{{facture.telephone}}
-                                                    </div>
-                                                    <div class="col">
-                                                        <button class="btn btn-info">
-                                                            <img src="/images/ice.png" class="btnVisuel img-fluid" alt="..." />
-                                                        </button>
-                                                    </div>
-                                                </button>
-                                            </h2>
-                                            <div :id="'collapseFacture' + facture.id"
-                                                 class="accordion-collapse collapse"
-                                                 data-bs-parent="#accordionClient">
-                                                <div class="accordion-body">
-                                                    <table class="table">
-                                                        <thead>
-                                                            <tr>
-                                                                <th scope="col">Numéro du lot</th>
-                                                                <th scope="col">Prix vendu</th>
-                                                                <th scope="col">Livraison</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            <tr v-for="lot in facture.lots" :key="lot.id">
-                                                                <td scope="row">{{ lot.numero }}</td>
-                                                                <td>{{ lot.mise }}$</td>
-                                                                <td>
-                                                                    <img v-if="lot.estLivrable"
-                                                                         src="/icons/livrable.png" />
-                                                                    <img v-else src="/icons/nonlivrable.png" />
-                                                                </td>
-                                                            </tr>
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                            </div>
-                                        </div>
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th scope="col">Numéro du lot</th>
+                                                    <th scope="col">Prix vendu</th>
+                                                    <th scope="col">Livraison</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr v-for="lot in facture.lots" :key="lot.id">
+                                                    <td scope="row">{{ lot.numero }}</td>
+                                                    <td>{{ lot.mise }}$</td>
+                                                    <td>
+                                                        <img v-if="lot.estLivrable"
+                                                             src="/icons/livrable.png" />
+                                                        <img v-else src="/icons/nonlivrable.png" />
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
                                     </div>
                                 </div>
                             </div>
@@ -152,9 +133,9 @@
     import { useStore } from "vuex";
 
     const store = useStore();
-    const listeFactures = ref([]);
-    const searchQuery = ref("");
+    const listeFacturesMembre = ref([]);
     const numerosEncans = ref([]);
+    const searchQuery = ref("");
     const styleBorder = ref('');
     const chargement = ref(true);
 
@@ -167,9 +148,9 @@
 
     onMounted(async () => {
         try {
-            listeFactures.value = await store.dispatch("fetchFactureInfo");
+            listeFacturesMembre.value = await store.dispatch("fetchFactureInfoMembre");
 
-            listeFactures.value.filter(function (value, index, self) {
+            listeFacturesMembre.value.filter(function (value, index, self) {
                 if ((index === self.findIndex((t) => t.encan === value.encan)) == true) {
                     numerosEncans.value.push(value);
                 }
@@ -189,8 +170,8 @@
     });
 
     const tousLesVentes = computed(() => {
-        if (listeFactures.value) {
-            return listeFactures.value;
+        if (listeFacturesMembre.value) {
+            return listeFacturesMembre.value;
         }
         return [];
     });
@@ -200,18 +181,14 @@
             const searchLower = searchQuery.value.toLowerCase();
             return (
                 vente.encan.toString().startsWith(searchLower) ||
-                vente.dateAchat.toLowerCase().startsWith(searchLower) ||
-                vente.prenom.toLowerCase().startsWith(searchLower) ||
-                vente.nom.toLowerCase().startsWith(searchLower) ||
-                vente.pseudonyme.toLowerCase().startsWith(searchLower) ||
-                vente.courriel.toLowerCase().startsWith(searchLower) ||
-                vente.telephone.toLowerCase().startsWith(searchLower)
+                vente.dateAchat.toLowerCase().startsWith(searchLower) || 
+                vente.lots.find(l => l.numero.startsWith(searchLower))
             );
         });
     });
 
     watch(filteredVentes, () => {
-        if (listeFactures.value.length == filteredVentes.value.length) {
+        if (listeFacturesMembre.value.length == filteredVentes.value.length) {
             styleBorder.value = 'none';
         }
         else {
@@ -292,11 +269,7 @@
         let positionDebut = (pageCourante.value - 1) * ventesParPage.value;
         let positionFin = pageCourante.value * ventesParPage.value;
 
-        for (
-            let i = positionDebut;
-            i < positionFin && i < filteredVentes.value.length;
-            i++
-        ) {
+        for (let i = positionDebut; i < positionFin && i < filteredVentes.value.length; i++) {
             ventesAffiche.value.push(filteredVentes.value[i]);
         }
     }
@@ -327,5 +300,9 @@
 
     .accordion {
         --bs-accordion-active-bg: none;
+    }
+
+    .h-52 {
+        height: 52px;
     }
 </style>

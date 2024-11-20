@@ -4,6 +4,7 @@ using Gamma2024.Server.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Gamma2024.Server.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241109213425_AjoutStripeCustomerIdAuClients")]
+    partial class AjoutStripeCustomerIdAuClients
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -220,6 +223,59 @@ namespace Gamma2024.Server.Migrations
                         });
                 });
 
+            modelBuilder.Entity("Gamma2024.Server.Models.CarteCredit", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AnneeExpiration")
+                        .HasColumnType("int");
+
+                    b.Property<string>("IdApplicationUser")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("MoisExpiration")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Nom")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Numero")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IdApplicationUser");
+
+                    b.ToTable("CartesCredits");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            AnneeExpiration = 2025,
+                            IdApplicationUser = "8e445865-a24d-4543-a6c6-9443d048cdb9",
+                            MoisExpiration = 12,
+                            Nom = "Admin Admin",
+                            Numero = "5555555555554444"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            AnneeExpiration = 2026,
+                            IdApplicationUser = "1d8ac862-e54d-4f10-b6f8-638808c02967",
+                            MoisExpiration = 12,
+                            Nom = "Jean Dupont",
+                            Numero = "4242424242424242"
+                        });
+                });
+
             modelBuilder.Entity("Gamma2024.Server.Models.Categorie", b =>
                 {
                     b.Property<int>("Id")
@@ -271,16 +327,13 @@ namespace Gamma2024.Server.Migrations
                     b.Property<DateTime>("DateFin")
                         .HasColumnType("datetime2");
 
+                    b.Property<DateTime>("DateFinSoireeCloture")
+                        .HasColumnType("datetime2");
+
                     b.Property<bool>("EstPublie")
                         .HasColumnType("bit");
 
                     b.Property<int>("NumeroEncan")
-                        .HasColumnType("int");
-
-                    b.Property<int>("PasLot")
-                        .HasColumnType("int");
-
-                    b.Property<int>("PasMise")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -314,24 +367,30 @@ namespace Gamma2024.Server.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int?>("ChariteId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("DateAchat")
                         .HasColumnType("datetime2");
+
+                    b.Property<double?>("Don")
+                        .HasColumnType("float");
 
                     b.Property<double>("FraisEncanteur")
                         .HasColumnType("float");
 
+                    b.Property<double>("FraisLivraison")
+                        .HasColumnType("float");
+
+                    b.Property<int>("IdAdresse")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("IdCharite")
+                        .HasColumnType("int");
+
                     b.Property<string>("IdClient")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
-
-                    b.Property<int?>("IdFactureLivraison")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("Livrable")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("NumeroEncan")
-                        .HasColumnType("int");
 
                     b.Property<double>("PrixFinal")
                         .HasColumnType("float");
@@ -353,57 +412,13 @@ namespace Gamma2024.Server.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("IdClient");
-
-                    b.HasIndex("IdFactureLivraison")
-                        .IsUnique()
-                        .HasFilter("[IdFactureLivraison] IS NOT NULL");
-
-                    b.ToTable("Factures");
-                });
-
-            modelBuilder.Entity("Gamma2024.Server.Models.FactureLivraison", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("DateAchat")
-                        .HasColumnType("datetime2");
-
-                    b.Property<double?>("Don")
-                        .HasColumnType("float");
-
-                    b.Property<int>("IdAdresse")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("IdCharite")
-                        .HasColumnType("int");
-
-                    b.Property<int>("IdFacture")
-                        .HasColumnType("int");
-
-                    b.Property<double>("PrixFinal")
-                        .HasColumnType("float");
-
-                    b.Property<double>("SousTotal")
-                        .HasColumnType("float");
-
-                    b.Property<double>("TPS")
-                        .HasColumnType("float");
-
-                    b.Property<double>("TVQ")
-                        .HasColumnType("float");
-
-                    b.HasKey("Id");
+                    b.HasIndex("ChariteId");
 
                     b.HasIndex("IdAdresse");
 
-                    b.HasIndex("IdCharite");
+                    b.HasIndex("IdClient");
 
-                    b.ToTable("FactureLivraisons");
+                    b.ToTable("Factures");
                 });
 
             modelBuilder.Entity("Gamma2024.Server.Models.Lot", b =>
@@ -510,42 +525,6 @@ namespace Gamma2024.Server.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Mediums");
-                });
-
-            modelBuilder.Entity("Gamma2024.Server.Models.MiseAutomatique", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("DateMise")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("EstMiseAutomatique")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("LotId")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("Montant")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal?>("MontantMaximal")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("LotId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("MiseAutomatiques");
                 });
 
             modelBuilder.Entity("Gamma2024.Server.Models.Photo", b =>
@@ -779,6 +758,17 @@ namespace Gamma2024.Server.Migrations
                     b.Navigation("ApplicationUser");
                 });
 
+            modelBuilder.Entity("Gamma2024.Server.Models.CarteCredit", b =>
+                {
+                    b.HasOne("Gamma2024.Server.Models.ApplicationUser", "ApplicationUser")
+                        .WithMany("CarteCredits")
+                        .HasForeignKey("IdApplicationUser")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("ApplicationUser");
+                });
+
             modelBuilder.Entity("Gamma2024.Server.Models.EncanLot", b =>
                 {
                     b.HasOne("Gamma2024.Server.Models.Encan", "Encan")
@@ -800,38 +790,27 @@ namespace Gamma2024.Server.Migrations
 
             modelBuilder.Entity("Gamma2024.Server.Models.Facture", b =>
                 {
+                    b.HasOne("Gamma2024.Server.Models.Charite", "Charite")
+                        .WithMany()
+                        .HasForeignKey("ChariteId");
+
+                    b.HasOne("Gamma2024.Server.Models.Adresse", "Adresse")
+                        .WithMany("Factures")
+                        .HasForeignKey("IdAdresse")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
                     b.HasOne("Gamma2024.Server.Models.ApplicationUser", "Client")
                         .WithMany()
                         .HasForeignKey("IdClient")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("Gamma2024.Server.Models.FactureLivraison", "FactureLivraison")
-                        .WithOne("Facture")
-                        .HasForeignKey("Gamma2024.Server.Models.Facture", "IdFactureLivraison")
-                        .OnDelete(DeleteBehavior.NoAction);
-
-                    b.Navigation("Client");
-
-                    b.Navigation("FactureLivraison");
-                });
-
-            modelBuilder.Entity("Gamma2024.Server.Models.FactureLivraison", b =>
-                {
-                    b.HasOne("Gamma2024.Server.Models.Adresse", "Adresse")
-                        .WithMany("FacturesLivraisons")
-                        .HasForeignKey("IdAdresse")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("Gamma2024.Server.Models.Charite", "Charite")
-                        .WithMany("FacturesLivraisons")
-                        .HasForeignKey("IdCharite")
-                        .OnDelete(DeleteBehavior.NoAction);
-
                     b.Navigation("Adresse");
 
                     b.Navigation("Charite");
+
+                    b.Navigation("Client");
                 });
 
             modelBuilder.Entity("Gamma2024.Server.Models.Lot", b =>
@@ -873,25 +852,6 @@ namespace Gamma2024.Server.Migrations
                     b.Navigation("Medium");
 
                     b.Navigation("Vendeur");
-                });
-
-            modelBuilder.Entity("Gamma2024.Server.Models.MiseAutomatique", b =>
-                {
-                    b.HasOne("Gamma2024.Server.Models.Lot", "Lot")
-                        .WithMany("MisesAutomatiques")
-                        .HasForeignKey("LotId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Gamma2024.Server.Models.ApplicationUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Lot");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Gamma2024.Server.Models.Photo", b =>
@@ -969,22 +929,19 @@ namespace Gamma2024.Server.Migrations
 
             modelBuilder.Entity("Gamma2024.Server.Models.Adresse", b =>
                 {
-                    b.Navigation("FacturesLivraisons");
+                    b.Navigation("Factures");
                 });
 
             modelBuilder.Entity("Gamma2024.Server.Models.ApplicationUser", b =>
                 {
                     b.Navigation("Adresses");
+
+                    b.Navigation("CarteCredits");
                 });
 
             modelBuilder.Entity("Gamma2024.Server.Models.Categorie", b =>
                 {
                     b.Navigation("Lots");
-                });
-
-            modelBuilder.Entity("Gamma2024.Server.Models.Charite", b =>
-                {
-                    b.Navigation("FacturesLivraisons");
                 });
 
             modelBuilder.Entity("Gamma2024.Server.Models.Encan", b =>
@@ -997,17 +954,9 @@ namespace Gamma2024.Server.Migrations
                     b.Navigation("Lots");
                 });
 
-            modelBuilder.Entity("Gamma2024.Server.Models.FactureLivraison", b =>
-                {
-                    b.Navigation("Facture")
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("Gamma2024.Server.Models.Lot", b =>
                 {
                     b.Navigation("EncanLots");
-
-                    b.Navigation("MisesAutomatiques");
 
                     b.Navigation("Photos");
                 });
