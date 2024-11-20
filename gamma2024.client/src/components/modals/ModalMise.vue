@@ -139,6 +139,27 @@
     // Confirmer la mise
     const confirmerMise = async () => {
         try {
+            // Vérifications préalables
+            if (props.lot.estVendu) {
+                toast.error(
+                    h(ToastContent, {
+                        title: "Erreur",
+                        description: "Ce lot est déjà vendu",
+                    })
+                );
+                return;
+            }
+
+            if (props.lot.idClientMise === store.state.user?.id) {
+                toast.info(
+                    h(ToastContent, {
+                        title: "Information",
+                        description: "Vous êtes déjà le plus haut enchérisseur",
+                    })
+                );
+                return;
+            }
+
             let montantEffectif;
             let montantMaximal = null;
 
@@ -156,11 +177,11 @@
             };
 
             const response = await store.dispatch("placerMise", miseData);
+            
             if (response.success) {
                 modalInstance.value.hide();
                 emit("miseConfirmee", montantMise.value);
 
-                // Nouveau message de confirmation plus détaillé
                 toast.success(
                     h(ToastContent, {
                         title: "Succès",
@@ -169,12 +190,20 @@
                             `Mise placée : ${montantEffectif}$`,
                     })
                 );
+            } else {
+                // Afficher le message d'erreur
+                toast.error(
+                    h(ToastContent, {
+                        title: "Erreur",
+                        description: response.message
+                    })
+                );
             }
         } catch (error) {
             toast.error(
                 h(ToastContent, {
                     title: "Erreur",
-                    description: error.message || "Erreur lors de la mise",
+                    description: "Une erreur inattendue s'est produite"
                 })
             );
         }

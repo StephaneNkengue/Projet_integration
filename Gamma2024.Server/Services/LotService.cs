@@ -600,6 +600,19 @@ namespace Gamma2024.Server.Services
         {
             try
             {
+                // Vérification de l'utilisateur
+                var user = await _context.Users.FindAsync(mise.UserId);
+                if (user == null)
+                {
+                    return (false, "Utilisateur non trouvé");
+                }
+
+                if (user.LockoutEnd != null)
+                {
+                    return (false, "Votre compte est temporairement bloqué");
+                }
+
+                // Vérification du lot
                 var lot = await _context.Lots
                     .Include(l => l.MisesAutomatiques)
                     .Include(l => l.EncanLots)
@@ -611,7 +624,19 @@ namespace Gamma2024.Server.Services
                     return (false, "Lot non trouvé");
                 }
 
-                // Vérifier si l'encan est actif
+                // Vérification si le lot est déjà vendu
+                if (lot.EstVendu)
+                {
+                    return (false, "Ce lot est déjà vendu");
+                }
+
+                // Vérification si l'utilisateur est déjà le plus haut enchérisseur
+                if (lot.IdClientMise == mise.UserId)
+                {
+                    return (false, "Vous êtes déjà le plus haut enchérisseur");
+                }
+
+                // Vérification de l'encan
                 var encan = lot.EncanLots.FirstOrDefault()?.Encan;
                 if (encan == null)
                 {
@@ -629,13 +654,13 @@ namespace Gamma2024.Server.Services
                     return (false, "L'encan est terminé");
                 }
 
-                // Vérifier si la mise respecte le pas d'enchère
+                // Vérification du pas d'enchère
                 if (!EstMiseValide(lot.Mise ?? 0, mise.Montant))
                 {
                     return (false, "La mise ne respecte pas le pas d'enchère");
                 }
 
-                // Créer l'entrée dans l'historique des mises
+                // Création de l'entrée dans l'historique des mises
                 var nouvelleMise = new MiseAutomatique
                 {
                     LotId = mise.LotId,
@@ -648,30 +673,29 @@ namespace Gamma2024.Server.Services
 
                 _context.MiseAutomatiques.Add(nouvelleMise);
 
-                // Mettre à jour le lot avec la nouvelle mise
+                // Mise à jour du lot
                 lot.Mise = (double)mise.Montant;
                 lot.IdClientMise = mise.UserId;
                 _context.Lots.Update(lot);
 
                 await _context.SaveChangesAsync();
 
-                // Maintenant le lot est à jour avant de traiter les mises automatiques
+                // Traitement des mises automatiques
                 await TraiterMisesAutomatiques(lot, encan);
 
-                // Récupérer la dernière mise pour la notification
+                // Notification
                 var derniereMise = await _context.MiseAutomatiques
                     .Where(m => m.LotId == lot.Id)
                     .OrderByDescending(m => m.DateMise)
                     .FirstOrDefaultAsync();
 
-                // Notification avec la mise initiale et la dernière mise
                 await _hubContext.Clients.All.ReceiveNewBid(new
                 {
                     idLot = lot.Id,
-                    montant = lot.Mise,          // Dernière mise (auto ou manuelle)
-                    userId = lot.IdClientMise,   // ID du dernier miseur
+                    montant = lot.Mise,
+                    userId = lot.IdClientMise,
                     userLastBid = new
-                    {          // Informations sur la mise initiale
+                    {
                         userId = mise.UserId,
                         montant = mise.Montant
                     },
