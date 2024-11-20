@@ -920,6 +920,17 @@ const store = createStore({
                 throw error;
             }
         },
+        async fetchFactureInfoMembre({ commit, state }) {
+            try {
+                const response = await state.api.get("/factures/chercherFacturesMembre");
+                console.log("Données reçues de l'API:", response.data); // Pour le débogage
+
+                return response.data;
+            } catch (error) {
+                console.error("Erreur détaillée:", error.response || error);
+                throw error;
+            }
+        },
         async creerPaymentIntent({ state }, idFacture) {
             try {
                 const response = await state.api.post(

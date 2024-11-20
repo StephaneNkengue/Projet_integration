@@ -43,5 +43,19 @@ namespace Gamma2024.Server.Services
             var factures = _context.Factures.Include(f => f.Client).Include(f => f.Lots).Where(f => f.NumeroEncan == numeroEncan);
             return factures.ToList();
         }
+
+        public ICollection<FactureAffichageMembreVM> ChercherFacturesMembre(string id)
+        {
+            var factures = _context.Factures.Where(c => c.IdClient == id).Select(f => new FactureAffichageMembreVM()
+            {
+                Id = f.Id,
+                IdClient = id,
+                DateAchat = f.DateAchat,
+                Lots = f.Lots,
+                Encan = f.NumeroEncan,
+            }).ToList();
+
+            return factures;
+        }
     }
 }

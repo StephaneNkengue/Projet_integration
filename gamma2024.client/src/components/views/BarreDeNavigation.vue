@@ -54,6 +54,13 @@
                                     <a class="nav-link"> Encans futurs </a>
                                 </router-link>
                             </li>
+
+                            <li class="nav-item" v-if="estConnecte && estClient">
+                                <router-link :to="{ name: 'HistoriqueAchatsParMembre' }"
+                                             class="text-decoration-none">
+                                    <a class="nav-link"> Historique des achats </a>
+                                </router-link>
+                            </li>
                         </ul>
 
                         <div class="d-flex justify-content-center gap-3 mb-2 mb-lg-0 flex-row align-items-center justify-content-center">
@@ -145,7 +152,7 @@
                                          alt="Avatar"
                                          class="imgProfile rounded-circle" />
                                 </a>
-                                <ul class="dropdown-menu bleuMarinFond text-center end-0 top-100">
+                                <ul class="dropdown-menu dropdown-menu-end bleuMarinFond text-center end-0 top-100">
                                     <li>
                                         <router-link v-if="estClient"
                                                      :to="{ name: 'ModificationProfilUtilisateur' }"
