@@ -61,20 +61,12 @@ namespace Gamma2024.Server.Controllers
             if (!factureLivraison.EstPaye)
             {
                 var customerId = factureLivraison.Facture.Client.StripeCustomer;
-                var paymentMethodOptions = new PaymentMethodListOptions
-                {
-                    Type = "card",
-                    Limit = 1,
-                    Customer = customerId,
-                };
-
-                StripeList<PaymentMethod> paymentMethods = paymentMethodService.List(paymentMethodOptions);
 
                 var invoiceOptions = new InvoiceCreateOptions
                 {
                     Customer = customerId,
                     CollectionMethod = "charge_automatically",
-                    DefaultPaymentMethod = paymentMethods.Data[0].Id,
+                    DefaultPaymentMethod = choixLivraison.PmId,
                     AutomaticTax = new InvoiceAutomaticTaxOptions(),
                 };
 
