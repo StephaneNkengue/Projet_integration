@@ -26,14 +26,19 @@
                     </div>
                 </div>
             </div>
-            <button class="btn btn-danger mt-3" @click="supprimerCarte">
+            <button class="btn btn-danger mt-3" @click="supprimerCarte" v-if="estClient">
                 Supprimer
             </button>
         </div>
     </div>
 </template>
 <script setup>
-    import { ref } from "vue";
+    import { ref, computed } from "vue";
+    import { useStore } from "vuex";
+
+    const store = useStore();
+
+    const estClient = computed(() => store.getters.isClient)
     const props = defineProps({
         carte: Object
     });
