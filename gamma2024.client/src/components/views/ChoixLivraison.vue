@@ -82,7 +82,7 @@
             </div>
 
             <div class="mt-7">
-                <button id="submit" class="btn btn-outline bleuMoyenFond text-white btnSurvolerBleuMoyenFond my-2 col-3" @click="enregistrerChoixLivraison">
+                <button id="submit" class="btn btn-outline bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond my-2 col-3 " @click="enregistrerChoixLivraison">
                     <div class="spinner-grow" id="spinner" v-if="chargementSauvegarde"></div>
                     <span id="button-text" v-else>Enregistrer</span>
                 </button>
@@ -93,6 +93,7 @@
 </template>
 
 <script setup>
+    import Button from "primevue/button";
     import { onMounted, ref } from "vue"
     import { useStore } from "vuex"
 
@@ -131,6 +132,7 @@
 
     const enregistrerChoixLivraison = ref(async function () {
         chargementSauvegarde.value = true
+        document.querySelector("#submit").disabled = true
         try {
             var choixLivraison = {}
             if (montrerFormLivraison.value) {
