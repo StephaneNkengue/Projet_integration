@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Gamma2024.Server.Migrations
 {
     /// <inheritdoc />
-    public partial class Initialcreate : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -35,6 +35,7 @@ namespace Gamma2024.Server.Migrations
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Avatar = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    StripeCustomer = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -91,8 +92,9 @@ namespace Gamma2024.Server.Migrations
                     DateDebut = table.Column<DateTime>(type: "datetime2", nullable: false),
                     DateFin = table.Column<DateTime>(type: "datetime2", nullable: false),
                     DateDebutSoireeCloture = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    DateFinSoireeCloture = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    EstPublie = table.Column<bool>(type: "bit", nullable: false)
+                    EstPublie = table.Column<bool>(type: "bit", nullable: false),
+                    PasLot = table.Column<int>(type: "int", nullable: false),
+                    PasMise = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -245,29 +247,7 @@ namespace Gamma2024.Server.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "CartesCredits",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Nom = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Numero = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    MoisExpiration = table.Column<int>(type: "int", nullable: false),
-                    AnneeExpiration = table.Column<int>(type: "int", nullable: false),
-                    IdApplicationUser = table.Column<string>(type: "nvarchar(450)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_CartesCredits", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_CartesCredits_AspNetUsers_IdApplicationUser",
-                        column: x => x.IdApplicationUser,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Factures",
+                name: "FactureLivraisons",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -275,33 +255,24 @@ namespace Gamma2024.Server.Migrations
                     DateAchat = table.Column<DateTime>(type: "datetime2", nullable: false),
                     PrixFinal = table.Column<double>(type: "float", nullable: false),
                     SousTotal = table.Column<double>(type: "float", nullable: false),
-                    PrixLots = table.Column<double>(type: "float", nullable: false),
-                    FraisEncanteur = table.Column<double>(type: "float", nullable: false),
-                    FraisLivraison = table.Column<double>(type: "float", nullable: false),
                     TPS = table.Column<double>(type: "float", nullable: false),
                     TVQ = table.Column<double>(type: "float", nullable: false),
                     Don = table.Column<double>(type: "float", nullable: true),
                     IdAdresse = table.Column<int>(type: "int", nullable: false),
-                    IdClient = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     IdCharite = table.Column<int>(type: "int", nullable: true),
-                    ChariteId = table.Column<int>(type: "int", nullable: true)
+                    IdFacture = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Factures", x => x.Id);
+                    table.PrimaryKey("PK_FactureLivraisons", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Factures_Adresses_IdAdresse",
+                        name: "FK_FactureLivraisons_Adresses_IdAdresse",
                         column: x => x.IdAdresse,
                         principalTable: "Adresses",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_Factures_AspNetUsers_IdClient",
-                        column: x => x.IdClient,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Factures_Charites_ChariteId",
-                        column: x => x.ChariteId,
+                        name: "FK_FactureLivraisons_Charites_IdCharite",
+                        column: x => x.IdCharite,
                         principalTable: "Charites",
                         principalColumn: "Id");
                 });
@@ -327,6 +298,40 @@ namespace Gamma2024.Server.Migrations
                         principalTable: "Adresses",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Factures",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    DateAchat = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    PrixFinal = table.Column<double>(type: "float", nullable: false),
+                    SousTotal = table.Column<double>(type: "float", nullable: false),
+                    PrixLots = table.Column<double>(type: "float", nullable: false),
+                    FraisEncanteur = table.Column<double>(type: "float", nullable: false),
+                    TPS = table.Column<double>(type: "float", nullable: false),
+                    TVQ = table.Column<double>(type: "float", nullable: false),
+                    IdClient = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    estPaye = table.Column<bool>(type: "bit", nullable: false),
+                    NumeroEncan = table.Column<int>(type: "int", nullable: false),
+                    Livrable = table.Column<bool>(type: "bit", nullable: false),
+                    IdFactureLivraison = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Factures", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Factures_AspNetUsers_IdClient",
+                        column: x => x.IdClient,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Factures_FactureLivraisons_IdFactureLivraison",
+                        column: x => x.IdFactureLivraison,
+                        principalTable: "FactureLivraisons",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -412,6 +417,36 @@ namespace Gamma2024.Server.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "MiseAutomatiques",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    LotId = table.Column<int>(type: "int", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Montant = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    MontantMaximal = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    DateMise = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    EstMiseAutomatique = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_MiseAutomatiques", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_MiseAutomatiques_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_MiseAutomatiques_Lots_LotId",
+                        column: x => x.LotId,
+                        principalTable: "Lots",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Photos",
                 columns: table => new
                 {
@@ -442,11 +477,11 @@ namespace Gamma2024.Server.Migrations
 
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
-                columns: new[] { "Id", "AccessFailedCount", "Avatar", "ConcurrencyStamp", "Email", "EmailConfirmed", "FirstName", "LockoutEnabled", "LockoutEnd", "Name", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
+                columns: new[] { "Id", "AccessFailedCount", "Avatar", "ConcurrencyStamp", "Email", "EmailConfirmed", "FirstName", "LockoutEnabled", "LockoutEnd", "Name", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "StripeCustomer", "TwoFactorEnabled", "UserName" },
                 values: new object[,]
                 {
-                    { "1d8ac862-e54d-4f10-b6f8-638808c02967", 0, "avatars/default.png", "ff176598-423c-4557-bfc4-48e928f579e9", "client@example.com", true, "Jean", false, null, "Dupont", "CLIENT@EXAMPLE.COM", "CLIENT@EXAMPLE.COM", "AQAAAAIAAYagAAAAEBCLhDAVClAVnNnHmZ3ahe6KYsdJa/tTtcmHC64QlZsy07wt7VRMIl+nfrP0UJ8oKw==", "455-555-5555", false, "860b65a9-156b-473d-b11b-be6f787cf1e4", false, "client@example.com" },
-                    { "8e445865-a24d-4543-a6c6-9443d048cdb9", 0, "avatars/default.png", "f1f3de20-69b9-491d-bc82-b484b44cd47f", "admin@example.com", true, "Super", false, null, "Admin", "ADMIN@EXAMPLE.COM", "ADMIN@EXAMPLE.COM", "AQAAAAIAAYagAAAAEImrQqIdpN3WKyTx0Ys/9QQXVKT5jTAyfxsPYj6ljA7MwE8U/IWotqFi5RT5o5V7VQ==", "466-666-6666", false, "87162d4b-fc3b-4d65-8341-2f4a480982d1", false, "admin@example.com" }
+                    { "1d8ac862-e54d-4f10-b6f8-638808c02967", 0, "avatars/default.png", "ff176598-423c-4557-bfc4-48e928f579e9", "client@example.com", true, "Jean", false, null, "Dupont", "CLIENT@EXAMPLE.COM", "CLIENT@EXAMPLE.COM", "AQAAAAIAAYagAAAAEBCLhDAVClAVnNnHmZ3ahe6KYsdJa/tTtcmHC64QlZsy07wt7VRMIl+nfrP0UJ8oKw==", "455-555-5555", false, "860b65a9-156b-473d-b11b-be6f787cf1e4", "", false, "client@example.com" },
+                    { "8e445865-a24d-4543-a6c6-9443d048cdb9", 0, "avatars/default.png", "f1f3de20-69b9-491d-bc82-b484b44cd47f", "admin@example.com", true, "Super", false, null, "Admin", "ADMIN@EXAMPLE.COM", "ADMIN@EXAMPLE.COM", "AQAAAAIAAYagAAAAEImrQqIdpN3WKyTx0Ys/9QQXVKT5jTAyfxsPYj6ljA7MwE8U/IWotqFi5RT5o5V7VQ==", "466-666-6666", false, "87162d4b-fc3b-4d65-8341-2f4a480982d1", "", false, "admin@example.com" }
                 });
 
             migrationBuilder.InsertData(
@@ -465,15 +500,6 @@ namespace Gamma2024.Server.Migrations
                 {
                     { "7da4163f-edb4-47b5-86ea-888888888888", "1d8ac862-e54d-4f10-b6f8-638808c02967" },
                     { "7da4163f-edb4-47b5-86ea-999999999999", "8e445865-a24d-4543-a6c6-9443d048cdb9" }
-                });
-
-            migrationBuilder.InsertData(
-                table: "CartesCredits",
-                columns: new[] { "Id", "AnneeExpiration", "IdApplicationUser", "MoisExpiration", "Nom", "Numero" },
-                values: new object[,]
-                {
-                    { 1, 2025, "8e445865-a24d-4543-a6c6-9443d048cdb9", 12, "Admin Admin", "5555555555554444" },
-                    { 2, 2026, "1d8ac862-e54d-4f10-b6f8-638808c02967", 12, "Jean Dupont", "4242424242424242" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -521,11 +547,6 @@ namespace Gamma2024.Server.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CartesCredits_IdApplicationUser",
-                table: "CartesCredits",
-                column: "IdApplicationUser");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_EncanLots_IdLot",
                 table: "EncanLots",
                 column: "IdLot");
@@ -537,19 +558,26 @@ namespace Gamma2024.Server.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Factures_ChariteId",
-                table: "Factures",
-                column: "ChariteId");
+                name: "IX_FactureLivraisons_IdAdresse",
+                table: "FactureLivraisons",
+                column: "IdAdresse");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Factures_IdAdresse",
-                table: "Factures",
-                column: "IdAdresse");
+                name: "IX_FactureLivraisons_IdCharite",
+                table: "FactureLivraisons",
+                column: "IdCharite");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Factures_IdClient",
                 table: "Factures",
                 column: "IdClient");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Factures_IdFactureLivraison",
+                table: "Factures",
+                column: "IdFactureLivraison",
+                unique: true,
+                filter: "[IdFactureLivraison] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Lots_IdCategorie",
@@ -575,6 +603,16 @@ namespace Gamma2024.Server.Migrations
                 name: "IX_Lots_IdVendeur",
                 table: "Lots",
                 column: "IdVendeur");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_MiseAutomatiques_LotId",
+                table: "MiseAutomatiques",
+                column: "LotId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_MiseAutomatiques_UserId",
+                table: "MiseAutomatiques",
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Photos_IdLot",
@@ -606,10 +644,10 @@ namespace Gamma2024.Server.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "CartesCredits");
+                name: "EncanLots");
 
             migrationBuilder.DropTable(
-                name: "EncanLots");
+                name: "MiseAutomatiques");
 
             migrationBuilder.DropTable(
                 name: "Photos");
@@ -636,10 +674,13 @@ namespace Gamma2024.Server.Migrations
                 name: "Vendeurs");
 
             migrationBuilder.DropTable(
-                name: "Charites");
+                name: "FactureLivraisons");
 
             migrationBuilder.DropTable(
                 name: "Adresses");
+
+            migrationBuilder.DropTable(
+                name: "Charites");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

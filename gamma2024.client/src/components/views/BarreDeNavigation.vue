@@ -27,31 +27,31 @@
             <ul class="navbar-nav text-center">
               <li class="nav-item">
                 <router-link :to="{ name: 'Accueil' }" class="text-decoration-none">
-                  <a class="nav-link active"> Accueil </a>
+                  <a class="nav-link" :class="{ active: $route.name === 'Accueil' }"> Accueil </a>
                 </router-link>
               </li>
 
               <li class="nav-item">
                 <router-link :to="{ name: 'EncanPresent' }" class="text-decoration-none">
-                  <a class="nav-link"> Encan courant </a>
+                  <a class="nav-link" :class="{ active: $route.name === 'EncanPresent' }"> Encan courant </a>
                 </router-link>
               </li>
 
               <li class="nav-item">
                 <router-link :to="{ name: 'EncansPasses' }" class="text-decoration-none">
-                  <a class="nav-link"> Encans passés </a>
+                  <a class="nav-link" :class="{ active: $route.name === 'EncansPasses' }"> Encans passés </a>
                 </router-link>
               </li>
 
               <li class="nav-item">
                 <router-link :to="{ name: 'EncansFuturs' }" class="text-decoration-none">
-                  <a class="nav-link"> Encans futurs </a>
+                  <a class="nav-link" :class="{ active: $route.name === 'EncansFuturs' }"> Encans futurs </a>
                 </router-link>
               </li>
 
               <li class="nav-item" v-if="estConnecte && estClient">
                 <router-link :to="{ name: 'HistoriqueAchatsParMembre' }" class="text-decoration-none">
-                  <a class="nav-link"> Historique des achats </a>
+                  <a class="nav-link" :class="{ active: $route.name === 'HistoriqueAchatsParMembre' }"> Historique des achats </a>
                 </router-link>
               </li>
             </ul>
@@ -84,7 +84,7 @@
                 </a>
                 <ul
                   v-show="isTableauBordDropdownOpen"
-                  class="dropdown-menu bleuMarinFond text-center"
+                  class="dropdown-menu bleuMarinSecondaireFond text-center"
                   :class="{ 'show': isTableauBordDropdownOpen }"
                   style="position: absolute; top: 100%;"
                 >
@@ -157,14 +157,14 @@
 
                 <ul
                   v-show="isNotificationDropdownOpen"
-                  class="dropdown-menu bleuMarinFond text-center end-0"
+                  class="dropdown-menu bleuMarinSecondaireFond text-center end-0"
                   :class="{ 'show': isNotificationDropdownOpen }"
                   style="position: absolute; top: 100%;"
                 >
                   <li
                     v-for="notification in notifications"
                     :key="notification.id"
-                    class="list-group-item bleuMarinFond text-white border-bottom"
+                    class="list-group-item bleuMarinSecondaireFond text-white border-bottom"
                   >
                     <a 
                       class="dropdown-item text-white btnSurvolerBleuMoyenFond"
@@ -196,7 +196,7 @@
                 
                 <ul
                   v-show="isProfileDropdownOpen"
-                  class="dropdown-menu bleuMarinFond text-center end-0"
+                  class="dropdown-menu bleuMarinSecondaireFond text-center end-0"
                   :class="{ 'show': isProfileDropdownOpen }"
                   style="position: absolute; top: 100%;"
                 >
@@ -810,6 +810,21 @@ select option[value=""] {
     background-color: #2d2d2d;
     border-color: #404040;
   }
+}
+
+/* Ajoutez ces styles spécifiques pour les dropdowns */
+.dropdown-menu {
+  background-color: var(--bs-dark) !important; /* Forcer la couleur de fond */
+}
+
+.dropdown-menu.bleuMarinSecondaireFond {
+  background-color: #1C3755 !important; /* Forcer la couleur bleuMarinSecondaire */
+  border-color: #1C3755 !important;
+}
+
+/* Pour s'assurer que les items du dropdown gardent leur style au survol */
+.dropdown-menu.bleuMarinSecondaireFond .dropdown-item:hover {
+  background-color: #5A708A !important;
 }
 </style>
 

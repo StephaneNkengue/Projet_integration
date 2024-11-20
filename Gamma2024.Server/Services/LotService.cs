@@ -624,7 +624,7 @@ namespace Gamma2024.Server.Services
                     return (false, "L'encan n'a pas encore commencé");
                 }
 
-                if (maintenant > encan.DateFinSoireeCloture)
+                if (maintenant > encan.DateFin)
                 {
                     return (false, "L'encan est terminé");
                 }
@@ -647,12 +647,12 @@ namespace Gamma2024.Server.Services
                 };
 
                 _context.MiseAutomatiques.Add(nouvelleMise);
-                
+
                 // Mettre à jour le lot avec la nouvelle mise
                 lot.Mise = (double)mise.Montant;
                 lot.IdClientMise = mise.UserId;
                 _context.Lots.Update(lot);
-                
+
                 await _context.SaveChangesAsync();
 
                 // Maintenant le lot est à jour avant de traiter les mises automatiques
@@ -670,7 +670,8 @@ namespace Gamma2024.Server.Services
                     idLot = lot.Id,
                     montant = lot.Mise,          // Dernière mise (auto ou manuelle)
                     userId = lot.IdClientMise,   // ID du dernier miseur
-                    userLastBid = new {          // Informations sur la mise initiale
+                    userLastBid = new
+                    {          // Informations sur la mise initiale
                         userId = mise.UserId,
                         montant = mise.Montant
                     },
@@ -694,16 +695,56 @@ namespace Gamma2024.Server.Services
 
         private decimal CalculerPasEnchere(decimal montant)
         {
-            if (montant <= 199.0M) return 10.0M;
-            if (montant <= 499.0M) return 25.0M;
-            if (montant <= 999.0M) return 50.0M;
-            if (montant <= 1999.0M) return 100.0M;
-            if (montant <= 4999.0M) return 200.0M;
-            if (montant <= 9999.0M) return 250.0M;
-            if (montant <= 19999.0M) return 500.0M;
-            if (montant <= 49999.0M) return 1000.0M;
-            if (montant <= 99999.0M) return 2000.0M;
-            if (montant <= 499999.0M) return 5000.0M;
+            if (montant <= 199.0M)
+            {
+                return 10.0M;
+            }
+
+            if (montant <= 499.0M)
+            {
+                return 25.0M;
+            }
+
+            if (montant <= 999.0M)
+            {
+                return 50.0M;
+            }
+
+            if (montant <= 1999.0M)
+            {
+                return 100.0M;
+            }
+
+            if (montant <= 4999.0M)
+            {
+                return 200.0M;
+            }
+
+            if (montant <= 9999.0M)
+            {
+                return 250.0M;
+            }
+
+            if (montant <= 19999.0M)
+            {
+                return 500.0M;
+            }
+
+            if (montant <= 49999.0M)
+            {
+                return 1000.0M;
+            }
+
+            if (montant <= 99999.0M)
+            {
+                return 2000.0M;
+            }
+
+            if (montant <= 499999.0M)
+            {
+                return 5000.0M;
+            }
+
             return 10000.0M;
         }
 
@@ -712,14 +753,14 @@ namespace Gamma2024.Server.Services
             bool continuerMises = true;
             while (continuerMises)
             {
-                if (DateTime.Now > encan.DateFinSoireeCloture)
+                if (DateTime.Now > encan.DateFin)
                 {
                     break;
                 }
 
                 var misesAutomatiques = await _context.MiseAutomatiques
-                    .Where(m => m.LotId == lot.Id && 
-                               m.MontantMaximal.HasValue && 
+                    .Where(m => m.LotId == lot.Id &&
+                               m.MontantMaximal.HasValue &&
                                m.MontantMaximal > (decimal)lot.Mise &&
                                m.UserId != lot.IdClientMise)
                     .OrderByDescending(m => m.MontantMaximal)
@@ -748,12 +789,12 @@ namespace Gamma2024.Server.Services
                     };
 
                     _context.MiseAutomatiques.Add(nouvelleMiseAuto);
-                    
+
                     // Mettre à jour le lot avec la nouvelle mise
                     lot.Mise = (double)nouvelleMise;
                     lot.IdClientMise = miseGagnante.UserId;
                     _context.Lots.Update(lot);
-                    
+
                     await _context.SaveChangesAsync();
                 }
                 else
