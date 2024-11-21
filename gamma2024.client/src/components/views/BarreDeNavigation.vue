@@ -526,7 +526,7 @@
                                                            :clearable="true"
                                                            :action-row="{ showNow: true }"
                                                            :format-locale="fr"
-                                                           :year-range="[2000, new Date().getFullYear() + 1000]" />
+                                                           :year-range="[2000, new Date().getFullYear() + 10]" />
                                             <div class="col-sm-auto inputAAfficher inputAAfficherDate align-items-center"
                                                  id="inputAAfficherDate">
                                                 <label class="fs-6">et</label>
@@ -543,7 +543,7 @@
                                                            :clearable="true"
                                                            :action-row="{ showNow: true }"
                                                            :format-locale="fr"
-                                                           :year-range="[2000, new Date().getFullYear() + 1000]" />
+                                                           :year-range="[2000, new Date().getFullYear() + 10]" />
                                         </div>
                                     </div>
                                 </div>
@@ -655,7 +655,7 @@
         if (stringNumeroEncan) {
             stringquery['selectNumeroEncan'] = selectNumeroEncan;
             stringquery['stringNumeroEncan'] = stringNumeroEncan;
-            if (selectNumeroEncan == 3) {
+            if (selectNumeroEncan == 1) {
                 stringquery['stringNumeroEncan2'] = stringNumeroEncan2;
             }
         }
@@ -766,6 +766,16 @@
 
     // La barre de recherche avancée garde les informations ou non selon le changement de page
     router.beforeEach((to, from, next) => {
+        var elementsAEffacer = [
+            document.querySelector("#rechercheLotsNumeroEncan"),
+            document.querySelector("#rechercheLotsNumeroEncan2"),
+            document.querySelector("#rechercheLotsValeurEstimee"),
+            document.querySelector("#rechercheLotsValeurEstimee2"),
+            document.querySelector("#rechercheLotsHauteur"),
+            document.querySelector("#rechercheLotsHauteur2"),
+            document.querySelector("#rechercheLotsLargeur"),
+            document.querySelector("#rechercheLotsLargeur2")
+        ]
         if (from.name == 'ResultatRechercheLots' || from.name == 'Encan' || from.name == 'EncanPresent') {
             var stringNumeroEncan = document.querySelector(
                 "#rechercheLotsNumeroEncan"
@@ -896,7 +906,7 @@
         if (stringNumeroEncan) {
             stringquery['selectNumeroEncan'] = selectNumeroEncan;
             stringquery['stringNumeroEncan'] = stringNumeroEncan;
-            if (selectNumeroEncan == 3) {
+            if (selectNumeroEncan == 1) {
                 stringquery['stringNumeroEncan2'] = stringNumeroEncan2;
             }
         }
