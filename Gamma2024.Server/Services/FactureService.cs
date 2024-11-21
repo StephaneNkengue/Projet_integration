@@ -63,7 +63,7 @@ namespace Gamma2024.Server.Services
             var idEncan = _context.Encans.First(e => e.NumeroEncan == numeroEncan).Id;
             var lots = _context.EncanLots
                 .Include(el => el.Lot)
-                .Include(el => el.Lot.ClientMise)
+                .Include(el => el.Lot.ClientMise.Adresses)
                 .Where(el => el.IdEncan == idEncan)
                 .Select(el => el.Lot).ToList();
             var factures = _context.Factures.Include(f => f.Lots).Where(f => f.NumeroEncan == numeroEncan).ToList();
