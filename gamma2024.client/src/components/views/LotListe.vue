@@ -93,7 +93,7 @@
 
   const formatMontant = (montant) => {
       const valeur = Number(montant);
-      return isNaN(valeur) ? '0.00' : valeur.toFixed(2);
+      return isNaN(valeur) ? '0' : Math.floor(valeur).toString();
   };
 
   const miseActuelle = computed(() => {
