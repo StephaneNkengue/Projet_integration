@@ -138,5 +138,23 @@ namespace Gamma2024.Server.Controllers
 
             return Ok(factures);
         }
+
+        [HttpGet("chercherFacturesChoixAFaire")]
+        public IActionResult ChercherFacturesChoixAFaire()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId))
+            {
+                return BadRequest("Aucun utilisateur trouvé.");
+            }
+
+            var choix = _context.Factures.Where(f => f.ChoixLivraison == null && f.IdClient == userId);
+
+            return Ok(choix.Select(c => new FactureChoixAFaireVM()
+            {
+                Id = c.Id,
+                NumeroEncan = c.NumeroEncan,
+            }).ToList());
+        }
     }
 }
