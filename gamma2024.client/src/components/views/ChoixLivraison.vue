@@ -13,7 +13,7 @@
 
             <div class="form-check form-check-inline">
                 <input class="form-check-input mt-7" type="radio" name="inlineRadioOptions" id="aucuneLivraison" value="aucune" checked @change="montrerFormLivraison = false; siDonation= false">
-                <label class="form-check-label" for="aucuneLivraison">Aucune livraison</label>
+                <label class="form-check-label" for="aucuneLivraison">Cueillette</label>
             </div>
             <div class="form-check form-check-inline">
                 <input class="form-check-input mt-7" type="radio" name="inlineRadioOptions" id="livraison" value="livraison" @change="montrerFormLivraison = true">
@@ -96,6 +96,9 @@
     import Button from "primevue/button";
     import { onMounted, ref } from "vue"
     import { useStore } from "vuex"
+    import { useRouter } from "vue-router";
+
+    const router = useRouter();
 
     const store = useStore();
     const props = defineProps({
@@ -166,6 +169,11 @@
 
             siMessage.value = true
             document.getElementById("message").innerText = "Choix de livraison sauvegardé et payé."
+
+            setTimeout(() => {
+                router.push({ name: 'HistoriqueAchatsParMembre' })
+            }, 5000);
+
         } catch (error) {
             siMessage.value = true
             document.getElementById("message").innerText = error.response.data

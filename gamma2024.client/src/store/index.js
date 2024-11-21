@@ -1000,6 +1000,14 @@ const store = createStore({
                 return "Erreur, veuillez réessayer";
             }
         },
+        async chercherFacturesChoixAFaire({ state }) {
+            try {
+                const response = await state.api.get("/factures/chercherFacturesChoixAFaire");
+                return response;
+            } catch (error) {
+                return "Erreur, veuillez réessayer";
+            }
+        },
     },
 
     getters: {
