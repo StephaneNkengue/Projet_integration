@@ -75,10 +75,11 @@
 
 <script setup>
     import { ref, watch, onMounted, computed, nextTick, h } from "vue";
-    import { Modal } from "bootstrap";
     import { useStore } from "vuex";
     import { toast } from "vue3-toastify";
     import ToastContent from "../Toast/toastConfirm.vue";
+
+    const bootstrap = window.bootstrap;
 
     const store = useStore();
     const modalInstance = ref(null);
@@ -216,7 +217,7 @@
         nextTick(async () => {
             const modalElement = document.getElementById(`modalMise_${props.lot?.id}`);
             if (modalElement) {
-                modalInstance.value = new Modal(modalElement, {
+                modalInstance.value = new bootstrap.Modal(modalElement, {
                     backdrop: "static",
                     keyboard: false,
                 });
