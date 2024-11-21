@@ -29,14 +29,16 @@
                           Valeur: {{ lot.valeurEstimeMin.toFixed(0) }}$ -
                           {{ lot.valeurEstimeMax.toFixed(0) }}$
                       </p>
-                      
+                      <p class="text-center mb-0 text-muted">
+                          {{ nombreOffres }} {{ nombreOffres <= 1 ? 'offre' : 'offres' }}
+                      </p>
                   </div>
                   <div class="d-flex align-self-center gap-1 flex-column flex-md-row align-items-center">
                       <button type="button"
                               class="btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond"
                               @click.stop.prevent="handleMiseClick"
                               v-if="!isAdmin">
-                          Miser
+                          Miser {{ formatMontant(getMiseMinimale) }}$
                       </button>
                       <img src="/icons/IconeLivrable.png"
                            height="50"
@@ -72,7 +74,41 @@
   });
 
   const urlApi = ref("/api");
-  // Créer un objet computed pour le lot à passer au modal
+  const userLastBid = ref(0);
+  const modalMise = ref(null);
+
+  const calculerPasEnchere = (montant) => {
+      if (montant <= 199.0) return 10.0;
+      if (montant <= 499.0) return 25.0;
+      if (montant <= 999.0) return 50.0;
+      if (montant <= 1999.0) return 100.0;
+      if (montant <= 4999.0) return 200.0;
+      if (montant <= 9999.0) return 250.0;
+      if (montant <= 19999.0) return 500.0;
+      if (montant <= 49999.0) return 1000.0;
+      if (montant <= 99999.0) return 2000.0;
+      if (montant <= 499999.0) return 5000.0;
+      return 10000.0;
+  };
+
+  const formatMontant = (montant) => {
+      const valeur = Number(montant);
+      return isNaN(valeur) ? '0.00' : valeur.toFixed(2);
+  };
+
+  const miseActuelle = computed(() => {
+      const lot = store.getters.getLot(props.lotRecu.id);
+      if (lot?.mise !== undefined) {
+          return lot.mise;
+      }
+      return props.lotRecu.mise || 0;
+  });
+
+  const getMiseMinimale = computed(() => {
+      const montantBase = miseActuelle.value || props.lotRecu?.prixOuverture || 0;
+      return calculerPasEnchere(montantBase) + montantBase;
+  });
+
   const lotPourModal = computed(() => ({
       id: props.lotRecu.id,
       numero: props.lotRecu.numero,
@@ -91,7 +127,6 @@
       description: props.lotRecu.description,
   }));
 
-  // Garder lot comme ref pour le template
   const lot = ref({
       id: 0,
       numero: "",
@@ -114,11 +149,6 @@
           },
       ],
   });
-
-  const modalMise = ref(null);
-
-  // Ajouter la ref pour userLastBid
-  const userLastBid = ref(0);
 
   const ouvrirModalMise = (event) => {
       event.stopPropagation();
@@ -146,19 +176,6 @@
              lotActuel?.idClientMise === userId;
   });
 
-  const miseActuelle = computed(() => {
-      const lot = store.getters.getLot(props.lotRecu.id);
-      if (lot?.mise !== undefined) {
-          return lot.mise;
-      }
-      return props.lotRecu.mise || 0;
-  });
-
-  const formatMontant = (montant) => {
-      const valeur = Number(montant);
-      return isNaN(valeur) ? '0.00' : valeur.toFixed(2);
-  };
-
   const estMontantValide = (montant) => {
       return montant !== undefined && montant !== null && !isNaN(Number(montant));
   };
@@ -171,7 +188,6 @@
       return urlApi.value + props.lotRecu.photos[0].lien;
   });
 
-  // Ajouter le watch pour surveiller les changements dans le store
   watch(() => store.state.lots, (newLots) => {
       const lotActuel = store.getters.getLot(props.lotRecu.id);
       if (lotActuel) {
@@ -210,7 +226,6 @@
       ouvrirModalMise(event);
   };
 
-  // Ajouter ce watch pour réagir aux changements de l'état de connexion
   watch(isLoggedIn, (newValue) => {
       if (!newValue) {
           // Forcer la mise à jour de l'état du lot quand l'utilisateur se déconnecte
@@ -221,7 +236,6 @@
       }
   });
 
-  // Modifier la computed property isUserOutbid
   const isUserOutbid = computed(() => {
       const lotActuel = store.getters.getLot(props.lotRecu.id);
       const aFaitUneMise = store.getters.hasUserBidOnLot(props.lotRecu.id) || userLastBid.value > 0;
@@ -232,7 +246,6 @@
       return aFaitUneMise && nestPasPlusHautEncherisseur && miseExiste && estSurenchere;
   });
 
-  // Modifier le handler SignalR
   const handleNewBid = async (data) => {
     console.log('SignalR Received:', {
       data,
@@ -269,7 +282,6 @@
     }
   };
 
-  // Modifier onMounted
   onMounted(async () => {
       // Initialisation immédiate avec les données du store
       const lotActuel = store.getters.getLot(props.lotRecu.id);
@@ -298,21 +310,18 @@
       });
   });
 
-  // Ajouter le watch pour userLastBid
   watch(() => store.getters.getLot(props.lotRecu.id)?.mise, async (newMise) => {
       if (newMise && props.lotRecu.id) {
           userLastBid.value = await store.dispatch('getUserBidForLot', props.lotRecu.id);
       }
   });
 
-  // Modifier onUnmounted
   onUnmounted(() => {
       if (store.state.connection) {
           store.state.connection.off("ReceiveNewBid", handleNewBid);
       }
   });
 
-  // Au début du composant, après les refs
   watch(() => props.lotRecu, (newLot) => {
       if (newLot) {
           lot.value = {...newLot};
@@ -323,6 +332,10 @@
           }
       }
   }, { immediate: true, deep: true });
+
+  const nombreOffres = computed(() => {
+      return store.getters.getUniqueOffersCount(props.lotRecu.id);
+  });
 
 </script>
 <style scoped>

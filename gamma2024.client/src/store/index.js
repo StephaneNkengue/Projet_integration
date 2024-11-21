@@ -1196,6 +1196,10 @@ async supprimerCarte({ state }, pmId) {
         },
         getAllLots: (state) => {
             return Object.values(state.lots);
+        },
+        getUniqueOffersCount: (state) => (lotId) => {
+            if (!state.userBidHistory[lotId]) return 0;
+            return Object.keys(state.userBidHistory[lotId]).length;
         }
     },
 });

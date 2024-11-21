@@ -45,6 +45,9 @@
                     Valeur: {{ formatMontant(lot.valeurEstimeMin) }}$ - 
                     {{ formatMontant(lot.valeurEstimeMax) }}$
                 </p>
+                <p class="text-center mb-0 text-muted">
+                    {{ nombreOffres }} {{ nombreOffres <= 1 ? 'offre' : 'offres' }}
+                </p>
 
         <div class="d-flex justify-content-around pt-2">
           <button
@@ -53,7 +56,7 @@
             @click.prevent="handleMiseClick"
             v-if="!isAdmin"
           >
-            Miser
+            Miser {{ formatMontant(getMiseMinimale) }}$
           </button>
         </div>
       </div>
@@ -83,6 +86,38 @@ const props = defineProps({
 const urlApi = ref("/api");
 const userLastBid = ref(0);
 const modalMise = ref(null);
+
+const calculerPasEnchere = (montant) => {
+    if (montant <= 199.0) return 10.0;
+    if (montant <= 499.0) return 25.0;
+    if (montant <= 999.0) return 50.0;
+    if (montant <= 1999.0) return 100.0;
+    if (montant <= 4999.0) return 200.0;
+    if (montant <= 9999.0) return 250.0;
+    if (montant <= 19999.0) return 500.0;
+    if (montant <= 49999.0) return 1000.0;
+    if (montant <= 99999.0) return 2000.0;
+    if (montant <= 499999.0) return 5000.0;
+    return 10000.0;
+};
+
+const formatMontant = (montant) => {
+    const valeur = Number(montant);
+    return isNaN(valeur) ? '0.00' : valeur.toFixed(2);
+};
+
+const miseActuelle = computed(() => {
+    const lot = store.getters.getLot(props.lotRecu.id);
+    if (lot?.mise !== undefined) {
+        return lot.mise;
+    }
+    return props.lotRecu.mise || 0;
+});
+
+const getMiseMinimale = computed(() => {
+    const montantBase = miseActuelle.value || props.lotRecu?.prixOuverture || 0;
+    return calculerPasEnchere(montantBase) + montantBase;
+});
 
 // Garder lot comme ref pour le template
 const lot = ref({
@@ -137,19 +172,6 @@ const isUserHighestBidder = computed(() => {
     return store.getters.hasUserBidOnLot(props.lotRecu.id) && 
            lotActuel?.idClientMise === userId;
 });
-
-const miseActuelle = computed(() => {
-    const lot = store.getters.getLot(props.lotRecu.id);
-    if (lot?.mise !== undefined) {
-        return lot.mise;
-    }
-    return props.lotRecu.mise || 0;
-});
-
-const formatMontant = (montant) => {
-    const valeur = Number(montant);
-    return isNaN(valeur) ? '0.00' : valeur.toFixed(2);
-};
 
 const estMontantValide = (montant) => {
     return montant !== undefined && montant !== null && !isNaN(Number(montant));
@@ -301,6 +323,11 @@ onUnmounted(() => {
         store.state.connection.off("ReceiveNewBid", handleNewBid);
     }
 });
+
+const nombreOffres = computed(() => {
+    return store.getters.getUniqueOffersCount(props.lotRecu.id);
+});
+
 </script>
 
 <style scoped>
