@@ -60,6 +60,7 @@
 
 	<ItemGroup>
 	  <Folder Include="jsreport\" />
+	  <Folder Include="wwwroot\Factures\" />
 	</ItemGroup>
 
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
