@@ -13,7 +13,7 @@
 
             <div class="form-check form-check-inline">
                 <input class="form-check-input mt-7" type="radio" name="inlineRadioOptions" id="aucuneLivraison" value="aucune" checked @change="montrerFormLivraison = false; siDonation= false">
-                <label class="form-check-label" for="aucuneLivraison">Aucune livraison</label>
+                <label class="form-check-label" for="aucuneLivraison">Cueillette</label>
             </div>
             <div class="form-check form-check-inline">
                 <input class="form-check-input mt-7" type="radio" name="inlineRadioOptions" id="livraison" value="livraison" @change="montrerFormLivraison = true">
