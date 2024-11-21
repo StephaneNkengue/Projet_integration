@@ -526,7 +526,7 @@
                                                            :clearable="true"
                                                            :action-row="{ showNow: true }"
                                                            :format-locale="fr"
-                                                           :year-range="[new Date().getFullYear(), new Date().getFullYear() + 1000]" />
+                                                           :year-range="[2000, new Date().getFullYear() + 1000]" />
                                             <div class="col-sm-auto inputAAfficher inputAAfficherDate align-items-center"
                                                  id="inputAAfficherDate">
                                                 <label class="fs-6">et</label>
@@ -543,7 +543,7 @@
                                                            :clearable="true"
                                                            :action-row="{ showNow: true }"
                                                            :format-locale="fr"
-                                                           :year-range="[new Date().getFullYear(), new Date().getFullYear() + 1000]" />
+                                                           :year-range="[2000, new Date().getFullYear() + 1000]" />
                                         </div>
                                     </div>
                                 </div>
@@ -859,10 +859,8 @@
     })
 
     const desacDateFinEntre = computed(() => {
-        const debutDate = rechercheEncansDate1;
-
-        if (debutDate != null) {
-            const dateDebutDesac = new Date(debutDate);
+        if (rechercheEncansDate1.value) {
+            const dateDebutDesac = new Date(rechercheEncansDate1.value);
             dateDebutDesac.setDate(dateDebutDesac.getDate() + 1);
 
             return [dateDebutDesac];
@@ -871,10 +869,8 @@
     });
 
     const desacDateDebutEntre = computed(() => {
-        const finDate = rechercheEncansDate2;
-
-        if (finDate != null) {
-            const dateFinDesac = new Date(finDate);
+        if (rechercheEncansDate2.value) {
+            const dateFinDesac = new Date(rechercheEncansDate2.value);
             dateFinDesac.setDate(dateFinDesac.getDate() - 1);
 
             return [dateFinDesac];
