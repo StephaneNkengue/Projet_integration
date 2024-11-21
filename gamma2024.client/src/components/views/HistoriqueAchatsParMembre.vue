@@ -2,7 +2,7 @@
     <div class="container mt-5">
         <router-link class="text-decoration-none" :to="{ name: 'ChoixLivraison', params: {idFacture:facture.id} }" v-for="facture in listeFacturesChoixAFaire" :key="facture.id">
             <div class="alert alert-danger" role="alert">
-                Veuillez faire votre choix de livraison pour l'encan {{ facture.numerosEncans }}
+                Veuillez faire votre choix de livraison pour l'encan {{ facture.numeroEncan }}
             </div>
         </router-link>
 
