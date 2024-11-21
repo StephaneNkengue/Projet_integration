@@ -182,14 +182,14 @@
           $route.name == 'ResultatRechercheLots'">
                 <nav class="navbar bg-white navbarRechercheAvancee">
                     <div class="container-fluid d-flex justify-content-end">
-                        <button class="navbar-toggler"
+                        <button class="navbar-toggler loupetoggler"
                                 type="button"
                                 data-bs-toggle="collapse"
                                 data-bs-target="#navbarToggleRechercheAvancee"
                                 aria-controls="navbarToggleRechercheAvancee"
                                 aria-expanded="false"
                                 aria-label="Toggle navigation">
-                            <span class="navbar-toggler-icon"></span>
+                            <span class="navbar-toggler-icon iconeloupe"></span>
                         </button>
                     </div>
                 </nav>
@@ -432,14 +432,14 @@
           $route.name == 'ResultatRechercheEncans'">
                 <nav class="navbar bg-white navbarRechercheAvancee">
                     <div class="container-fluid d-flex justify-content-end">
-                        <button class="navbar-toggler"
+                        <button class="navbar-toggler loupetoggler"
                                 type="button"
                                 data-bs-toggle="collapse"
                                 data-bs-target="#navbarToggleRechercheAvancee"
                                 aria-controls="navbarToggleRechercheAvancee"
                                 aria-expanded="false"
                                 aria-label="Toggle navigation">
-                            <span class="navbar-toggler-icon"></span>
+                            <span class="navbar-toggler-icon iconeloupe"></span>
                         </button>
                     </div>
                 </nav>
@@ -766,106 +766,31 @@
 
     // La barre de recherche avancée garde les informations ou non selon le changement de page
     router.beforeEach((to, from, next) => {
-        var elementsAEffacer = [
-            document.querySelector("#rechercheLotsNumeroEncan"),
-            document.querySelector("#rechercheLotsNumeroEncan2"),
-            document.querySelector("#rechercheLotsValeurEstimee"),
-            document.querySelector("#rechercheLotsValeurEstimee2"),
-            document.querySelector("#rechercheLotsHauteur"),
-            document.querySelector("#rechercheLotsHauteur2"),
-            document.querySelector("#rechercheLotsLargeur"),
-            document.querySelector("#rechercheLotsLargeur2")
-        ]
         if (from.name == 'ResultatRechercheLots' || from.name == 'Encan' || from.name == 'EncanPresent') {
-            var stringNumeroEncan = document.querySelector(
-                "#rechercheLotsNumeroEncan"
-            ).value;
-            var stringNumeroEncan2 = document.querySelector(
-                "#rechercheLotsNumeroEncan2"
-            ).value;
-            var stringValeurEstimee = document.querySelector(
-                "#rechercheLotsValeurEstimee"
-            ).value;
-            var stringValeurEstimee2 = document.querySelector(
-                "#rechercheLotsValeurEstimee2"
-            ).value;
-            var stringHauteur = document.querySelector("#rechercheLotsHauteur").value;
-            var stringHauteur2 = document.querySelector("#rechercheLotsHauteur2").value;
-            var stringLargeur = document.querySelector("#rechercheLotsLargeur").value;
-            var stringLargeur2 = document.querySelector("#rechercheLotsLargeur2").value;
-            var allOptionsParDefaut = document.querySelectorAll(".optionParDefaut");
-
+            var elementsAEffacer = [
+                document.querySelector("#rechercheLotsNumeroEncan"),
+                document.querySelector("#rechercheLotsNumeroEncan2"),
+                document.querySelector("#rechercheLotsValeurEstimee"),
+                document.querySelector("#rechercheLotsValeurEstimee2"),
+                document.querySelector("#rechercheLotsHauteur"),
+                document.querySelector("#rechercheLotsHauteur2"),
+                document.querySelector("#rechercheLotsLargeur"),
+                document.querySelector("#rechercheLotsLargeur2")
+            ]
             if (to.name == 'ResultatRechercheLots') {
                 next()
             }
-            else if (to.name == 'Encan') {
-                if (allOptionsParDefaut) {
-                    allOptionsParDefaut.forEach((optionParDefaut) => {
-                        optionParDefaut.selected = true;
-                    });
-                }
-                if (stringNumeroEncan) {
-                    stringNumeroEncan = "";
-                }
-                if (stringNumeroEncan2) {
-                    stringNumeroEncan2 = "";
-                }
-                if (stringValeurEstimee) {
-                    stringValeurEstimee = "";
-                }
-                if (stringValeurEstimee2) {
-                    stringValeurEstimee2 = "";
-                }
-                if (stringHauteur) {
-                    stringHauteur = "";
-                }
-                if (stringHauteur2) {
-                    stringHauteur2 = "";
-                }
-                if (stringLargeur) {
-                    stringLargeur = "";
-                }
-                if (stringLargeur2) {
-                    stringLargeur2 = "";
-                }
-                next()
-            }
             else {
-                if (allOptionsParDefaut) {
-                    allOptionsParDefaut.forEach((optionParDefaut) => {
-                        optionParDefaut.selected = true;
-                    });
-                }
-                if (stringNumeroEncan) {
-                    stringNumeroEncan = "";
-                }
-                if (stringNumeroEncan2) {
-                    stringNumeroEncan2 = "";
-                }
-                if (stringValeurEstimee) {
-                    stringValeurEstimee = "";
-                }
-                if (stringValeurEstimee2) {
-                    stringValeurEstimee2 = "";
-                }
-                if (stringHauteur) {
-                    stringHauteur = "";
-                }
-                if (stringHauteur2) {
-                    stringHauteur2 = "";
-                }
-                if (stringLargeur) {
-                    stringLargeur = "";
-                }
-                if (stringLargeur2) {
-                    stringLargeur2 = "";
-                }
+                elementsAEffacer.forEach((element) => {
+                    element.value = "";
+                });
                 next()
             }
         }
         else {
             next()
         }
+        document.querySelector(".navbarToggleRechercheAvancee").classList.add(".collapse");
     })
 
     const desacDateFinEntre = computed(() => {
@@ -1058,7 +983,7 @@
         border: none !important;
     }
 
-    .navbar-toggler {
+    .loupetoggler {
         padding-top: 0px !important;
         padding-bottom: 0px !important;
         padding-left: 0px !important;
@@ -1067,12 +992,13 @@
         height: 25px;
         /*background-image: none;*/
     }
+
     /*Pour faire changer l'icone du menu hamburger de la recherche*/
-    .navbar-toggler-icon {
-        position: relative;
-        top: -1px;
-        width: 20px;
-        height: 20px;
-        background-image: url("/icons/Recherche.png");
+    .iconeloupe {
+        position: relative !important;
+        top: -1px !important;
+        width: 20px !important;
+        height: 20px !important;
+        background-image: url("/icons/Recherche.png") !important;
     }
 </style>
