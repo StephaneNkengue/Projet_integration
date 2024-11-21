@@ -83,7 +83,7 @@
                                 <h2 class="ps-0 pe-4">Modalités et conditions</h2>
                             </button>
                         </h2>
-                        <div id="collapseModalite" class="accordion-collapse collapse show" data-bs-parent="#accordionModalite">
+                        <div id="collapseModalite" class="accordion-collapse collapse" data-bs-parent="#accordionModalite">
                             <div class="accordion-body">
                                 <ol class="list-group list-group-numbered fs-7">
                                     <li class="list-group-item">
