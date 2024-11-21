@@ -1021,7 +1021,7 @@ const store = createStore({
                 if (state.user.photo.startsWith("http")) {
                     return state.user.photo;
                 } else {
-                    const baseUrl = state.api.defaults.baseURL.replace("/api", "");
+                    const baseUrl = state.api.defaults.avatarURL;
                     const fullUrl = new URL(state.user.photo, baseUrl).href;
                     console.log("URL complète de l'avatar:", fullUrl);
                     return fullUrl;
