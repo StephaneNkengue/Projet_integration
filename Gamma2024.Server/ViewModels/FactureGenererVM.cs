@@ -12,6 +12,7 @@ namespace Gamma2024.Server.ViewModels
         public ICollection<LotFactureVM> Lots { get; set; } = [];
         public ClientFactureVM Client { get; set; } = null!;
         public int NumeroEncan { get; set; }
+        public string UrlInvoiceStripe { get; set; } = null!;
     }
 
     public class ClientFactureVM
