@@ -96,6 +96,9 @@
     import Button from "primevue/button";
     import { onMounted, ref } from "vue"
     import { useStore } from "vuex"
+    import { useRouter } from "vue-router";
+
+    const router = useRouter();
 
     const store = useStore();
     const props = defineProps({
@@ -166,6 +169,11 @@
 
             siMessage.value = true
             document.getElementById("message").innerText = "Choix de livraison sauvegardé et payé."
+
+            setTimeout(() => {
+                router.push({ name: 'HistoriqueAchatsParMembre' })
+            }, 5000);
+
         } catch (error) {
             siMessage.value = true
             document.getElementById("message").innerText = error.response.data

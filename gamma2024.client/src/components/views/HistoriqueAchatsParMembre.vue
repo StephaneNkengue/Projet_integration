@@ -1,5 +1,11 @@
 <template>
     <div class="container mt-5">
+        <router-link class="text-decoration-none" :to="{ name: 'ChoixLivraison', params: {idFacture:facture.id} }" v-for="facture in listeFacturesChoixAFaire" :key="facture.id">
+            <div class="alert alert-danger" role="alert">
+                Veuillez faire votre choix de livraison pour l'encan {{ facture.numeroEncan }}
+            </div>
+        </router-link>
+
         <h3 class="text-center">Rechercher une vente</h3>
 
         <input v-model="searchQuery"
@@ -146,6 +152,8 @@
     const listePagination = ref([]);
     const ventesAffiche = ref([]);
 
+    const listeFacturesChoixAFaire = ref([]);
+
     onMounted(async () => {
         try {
             listeFacturesMembre.value = await store.dispatch("fetchFactureInfoMembre");
@@ -155,6 +163,9 @@
                     numerosEncans.value.push(value);
                 }
             });
+
+            const response = await store.dispatch("chercherFacturesChoixAFaire");
+            listeFacturesChoixAFaire.value = response.data;
 
             nbVentesRecus.value = filteredVentes.value.length;
             ventesParPage.value = nbVentesRecus.value;
@@ -181,7 +192,7 @@
             const searchLower = searchQuery.value.toLowerCase();
             return (
                 vente.encan.toString().startsWith(searchLower) ||
-                vente.dateAchat.toLowerCase().startsWith(searchLower) || 
+                vente.dateAchat.toLowerCase().startsWith(searchLower) ||
                 vente.lots.find(l => l.numero.startsWith(searchLower))
             );
         });
