@@ -100,11 +100,39 @@ namespace Gamma2024.Server.Controllers
         }
 
         [HttpPost("CreerFacturesParEncan/{numeroEncan}")]
-        public ICollection<Facture> CreerFacturesParEncan(int numeroEncan)
+        public ICollection<FactureGenererVM> CreerFacturesParEncan(int numeroEncan)
         {
             ICollection<Facture> factures = _factureService.CreerFacturesParEncan(numeroEncan);
 
-            return factures;
+            var facturesGen = factures.Select(f => new FactureGenererVM
+            {
+                DateAchat = f.DateAchat,
+                FraisEncanteur = f.FraisEncanteur,
+                NumeroEncan = numeroEncan,
+                Id = f.Id,
+                TPS = f.TPS,
+                TVQ = f.TVQ,
+                Lots = f.Lots.Select(l => new LotFactureVM
+                {
+                    Description = l.Description,
+                    Prix = l.Mise.Value.ToString(),
+                }).ToList(),
+                Client = new ClientFactureVM
+                {
+                    AdresseLigne1 = $"{f.Client.Adresses.First().Numero} {f.Client.Adresses.First().Rue}",
+                    AdresseLigne2 = $"{f.Client.Adresses.First().Appartement}",
+                    AdresseLigne3 = $"{f.Client.Adresses.First().Ville}, {f.Client.Adresses.First().Province}, {f.Client.Adresses.First().Pays}",
+                    CodePostal = f.Client.Adresses.First().CodePostal,
+                    Courriel = f.Client.Email,
+                    Nom = $"{f.Client.FirstName} {f.Client.Name}",
+                    Telephone = f.Client.PhoneNumber,
+                    ClientId = f.Client.Id,
+                },
+                PrixFinal = f.PrixFinal,
+                SousTotal = f.SousTotal
+            });
+
+            return facturesGen.ToList();
         }
     }
 }
