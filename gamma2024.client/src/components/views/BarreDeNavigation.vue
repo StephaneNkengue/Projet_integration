@@ -861,7 +861,7 @@
     const desacDateFinEntre = computed(() => {
         const debutDate = rechercheEncansDate1;
 
-        if (debutDate != "") {
+        if (debutDate != null) {
             const dateDebutDesac = new Date(debutDate);
             dateDebutDesac.setDate(dateDebutDesac.getDate() + 1);
 
@@ -873,7 +873,7 @@
     const desacDateDebutEntre = computed(() => {
         const finDate = rechercheEncansDate2;
 
-        if (finDate != "") {
+        if (finDate != null) {
             const dateFinDesac = new Date(finDate);
             dateFinDesac.setDate(dateFinDesac.getDate() - 1);
 
@@ -904,10 +904,12 @@
                 stringquery['stringNumeroEncan2'] = stringNumeroEncan2;
             }
         }
-        if (stringDate) {
+        if (rechercheEncansDate1.value) {
+            var stringDate = moment(rechercheEncansDate1.value).format('yyyy-MM-DD');
             stringquery['selectDate'] = selectDate;
             stringquery['stringDate'] = stringDate;
-            if (selectDate == 3) {
+            if (selectDate == 3 && rechercheEncansDate2.value) {
+                var stringDate2 = moment(rechercheEncansDate2.value).format('yyyy-MM-DD');
                 stringquery['stringDate2'] = stringDate2;
             }
         }
