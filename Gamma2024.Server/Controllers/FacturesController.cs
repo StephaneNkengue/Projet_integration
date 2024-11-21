@@ -22,12 +22,13 @@ namespace Gamma2024.Server.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly FactureService _factureService;
 
-        public FacturesController(IJsReportMVCService jsReportService, ApplicationDbContext context, UserManager<ApplicationUser> userManager, FactureService factureService)
+        public FacturesController(IJsReportMVCService jsReportService, ApplicationDbContext context, UserManager<ApplicationUser> userManager, FactureService factureService, IEmailSender emailSender)
         {
             _jsReportService = jsReportService;
             _context = context;
             _userManager = userManager;
             _factureService = factureService;
+            _emailSender = emailSender;
         }
 
         [HttpPost("generate")]
