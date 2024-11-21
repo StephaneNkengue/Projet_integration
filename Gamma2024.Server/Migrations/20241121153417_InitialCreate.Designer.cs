@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Gamma2024.Server.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241120194638_InitialCreate")]
+    [Migration("20241121153417_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -317,6 +317,9 @@ namespace Gamma2024.Server.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<bool?>("ChoixLivraison")
+                        .HasColumnType("bit");
+
                     b.Property<DateTime>("DateAchat")
                         .HasColumnType("datetime2");
 
@@ -378,6 +381,9 @@ namespace Gamma2024.Server.Migrations
 
                     b.Property<double?>("Don")
                         .HasColumnType("float");
+
+                    b.Property<bool>("EstPaye")
+                        .HasColumnType("bit");
 
                     b.Property<int>("IdAdresse")
                         .HasColumnType("int");

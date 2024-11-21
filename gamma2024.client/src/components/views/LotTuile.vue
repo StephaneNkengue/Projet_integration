@@ -37,13 +37,13 @@
             alt="Image du lot"
           />
         </div>
-
+                
+                <p class="text-center mb-0">
+                    Mise actuelle: {{ formatMontant(miseActuelle) }}$
+                </p>
                 <p class="text-center mb-0">
                     Valeur: {{ formatMontant(lot.valeurEstimeMin) }}$ - 
                     {{ formatMontant(lot.valeurEstimeMax) }}$
-                </p>
-                <p class="text-center mb-0">
-                    Mise actuelle: {{ formatMontant(miseActuelle) }}$
                 </p>
 
         <div class="d-flex justify-content-around pt-2">

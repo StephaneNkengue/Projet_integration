@@ -18,16 +18,18 @@
                       <p class="mb-0">{{ lot.hauteur }} x {{ lot.largeur }} po</p>
                   </div>
                   <div class="d-flex flex-column flex-lg-row align-items-center gap-3 justify-content-center">
-                      <p class="text-center mb-0">
-                          Valeur: {{ lot.valeurEstimeMin.toFixed(0) }}$ -
-                          {{ lot.valeurEstimeMax.toFixed(0) }}$
-                      </p>
+                      
                       <div class="mise-actuelle" v-if="estMontantValide(miseActuelle)">
-                          {{ formatMontant(miseActuelle) }}$
+                          Mise actuelle: {{ formatMontant(miseActuelle) }}$
                       </div>
                       <div class="mise-actuelle" v-else>
                           0.00$
                       </div>
+                      <p class="text-center mb-0">
+                          Valeur: {{ lot.valeurEstimeMin.toFixed(0) }}$ -
+                          {{ lot.valeurEstimeMax.toFixed(0) }}$
+                      </p>
+                      
                   </div>
                   <div class="d-flex align-self-center gap-1 flex-column flex-md-row align-items-center">
                       <button type="button"

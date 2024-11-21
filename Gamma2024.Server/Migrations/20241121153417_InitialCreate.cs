@@ -260,7 +260,8 @@ namespace Gamma2024.Server.Migrations
                     Don = table.Column<double>(type: "float", nullable: true),
                     IdAdresse = table.Column<int>(type: "int", nullable: false),
                     IdCharite = table.Column<int>(type: "int", nullable: true),
-                    IdFacture = table.Column<int>(type: "int", nullable: false)
+                    IdFacture = table.Column<int>(type: "int", nullable: false),
+                    EstPaye = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -317,6 +318,7 @@ namespace Gamma2024.Server.Migrations
                     estPaye = table.Column<bool>(type: "bit", nullable: false),
                     NumeroEncan = table.Column<int>(type: "int", nullable: false),
                     Livrable = table.Column<bool>(type: "bit", nullable: false),
+                    ChoixLivraison = table.Column<bool>(type: "bit", nullable: true),
                     IdFactureLivraison = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
