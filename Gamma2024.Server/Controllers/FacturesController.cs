@@ -46,23 +46,22 @@ namespace Gamma2024.Server.Controllers
                 },
                 Data = new
                 {
-                    idFacture = model.Id,
-                    //adresse = _context.Adresses.FindAsync(model.Client.Adresses.First().Id),
-                    //user = _context.Users.FindAsync(model.IdClient),
+                    idFacture = model.Id
                 }
             });
 
-            //var pdf = File(report.Content, "application/pdf", "invoice.pdf");
             var memoryStream = new MemoryStream();
             await report.Content.CopyToAsync(memoryStream);
 
-            //Fonctionne mais on ne peut pas ouvrir le fichier
             string uploadPath = Path.Combine(_environment.WebRootPath, "Factures");
-            string fileName = $"Facture232_{Guid.NewGuid()}.pdf";
-            string filePath = Path.Combine(uploadPath, fileName);
-            var stream = new FileStream(filePath, FileMode.Create, FileAccess.ReadWrite);
 
-            await report.Content.CopyToAsync(stream);
+            string fileName = $"F232_{model.Id}_{Guid.NewGuid()}.pdf";
+            string filePath = Path.Combine(uploadPath, fileName);
+
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await stream.WriteAsync(memoryStream.ToArray());
+            }
 
             var pdfBytes = memoryStream.ToArray();
 
