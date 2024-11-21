@@ -238,7 +238,7 @@ namespace Gamma2024.Server.Controllers
 
         [Authorize]
         [HttpGet("userLastBid/{lotId}")]
-        public async Task<ActionResult<decimal>> GetUserLastBid(int lotId)
+        public async Task<ActionResult<double?>> GetUserLastBid(int lotId)
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (string.IsNullOrEmpty(userId))

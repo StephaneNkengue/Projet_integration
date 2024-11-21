@@ -115,19 +115,28 @@
         return calculerPasEnchere(montantMise.value);
     });
 
-    // Computed pour la mise minimale
+    // Computed pour la mise minimale selon le type de mise
     const getMiseMinimale = computed(() => {
         const miseActuelle = props.lot?.mise || 0;
-        const prixOuverture = props.lot?.prixOuverture || 0;
-        const montantBase = miseActuelle || prixOuverture;
-        return montantBase + calculerPasEnchere(montantBase);
+        const prixOuverture = props.lot?.prixOuverture;
+        
+        // S'il n'y a pas de mise, on utilise le prix d'ouverture
+        if (miseActuelle === 0) {
+            if (miseAutomatique.value) {
+                return prixOuverture + (calculerPasEnchere(prixOuverture) * 2);
+            }
+            return prixOuverture;
+        }
+        
+        // S'il y a déjà une mise
+        if (miseAutomatique.value) {
+            return miseActuelle + (calculerPasEnchere(miseActuelle) * 2);
+        }
+        return miseActuelle + calculerPasEnchere(miseActuelle);
     });
 
     // Computed pour valider la mise
     const isMiseValide = computed(() => {
-        if (miseAutomatique.value) {
-            return montantMiseAutoValide.value;
-        }
         return montantMise.value >= getMiseMinimale.value;
     });
 
@@ -164,9 +173,15 @@
             let montantEffectif;
             let montantMaximal = null;
 
+            const miseActuelle = props.lot.mise || 0;
+            const prixOuverture = props.lot.prixOuverture;
+
             if (miseAutomatique.value) {
-                montantMaximal = montantMise.value;
-                montantEffectif = getMiseMinimale.value;
+                montantMaximal = montantMise.value; // Le montant max saisi
+                // Si pas de mise, on commence au prix d'ouverture
+                montantEffectif = miseActuelle === 0 ? 
+                    prixOuverture : 
+                    miseActuelle + calculerPasEnchere(miseActuelle);
             } else {
                 montantEffectif = montantMise.value;
             }
@@ -246,9 +261,7 @@
     const show = () => {
         if (modalInstance.value) {
             const lot = store.getters.getLot(props.lot?.id);
-            const montantBase = lot?.mise || props.lot.prixOuverture || 0;
-            const pasInitial = calculerPasEnchere(montantBase);
-            montantMise.value = montantBase + pasInitial;
+            montantMise.value = getMiseMinimale.value;
             miseAutomatique.value = false; // Réinitialiser le switch
             modalInstance.value.show();
         }
@@ -294,11 +307,9 @@
         }
     );
 
-    // Ajout d'une nouvelle computed property
-    const montantMiseAutoValide = computed(() => {
-        const miseActuelle = props.lot?.mise || 0;
-        // Pour une mise auto, le montant max doit être au moins 2 pas d'enchère au-dessus
-        return montantMise.value >= (miseActuelle + (calculerPasEnchere(miseActuelle) * 2));
+    // Watch pour mettre à jour le montant quand on change le type de mise
+    watch(miseAutomatique, (newValue) => {
+        montantMise.value = getMiseMinimale.value;
     });
 </script>
 

@@ -655,7 +655,7 @@ namespace Gamma2024.Server.Services
                 }
 
                 // Vérification du pas d'enchère
-                if (!EstMiseValide(lot.Mise ?? 0, mise.Montant, mise.MontantMaximal.HasValue))
+                if (!EstMiseValide(lot, lot.Mise.HasValue ? (decimal)lot.Mise.Value : 0m, mise.Montant, mise.MontantMaximal.HasValue))
                 {
                     string message = mise.MontantMaximal.HasValue 
                         ? "La mise automatique doit être d'au moins 2 pas d'enchère"
@@ -677,7 +677,7 @@ namespace Gamma2024.Server.Services
                 _context.MiseAutomatiques.Add(nouvelleMise);
 
                 // Mise à jour du lot
-                lot.Mise = (double)mise.Montant;
+                lot.Mise = Convert.ToDouble(mise.Montant);
                 lot.IdClientMise = mise.UserId;
                 _context.Lots.Update(lot);
 
@@ -695,8 +695,8 @@ namespace Gamma2024.Server.Services
                 await _hubContext.Clients.All.ReceiveNewBid(new
                 {
                     idLot = lot.Id,
-                    montant = lot.Mise,
-                    userId = lot.IdClientMise,
+                    montant = derniereMise.Montant,
+                    userId = derniereMise.UserId,
                     userLastBid = new
                     {
                         userId = mise.UserId,
@@ -714,73 +714,40 @@ namespace Gamma2024.Server.Services
             }
         }
 
-        private bool EstMiseValide(double miseActuelle, decimal nouvelleMise, bool estMiseAutomatique = false)
+        private bool EstMiseValide(Lot lot, decimal miseActuelle, decimal nouvelleMise, bool estMiseAutomatique = false)
         {
-            decimal pasEnchere = CalculerPasEnchere((decimal)miseActuelle);
-            
-            // Pour une mise automatique, on exige un minimum de 2 pas d'enchère
+            if (miseActuelle == 0m)
+            {
+                // Si c'est une mise automatique, on vérifie juste que le montant maximal est suffisant
+                // La mise effective sera le prix d'ouverture
+                if (estMiseAutomatique)
+                {
+                    return nouvelleMise >= (decimal)lot.PrixOuverture;
+                }
+                return nouvelleMise >= (decimal)lot.PrixOuverture;
+            }
+
+            decimal pasEnchere = CalculerPasEnchere(miseActuelle);
             if (estMiseAutomatique)
             {
-                return nouvelleMise >= (decimal)miseActuelle + (pasEnchere * 2);
+                return nouvelleMise >= (miseActuelle + (pasEnchere * 2));
             }
-            
-            // Pour une mise normale, on garde le comportement actuel
-            return nouvelleMise >= (decimal)miseActuelle + pasEnchere;
+            return nouvelleMise >= (miseActuelle + pasEnchere);
         }
 
         private decimal CalculerPasEnchere(decimal montant)
         {
-            if (montant <= 199.0M)
-            {
-                return 10.0M;
-            }
-
-            if (montant <= 499.0M)
-            {
-                return 25.0M;
-            }
-
-            if (montant <= 999.0M)
-            {
-                return 50.0M;
-            }
-
-            if (montant <= 1999.0M)
-            {
-                return 100.0M;
-            }
-
-            if (montant <= 4999.0M)
-            {
-                return 200.0M;
-            }
-
-            if (montant <= 9999.0M)
-            {
-                return 250.0M;
-            }
-
-            if (montant <= 19999.0M)
-            {
-                return 500.0M;
-            }
-
-            if (montant <= 49999.0M)
-            {
-                return 1000.0M;
-            }
-
-            if (montant <= 99999.0M)
-            {
-                return 2000.0M;
-            }
-
-            if (montant <= 499999.0M)
-            {
-                return 5000.0M;
-            }
-
-            return 10000.0M;
+            if (montant <= 199.0m) return 10.0m;
+            if (montant <= 499.0m) return 25.0m;
+            if (montant <= 999.0m) return 50.0m;
+            if (montant <= 1999.0m) return 100.0m;
+            if (montant <= 4999.0m) return 200.0m;
+            if (montant <= 9999.0m) return 250.0m;
+            if (montant <= 19999.0m) return 500.0m;
+            if (montant <= 49999.0m) return 1000.0m;
+            if (montant <= 99999.0m) return 2000.0m;
+            if (montant <= 499999.0m) return 5000.0m;
+            return 10000.0m;
         }
 
         private async Task TraiterMisesAutomatiques(Lot lot, Encan encan)
@@ -809,7 +776,7 @@ namespace Gamma2024.Server.Services
                 }
 
                 var miseGagnante = misesAutomatiques.First();
-                decimal nouvelleMise = (decimal)lot.Mise + CalculerPasEnchere((decimal)lot.Mise);
+                decimal nouvelleMise = (decimal)lot.Mise + CalculerPasEnchere((decimal)lot.PrixOuverture);
 
                 if (nouvelleMise <= miseGagnante.MontantMaximal)
                 {
@@ -825,8 +792,8 @@ namespace Gamma2024.Server.Services
 
                     _context.MiseAutomatiques.Add(nouvelleMiseAuto);
 
-                    // Mettre à jour le lot avec la nouvelle mise
-                    lot.Mise = (double)nouvelleMise;
+                    // Correction ici : conversion explicite de decimal vers double
+                    lot.Mise = Convert.ToDouble(nouvelleMise);
                     lot.IdClientMise = miseGagnante.UserId;
                     _context.Lots.Update(lot);
 
@@ -880,13 +847,15 @@ namespace Gamma2024.Server.Services
             return new List<string> { /* Liste des IDs utilisateur */ };
         }
 
-        public async Task<decimal?> GetUserLastBid(int lotId, string userId)
+        public async Task<double?> GetUserLastBid(int lotId, string userId)
         {
-            return await _context.MiseAutomatiques
+            var lastBid = await _context.MiseAutomatiques
                 .Where(m => m.LotId == lotId && m.UserId == userId)
                 .OrderByDescending(m => m.DateMise)
-                .Select(m => m.Montant)
+                .Select(m => (double?)Convert.ToDouble(m.Montant))  // Conversion explicite de decimal vers double
                 .FirstOrDefaultAsync();
+            
+            return lastBid;
         }
 
         public ICollection<ArtisteVM> ObtenirTousArtistes()

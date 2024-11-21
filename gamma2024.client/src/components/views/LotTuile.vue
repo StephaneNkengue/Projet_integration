@@ -115,8 +115,10 @@ const miseActuelle = computed(() => {
 });
 
 const getMiseMinimale = computed(() => {
-    const montantBase = miseActuelle.value || props.lotRecu?.prixOuverture || 0;
-    return calculerPasEnchere(montantBase) + montantBase;
+    if (!miseActuelle.value || miseActuelle.value === 0) {
+        return props.lotRecu?.prixOuverture || 0;
+    }
+    return calculerPasEnchere(miseActuelle.value) + miseActuelle.value;
 });
 
 // Garder lot comme ref pour le template
