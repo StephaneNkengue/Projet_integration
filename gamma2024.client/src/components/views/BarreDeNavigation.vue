@@ -526,7 +526,7 @@
                                                            :clearable="true"
                                                            :action-row="{ showNow: true }"
                                                            :format-locale="fr"
-                                                           :year-range="[new Date().getFullYear(), new Date().getFullYear() + 1000]" />
+                                                           :year-range="[2000, new Date().getFullYear() + 10]" />
                                             <div class="col-sm-auto inputAAfficher inputAAfficherDate align-items-center"
                                                  id="inputAAfficherDate">
                                                 <label class="fs-6">et</label>
@@ -543,7 +543,7 @@
                                                            :clearable="true"
                                                            :action-row="{ showNow: true }"
                                                            :format-locale="fr"
-                                                           :year-range="[new Date().getFullYear(), new Date().getFullYear() + 1000]" />
+                                                           :year-range="[2000, new Date().getFullYear() + 10]" />
                                         </div>
                                     </div>
                                 </div>
@@ -655,7 +655,7 @@
         if (stringNumeroEncan) {
             stringquery['selectNumeroEncan'] = selectNumeroEncan;
             stringquery['stringNumeroEncan'] = stringNumeroEncan;
-            if (selectNumeroEncan == 3) {
+            if (selectNumeroEncan == 1) {
                 stringquery['stringNumeroEncan2'] = stringNumeroEncan2;
             }
         }
@@ -766,6 +766,16 @@
 
     // La barre de recherche avancée garde les informations ou non selon le changement de page
     router.beforeEach((to, from, next) => {
+        var elementsAEffacer = [
+            document.querySelector("#rechercheLotsNumeroEncan"),
+            document.querySelector("#rechercheLotsNumeroEncan2"),
+            document.querySelector("#rechercheLotsValeurEstimee"),
+            document.querySelector("#rechercheLotsValeurEstimee2"),
+            document.querySelector("#rechercheLotsHauteur"),
+            document.querySelector("#rechercheLotsHauteur2"),
+            document.querySelector("#rechercheLotsLargeur"),
+            document.querySelector("#rechercheLotsLargeur2")
+        ]
         if (from.name == 'ResultatRechercheLots' || from.name == 'Encan' || from.name == 'EncanPresent') {
             var stringNumeroEncan = document.querySelector(
                 "#rechercheLotsNumeroEncan"
@@ -859,10 +869,8 @@
     })
 
     const desacDateFinEntre = computed(() => {
-        const debutDate = rechercheEncansDate1;
-
-        if (debutDate != "") {
-            const dateDebutDesac = new Date(debutDate);
+        if (rechercheEncansDate1.value) {
+            const dateDebutDesac = new Date(rechercheEncansDate1.value);
             dateDebutDesac.setDate(dateDebutDesac.getDate() + 1);
 
             return [dateDebutDesac];
@@ -871,10 +879,8 @@
     });
 
     const desacDateDebutEntre = computed(() => {
-        const finDate = rechercheEncansDate2;
-
-        if (finDate != "") {
-            const dateFinDesac = new Date(finDate);
+        if (rechercheEncansDate2.value) {
+            const dateFinDesac = new Date(rechercheEncansDate2.value);
             dateFinDesac.setDate(dateFinDesac.getDate() - 1);
 
             return [dateFinDesac];
@@ -900,14 +906,16 @@
         if (stringNumeroEncan) {
             stringquery['selectNumeroEncan'] = selectNumeroEncan;
             stringquery['stringNumeroEncan'] = stringNumeroEncan;
-            if (selectNumeroEncan == 3) {
+            if (selectNumeroEncan == 1) {
                 stringquery['stringNumeroEncan2'] = stringNumeroEncan2;
             }
         }
-        if (stringDate) {
+        if (rechercheEncansDate1.value) {
+            var stringDate = moment(rechercheEncansDate1.value).format('yyyy-MM-DD');
             stringquery['selectDate'] = selectDate;
             stringquery['stringDate'] = stringDate;
-            if (selectDate == 3) {
+            if (selectDate == 3 && rechercheEncansDate2.value) {
+                var stringDate2 = moment(rechercheEncansDate2.value).format('yyyy-MM-DD');
                 stringquery['stringDate2'] = stringDate2;
             }
         }
