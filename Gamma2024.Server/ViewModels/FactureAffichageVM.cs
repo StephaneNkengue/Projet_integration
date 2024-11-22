@@ -14,5 +14,6 @@ namespace Gamma2024.Server.ViewModels
         public int Encan { get; set; }
         public DateTime DateAchat { get; set; }
         public ICollection<Lot> Lots { get; set; } = [];
+        public string PdfPath { get; set; } = null!;
     }
 }
