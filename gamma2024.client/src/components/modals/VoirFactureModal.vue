@@ -16,7 +16,10 @@
                             aria-label="Close"></button>
                 </div>
                 <div class="modal-body d-flex justify-content-center h-100">
-                    <iframe :src="pdf" class="w-100 min-vh-50" scrolling="no" />
+                    <div v-if="chargement">
+                        <p>Le PDF de votre facture est présentement en génération. Veuillez revenir plus tard.</p>
+                    </div>
+                    <iframe :src="pdf" class="w-100 min-vh-50" scrolling="no" v-else />
                 </div>
             </div>
         </div>
@@ -34,10 +37,16 @@
         idFacture: Number
     });
 
-    const pdf = ref(props.facturePdfPath)
+    const pdf = ref("")
+    const chargement = ref(true)
+
     onMounted(async () => {
         const response = await store.state.api.defaults.baseURL.replace("/api", "")
         pdf.value = response + props.facturePdfPath
+
+        if (pdf.value != response) {
+            chargement.value = false
+        }
     });
 </script>
 <style scoped>
