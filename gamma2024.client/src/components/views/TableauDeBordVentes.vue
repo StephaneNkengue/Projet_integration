@@ -56,7 +56,12 @@
                                         :data-bs-target="'#collapse' + encan.encan"
                                         aria-expanded="true"
                                         :aria-controls="'collapse' + encan.encan">
-                                    {{ encan.encan }} ({{ encan.dateAchat.split("T")[0] }})
+                                    <div class="pe-5">
+                                        Encan : {{ encan.encan }}
+                                    </div>
+                                    <div>
+                                        Date de la facturation : {{ encan.dateAchat.split("T")[0] }}
+                                    </div>
                                 </button>
                             </h2>
                             <!--Changer le 233 en le numero de l'encan le plus récent-->
