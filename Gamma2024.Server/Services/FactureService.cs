@@ -24,6 +24,7 @@ namespace Gamma2024.Server.Services
                 DateAchat = f.DateAchat,
                 Lots = f.Lots,
                 Encan = f.NumeroEncan,
+                PdfPath = f.FacturePDFPath
             }).ToList();
 
             foreach (FactureAffichageVM facture in factures)
@@ -54,6 +55,7 @@ namespace Gamma2024.Server.Services
                 DateAchat = f.DateAchat,
                 Lots = f.Lots,
                 Encan = f.NumeroEncan,
+                PdfPath = f.FacturePDFPath
             }).ToList();
 
             return factures;
