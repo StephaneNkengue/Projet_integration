@@ -163,5 +163,13 @@ namespace Gamma2024.Server.Controllers
                 NumeroEncan = c.NumeroEncan,
             }).ToList());
         }
+
+        [HttpGet("chercherFacturesParEncan/{numeroEncan}")]
+        public IActionResult ChercherFacturesParEncan(int numeroEncan)
+        {
+            var factures = _factureService.ChercherFacturesParEncan(numeroEncan);
+
+            return Ok(factures);
+        }
     }
 }
