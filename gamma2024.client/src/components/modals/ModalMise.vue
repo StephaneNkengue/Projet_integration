@@ -123,14 +123,14 @@
         // S'il n'y a pas de mise, on utilise le prix d'ouverture
         if (miseActuelle === 0) {
             if (miseAutomatique.value) {
-                return prixOuverture + (calculerPasEnchere(prixOuverture) * 2);
+                return prixOuverture;
             }
             return prixOuverture;
         }
         
         // S'il y a déjà une mise
         if (miseAutomatique.value) {
-            return miseActuelle + (calculerPasEnchere(miseActuelle) * 2);
+            return miseActuelle + calculerPasEnchere(miseActuelle);
         }
         return miseActuelle + calculerPasEnchere(miseActuelle);
     });
@@ -261,7 +261,9 @@
     const show = () => {
         if (modalInstance.value) {
             const lot = store.getters.getLot(props.lot?.id);
-            montantMise.value = getMiseMinimale.value;
+            montantMise.value = miseAutomatique.value ? 
+                (lot?.mise || lot?.prixOuverture) + (calculerPasEnchere(lot?.mise || lot?.prixOuverture) * 2) :
+                getMiseMinimale.value;
             miseAutomatique.value = false; // Réinitialiser le switch
             modalInstance.value.show();
         }
@@ -309,7 +311,26 @@
 
     // Watch pour mettre à jour le montant quand on change le type de mise
     watch(miseAutomatique, (newValue) => {
-        montantMise.value = getMiseMinimale.value;
+        const miseActuelle = props.lot?.mise || 0;
+        const prixOuverture = props.lot?.prixOuverture;
+        
+        if (newValue) { // Si on active la mise auto
+            // Si pas de mise, on ajoute 2 steps au prix d'ouverture
+            if (miseActuelle === 0) {
+                montantMise.value = prixOuverture + (calculerPasEnchere(prixOuverture) * 2);
+                console.log("montantMise.value", montantMise.value);
+                console.log("prixOuverture", prixOuverture);
+                console.log("calculerPasEnchere(prixOuverture)", calculerPasEnchere(prixOuverture));
+            } else {
+                // Sinon on ajoute 2 steps à la mise actuelle
+                montantMise.value = miseActuelle + (calculerPasEnchere(miseActuelle) * 2);
+                console.log("montantMise.value", montantMise.value);
+                console.log("miseActuelle", miseActuelle);
+                console.log("calculerPasEnchere(miseActuelle)", calculerPasEnchere(miseActuelle));
+            }
+        } else {
+            montantMise.value = getMiseMinimale.value;
+        }
     });
 </script>
 
