@@ -1,4 +1,5 @@
 <template>
+    <FactureModal v-for="facture in ventesAffiche" :key="facture.id" :facturePdfPath="facture.pdfPath" :idFacture="facture.id"></FactureModal>
     <div class="container mt-5">
         <h3 class="text-center">Rechercher une vente</h3>
         <input v-model="searchQuery"
@@ -77,7 +78,9 @@
                                                         {{ facture.prenom }} {{ facture.nom }} ({{facture.pseudonyme}})<br />{{ facture.courriel }}<br />{{facture.telephone}}
                                                     </div>
                                                     <div class="col">
-                                                        <button class="btn btn-info">
+                                                        <button class="btn btn-info"
+                                                                data-bs-toggle="modal"
+                                                                :data-bs-target="'#modal'+facture.id">
                                                             <img src="/images/ice.png" class="btnVisuel img-fluid" alt="..." />
                                                         </button>
                                                     </div>
@@ -150,6 +153,7 @@
 <script setup>
     import { computed, watch, onMounted, ref } from "vue";
     import { useStore } from "vuex";
+    import FactureModal from "@/components/modals/VoirFactureModal.vue";
 
     const store = useStore();
     const listeFactures = ref([]);

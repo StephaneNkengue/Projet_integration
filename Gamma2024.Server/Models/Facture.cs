@@ -33,6 +33,7 @@ namespace Gamma2024.Server.Models
 
         public int? IdFactureLivraison { get; set; }
         public FactureLivraison? FactureLivraison { get; set; }
+        public string FacturePDFPath { get; set; } = null!;
 
         public void CalculerFacture()
         {
