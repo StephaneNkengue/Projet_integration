@@ -209,11 +209,11 @@
                                         </label>
                                         <div class="row">
                                             <div class="col-sm-4">
-                                                <select class="form-select py-0"
+                                                <select class="form-select py-0 selectPourListe"
                                                         id="selectNumeroEncan"
                                                         @change="affichageInputNumeroEncan"
                                                         aria-label="Default select example">
-                                                    <option class="py-0 optionParDefaut" value="0" selected>Égal à</option>
+                                                    <option class="py-0" value="0" selected>Égal à</option>
                                                     <option class="py-0"
                                                             id="selectNumeroEncanEntre"
                                                             value="1">
@@ -246,15 +246,15 @@
                                     <div class="col mt-2">
                                         <label class="text-nowrap recherchelabel fw-bold"
                                                for="rechercheLotsValeurEstimee">
-                                            Valeur estimée
+                                            Prix estimé
                                         </label>
                                         <div class="row">
                                             <div class="col-sm-4">
-                                                <select class="form-select py-0"
+                                                <select class="form-select py-0 selectPourListe"
                                                         id="selectValeurEstimee"
                                                         @change="affichageInputValeurEstimee"
                                                         aria-label="Default select example">
-                                                    <option class="py-0 optionParDefaut" value="0" selected>Égale à</option>
+                                                    <option class="py-0" value="0" selected>Égale à</option>
                                                     <option class="py-0" value="1">Inférieure à</option>
                                                     <option class="py-0" value="2">Supérieure à</option>
                                                     <option class="py-0"
@@ -292,11 +292,11 @@
                                            for="rechercheLotsArtiste">
                                         Artiste
                                     </label>
-                                    <select class="form-select py-0 align-self-center"
+                                    <select class="form-select py-0 align-self-center selectPourListeQuiOntBesoinDeInvalide"
                                             id="selectArtiste"
                                             aria-label="Default select example"
                                             required>
-                                        <option class="py-0 text-muted optionParDefaut" value="" selected>
+                                        <option class="py-0 pasDeChoix" value="" selected>
                                             Pas de choix
                                         </option>
                                         <option v-for="artiste in listeDesArtistes" :key="artiste.nomArtiste" class="py-0" :value="artiste.nomArtiste">{{artiste.nomArtiste}}</option>
@@ -307,11 +307,11 @@
                                            for="rechercheLotsCategorie">
                                         Catégorie
                                     </label>
-                                    <select class="form-select py-0 align-self-center"
+                                    <select class="form-select py-0 align-self-center selectPourListeQuiOntBesoinDeInvalide"
                                             id="selectCategorie"
                                             aria-label="Default select example"
                                             required>
-                                        <option class="py-0 text-muted optionParDefaut" value="" selected>
+                                        <option class="py-0 pasDeChoix" value="" selected>
                                             Pas de choix
                                         </option>
                                         <option v-for="categorie in listeDesCategories" :key="categorie.id" class="py-0" :value="categorie.id">{{categorie.nom}}</option>
@@ -322,11 +322,11 @@
                                            for="rechercheLotsMedium">
                                         Medium
                                     </label>
-                                    <select class="form-select py-0 align-self-center"
+                                    <select class="form-select py-0 align-self-center selectPourListeQuiOntBesoinDeInvalide"
                                             id="selectMedium"
                                             aria-label="Default select example"
                                             required>
-                                        <option class="py-0 text-muted optionParDefaut" value="" selected>
+                                        <option class="py-0 pasDeChoix" value="" selected>
                                             Pas de choix
                                         </option>
                                         <option v-for="medium in listeDesMediums" :key="medium.id" class="py-0" :value="medium.id">{{medium.type}}</option>
@@ -342,11 +342,11 @@
                                         </label>
                                         <div class="row">
                                             <div class="col-sm-4">
-                                                <select class="form-select py-0"
+                                                <select class="form-select py-0 selectPourListe"
                                                         id="selectHauteur"
                                                         @change="affichageInputHauteur"
                                                         aria-label="Default select example">
-                                                    <option class="py-0 optionParDefaut" value="0" selected>Égale à</option>
+                                                    <option class="py-0" value="0" selected>Égale à</option>
                                                     <option class="py-0" value="1">Inférieure à</option>
                                                     <option class="py-0" value="2">Supérieure à</option>
                                                     <option class="py-0" value="3" id="selectHauteurEntre">
@@ -381,11 +381,11 @@
                                         </label>
                                         <div class="row">
                                             <div class="col-sm-4">
-                                                <select class="form-select py-0"
+                                                <select class="form-select py-0 selectPourListe"
                                                         id="selectLargeur"
                                                         @change="affichageInputLargeur"
                                                         aria-label="Default select example">
-                                                    <option class="py-0 optionParDefaut" value="0" selected>Égale à</option>
+                                                    <option class="py-0" value="0" selected>Égale à</option>
                                                     <option class="py-0" value="1">Inférieure à</option>
                                                     <option class="py-0" value="2">Supérieure à</option>
                                                     <option class="py-0" value="3" id="selectLargeurEntre">
@@ -459,11 +459,11 @@
                                         </label>
                                         <div class="row">
                                             <div class="col-sm-4">
-                                                <select class="form-select py-0"
+                                                <select class="form-select py-0 selectPourListe"
                                                         id="selectNumeroEncan"
                                                         @change="affichageInputNumeroEncan"
                                                         aria-label="Default select example">
-                                                    <option class="py-0 optionParDefaut" value="0" selected>Égal à</option>
+                                                    <option class="py-0" value="0" selected>Égal à</option>
                                                     <option class="py-0"
                                                             id="selectNumeroEncanEntre"
                                                             value="1">
@@ -500,11 +500,11 @@
                                         </label>
                                         <div class="row">
                                             <div class="col-sm-4">
-                                                <select class="form-select py-0"
+                                                <select class="form-select py-0 selectPourListe"
                                                         id="selectDate"
                                                         @change="affichageInputDate"
                                                         aria-label="Default select example">
-                                                    <option class="py-0 optionParDefaut" value="0" selected>Égale à</option>
+                                                    <option class="py-0" value="0" selected>Égale à</option>
                                                     <option class="py-0" value="1">Inférieure à</option>
                                                     <option class="py-0" value="2">Supérieure à</option>
                                                     <option class="py-0"
@@ -516,7 +516,7 @@
                                             </div>
                                             <VueDatePicker type="date"
                                                            v-model="rechercheEncansDate1"
-                                                           id="rechercheEncansDate"
+                                                           id="rechercheEncansDate1"
                                                            class="col-sm"
                                                            :max-date="desacDateDebutEntre"
                                                            :enable-time-picker="false"
@@ -777,20 +777,78 @@
                 document.querySelector("#rechercheLotsLargeur"),
                 document.querySelector("#rechercheLotsLargeur2")
             ]
+            var listeDesSelects = document.querySelectorAll(".selectPourListe");
+            var listeDesSelectsQuiOntBesoinDeInvalide = document.querySelectorAll(".selectPourListeQuiOntBesoinDeInvalide");
             if (to.name == 'ResultatRechercheLots') {
+                if (document.querySelector("#navbarToggleRechercheAvancee")) {
+                    document.querySelector("#navbarToggleRechercheAvancee").classList.remove("show");
+                }
                 next()
             }
             else {
                 elementsAEffacer.forEach((element) => {
                     element.value = "";
                 });
+                listeDesSelects.forEach((select) => {
+                    select.value = 0;
+                });
+                listeDesSelectsQuiOntBesoinDeInvalide.forEach((select) => {
+                    select.value = "";
+                });
+                if (document.querySelectorAll(".inputAAfficher")) {
+                    document.querySelectorAll(".inputAAfficher").forEach((el) => {
+                        el.style.display = "none";
+                    });
+                }
+                if (document.querySelector("#navbarToggleRechercheAvancee")) {
+                    document.querySelector("#navbarToggleRechercheAvancee").classList.remove("show");
+                }
+                next()
+            }
+        }
+        else if (from.name == 'ResultatRechercheEncans' || from.name == 'EncansPasses' || from.name == 'EncansFuturs' || from.name == 'TousLesEncans') {
+            var elementsAEffacer = [
+                document.querySelector("#rechercheEncansNumeroEncan"),
+                document.querySelector("#rechercheEncansNumeroEncan2"),
+            ]
+            var datesAEffacer = [
+                rechercheEncansDate1,
+                rechercheEncansDate2,
+            ]
+            var listeDesSelects = document.querySelectorAll(".selectPourListe");
+            if (to.name == 'ResultatRechercheEncans') {
+                if (document.querySelector("#navbarToggleRechercheAvancee")) {
+                    document.querySelector("#navbarToggleRechercheAvancee").classList.remove("show");
+                }
+                next()
+            }
+            else {
+                elementsAEffacer.forEach((element) => {
+                    element.value = "";
+                });
+                datesAEffacer.forEach((date) => {
+                    date.value = "";
+                });
+                listeDesSelects.forEach((select) => {
+                    select.value = 0;
+                });
+                if (document.querySelectorAll(".inputAAfficher")) {
+                    document.querySelectorAll(".inputAAfficher").forEach((el) => {
+                        el.style.display = "none";
+                    });
+                }
+                if (document.querySelector("#navbarToggleRechercheAvancee")) {
+                    document.querySelector("#navbarToggleRechercheAvancee").classList.remove("show");
+                }
                 next()
             }
         }
         else {
+            if (document.querySelector("#navbarToggleRechercheAvancee")) {
+                document.querySelector("#navbarToggleRechercheAvancee").classList.remove("show");
+            }
             next()
         }
-        document.querySelector(".navbarToggleRechercheAvancee").classList.add(".collapse");
     })
 
     const desacDateFinEntre = computed(() => {
