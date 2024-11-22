@@ -20,6 +20,11 @@ async function initApp() {
     app.component("InputMask", InputMask);
     await router.isReady();
     app.mount("#app");
+
+    const factures232Response = await store.dispatch("chercherFacturesParEncan", 232)
+    if (factures232Response.data == "") {
+        await store.dispatch("chargerClientsFinEncan", 232)
+    }
 }
 
 initApp().catch((error) =>

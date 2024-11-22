@@ -1,4 +1,5 @@
 <template>
+    <FactureModal v-for="encan in numerosEncans" :facturePdfPath="encan.pdfPath" :idFacture="encan.id"></FactureModal>
     <div class="container mt-5">
         <router-link class="text-decoration-none" :to="{ name: 'ChoixLivraison', params: {idFacture:facture.id} }" v-for="facture in listeFacturesChoixAFaire" :key="facture.id">
             <div class="alert alert-danger" role="alert">
@@ -64,7 +65,9 @@
                                     </div>
 
                                     <div class="col">
-                                        <button class="btn btn-info">
+                                        <button class="btn btn-info"
+                                                data-bs-toggle="modal"
+                                                :data-bs-target="'#modal'+encan.id">
                                             <img src="/images/ice.png" class="btnVisuel img-fluid" alt="..." />
                                         </button>
                                     </div>
@@ -137,6 +140,7 @@
 <script setup>
     import { computed, watch, onMounted, ref } from "vue";
     import { useStore } from "vuex";
+    import FactureModal from "@/components/modals/VoirFactureModal.vue";
 
     const store = useStore();
     const listeFacturesMembre = ref([]);
