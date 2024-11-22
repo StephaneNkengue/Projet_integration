@@ -1008,6 +1008,14 @@ const store = createStore({
                 return "Erreur, veuillez réessayer";
             }
         },
+        async chargerClientsFinEncan({ state }, numeroEncan) {
+            try {
+                const response = await state.api.post("/factures/CreerFacturesParEncan/" + 232);
+                return response;
+            } catch (error) {
+                return "Erreur, veuillez réessayer";
+            }
+        },
     },
 
     getters: {
