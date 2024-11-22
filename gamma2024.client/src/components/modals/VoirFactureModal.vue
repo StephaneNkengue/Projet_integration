@@ -9,7 +9,6 @@
         <div class="modal-dialog">
             <div class="modal-content min-vh-75">
                 <div class="modal-header">
-                    <a :href="pdf" target="_blank">Voir le pdf dans un nouveau onglet</a>
                     <button type="button"
                             class="btn-close"
                             data-bs-dismiss="modal"
