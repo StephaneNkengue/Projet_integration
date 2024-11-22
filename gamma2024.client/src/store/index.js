@@ -404,6 +404,10 @@ const store = createStore({
                 throw error;
             }
         },
+        async obtenirArtistes({ state }) {
+            const response = await state.api.get("/lots/artistes");
+            return response.data;
+        },
         async obtenirCategories({ state }) {
             const response = await state.api.get("/lots/categories");
             return response.data;
@@ -916,6 +920,26 @@ const store = createStore({
                 throw error;
             }
         },
+        async fetchFactureInfoMembre({ commit, state }) {
+            try {
+                const response = await state.api.get("/factures/chercherFacturesMembre");
+                console.log("Données reçues de l'API:", response.data); // Pour le débogage
+
+                return response.data;
+            } catch (error) {
+                console.error("Erreur détaillée:", error.response || error);
+                throw error;
+            }
+        },
+        async chercherPrevisualisationLivraison({ state }, idFacture) {
+            try {
+                const response = await state.api.get("/facturesLivraison/GenererFactureLivraison/" + idFacture);
+                return response;
+            } catch (error) {
+                console.error("Erreur détaillée:", error.response || error);
+                throw error;
+            }
+        },
         async creerPaymentIntent({ state }, idFacture) {
             try {
                 const response = await state.api.post(
@@ -926,6 +950,80 @@ const store = createStore({
                 return "Erreur, veuillez réessayer";
             }
         },
+        async creerSetupIntent({ state }) {
+            try {
+                const response = await state.api.post(
+                    "/paiement/creerSetupIntent"
+                );
+                return response;
+            } catch (error) {
+                return "Erreur, veuillez réessayer";
+            }
+        },
+        async chercherCartesUser({ state }) {
+            try {
+                const response = await state.api.get(
+                    "/paiement/chercherCartes"
+                );
+                return response;
+            } catch (error) {
+                return "Erreur, veuillez réessayer";
+            }
+        },
+        async chercherAdressesClient({ state }) {
+            try {
+                const response = await state.api.get(
+                    "/utilisateurs/chercheradressesclient"
+                );
+                return response;
+            } catch (error) {
+                return "Erreur, veuillez réessayer";
+            }
+        },
+        async enregistrerChoixLivraison({ state }, choixLivraison) {
+            try {
+                const response = await state.api.post(
+                    "/facturesLivraison/enregistrerChoixLivraison", choixLivraison
+                );
+                return response;
+            } catch (error) {
+                return "Erreur, veuillez réessayer";
+            }
+        },
+        async supprimerCarte({ state }, pmId) {
+            try {
+                const response = await state.api.post(
+                    "/paiement/supprimerCarte/" + pmId
+                );
+                return response;
+            } catch (error) {
+                return "Erreur, veuillez réessayer";
+            }
+        },
+        async chercherFacturesChoixAFaire({ state }) {
+            try {
+                const response = await state.api.get("/factures/chercherFacturesChoixAFaire");
+                return response;
+            } catch (error) {
+                return "Erreur, veuillez réessayer";
+            }
+        },
+        async chargerClientsFinEncan({ state }, numeroEncan) {
+            try {
+                const response = await state.api.post("/factures/CreerFacturesParEncan/" + 232);
+                return response;
+            } catch (error) {
+                return "Erreur, veuillez réessayer";
+            }
+        },
+        async chercherFacturesParEncan({ state }, numeroEncan) {
+            try {
+                const response = await state.api.get("/factures/chercherFacturesParEncan/" + 232);
+                return response;
+            } catch (error) {
+                return "Erreur, veuillez réessayer";
+            }
+        }
     },
 
     getters: {
@@ -947,8 +1045,8 @@ const store = createStore({
                 if (state.user.photo.startsWith("http")) {
                     return state.user.photo;
                 } else {
-                    const baseUrl = state.api.defaults.baseURL.replace("/api", "");
-                    const fullUrl = new URL(state.user.photo, baseUrl).href;
+                    const baseUrl = state.api.defaults.avatarURL;
+                    const fullUrl = baseUrl + "/" + state.user.photo;
                     console.log("URL complète de l'avatar:", fullUrl);
                     return fullUrl;
                 }

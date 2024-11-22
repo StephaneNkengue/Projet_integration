@@ -215,117 +215,12 @@
                                 </div>
                             </StepPanel>
                         </StepItem>
-
-                        <!-- Step 2: Carte de crédit -->
-                        <StepItem :disabled="activeIndex !== 2">
-                            <Step value="2"
-                                  class="step2 border-top border-3 p-2 border-dark fs-2">
-                                <span>2 - Carte de crédit</span>
+                        <StepItem :disabled="activeIndex !== 2" class="adresse">
+                            <Step value="2" class="border-top border-3 p-2 border-dark fs-2">
+                                <span>2 - Adresse</span>
                             </Step>
 
-                            <StepPanel v-if="activeIndex === 2" value="2">
-                                <div class="container px-4 py-2">
-                                    <div class="row mb-3 justify-content-around">
-                                        <div class="col col-md-12">
-                                            <div class="form-group">
-                                                <label for="nomPropio">Nom du propriétaire de la carte</label>
-                                                <input type="text"
-                                                       v-model="formData.carteCredit.nomProprio"
-                                                       placeholder="John Doe"
-                                                       :class="[
-                            'form-control',
-                            { 'is-invalid': v.carteCredit.nomProprio.$error },
-                          ]"
-                                                       id="nomPropio"
-                                                       @blur="v.carteCredit.nomProprio.$touch()" />
-                                                <div class="invalid-feedback"
-                                                     v-if="v.carteCredit.nomProprio.$error">
-                                                    {{ v.carteCredit.nomProprio.$errors[0].$message }}
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="row mb-3 justify-content-around">
-                                        <div class="col col-md-6 col-12">
-                                            <div class="form-group">
-                                                <label for="numeroCarte">Numéro de la carte</label>
-                                                <div class="input-wrapper">
-                                                    <InputMask type="text"
-                                                               v-model="formData.carteCredit.numeroCarte"
-                                                               mask="9999 9999 9999 9999"
-                                                               placeholder="4444 4444 4444 4444"
-                                                               :class="[
-                              'form-control',
-                              {
-                                'is-invalid': v.carteCredit.numeroCarte.$error,
-                              },
-                            ]"
-                                                               id="numeroCarte"
-                                                               @blur="v.carteCredit.numeroCarte.$touch()" />
-                                                    <div class="invalid-feedback"
-                                                         v-if="v.carteCredit.numeroCarte.$error">
-                                                        {{ v.carteCredit.numeroCarte.$errors[0].$message }}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col col-md-6 col-12">
-                                            <div class="form-group">
-                                                <label for="dateExpiration">Date d'expiration</label>
-
-                                                <div class="input-wrapper">
-                                                    <InputMask type="text"
-                                                               mask="99/99"
-                                                               placeholder="MM/YY"
-                                                               v-model="formData.carteCredit.dateExpiration"
-                                                               :class="[
-                              'form-control',
-                              {
-                                'is-invalid':
-                                  v.carteCredit.dateExpiration.$error,
-                              },
-                            ]"
-                                                               id="dateExpiration"
-                                                               @blur="v.carteCredit.dateExpiration.$touch()" />
-                                                    <div class="invalid-feedback"
-                                                         v-if="v.carteCredit.dateExpiration.$error">
-                                                        {{
-                              v.carteCredit.dateExpiration.$errors[0].$message
-                                                        }}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="d-flex justify-content-between gap-2 py-3">
-                                    <button type="button"
-                                            class="btn btn-secondary px-5 rounded-pill ms-4"
-                                            @click="allerAuSuivantPrecedent(1)">
-                                        Précédent
-                                    </button>
-                                    <button type="button"
-                                            :class="[
-                      state2 ? 'bleuValide' : 'bleuNonValide',
-                      classeActiveBouton,
-                      'btn',
-                    ]"
-                                            :disabled="state2"
-                                            @click="allerAuSuivantPrecedent(3)">
-                                        Suivant
-                                    </button>
-                                </div>
-                            </StepPanel>
-                        </StepItem>
-
-                        <!-- Step 3: Adresse -->
-                        <StepItem :disabled="activeIndex !== 3" class="adresse">
-                            <Step value="3" class="border-top border-3 p-2 border-dark fs-2">
-                                <span>3 - Adresse</span>
-                            </Step>
-
-                            <StepPanel v-if="activeIndex === 3">
+                            <StepPanel v-if="activeIndex === 2">
                                 <div class="container px-4 py-2">
                                     <div class="row mb-3 justify-content-around">
                                         <div class="col col-md-6 col-12">
@@ -463,7 +358,7 @@
 
                                 <div class="d-flex justify-content-between gap-2 py-3">
                                     <button class="btn btn-secondary rounded-pill px-5 ms-4"
-                                            @click="allerAuSuivantPrecedent(2)">
+                                            @click="allerAuSuivantPrecedent(1)">
                                         Précédent
                                     </button>
 
@@ -567,11 +462,6 @@
             motDePasse: "",
             confirmMotPasse: "",
         },
-        carteCredit: {
-            nomProprio: "",
-            numeroCarte: "",
-            dateExpiration: "",
-        },
         adresse: {
             numeroCivique: "",
             rue: "",
@@ -625,11 +515,6 @@
                     sameAsPassword: messageSameAsPassword,
                 },
             },
-            carteCredit: {
-                nomProprio: { required: messageRequis },
-                numeroCarte: { required: messageRequis },
-                dateExpiration: { required: messageRequis },
-            },
             adresse: {
                 numeroCivique: { required: messageRequis },
                 rue: { required: messageRequis },
@@ -644,17 +529,12 @@
 
     const v = useVuelidate(rules, formData);
     const info = useVuelidate(rules.value.generalInfo, formData.generalInfo);
-    const carte = useVuelidate(rules.value.carteCredit, formData.carteCredit);
     const isSubmitting = ref(false);
 
     const classeActiveBouton = ref("btn rounded-pill px-5 me-4");
 
     const state1 = computed(() => {
         return info.value.$invalid;
-    });
-
-    const state2 = computed(() => {
-        return carte.value.$invalid;
     });
 
     const stateFinal = computed(() => {

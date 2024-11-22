@@ -50,19 +50,41 @@
                         {{ v.dateFin.$errors[0].$message }}
                     </div>
                 </div>
+
+                <div class="mb-3 d-flex flex-column">
+                    <label for="pasLot" class="form-label">Pas de chaque lot (seconde):</label>
+                    <input type="text"
+                           @blur="v.pasLot.$touch()"
+                           aria-label="pasLot"
+                           class="border-grey"
+                           min="1"
+                           v-model="formData.pasLot" />
+                    <div class="invalid-feedback" v-if="v.pasLot.$error">
+                        {{ v.pasLot.$errors[0].$message }}
+                    </div>
+                </div>
+
+                <div class="mb-3 d-flex flex-column">
+                    <label for="pasMise" class="form-label">Pas de chaque mise (seconde):</label>
+                    <input type="search"
+                           @blur="v.pasMise.$touch()"
+                           aria-label="Recherche"
+                           class="border-grey"
+                           min="1"
+                           v-model="formData.pasMise" />
+                    <div class="invalid-feedback" v-if="v.pasMise.$error">
+                        {{ v.pasMise.$errors[0].$message }}
+                    </div>
+                </div>
                 <router-link to="TableauDeBordEncans" class="text-decoration-none me-2">
                     <button type="button"
                             class="btn bleuMarinSecondaireFond btnSurvolerBleuMoyenFond btnClick text-white">
                         Annuler
                     </button>
                 </router-link>
-                <button :disabled="stateFinal"
-                        :class="[
-            stateFinal ? 'bleuValide' : 'bleuNonValide',
-            classeActiveBouton,
-            'btn',
-          ]"
-                        class="bleuValideSurvoler"
+                <button id="btnSubmitEncanAjout"
+                        :disabled="stateFinal"
+                        :class="[stateFinal ? 'bleuValide' : 'bleuNonValide', classeActiveBouton, 'btn']" class="bleuValideSurvoler"
                         type="submit">
                     Ajouter
                 </button>
@@ -72,9 +94,9 @@
 </template>
 
 <script setup>
-    import { ref, reactive, computed } from "vue";
+    import { ref, reactive, computed, onMounted } from "vue";
     import useVuelidate from "@vuelidate/core";
-    import { required, helpers } from "@vuelidate/validators";
+    import { required, helpers, minValue } from "@vuelidate/validators";
     import { useStore } from "vuex";
 
     import VueDatePicker from "@vuepic/vue-datepicker";
@@ -89,18 +111,26 @@
         "Ce champ est obligatoire.",
         required
     );
+    const valeurMinimum = helpers.withMessage(
+        "Ce champ doit être supérieur à 1 seconde",
+        minValue(1)
+    );
     const errorMessage = ref("");
     const successMessage = ref("");
 
     let formData = reactive({
         dateDebut: "",
         dateFin: "",
+        pasLot: "",
+        pasMise: ""
     });
 
     let rules = computed(() => {
         return {
             dateDebut: { required: messageRequis },
             dateFin: { required: messageRequis },
+            pasLot: { required: messageRequis, minValueValue: valeurMinimum },
+            pasMise: { required: messageRequis, minValueValue: valeurMinimum }
         };
     });
 
@@ -108,6 +138,16 @@
 
     const stateFinal = computed(() => {
         return v.value.$invalid;
+    });
+    var element;
+    onMounted(async () => {
+        try {
+            element = document.getElementById("btnSubmitEncanAjout");
+            element.disabled = stateFinal.value;
+        }
+        catch (erreur) {
+            console.log("Erreur encan ajout" + erreur);
+        }
     });
 
     const creerEncan = async () => {
@@ -120,6 +160,7 @@
 
         try {
             const response = await store.dispatch("creerEncan", formData);
+            element.disabled = true;
             if (response.success) {
                 successMessage.value = "Encan créé avec succès!";
                 errorMessage.value = "";
@@ -186,5 +227,11 @@
     .transit {
         margin: auto;
         width: 600px;
+    }
+
+    .border-grey {
+        border-color: #DEE2E6;
+        border-radius: 5px;
+        border-width: 0,5px;
     }
 </style>

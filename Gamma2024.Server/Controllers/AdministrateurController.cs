@@ -25,8 +25,6 @@ namespace Gamma2024.Server.Controllers
         }
 
 
-        //Liaison avec la carte de crédit manquante
-
         [HttpGet("ObtenirTousLesUsers")]
         public async Task<IActionResult> GetAllUsers()
         {

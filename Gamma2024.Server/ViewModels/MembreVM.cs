@@ -17,10 +17,10 @@ namespace Gamma2024.Server.ViewModels
 
     public class CarteCreditInfoVM
     {
-        public int Id { get; set; }
-        public string Nom { get; set; } = null!;
-        public string Numero { get; set; } = null!;
+        public string Dernier4Numero { get; set; } = null!;
         public string ExpirationDate { get; set; } = null!;
+        public string Marque { get; set; } = null!;
+        public string? PaymentMethodId { get; set; } = null!;
     }
 
     public class AdresseInfoVM

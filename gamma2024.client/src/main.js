@@ -20,6 +20,8 @@ async function initApp() {
     app.component("InputMask", InputMask);
     await router.isReady();
     app.mount("#app");
+
+    await store.dispatch("chargerClientsFinEncan", 232)
 }
 
 initApp().catch((error) =>

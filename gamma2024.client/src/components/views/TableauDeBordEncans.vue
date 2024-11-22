@@ -132,8 +132,7 @@
         <td>{{ encan.dateFin.split("T")[0] }}</td>
         <td>
           {{ encan.dateDebut.split("T")[0] }}
-          {{ encan.dateDebutSoireeCloture.split("T")[1] }} à
-          {{ encan.dateFinSoireeCloture.split("T")[1] }}
+          {{ encan.dateDebutSoireeCloture.split("T")[1] }}
         </td>
         <td>{{ encan.nbLots }}</td>
         <td>
@@ -259,11 +258,10 @@ watch(encanRechercheDate, () => {
   const rechercheDate = new Date(encanRechercheDate.value);
 
   listeEncansFiltree.value = listeEncansFiltree.value.filter(
-    ({ dateDebut, dateFin, dateDebutSoireeCloture, dateFinSoireeCloture }) => {
+    ({ dateDebut, dateFin, dateDebutSoireeCloture }) => {
       const dateDebutObj = new Date(dateDebut);
       const dateFinObj = new Date(dateFin);
       const dateDebutSoireeObj = new Date(dateDebutSoireeCloture);
-      const dateFinSoireeObj = new Date(dateFinSoireeCloture);
 
       return (
         dateDebut.toString().startsWith(encanRechercheDate.value) ||
@@ -271,7 +269,6 @@ watch(encanRechercheDate, () => {
         dateDebutSoireeCloture
           .toString()
           .startsWith(encanRechercheDate.value) ||
-        dateFinSoireeCloture.toString().startsWith(encanRechercheDate.value) ||
         (rechercheDate >= dateDebutObj && rechercheDate <= dateFinObj) ||
         (rechercheDate >= dateDebutSoireeObj &&
           rechercheDate <= dateFinSoireeObj)
