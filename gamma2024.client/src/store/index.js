@@ -1000,6 +1000,14 @@ const store = createStore({
                 return "Erreur, veuillez réessayer";
             }
         },
+        async chercherFacturesChoixAFaire({ state }) {
+            try {
+                const response = await state.api.get("/factures/chercherFacturesChoixAFaire");
+                return response;
+            } catch (error) {
+                return "Erreur, veuillez réessayer";
+            }
+        },
     },
 
     getters: {
@@ -1021,7 +1029,7 @@ const store = createStore({
                 if (state.user.photo.startsWith("http")) {
                     return state.user.photo;
                 } else {
-                    const baseUrl = state.api.defaults.baseURL.replace("/api", "");
+                    const baseUrl = state.api.defaults.avatarURL;
                     const fullUrl = new URL(state.user.photo, baseUrl).href;
                     console.log("URL complète de l'avatar:", fullUrl);
                     return fullUrl;
