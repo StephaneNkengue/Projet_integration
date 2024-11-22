@@ -655,9 +655,9 @@ namespace Gamma2024.Server.Services
                 }
 
                 // Vérification du pas d'enchère
-                if (!EstMiseValide(lot, lot.Mise.HasValue ? (decimal)lot.Mise.Value : 0m, mise.Montant, mise.MontantMaximal.HasValue))
+                if (!EstMiseValide(lot, lot.Mise.HasValue ? (decimal)lot.Mise.Value : 0m, mise.Montant, mise.MontantMaximal ?? 0, mise.MontantMaximal.HasValue))
                 {
-                    string message = mise.MontantMaximal.HasValue 
+                    string message = mise.MontantMaximal.HasValue
                         ? "La mise automatique doit être d'au moins 2 pas d'enchère"
                         : "La mise ne respecte pas le pas d'enchère";
                     return (false, message);
@@ -714,39 +714,75 @@ namespace Gamma2024.Server.Services
             }
         }
 
-        private bool EstMiseValide(Lot lot, decimal miseActuelle, decimal nouvelleMise, bool estMiseAutomatique = false)
+        private bool EstMiseValide(Lot lot, decimal miseActuelle, decimal nouvelleMise, decimal miseMaximale, bool estMiseAutomatique = false)
         {
             if (miseActuelle == 0m)
             {
                 // Si c'est une mise automatique, on vérifie juste que le montant maximal est suffisant
                 // La mise effective sera le prix d'ouverture
-                if (estMiseAutomatique)
-                {
-                    return nouvelleMise >= (decimal)lot.PrixOuverture;
-                }
                 return nouvelleMise >= (decimal)lot.PrixOuverture;
             }
 
             decimal pasEnchere = CalculerPasEnchere(miseActuelle);
             if (estMiseAutomatique)
             {
-                return nouvelleMise >= (miseActuelle + (pasEnchere * 2));
+                return miseMaximale >= (miseActuelle + (pasEnchere * 2));
             }
             return nouvelleMise >= (miseActuelle + pasEnchere);
         }
 
         private decimal CalculerPasEnchere(decimal montant)
         {
-            if (montant <= 199.0m) return 10.0m;
-            if (montant <= 499.0m) return 25.0m;
-            if (montant <= 999.0m) return 50.0m;
-            if (montant <= 1999.0m) return 100.0m;
-            if (montant <= 4999.0m) return 200.0m;
-            if (montant <= 9999.0m) return 250.0m;
-            if (montant <= 19999.0m) return 500.0m;
-            if (montant <= 49999.0m) return 1000.0m;
-            if (montant <= 99999.0m) return 2000.0m;
-            if (montant <= 499999.0m) return 5000.0m;
+            if (montant <= 199.0m)
+            {
+                return 10.0m;
+            }
+
+            if (montant <= 499.0m)
+            {
+                return 25.0m;
+            }
+
+            if (montant <= 999.0m)
+            {
+                return 50.0m;
+            }
+
+            if (montant <= 1999.0m)
+            {
+                return 100.0m;
+            }
+
+            if (montant <= 4999.0m)
+            {
+                return 200.0m;
+            }
+
+            if (montant <= 9999.0m)
+            {
+                return 250.0m;
+            }
+
+            if (montant <= 19999.0m)
+            {
+                return 500.0m;
+            }
+
+            if (montant <= 49999.0m)
+            {
+                return 1000.0m;
+            }
+
+            if (montant <= 99999.0m)
+            {
+                return 2000.0m;
+            }
+
+            if (montant <= 499999.0m)
+            {
+                return 5000.0m;
+            }
+
             return 10000.0m;
         }
 
@@ -854,7 +890,7 @@ namespace Gamma2024.Server.Services
                 .OrderByDescending(m => m.DateMise)
                 .Select(m => (double?)Convert.ToDouble(m.Montant))  // Conversion explicite de decimal vers double
                 .FirstOrDefaultAsync();
-            
+
             return lastBid;
         }
 
