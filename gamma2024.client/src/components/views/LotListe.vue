@@ -260,7 +260,8 @@
         idLot: data.idLot,
         montant: data.montant,
         userId: data.userId,
-        userLastBid: data.userLastBid
+        userLastBid: data.userLastBid,
+        nombreMises: data.nombreMises
       });
 
       // Mettre à jour immédiatement le lot local
@@ -278,7 +279,8 @@
         console.log('After nextTick:', {
           isHighestBidder: isUserHighestBidder.value,
           isOutbid: isUserOutbid.value,
-          userLastBid: userLastBid.value
+          userLastBid: userLastBid.value,
+          nombreMises: nombreOffres.value
         });
       });
     }

@@ -365,6 +365,7 @@ namespace Gamma2024.Server.Services
                 var lots = _context.Lots
                     .Include(l => l.EncanLots)
                     .Include(l => l.Photos)
+                    .Include(l => l.MisesAutomatiques)
                     .Where(l => l.EncanLots.Any(el => el.IdEncan == idEncan))
                     .Select(l => new LotEncanAffichageVM()
                     {
@@ -390,7 +391,8 @@ namespace Gamma2024.Server.Services
                         IdVendeur = l.IdVendeur.ToString(),
                         Vendeur = $"{l.Vendeur.Prenom} {l.Vendeur.Nom}",
                         IdClientMise = l.IdClientMise ?? "",
-                        SeraLivree = l.SeraLivree ?? false
+                        SeraLivree = l.SeraLivree ?? false,
+                        NombreMises = l.MisesAutomatiques.Count(),
                     })
                     .ToList();
 
@@ -702,6 +704,7 @@ namespace Gamma2024.Server.Services
                         userId = mise.UserId,
                         montant = mise.Montant
                     },
+                    nombreMises = await _context.MiseAutomatiques.CountAsync(m => m.LotId == lot.Id),
                     timestamp = DateTime.Now
                 });
 
@@ -903,6 +906,13 @@ namespace Gamma2024.Server.Services
                     NomArtiste = l.Key,
                 }).ToList();
             return artistes;
+        }
+
+        public async Task<int> GetNombreMises(int lotId)
+        {
+            return await _context.MiseAutomatiques
+                .Where(m => m.LotId == lotId)
+                .CountAsync();
         }
 
     }

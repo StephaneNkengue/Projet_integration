@@ -113,7 +113,7 @@ const store = createStore({
             // Cette mutation ne fait rien, mais force la mise à jour des getters
             state.userDataVersion = (state.userDataVersion || 0) + 1;
         },
-        updateLotMise(state, { idLot, montant, userId, userLastBid }) {
+        updateLotMise(state, { idLot, montant, userId, userLastBid, nombreMises }) {
             console.log("Store - Mise à jour du lot:", {
                 idLot,
                 montant,
@@ -127,12 +127,14 @@ const store = createStore({
                     id: idLot,
                     mise: montant,
                     idClientMise: userId,
+                    nombreMises: nombreMises
                 };
             } else {
                 newLots[idLot] = {
                     ...newLots[idLot],
                     mise: montant,
                     idClientMise: userId,
+                    nombreMises: nombreMises
                 };
             }
             state.lots = newLots;
@@ -1140,12 +1142,7 @@ async supprimerCarte({ state }, pmId) {
 
         async getUserBidForLot({ state, commit }, lotId) {
             try {
-                // D'abord vérifier dans le store
-                if (state.userBidHistory?.[lotId]?.[state.user?.id]) {
-                    return state.userBidHistory[lotId][state.user?.id];
-                }
-
-                // Sinon faire l'appel API
+                
                 const response = await state.api.get(`/lots/userLastBid/${lotId}`);
                 if (response.data > 0) {
                     commit('UPDATE_USER_LAST_BID', {
@@ -1198,8 +1195,8 @@ async supprimerCarte({ state }, pmId) {
             return Object.values(state.lots);
         },
         getUniqueOffersCount: (state) => (lotId) => {
-            if (!state.userBidHistory[lotId]) return 0;
-            return Object.keys(state.userBidHistory[lotId]).length;
+            const lot = state.lots[lotId];
+            return lot?.nombreMises || 0;
         }
     },
 });

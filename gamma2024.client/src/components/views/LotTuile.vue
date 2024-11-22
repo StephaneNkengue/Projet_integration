@@ -209,7 +209,8 @@ const handleNewBid = async (data) => {
             idLot: data.idLot,
             montant: data.montant,
             userId: data.userId,
-            userLastBid: data.userLastBid
+            userLastBid: data.userLastBid,
+            nombreMises: data.nombreMises
         });
 
         if (data.userLastBid && data.userLastBid.userId === store.state.user?.id) {

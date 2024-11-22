@@ -303,7 +303,7 @@
         () => store.getters.getLot(props.lot?.id)?.mise,
         async (newMise) => {
             if (newMise) {
-                montantInitial.value = newMise;
+                montantMise.value = newMise;
                 userLastBid.value = await store.dispatch('getUserBidForLot', props.lot.id);
             }
         }
