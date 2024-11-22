@@ -1,6 +1,6 @@
 <template lang="">
     <div class="modal fade"
-         :id="props.idFacture"
+         :id="'modal' + props.idFacture"
          data-bs-backdrop="static"
          data-bs-keyboard="false"
          tabindex="-1"
