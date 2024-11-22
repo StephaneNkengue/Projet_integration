@@ -60,8 +60,13 @@
                             <h2 class="accordion-header px-0 d-flex" :style="{border: styleBorder}">
                                 <button class="accordion-button h-52" type="button" data-bs-toggle="collapse" :data-bs-target="'#collapse' + encan.encan"
                                         aria-expanded="true" :aria-controls="'collapse' + encan.encan">
-                                    <div class="col-11">
-                                        {{ encan.encan }} ({{ encan.dateAchat.split("T")[0] }})
+                                    <div class="col-11 d-flex flex-row">
+                                        <div class="pe-5">
+                                            Encan : {{ encan.encan }}
+                                        </div>
+                                        <div>
+                                            Date de la facturation : {{ encan.dateAchat.split("T")[0] }}
+                                        </div>
                                     </div>
 
                                     <div class="col">
