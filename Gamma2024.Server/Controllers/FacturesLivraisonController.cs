@@ -56,7 +56,6 @@ namespace Gamma2024.Server.Controllers
             var productService = new ProductService();
             var invoiceService = new InvoiceService();
             var invoiceItemService = new InvoiceItemService();
-            var paymentMethodService = new PaymentMethodService();
 
             if (!factureLivraison.EstPaye)
             {
