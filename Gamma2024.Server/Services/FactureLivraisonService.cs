@@ -1,17 +1,27 @@
 using Gamma2024.Server.Data;
+using Gamma2024.Server.Interface;
 using Gamma2024.Server.Models;
 using Gamma2024.Server.ViewModels;
+using jsreport.AspNetCore;
+using jsreport.Types;
 using Microsoft.EntityFrameworkCore;
+using Stripe;
 
 namespace Gamma2024.Server.Services
 {
     public class FactureLivraisonService
     {
         private readonly ApplicationDbContext _context;
+        private readonly IJsReportMVCService _jsReportService;
+        private readonly IWebHostEnvironment _environment;
+        private readonly IEmailSender _emailSender;
 
-        public FactureLivraisonService(ApplicationDbContext context)
+        public FactureLivraisonService(ApplicationDbContext context, IJsReportMVCService jsReportService, IWebHostEnvironment environment, IEmailSender emailSender)
         {
             _context = context;
+            _jsReportService = jsReportService;
+            _environment = environment;
+            _emailSender = emailSender;
         }
 
         public FactureLivraisonVM GenererFactureLivraison(Facture facture)
