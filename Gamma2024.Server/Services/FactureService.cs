@@ -29,14 +29,24 @@ namespace Gamma2024.Server.Services
 
         public ICollection<FactureAffichageVM> ChercherFactures()
         {
-            var factures = _context.Factures.Select(f => new FactureAffichageVM()
+            var factures = _context.Factures.Include(f => f.FactureLivraison).AsEnumerable().Select(f =>
             {
-                Id = f.Id,
-                IdClient = f.IdClient,
-                DateAchat = f.DateAchat,
-                Lots = f.Lots,
-                Encan = f.NumeroEncan,
-                PdfPath = f.FacturePDFPath
+                var factureAffichage = new FactureAffichageVM()
+                {
+                    Id = f.Id,
+                    IdClient = f.IdClient,
+                    DateAchat = f.DateAchat,
+                    Lots = f.Lots,
+                    Encan = f.NumeroEncan,
+                    PdfPath = f.FacturePDFPath,
+                    PdfPathLivraison = "",
+                    Livraison = f.ChoixLivraison
+                };
+                if (f.IdFactureLivraison.HasValue)
+                {
+                    factureAffichage.PdfPathLivraison = f.FactureLivraison.FacturePDFPath;
+                }
+                return factureAffichage;
             }).ToList();
 
             foreach (FactureAffichageVM facture in factures)
@@ -60,15 +70,26 @@ namespace Gamma2024.Server.Services
 
         public ICollection<FactureAffichageMembreVM> ChercherFacturesMembre(string id)
         {
-            var factures = _context.Factures.Where(c => c.IdClient == id).Select(f => new FactureAffichageMembreVM()
+            var factures = _context.Factures.Include(f => f.FactureLivraison).Where(c => c.IdClient == id).AsEnumerable().Select(f =>
             {
-                Id = f.Id,
-                IdClient = id,
-                DateAchat = f.DateAchat,
-                Lots = f.Lots,
-                Encan = f.NumeroEncan,
-                PdfPath = f.FacturePDFPath
-            }).ToList();
+                var factureAffichage = new FactureAffichageMembreVM()
+                {
+                    Id = f.Id,
+                    IdClient = id,
+                    DateAchat = f.DateAchat,
+                    Lots = f.Lots,
+                    Encan = f.NumeroEncan,
+                    PdfPath = f.FacturePDFPath,
+                    PdfPathLivraison = "",
+                    Livraison = f.ChoixLivraison
+                };
+                if (f.IdFactureLivraison.HasValue)
+                {
+                    factureAffichage.PdfPathLivraison = f.FactureLivraison.FacturePDFPath;
+                }
+                return factureAffichage;
+            }
+            ).ToList();
 
             return factures;
         }
