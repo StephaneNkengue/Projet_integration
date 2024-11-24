@@ -10,5 +10,6 @@ namespace Gamma2024.Server.ViewModels
         public DateTime DateAchat { get; set; }
         public string PdfPath { get; set; } = null!;
         public ICollection<Lot> Lots { get; set; } = [];
+        public string PdfPathLivraison { get; set; } = null!;
     }
 }
