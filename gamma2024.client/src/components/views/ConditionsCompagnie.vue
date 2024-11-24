@@ -6,7 +6,7 @@
             <div class="w-100">
                 <div class="accordion" id="accordionMajoration">
                     <div class="accordion-item">
-                        <h2 class="accordion-header">
+                        <h2 class="accordion-header p-0">
                             <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseMajoration" aria-expanded="true" aria-controls="collapseMajoration">
                                 <h2 class="ps-0 pe-4">Majoration de l'enchère</h2>
                             </button>
@@ -78,7 +78,7 @@
             <div class="pt-3 w-100">
                 <div class="accordion" id="accordionModalite">
                     <div class="accordion-item">
-                        <h2 class="accordion-header">
+                        <h2 class="accordion-header p-0">
                             <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseModalite" aria-expanded="true" aria-controls="collapseModalite">
                                 <h2 class="ps-0 pe-4">Modalités et conditions</h2>
                             </button>
@@ -126,7 +126,7 @@
             <div class="pt-3 w-100">
                 <div class="accordion" id="accordionExample">
                     <div class="accordion-item">
-                        <h2 class="accordion-header" @click="expand">
+                        <h2 class="accordion-header p-0" @click="expand">
                             <button id="btnAccordionArtiste" class="accordion-button d-flex" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
                                 <div class="col-2">
                                     <h2 class="ps-0 pe-4">Artistes</h2>
