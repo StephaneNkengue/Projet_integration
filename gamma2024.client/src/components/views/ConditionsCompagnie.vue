@@ -128,11 +128,11 @@
                     <div class="accordion-item">
                         <h2 class="accordion-header p-0" @click="expand">
                             <button id="btnAccordionArtiste" class="accordion-button d-flex" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                <div class="col-2">
+                                <div class="col">
                                     <h2 class="ps-0 pe-4">Artistes</h2>
                                 </div>
                                 <div class="fs-7" v-show="isExpand">
-                                    Serge Lemoyne, Charles Daudelin, John Little, Jean-Paul Jérome, Yves Trudeau, Yves Gaucher, Claude Tousignant, Jacques Hurtubise, Jean-Paul Lemieux, Jean-Philippe Dallaire, René Richard, Lorne Bouchard, Vasarely, Normand Hudon, Dali, Albini Leblanc, Vladimir Horik, Stefan Horik, Umberto Bruni, Alfred Laliberté, Jean-Paul Riopelle, Roger Cantin, Bruno Côté, Paul Tex Lecor, Frère Jérome, Stanley Cosgrove, Alleyn,
+                                    Serge Lemoyne, Charles Daudelin, John Little, Jean-Paul Jérome, Yves Trudeau, Yves Gaucher, Claude Tousignant, Jacques Hurtubise, Jean-Paul Lemieux, Jean-Philippe Dallaire, René Richard, Lorne Bouchard, Vasarely, Normand Hudon, Dali, Albini Leblanc, Vladimir Horik, Stefan Horik, Umberto Bruni, Alfred Laliberté, Jean-Paul Riopelle, Roger Cantin, Bruno Côté, Paul Tex Lecor, Frère Jérome, Stanley Cosgrove, Alleyn ...
                                 </div>
                             </button>
                         </h2>
