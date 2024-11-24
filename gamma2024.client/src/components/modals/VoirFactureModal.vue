@@ -33,7 +33,7 @@
 
     const props = defineProps({
         facturePdfPath: String,
-        idFacture: Number
+        idFacture: String
     });
 
     const pdf = ref("")
