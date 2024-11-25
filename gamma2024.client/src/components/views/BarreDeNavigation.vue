@@ -27,7 +27,7 @@
                     <div class="collapse navbar-collapse justify-content-between"
                          id="navbarSupportedContent">
                         <ul class="navbar-nav text-center">
-                            <li class="nav-item">
+                            <li class="nav-item align-self-center d-flex align-items-center">
                                 <router-link :to="{ name: 'Accueil' }"
                                              class="text-decoration-none">
                                     <a class="nav-link active"> Accueil </a>

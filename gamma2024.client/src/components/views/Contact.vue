@@ -7,7 +7,7 @@
             <div class="d-flex flex-column align-items-center justify-content-around">
                 <div class="d-flex flex-column align-items-center">
                     <p class="mb-1">Courriel:</p>
-                    <p>clientTI@cegepgranby.qc.ca</p>
+                    <p><a href="mailto:clientTI@cegepgranby.qc.ca" class="text-black">clientTI@cegepgranby.qc.ca</a></p>
                 </div>
 
                 <div class="d-flex flex-column align-items-center">
