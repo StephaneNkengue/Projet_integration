@@ -82,11 +82,20 @@
                                                         :data-bs-target="'#collapseFacture' + facture.id"
                                                         aria-expanded="true"
                                                         :aria-controls="'collapseFacture' + facture.id">
+                                                    <div class="col">
+                                                        <img v-if="facture.livraison == true"
+                                                             src="/icons/livrable.png" />
+                                                        <p v-else-if="facture.livraison == false">
+                                                            Cueillette
+                                                        </p>
+                                                        <p v-else>
+                                                            !
+                                                        </p>
+                                                    </div>
                                                     <div class="col-10">
                                                         {{ facture.prenom }} {{ facture.nom }} ({{facture.pseudonyme}})<br />{{ facture.courriel }}<br />{{facture.telephone}}
                                                     </div>
                                                     <div class="col">
-
                                                         <button v-if="facture.livraison == true"
                                                                 class="btn btn-info"
                                                                 data-bs-toggle="modal"
@@ -112,18 +121,12 @@
                                                             <tr>
                                                                 <th scope="col">Numéro du lot</th>
                                                                 <th scope="col">Prix vendu</th>
-                                                                <th scope="col">Livraison</th>
                                                             </tr>
                                                         </thead>
                                                         <tbody>
                                                             <tr v-for="lot in facture.lots" :key="lot.id">
                                                                 <td scope="row">{{ lot.numero }}</td>
                                                                 <td>{{ lot.mise }}$</td>
-                                                                <td>
-                                                                    <img v-if="lot.estLivrable"
-                                                                         src="/icons/livrable.png" />
-                                                                    <img v-else src="/icons/nonlivrable.png" />
-                                                                </td>
                                                             </tr>
                                                         </tbody>
                                                     </table>
