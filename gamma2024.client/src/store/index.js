@@ -1,6 +1,5 @@
 import { createStore } from "vuex";
 import { initApi } from "@/services/api";
-import * as signalR from "@microsoft/signalr";
 import { startSignalRConnection, stopSignalRConnection } from '@/services/signalR';
 
 const store = createStore({
