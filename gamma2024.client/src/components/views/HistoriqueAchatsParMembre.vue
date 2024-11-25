@@ -63,6 +63,17 @@
                             <h2 class="accordion-header px-0 d-flex" :style="{border: styleBorder}">
                                 <button class="accordion-button h-52" type="button" data-bs-toggle="collapse" :data-bs-target="'#collapse' + encan.encan"
                                         aria-expanded="true" :aria-controls="'collapse' + encan.encan">
+                                    <div class="col">
+                                        <img v-if="encan.livraison == true"
+                                             src="/icons/livrable.png" />
+                                        <p v-else-if="encan.livraison == false">
+                                            Cueillette
+                                        </p>
+                                        <p v-else>
+                                            !
+                                        </p>
+                                    </div>
+
                                     <div class="col-10 d-flex flex-row">
                                         <div class="pe-5">
                                             Encan : {{ encan.encan }}
@@ -103,18 +114,12 @@
                                                 <tr>
                                                     <th scope="col">Numéro du lot</th>
                                                     <th scope="col">Prix vendu</th>
-                                                    <th scope="col">Livraison</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 <tr v-for="lot in facture.lots" :key="lot.id">
                                                     <td scope="row">{{ lot.numero }}</td>
                                                     <td>{{ lot.mise }}$</td>
-                                                    <td>
-                                                        <img v-if="lot.estLivrable"
-                                                             src="/icons/livrable.png" />
-                                                        <img v-else src="/icons/nonlivrable.png" />
-                                                    </td>
                                                 </tr>
                                             </tbody>
                                         </table>
