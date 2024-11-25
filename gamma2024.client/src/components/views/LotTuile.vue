@@ -10,9 +10,8 @@
     <div class="align-self-stretch">
       <div class="card-body d-flex flex-column justify-content-between">
         <div class="d-flex align-items-middle justify-content-between">
-          <p class="fs-7 pe-2 mt-1 mb-0">
-            Lot {{ lot.numero }} {{ lot.artiste }} {{ lot.hauteur }} x
-            {{ lot.largeur }} po
+          <p class="fs-8 pe-2 mt-1 mb-0 text-truncate">
+            Lot {{ lot.numero }} - {{ lot.artiste }} {{ lot.hauteur }}x{{ lot.largeur }}po
           </p>
 
           <img
@@ -336,6 +335,10 @@ const nombreOffres = computed(() => {
 <style scoped>
 .fs-7 {
     font-size: 0.89rem;
+}
+
+.fs-8 {
+    font-size: 0.75rem;
 }
 
 .card {
