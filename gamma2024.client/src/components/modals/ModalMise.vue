@@ -17,11 +17,13 @@
                 </div>
                 <div class="modal-body">
                     <div class="d-flex flex-column gap-3">
-                        <p class="fs-5 mb-0">lot {{ lot?.numero }}</p>
-                        <p class="fs-5 mb-0">votre mise actuelle : {{ affichageMiseActuelle }}</p>
-                        <p v-if="miseAutomatique" class="text-info small">
-                            Votre mise commencera à {{ getMiseMinimale }}$ et augmentera automatiquement jusqu'à {{ montantMise }}$
-                        </p>
+                        <p class="fs-5 mb-0">Lot {{ lot?.numero }}</p>
+                        
+                        <div class="mise-info">
+                            <p class="fs-5 mb-2">Mise actuelle : {{ formatMontant(lot?.mise || lot?.prixOuverture) }}$</p>
+                            <p class="fs-5 mb-2">Votre mise : {{ formatMontant(getMiseAffichage) }}$</p>
+                        </div>
+
                         <div class="d-flex flex-column gap-2">
                             <div class="form-check form-switch mb-2">
                                 <input class="form-check-input"
@@ -33,7 +35,7 @@
                                 </label>
                             </div>
 
-                            <div class="d-flex align-items-center gap-2">
+                            <div v-if="miseAutomatique" class="d-flex align-items-center gap-2">
                                 <button class="btn btn-outline-secondary"
                                         @click="decrementerMise"
                                         :disabled="montantMise <= getMiseMinimale">
@@ -45,12 +47,8 @@
                                     +{{ pasEnchere }}$
                                 </button>
                             </div>
-                            <p class="text-muted small">
-                                {{
- miseAutomatique ?
-                  "Montant maximum pour la mise automatique" :
-                  "Montant de la mise"
-                                }}
+                            <p v-if="miseAutomatique" class="text-info small">
+                                Votre mise commencera à {{ getMiseMinimale }}$ et augmentera automatiquement jusqu'à {{ montantMise }}$
                             </p>
                         </div>
                     </div>
@@ -177,13 +175,19 @@
             const prixOuverture = props.lot.prixOuverture;
 
             if (miseAutomatique.value) {
-                montantMaximal = montantMise.value; // Le montant max saisi
-                // Si pas de mise, on commence au prix d'ouverture
+                // Mode mise automatique
+                montantMaximal = montantMise.value; // Le montant maximum choisi par l'utilisateur
+                // La mise effective commence au minimum (prix d'ouverture ou mise actuelle + step)
                 montantEffectif = miseActuelle === 0 ? 
                     prixOuverture : 
                     miseActuelle + calculerPasEnchere(miseActuelle);
             } else {
-                montantEffectif = montantMise.value;
+                // Mode mise manuelle
+                // La mise effective est directement le prochain palier
+                montantEffectif = miseActuelle === 0 ?
+                    prixOuverture + calculerPasEnchere(prixOuverture) :
+                    miseActuelle + calculerPasEnchere(miseActuelle);
+                montantMaximal = null; // Pas de maximum en mode manuel
             }
 
             const miseData = {
@@ -191,6 +195,8 @@
                 montant: montantEffectif,
                 montantMaximal: montantMaximal
             };
+
+            console.log('Données de mise envoyées:', miseData); // Pour debug
 
             const response = await store.dispatch("placerMise", miseData);
             
@@ -332,6 +338,24 @@
             montantMise.value = getMiseMinimale.value;
         }
     });
+
+    // Nouveau computed pour l'affichage de la mise
+    const getMiseAffichage = computed(() => {
+        if (miseAutomatique.value) {
+            return montantMise.value;
+        } else {
+            const miseActuelle = props.lot?.mise || 0;
+            if (miseActuelle === 0) {
+                return props.lot?.prixOuverture + calculerPasEnchere(props.lot?.prixOuverture);
+            }
+            return miseActuelle + calculerPasEnchere(miseActuelle);
+        }
+    });
+
+    // Fonction utilitaire pour formater les montants
+    const formatMontant = (montant) => {
+        return montant ? Math.floor(montant) : 0;
+    };
 </script>
 
 <style scoped>
