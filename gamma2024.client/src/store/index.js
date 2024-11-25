@@ -967,6 +967,12 @@ const store = createStore({
         },
 
         async initializeSignalR({ commit, state }) {
+            // Vérifier si une connexion existe déjà
+            if (state.connection) {
+                console.log("SignalR connection already exists");
+                return;
+            }
+
             if (!state.isLoggedIn) return;
 
             try {
@@ -1140,8 +1146,10 @@ const store = createStore({
         },
 
         async getUserBidForLot({ state, commit }, lotId) {
+            // Ne faire l'appel que si l'utilisateur est connecté
+            if (!state.isLoggedIn) return 0;
+            
             try {
-
                 const response = await state.api.get(`/lots/userLastBid/${lotId}`);
                 if (response.data > 0) {
                     commit('UPDATE_USER_LAST_BID', {

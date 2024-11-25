@@ -3,6 +3,11 @@ import * as signalR from "@microsoft/signalr";
 let connection = null;
 
 export const startSignalRConnection = async (baseUrl, token) => {
+  if (connection && connection.state === "Connected") {
+    console.log("Réutilisation d'une connexion SignalR existante");
+    return connection;
+  }
+
   try {
     connection = new signalR.HubConnectionBuilder()
       .withUrl(`${baseUrl}/api/hub/lotMiseHub`, {

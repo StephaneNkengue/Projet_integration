@@ -287,31 +287,17 @@
   };
 
   onMounted(async () => {
-      // Initialisation immédiate avec les données du store
-      const lotActuel = store.getters.getLot(props.lotRecu.id);
-      if (lotActuel) {
-          lot.value = {...lotActuel};
-      } else {
-          lot.value = {...props.lotRecu};
-      }
-      
+      lot.value = props.lotRecu;
       urlApi.value = await store.state.api.defaults.baseURL.replace("\api", "");
       
-      // Récupérer la dernière mise de l'utilisateur
-      if (props.lotRecu.id) {
+      // Ne récupérer la dernière mise que si l'utilisateur est connecté
+      if (store.state.isLoggedIn && props.lotRecu.id) {
           userLastBid.value = await store.dispatch('getUserBidForLot', props.lotRecu.id);
       }
       
-      // S'abonner aux événements de mise
       if (store.state.connection) {
           store.state.connection.on("ReceiveNewBid", handleNewBid);
       }
-
-      // Forcer une réévaluation des computed properties
-      nextTick(() => {
-          isUserHighestBidder.value;
-          isUserOutbid.value;
-      });
   });
 
   watch(() => store.getters.getLot(props.lotRecu.id)?.mise, async (newMise) => {
