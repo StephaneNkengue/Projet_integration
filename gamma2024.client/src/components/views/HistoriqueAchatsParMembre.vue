@@ -1,6 +1,6 @@
 <template>
     <span v-for="encan in numerosEncans">
-        <FactureModal :facturePdfPath="encan.pdfPath" :idFacture="encan.id"></FactureModal>
+        <FactureModal :facturePdfPath="encan.pdfPath" :idFacture="'Fac'+encan.id"></FactureModal>
         <FactureModal v-if="encan.livraison == true" :facturePdfPath="encan.pdfPathLivraison" :idFacture="'Livraison'+encan.id"></FactureModal>
     </span>
     <div class="container mt-5">
@@ -85,7 +85,7 @@
                                     <div class="col">
                                         <button class="btn btn-info"
                                                 data-bs-toggle="modal"
-                                                :data-bs-target="'#modal'+encan.id">
+                                                :data-bs-target="'#modalFac'+encan.id">
                                             <img src="/images/ice.png" class="btnVisuel img-fluid" alt="..." />
                                         </button>
                                     </div>
