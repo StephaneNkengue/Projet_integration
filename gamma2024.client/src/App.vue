@@ -11,7 +11,7 @@ onMounted(async () => {
     await store.dispatch("fetchUserBids");
   }
   // Initialiser le WebSocket
-  await store.dispatch("initSignalR");
+  await store.dispatch("initializeSignalR");
 });
 </script>
 
