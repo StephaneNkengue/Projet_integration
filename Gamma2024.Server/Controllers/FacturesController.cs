@@ -4,7 +4,6 @@ using Gamma2024.Server.Models;
 using Gamma2024.Server.Services;
 using Gamma2024.Server.ViewModels;
 using jsreport.AspNetCore;
-using jsreport.Types;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -21,60 +20,16 @@ namespace Gamma2024.Server.Controllers
         private readonly IEmailSender _emailSender;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly FactureService _factureService;
+        private readonly IWebHostEnvironment _environment;
 
-        public FacturesController(IJsReportMVCService jsReportService, ApplicationDbContext context, UserManager<ApplicationUser> userManager, FactureService factureService)
+        public FacturesController(IJsReportMVCService jsReportService, IWebHostEnvironment environment, ApplicationDbContext context, UserManager<ApplicationUser> userManager, FactureService factureService, IEmailSender emailSender)
         {
             _jsReportService = jsReportService;
             _context = context;
             _userManager = userManager;
             _factureService = factureService;
-        }
-
-        [HttpPost("generate")]
-        public async Task<IActionResult> GenerateInvoice([FromBody] Facture model)
-        {
-            var report = await _jsReportService.RenderAsync(new RenderRequest
-            {
-                Template = new Template
-                {
-                    Content = "<h1>Invoice for {{name}}</h1><p>Amount: ${{amount}}</p>",
-                    Engine = Engine.Handlebars,
-                    Recipe = Recipe.ChromePdf
-                },
-                Data = new
-                {
-                    idFacture = model.Id,
-                    adresse = _context.Adresses.FindAsync(model.Client.Adresses.First().Id),
-                    user = _context.Users.FindAsync(model.IdClient),
-
-                }
-            });
-
-            //File(report.Content, "application/pdf", "invoice.pdf");
-            var memoryStream = new MemoryStream();
-
-            await report.Content.CopyToAsync(memoryStream);
-            var pdfBytes = memoryStream.ToArray();
-
-            var client = await _context.Users.FindAsync(model.IdClient);
-            if (client != null)
-            {
-
-                var subject = "Confirmation de courriel";
-                var messageText = $"Merci d'avoir magasiné chez Encans de Nantes au Québec. Vous trouverez votre facture en pièce jointe.";
-                var attachmentName = "invoice.pdf";
-
-
-                _emailSender.Send(client.Email, subject, messageText, pdfBytes, attachmentName);
-                return Ok("Facture envoyé avec succès");
-
-
-            }
-            else
-            {
-                return BadRequest("Erreur lors de l'envoi de la facture");
-            }
-
+            _emailSender = emailSender;
+            _environment = environment;
         }
 
         [HttpGet("chercherFactures")]
@@ -93,17 +48,41 @@ namespace Gamma2024.Server.Controllers
             {
                 return null;
             }
-
             ICollection<FactureAffichageMembreVM> factures = _factureService.ChercherFacturesMembre(userId);
             return factures;
         }
 
         [HttpPost("CreerFacturesParEncan/{numeroEncan}")]
-        public ICollection<Facture> CreerFacturesParEncan(int numeroEncan)
+        public async Task<IActionResult> CreerFacturesParEncan(int numeroEncan)
         {
-            ICollection<Facture> factures = _factureService.CreerFacturesParEncan(numeroEncan);
+            ICollection<Facture> factures = await _factureService.CreerFacturesParEncan(numeroEncan);
+            return Ok(factures);
+        }
 
-            return factures;
+        [HttpGet("chercherFacturesChoixAFaire")]
+        public IActionResult ChercherFacturesChoixAFaire()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId))
+            {
+                return BadRequest("Aucun utilisateur trouvé.");
+            }
+
+            var choix = _context.Factures.Where(f => f.ChoixLivraison == null && f.IdClient == userId);
+
+            return Ok(choix.Select(c => new FactureChoixAFaireVM()
+            {
+                Id = c.Id,
+                NumeroEncan = c.NumeroEncan,
+            }).ToList());
+        }
+
+        [HttpGet("chercherFacturesParEncan/{numeroEncan}")]
+        public IActionResult ChercherFacturesParEncan(int numeroEncan)
+        {
+            var factures = _factureService.ChercherFacturesParEncan(numeroEncan);
+
+            return Ok(factures);
         }
     }
 }

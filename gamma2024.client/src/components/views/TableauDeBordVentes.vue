@@ -1,4 +1,8 @@
 <template>
+    <span v-for="facture in ventesAffiche" :key="facture.id">
+        <FactureModal :facturePdfPath="facture.pdfPath" :idFacture="'Fac' + facture.id"></FactureModal>
+        <FactureModal v-if="facture.livraison == true" :facturePdfPath="facture.pdfPathLivraison" :idFacture="'Livraison'+facture.id"></FactureModal>
+    </span>
     <div class="container mt-5">
         <h3 class="text-center">Rechercher une vente</h3>
         <input v-model="searchQuery"
@@ -55,7 +59,12 @@
                                         :data-bs-target="'#collapse' + encan.encan"
                                         aria-expanded="true"
                                         :aria-controls="'collapse' + encan.encan">
-                                    {{ encan.encan }} ({{ encan.dateAchat.split("T")[0] }})
+                                    <div class="pe-5">
+                                        Encan : {{ encan.encan }}
+                                    </div>
+                                    <div>
+                                        Date de la facturation : {{ encan.dateAchat.split("T")[0] }}
+                                    </div>
                                 </button>
                             </h2>
                             <!--Changer le 233 en le numero de l'encan le plus récent-->
@@ -73,11 +82,22 @@
                                                         :data-bs-target="'#collapseFacture' + facture.id"
                                                         aria-expanded="true"
                                                         :aria-controls="'collapseFacture' + facture.id">
-                                                    <div class="col-11">
+                                                    <div class="col-10">
                                                         {{ facture.prenom }} {{ facture.nom }} ({{facture.pseudonyme}})<br />{{ facture.courriel }}<br />{{facture.telephone}}
                                                     </div>
                                                     <div class="col">
-                                                        <button class="btn btn-info">
+
+                                                        <button v-if="facture.livraison == true"
+                                                                class="btn btn-info"
+                                                                data-bs-toggle="modal"
+                                                                :data-bs-target="'#modalLivraison'+facture.id">
+                                                            <img src="/icons/IconeLivrable.png" class="btnVisuel img-fluid" alt="..." />
+                                                        </button>
+                                                    </div>
+                                                    <div class="col">
+                                                        <button class="btn btn-info"
+                                                                data-bs-toggle="modal"
+                                                                :data-bs-target="'#modalFac'+facture.id">
                                                             <img src="/images/ice.png" class="btnVisuel img-fluid" alt="..." />
                                                         </button>
                                                     </div>
@@ -150,6 +170,7 @@
 <script setup>
     import { computed, watch, onMounted, ref } from "vue";
     import { useStore } from "vuex";
+    import FactureModal from "@/components/modals/VoirFactureModal.vue";
 
     const store = useStore();
     const listeFactures = ref([]);

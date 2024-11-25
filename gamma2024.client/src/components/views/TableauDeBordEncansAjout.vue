@@ -82,7 +82,8 @@
                         Annuler
                     </button>
                 </router-link>
-                <button :disabled="stateFinal"
+                <button id="btnSubmitEncanAjout"
+                        :disabled="stateFinal"
                         :class="[stateFinal ? 'bleuValide' : 'bleuNonValide', classeActiveBouton, 'btn']" class="bleuValideSurvoler"
                         type="submit">
                     Ajouter
@@ -93,7 +94,7 @@
 </template>
 
 <script setup>
-    import { ref, reactive, computed } from "vue";
+    import { ref, reactive, computed, onMounted } from "vue";
     import useVuelidate from "@vuelidate/core";
     import { required, helpers, minValue } from "@vuelidate/validators";
     import { useStore } from "vuex";
@@ -138,6 +139,16 @@
     const stateFinal = computed(() => {
         return v.value.$invalid;
     });
+    var element;
+    onMounted(async () => {
+        try {
+            element = document.getElementById("btnSubmitEncanAjout");
+            element.disabled = stateFinal.value;
+        }
+        catch (erreur) {
+            console.log("Erreur encan ajout" + erreur);
+        }
+    });
 
     const creerEncan = async () => {
         const result = await v.value.$validate();
@@ -149,6 +160,7 @@
 
         try {
             const response = await store.dispatch("creerEncan", formData);
+            element.disabled = true;
             if (response.success) {
                 successMessage.value = "Encan créé avec succès!";
                 errorMessage.value = "";

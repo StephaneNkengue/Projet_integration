@@ -1177,8 +1177,8 @@ async supprimerCarte({ state }, pmId) {
                 if (state.user.photo.startsWith("http")) {
                     return state.user.photo;
                 } else {
-                    const baseUrl = state.api.defaults.baseURL.replace("/api", "");
-                    const fullUrl = new URL(state.user.photo, baseUrl).href;
+                    const baseUrl = state.api.defaults.avatarURL;
+                    const fullUrl = baseUrl + "/" + state.user.photo;
                     console.log("URL complète de l'avatar:", fullUrl);
                     return fullUrl;
                 }

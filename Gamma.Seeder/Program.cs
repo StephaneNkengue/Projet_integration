@@ -18,8 +18,8 @@ builder.Configuration
 
 StripeConfiguration.ApiKey = builder.Configuration["Stripe:SecretKey"];
 
-var options = new CustomerListOptions { Limit = 100 };
 var customerService = new CustomerService();
+var options = new CustomerListOptions { Limit = 100 };
 StripeList<Customer> customersTemp = customerService.List(options);
 StripeList<Customer> customers = customersTemp;
 
@@ -457,7 +457,9 @@ foreach (var item in utilisateurs)
             Client = item,
             DateAchat = DateTime.Now,
             PrixLots = 0,
-            NumeroEncan = 232
+            NumeroEncan = 232,
+            FacturePDFPath = "",
+            estPaye = true
         };
 
         foreach (var a in achats)
@@ -476,26 +478,14 @@ foreach (var item in utilisateurs)
         context.Factures.Add(facture);
         context.SaveChanges();
 
-        //if (facture.Livrable)
-        //{
-        //    var factureLivraison = new FactureLivraison
-        //    {
-        //        IdFacture = facture.Id,
-        //        Facture = facture,
-        //        Charite = charites[0],
-        //        IdCharite = charites[0].Id,
-        //        Adresse = facture.Client.Adresses.First(),
-        //        DateAchat = DateTime.Now,
-        //    };
-        //    factureLivraison.CalculerFacture();
+        facture.FacturePDFPath = $"Factures/F232/F232_{facture.Id}.pdf";
 
-        //    context.FactureLivraisons.Add(factureLivraison);
-        //    context.SaveChanges();
-        //}
+        context.Factures.Update(facture);
 
         infoFactures.RemoveAll(i => i.Pseudonyme == item.UserName);
     }
 }
+
 
 context.Lots.UpdateRange(lots232);
 context.SaveChanges();

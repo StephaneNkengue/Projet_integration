@@ -1,5 +1,15 @@
 <template>
+    <span v-for="encan in numerosEncans">
+        <FactureModal :facturePdfPath="encan.pdfPath" :idFacture="'Fac'+encan.id"></FactureModal>
+        <FactureModal v-if="encan.livraison == true" :facturePdfPath="encan.pdfPathLivraison" :idFacture="'Livraison'+encan.id"></FactureModal>
+    </span>
     <div class="container mt-5">
+        <router-link class="text-decoration-none" :to="{ name: 'ChoixLivraison', params: {idFacture:facture.id} }" v-for="facture in listeFacturesChoixAFaire" :key="facture.id">
+            <div class="alert alert-danger" role="alert">
+                Veuillez faire votre choix de livraison pour l'encan {{ facture.numeroEncan }}
+            </div>
+        </router-link>
+
         <h3 class="text-center">Rechercher une vente</h3>
 
         <input v-model="searchQuery"
@@ -53,12 +63,29 @@
                             <h2 class="accordion-header px-0 d-flex" :style="{border: styleBorder}">
                                 <button class="accordion-button h-52" type="button" data-bs-toggle="collapse" :data-bs-target="'#collapse' + encan.encan"
                                         aria-expanded="true" :aria-controls="'collapse' + encan.encan">
-                                    <div class="col-11">
-                                        {{ encan.encan }} ({{ encan.dateAchat.split("T")[0] }})
+                                    <div class="col-10 d-flex flex-row">
+                                        <div class="pe-5">
+                                            Encan : {{ encan.encan }}
+                                        </div>
+                                        <div>
+                                            Date de la facturation : {{ encan.dateAchat.split("T")[0] }}
+                                        </div>
                                     </div>
 
                                     <div class="col">
-                                        <button class="btn btn-info">
+
+                                        <button v-if="encan.livraison == true"
+                                                class="btn btn-info"
+                                                data-bs-toggle="modal"
+                                                :data-bs-target="'#modalLivraison'+encan.id">
+                                            <img src="/icons/IconeLivrable.png" class="btnVisuel img-fluid" alt="..." />
+                                        </button>
+                                    </div>
+
+                                    <div class="col">
+                                        <button class="btn btn-info"
+                                                data-bs-toggle="modal"
+                                                :data-bs-target="'#modalFac'+encan.id">
                                             <img src="/images/ice.png" class="btnVisuel img-fluid" alt="..." />
                                         </button>
                                     </div>
@@ -131,6 +158,7 @@
 <script setup>
     import { computed, watch, onMounted, ref } from "vue";
     import { useStore } from "vuex";
+    import FactureModal from "@/components/modals/VoirFactureModal.vue";
 
     const store = useStore();
     const listeFacturesMembre = ref([]);
@@ -146,6 +174,8 @@
     const listePagination = ref([]);
     const ventesAffiche = ref([]);
 
+    const listeFacturesChoixAFaire = ref([]);
+
     onMounted(async () => {
         try {
             listeFacturesMembre.value = await store.dispatch("fetchFactureInfoMembre");
@@ -155,6 +185,9 @@
                     numerosEncans.value.push(value);
                 }
             });
+
+            const response = await store.dispatch("chercherFacturesChoixAFaire");
+            listeFacturesChoixAFaire.value = response.data;
 
             nbVentesRecus.value = filteredVentes.value.length;
             ventesParPage.value = nbVentesRecus.value;
@@ -181,7 +214,7 @@
             const searchLower = searchQuery.value.toLowerCase();
             return (
                 vente.encan.toString().startsWith(searchLower) ||
-                vente.dateAchat.toLowerCase().startsWith(searchLower) || 
+                vente.dateAchat.toLowerCase().startsWith(searchLower) ||
                 vente.lots.find(l => l.numero.startsWith(searchLower))
             );
         });
