@@ -1,5 +1,8 @@
 <template>
-    <FactureModal v-for="encan in numerosEncans" :facturePdfPath="encan.pdfPath" :idFacture="encan.id"></FactureModal>
+    <span v-for="encan in numerosEncans">
+        <FactureModal :facturePdfPath="encan.pdfPath" :idFacture="'Fac'+encan.id"></FactureModal>
+        <FactureModal v-if="encan.livraison == true" :facturePdfPath="encan.pdfPathLivraison" :idFacture="'Livraison'+encan.id"></FactureModal>
+    </span>
     <div class="container mt-5">
         <router-link class="text-decoration-none" :to="{ name: 'ChoixLivraison', params: {idFacture:facture.id} }" v-for="facture in listeFacturesChoixAFaire" :key="facture.id">
             <div class="alert alert-danger" role="alert">
@@ -60,7 +63,7 @@
                             <h2 class="accordion-header px-0 d-flex" :style="{border: styleBorder}">
                                 <button class="accordion-button h-52" type="button" data-bs-toggle="collapse" :data-bs-target="'#collapse' + encan.encan"
                                         aria-expanded="true" :aria-controls="'collapse' + encan.encan">
-                                    <div class="col-11 d-flex flex-row">
+                                    <div class="col-10 d-flex flex-row">
                                         <div class="pe-5">
                                             Encan : {{ encan.encan }}
                                         </div>
@@ -70,9 +73,19 @@
                                     </div>
 
                                     <div class="col">
+
+                                        <button v-if="encan.livraison == true"
+                                                class="btn btn-info"
+                                                data-bs-toggle="modal"
+                                                :data-bs-target="'#modalLivraison'+encan.id">
+                                            <img src="/icons/IconeLivrable.png" class="btnVisuel img-fluid" alt="..." />
+                                        </button>
+                                    </div>
+
+                                    <div class="col">
                                         <button class="btn btn-info"
                                                 data-bs-toggle="modal"
-                                                :data-bs-target="'#modal'+encan.id">
+                                                :data-bs-target="'#modalFac'+encan.id">
                                             <img src="/images/ice.png" class="btnVisuel img-fluid" alt="..." />
                                         </button>
                                     </div>
