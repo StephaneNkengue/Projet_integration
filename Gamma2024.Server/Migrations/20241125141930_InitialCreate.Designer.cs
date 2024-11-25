@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Gamma2024.Server.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241121153417_InitialCreate")]
+    [Migration("20241125141930_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -323,6 +323,10 @@ namespace Gamma2024.Server.Migrations
                     b.Property<DateTime>("DateAchat")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("FacturePDFPath")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<double>("FraisEncanteur")
                         .HasColumnType("float");
 
@@ -384,6 +388,10 @@ namespace Gamma2024.Server.Migrations
 
                     b.Property<bool>("EstPaye")
                         .HasColumnType("bit");
+
+                    b.Property<string>("FacturePDFPath")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("IdAdresse")
                         .HasColumnType("int");
