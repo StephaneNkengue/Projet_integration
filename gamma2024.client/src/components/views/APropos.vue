@@ -1,6 +1,6 @@
 <template>
     <div class="d-flex flex-column align-items-center pb-3">
-        <div class="d-flex flex-column align-items-center w-50 fs-5">
+        <div class="d-flex flex-column align-items-center col-10 col-md-6 fs-5">
             <h1 class="pb-4">À propos de nous</h1>
 
             <p class="justifyText">

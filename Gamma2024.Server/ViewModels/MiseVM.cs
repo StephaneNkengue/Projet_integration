@@ -1,9 +1,10 @@
 namespace Gamma2024.Server.ViewModels
 {
-    public class MiseVM
-    {
-        public int IdLot { get; set; }
-        public decimal Montant { get; set; }
-        public string UserId { get; set; }
-    }
+   public class MiseVM
+{
+    public string UserId { get; set; } = null!;
+    public int LotId { get; set; }  // Ajoutez cette propriété
+    public decimal Montant { get; set; }
+    public decimal? MontantMaximal { get; set; }
+}
 }

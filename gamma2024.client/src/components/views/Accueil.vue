@@ -22,7 +22,7 @@
             <AffichageEncanAccueil :type="futur" />
         </div>
 
-        <div class="col-11 col-md-6 pt-3 px-4 mt-4 bleuMoyenFond text-center text-white contourDiv">
+        <div class="col-11 col-md-6 p-3 p-md-4 mt-4 bleuMoyenFond text-center text-white contourDiv">
 
             <div class="fw-bold">
                 <img src="/icons/IconeMarteauBleuGris.png"

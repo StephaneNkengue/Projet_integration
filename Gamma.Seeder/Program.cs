@@ -451,15 +451,16 @@ foreach (var item in utilisateurs)
 
     if (achats.Any())
     {
-        //var facture = new Facture
-        //{
-        //    IdClient = item.Id,
-        //    Client = item,
-        //    DateAchat = DateTime.Now,
-        //    PrixLots = 0,
-        //    NumeroEncan = 232,
-        //    FacturePDFPath = ""
-        //};
+        var facture = new Facture
+        {
+            IdClient = item.Id,
+            Client = item,
+            DateAchat = DateTime.Now,
+            PrixLots = 0,
+            NumeroEncan = 232,
+            FacturePDFPath = "",
+            estPaye = true
+        };
 
         foreach (var a in achats)
         {
@@ -470,18 +471,16 @@ foreach (var item in utilisateurs)
             lot.ClientMise = item;
             lot.SeraLivree = a.Livraison;
             lot.DateFinVente = DateTime.Now;
-            //facture.Lots.Add(lot);
+            facture.Lots.Add(lot);
         }
 
-        //facture.CalculerFacture();
-        //context.Factures.Add(facture);
-        //context.SaveChanges();
+        facture.CalculerFacture();
+        context.Factures.Add(facture);
+        context.SaveChanges();
 
-        //factureService.ChargerFacture(facture);
+        facture.FacturePDFPath = $"Factures/F232/F232_{facture.Id}.pdf";
 
-        //facture.FacturePDFPath = $"Factures/F232_{facture.Id}.pdf";
-
-        //context.Factures.Update(facture);
+        context.Factures.Update(facture);
 
         infoFactures.RemoveAll(i => i.Pseudonyme == item.UserName);
     }

@@ -250,6 +250,11 @@ const chargerLots = async () => {
       store.commit('setLots', response.data);
       listeLots.value = response.data;
       nbLotsRecus.value = response.data.length;
+      
+      // Charger les mises de l'utilisateur si connecté
+      if (store.state.isLoggedIn) {
+        await store.dispatch("fetchUserBids");
+      }
     }
   } catch (error) {
     console.error("Erreur lors du chargement des lots:", error);
@@ -260,6 +265,17 @@ const chargerLots = async () => {
 // Appeler chargerLots au montage du composant
 onMounted(() => {
   chargerLots();
+});
+
+// Ajouter ce computed
+const isLoggedIn = computed(() => store.state.isLoggedIn);
+
+// Ajouter ce watch pour recharger les lots quand l'utilisateur se connecte
+watch(isLoggedIn, async (newValue) => {
+    if (newValue) {
+        await store.dispatch("fetchUserBids");
+        await chargerLots();
+    }
 });
 </script>
 

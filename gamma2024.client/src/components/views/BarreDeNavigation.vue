@@ -27,7 +27,7 @@
                     <div class="collapse navbar-collapse justify-content-between"
                          id="navbarSupportedContent">
                         <ul class="navbar-nav text-center">
-                            <li class="nav-item">
+                            <li class="nav-item align-self-center d-flex align-items-center">
                                 <router-link :to="{ name: 'Accueil' }"
                                              class="text-decoration-none">
                                     <a class="nav-link active"> Accueil </a>
@@ -59,6 +59,12 @@
                                 <router-link :to="{ name: 'HistoriqueAchatsParMembre' }"
                                              class="text-decoration-none">
                                     <a class="nav-link"> Historique des achats </a>
+                                </router-link>
+                            </li>
+                            <li class="nav-item" v-if="estConnecte && estClient">
+                                <router-link :to="{ name: 'HistoriqueMisesParMembre' }"
+                                             class="text-decoration-none">
+                                    <a class="nav-link"> Historique des mises </a>
                                 </router-link>
                             </li>
                         </ul>
