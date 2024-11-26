@@ -85,12 +85,12 @@
                                                     <div class="col">
                                                         <img v-if="facture.livraison == true"
                                                              src="/icons/livrable.png" />
-                                                        <p v-else-if="facture.livraison == false">
-                                                            Cueillette
-                                                        </p>
-                                                        <p v-else>
-                                                            !
-                                                        </p>
+                                                        <img v-else-if="facture.livraison == false"
+                                                             src="/icons/Cueillette.png"
+                                                             class="imgCueillette" />
+                                                        <img v-else
+                                                             src="/icons/Timer.png"
+                                                             class="imgTimer" />
                                                     </div>
                                                     <div class="col-10">
                                                         {{ facture.prenom }} {{ facture.nom }} ({{facture.pseudonyme}})<br />{{ facture.courriel }}<br />{{facture.telephone}}
@@ -330,6 +330,14 @@
     img {
         width: 25px;
         height: 30px;
+    }
+
+    .imgTimer {
+        height: 25px;
+    }
+
+    .imgCueillette {
+        height: 28px;
     }
 
     table,
