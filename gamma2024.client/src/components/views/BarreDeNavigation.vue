@@ -198,7 +198,7 @@
                     <div class="container collapse card mb-5 bg-white aucunPaddingPourCarteLots"
                          id="navbarToggleRechercheAvancee">
                         <div class="card-header d-flex justify-content-center">
-                            <h2 id="titreBarreDeRechercheDeLots">Recherche avancée de lots dans l'Encan</h2>
+                            <h2 id="titreBarreDeRechercheDeLots"></h2>
                         </div>
                         <div class="card-body">
                             <div class="row">
@@ -620,7 +620,7 @@
         numeroEncanPresent = response.data.numeroEncan.toString();
     }
 
-    const changementDeRoute = computed(() => route)
+    const changementDeRoute = computed(() => route.fullPath)
     watch(changementDeRoute, changeTitreBarreRecherche)
 
     async function changeTitreBarreRecherche() {
@@ -853,6 +853,7 @@
             }
             next();
         }
+        changeTitreBarreRecherche();
     });
 
     const desacDateFinEntre = computed(() => {
@@ -962,6 +963,7 @@
         listeDesArtistes.value = await store.dispatch("obtenirArtistes");
         listeDesMediums.value = await store.dispatch("obtenirMediums");
         listeDesCategories.value = await store.dispatch("obtenirCategories");
+        changeTitreBarreRecherche();
     });
 </script>
 <style scoped>
