@@ -1,6 +1,5 @@
 import { createStore } from "vuex";
 import { initApi } from "@/services/api";
-import * as signalR from "@microsoft/signalr";
 import { startSignalRConnection, stopSignalRConnection } from '@/services/signalR';
 
 const store = createStore({
@@ -968,6 +967,12 @@ const store = createStore({
         },
 
         async initializeSignalR({ commit, state }) {
+            // Vérifier si une connexion existe déjà
+            if (state.connection) {
+                console.log("SignalR connection already exists");
+                return;
+            }
+
             if (!state.isLoggedIn) return;
 
             try {
@@ -1107,7 +1112,7 @@ const store = createStore({
             }
         },
 
-async chercherAdressesClient({ state }) {
+        async chercherAdressesClient({ state }) {
             try {
                 const response = await state.api.get(
                     "/utilisateurs/chercheradressesclient"
@@ -1118,7 +1123,7 @@ async chercherAdressesClient({ state }) {
             }
         },
 
-async enregistrerChoixLivraison({ state }, choixLivraison) {
+        async enregistrerChoixLivraison({ state }, choixLivraison) {
             try {
                 const response = await state.api.post(
                     "/facturesLivraison/enregistrerChoixLivraison", choixLivraison
@@ -1129,7 +1134,7 @@ async enregistrerChoixLivraison({ state }, choixLivraison) {
             }
         },
 
-async supprimerCarte({ state }, pmId) {
+        async supprimerCarte({ state }, pmId) {
             try {
                 const response = await state.api.post(
                     "/paiement/supprimerCarte/" + pmId
@@ -1141,8 +1146,10 @@ async supprimerCarte({ state }, pmId) {
         },
 
         async getUserBidForLot({ state, commit }, lotId) {
+            // Ne faire l'appel que si l'utilisateur est connecté
+            if (!state.isLoggedIn) return 0;
+            
             try {
-                
                 const response = await state.api.get(`/lots/userLastBid/${lotId}`);
                 if (response.data > 0) {
                     commit('UPDATE_USER_LAST_BID', {
@@ -1156,7 +1163,32 @@ async supprimerCarte({ state }, pmId) {
                 console.error("Erreur lors de la récupération de la dernière mise:", error);
                 return 0;
             }
+        },
+        async chargerClientsFinEncan({ state }, numeroEncan) {
+            try {
+                const response = await state.api.post("/factures/CreerFacturesParEncan/" + 232);
+                return response;
+            } catch (error) {
+                return "Erreur, veuillez réessayer";
+            }
+        },
+        async chercherFacturesParEncan({ state }, numeroEncan) {
+            try {
+                const response = await state.api.get("/factures/chercherFacturesParEncan/" + 232);
+                return response;
+            } catch (error) {
+                return "Erreur, veuillez réessayer";
+            }
+        },
+        async chercherFacturesChoixAFaire({ state }) {
+            try {
+                const response = await state.api.get("/factures/chercherFacturesChoixAFaire");
+                return response;
+            } catch (error) {
+                return "Erreur, veuillez réessayer";
+            }
         }
+
     },
     getters: {
         isAdmin: (state) => {

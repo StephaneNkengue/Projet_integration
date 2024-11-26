@@ -61,6 +61,12 @@
                                     <a class="nav-link"> Historique des achats </a>
                                 </router-link>
                             </li>
+                            <li class="nav-item" v-if="estConnecte && estClient">
+                                <router-link :to="{ name: 'HistoriqueMisesParMembre' }"
+                                             class="text-decoration-none">
+                                    <a class="nav-link"> Historique des mises </a>
+                                </router-link>
+                            </li>
                         </ul>
 
                         <div class="d-flex justify-content-center gap-3 mb-2 mb-lg-0 flex-row align-items-center justify-content-center">

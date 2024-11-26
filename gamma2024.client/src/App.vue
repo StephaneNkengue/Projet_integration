@@ -10,8 +10,10 @@ onMounted(async () => {
   if (store.state.isLoggedIn) {
     await store.dispatch("fetchUserBids");
   }
-  // Initialiser le WebSocket
-  await store.dispatch("initSignalR");
+  // Initialiser SignalR une seule fois au montage de l'application
+  if (store.state.isLoggedIn && !store.state.connection) {
+    await store.dispatch("initializeSignalR");
+  }
 });
 </script>
 
