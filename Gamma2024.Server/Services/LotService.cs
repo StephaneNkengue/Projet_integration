@@ -1,8 +1,9 @@
 using Gamma2024.Server.Data;
+using Gamma2024.Server.Hub;
 using Gamma2024.Server.Models;
 using Gamma2024.Server.Validations;
 using Gamma2024.Server.ViewModels;
-using Gamma2024.Server.WebSockets;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 
 namespace Gamma2024.Server.Services
@@ -11,13 +12,16 @@ namespace Gamma2024.Server.Services
     {
         private readonly ApplicationDbContext _context;
         private readonly IWebHostEnvironment _environment;
-        private readonly WebSocketHandler _webSocketHandler;
+        private readonly IHubContext<LotMiseHub, ILotMiseHub> _hubContext;
+        private readonly ILogger<LotService> _logger;
 
-        public LotService(ApplicationDbContext context, IWebHostEnvironment environment, WebSocketHandler webSocketHandler)
+
+        public LotService(ApplicationDbContext context, IWebHostEnvironment environment, IHubContext<LotMiseHub, ILotMiseHub> hubContext, ILogger<LotService> logger)
         {
             _context = context;
             _environment = environment;
-            _webSocketHandler = webSocketHandler;
+            _hubContext = hubContext;
+            _logger = logger;
         }
 
         public async Task<IEnumerable<LotAffichageVM>> ObtenirTousLots()
@@ -361,6 +365,7 @@ namespace Gamma2024.Server.Services
                 var lots = _context.Lots
                     .Include(l => l.EncanLots)
                     .Include(l => l.Photos)
+                    .Include(l => l.MisesAutomatiques)
                     .Where(l => l.EncanLots.Any(el => el.IdEncan == idEncan))
                     .Select(l => new LotEncanAffichageVM()
                     {
@@ -386,7 +391,8 @@ namespace Gamma2024.Server.Services
                         IdVendeur = l.IdVendeur.ToString(),
                         Vendeur = $"{l.Vendeur.Prenom} {l.Vendeur.Nom}",
                         IdClientMise = l.IdClientMise ?? "",
-                        SeraLivree = l.SeraLivree ?? false
+                        SeraLivree = l.SeraLivree ?? false,
+                        NombreMises = l.MisesAutomatiques.Count(),
                     })
                     .ToList();
 
@@ -594,65 +600,301 @@ namespace Gamma2024.Server.Services
 
         public async Task<(bool success, string message)> PlacerMise(MiseVM mise)
         {
-            var lot = await _context.Lots
-                .Include(l => l.EncanLots)
-                .ThenInclude(el => el.Encan)
-                .FirstOrDefaultAsync(l => l.Id == mise.IdLot);
-
-            if (lot == null)
-            {
-                return (false, "Lot non trouvé");
-            }
-
-            var encan = lot.EncanLots.FirstOrDefault()?.Encan;
-            if (encan == null)
-            {
-                return (false, "Encan non trouvé");
-            }
-
-            if (DateTime.Now < encan.DateDebut)
-            {
-                return (false, "L'encan n'a pas encore commencé");
-            }
-
-            // Vérifier si la mise est valide (conversion explicite de decimal en double)
-            if (lot.Mise.HasValue && mise.Montant <= (decimal)lot.Mise.Value)
-            {
-                return (false, "La mise doit être supérieure à la mise actuelle");
-            }
-
-            // Conversion explicite de decimal en double
-            lot.Mise = (double)mise.Montant;
-            lot.IdClientMise = mise.UserId;
-
             try
             {
+                // Vérification de l'utilisateur
+                var user = await _context.Users.FindAsync(mise.UserId);
+                if (user == null)
+                {
+                    return (false, "Utilisateur non trouvé");
+                }
+
+                if (user.LockoutEnd != null)
+                {
+                    return (false, "Votre compte est temporairement bloqué");
+                }
+
+                // Vérification du lot
+                var lot = await _context.Lots
+                    .Include(l => l.MisesAutomatiques)
+                    .Include(l => l.EncanLots)
+                        .ThenInclude(el => el.Encan)
+                    .FirstOrDefaultAsync(l => l.Id == mise.LotId);
+
+                if (lot == null)
+                {
+                    return (false, "Lot non trouvé");
+                }
+
+                // Vérification si le lot est déjà vendu
+                if (lot.EstVendu)
+                {
+                    return (false, "Ce lot est déjà vendu");
+                }
+
+                // Vérification si l'utilisateur est déjà le plus haut enchérisseur
+                if (lot.IdClientMise == mise.UserId)
+                {
+                    return (false, "Vous êtes déjà le plus haut enchérisseur");
+                }
+
+                // Vérification de l'encan
+                var encan = lot.EncanLots.FirstOrDefault()?.Encan;
+                if (encan == null)
+                {
+                    return (false, "Encan non trouvé");
+                }
+
+                var maintenant = DateTime.Now;
+                if (maintenant < encan.DateDebut)
+                {
+                    return (false, "L'encan n'a pas encore commencé");
+                }
+
+                if (maintenant > encan.DateFin)
+                {
+                    return (false, "L'encan est terminé");
+                }
+
+                // Vérification du pas d'enchère
+                if (!EstMiseValide(lot, lot.Mise.HasValue ? (decimal)lot.Mise.Value : 0m, mise.Montant, mise.MontantMaximal ?? 0, mise.MontantMaximal.HasValue))
+                {
+                    string message = mise.MontantMaximal.HasValue
+                        ? "La mise automatique doit être d'au moins 2 pas d'enchère"
+                        : "La mise ne respecte pas le pas d'enchère";
+                    return (false, message);
+                }
+
+                // Création de l'entrée dans l'historique des mises
+                var nouvelleMise = new MiseAutomatique
+                {
+                    LotId = mise.LotId,
+                    UserId = mise.UserId,
+                    Montant = mise.Montant,
+                    DateMise = DateTime.UtcNow,
+                    EstMiseAutomatique = mise.MontantMaximal.HasValue,
+                    MontantMaximal = mise.MontantMaximal
+                };
+
+                _context.MiseAutomatiques.Add(nouvelleMise);
+
+                // Mise à jour du lot
+                lot.Mise = Convert.ToDouble(mise.Montant);
+                lot.IdClientMise = mise.UserId;
+                _context.Lots.Update(lot);
+
                 await _context.SaveChangesAsync();
 
-                await _webSocketHandler.BroadcastMessage(new
+                // Traitement des mises automatiques
+                await TraiterMisesAutomatiques(lot, encan);
+
+                // Notification
+                var derniereMise = await _context.MiseAutomatiques
+                    .Where(m => m.LotId == lot.Id)
+                    .OrderByDescending(m => m.DateMise)
+                    .FirstOrDefaultAsync();
+
+                await _hubContext.Clients.All.ReceiveNewBid(new
                 {
-                    type = "NOUVELLE_MISE",
-                    idLot = mise.IdLot,
-                    montant = mise.Montant,
-                    userId = mise.UserId
+                    idLot = lot.Id,
+                    montant = derniereMise.Montant,
+                    userId = derniereMise.UserId,
+                    userLastBid = new
+                    {
+                        userId = mise.UserId,
+                        montant = mise.Montant
+                    },
+                    nombreMises = await _context.MiseAutomatiques.CountAsync(m => m.LotId == lot.Id),
+                    timestamp = DateTime.Now
                 });
 
                 return (true, "Mise placée avec succès");
             }
             catch (Exception ex)
             {
-                return (false, $"Erreur lors de la mise : {ex.Message}");
+                _logger.LogError(ex, "Erreur lors de la mise pour le lot {LotId}", mise.LotId);
+                return (false, "Une erreur est survenue lors de la mise");
             }
         }
 
-        public async Task<IEnumerable<int>> GetUserBids(string userId)
+        private bool EstMiseValide(Lot lot, decimal miseActuelle, decimal nouvelleMise, decimal miseMaximale, bool estMiseAutomatique = false)
         {
-            var userBids = await _context.Lots
-                .Where(l => l.IdClientMise == userId)
-                .Select(l => l.Id)
+            if (miseActuelle == 0m)
+            {
+                // Si c'est une mise automatique, on vérifie juste que le montant maximal est suffisant
+                // La mise effective sera le prix d'ouverture
+                return nouvelleMise >= (decimal)lot.PrixOuverture;
+            }
+
+            decimal pasEnchere = CalculerPasEnchere(miseActuelle);
+            if (estMiseAutomatique)
+            {
+                return miseMaximale >= (miseActuelle + (pasEnchere * 2));
+            }
+            return nouvelleMise >= (miseActuelle + pasEnchere);
+        }
+
+        private decimal CalculerPasEnchere(decimal montant)
+        {
+            if (montant <= 199.0m)
+            {
+                return 10.0m;
+            }
+
+            if (montant <= 499.0m)
+            {
+                return 25.0m;
+            }
+
+            if (montant <= 999.0m)
+            {
+                return 50.0m;
+            }
+
+            if (montant <= 1999.0m)
+            {
+                return 100.0m;
+            }
+
+            if (montant <= 4999.0m)
+            {
+                return 200.0m;
+            }
+
+            if (montant <= 9999.0m)
+            {
+                return 250.0m;
+            }
+
+            if (montant <= 19999.0m)
+            {
+                return 500.0m;
+            }
+
+            if (montant <= 49999.0m)
+            {
+                return 1000.0m;
+            }
+
+            if (montant <= 99999.0m)
+            {
+                return 2000.0m;
+            }
+
+            if (montant <= 499999.0m)
+            {
+                return 5000.0m;
+            }
+
+            return 10000.0m;
+        }
+
+        private async Task TraiterMisesAutomatiques(Lot lot, Encan encan)
+        {
+            bool continuerMises = true;
+            while (continuerMises)
+            {
+                if (DateTime.Now > encan.DateFin)
+                {
+                    break;
+                }
+
+                var misesAutomatiques = await _context.MiseAutomatiques
+                    .Where(m => m.LotId == lot.Id &&
+                               m.MontantMaximal.HasValue &&
+                               m.MontantMaximal > (decimal)lot.Mise &&
+                               m.UserId != lot.IdClientMise)
+                    .OrderByDescending(m => m.MontantMaximal)
+                    .ThenBy(m => m.DateMise)
+                    .ToListAsync();
+
+                if (!misesAutomatiques.Any())
+                {
+                    continuerMises = false;
+                    continue;
+                }
+
+                var miseGagnante = misesAutomatiques.First();
+                decimal nouvelleMise = (decimal)lot.Mise + CalculerPasEnchere((decimal)lot.PrixOuverture);
+
+                if (nouvelleMise <= miseGagnante.MontantMaximal)
+                {
+                    var nouvelleMiseAuto = new MiseAutomatique
+                    {
+                        LotId = lot.Id,
+                        UserId = miseGagnante.UserId,
+                        Montant = nouvelleMise,
+                        DateMise = DateTime.UtcNow,
+                        EstMiseAutomatique = true,
+                        MontantMaximal = miseGagnante.MontantMaximal
+                    };
+
+                    _context.MiseAutomatiques.Add(nouvelleMiseAuto);
+
+                    // Correction ici : conversion explicite de decimal vers double
+                    lot.Mise = Convert.ToDouble(nouvelleMise);
+                    lot.IdClientMise = miseGagnante.UserId;
+                    _context.Lots.Update(lot);
+
+                    await _context.SaveChangesAsync();
+                }
+                else
+                {
+                    continuerMises = false;
+                }
+            }
+        }
+
+        // Méthode pour récupérer l'historique des mises d'un lot
+        public async Task<IEnumerable<MiseHistoriqueVM>> GetLotBidHistory(int lotId)
+        {
+            return await _context.MiseAutomatiques
+                .Where(m => m.LotId == lotId)
+                .OrderByDescending(m => m.DateMise)
+                .Select(m => new MiseHistoriqueVM
+                {
+                    UserId = m.UserId,
+                    Montant = m.Montant,
+                    DateMise = m.DateMise,
+                    EstMiseAutomatique = m.EstMiseAutomatique
+                })
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<UserBidVM>> GetUserBids(string userId)
+        {
+            var userBids = await _context.MiseAutomatiques
+                .Where(m => m.UserId == userId)  // Filtre les mises de l'utilisateur
+                .GroupBy(m => m.LotId)           // Groupe par lot
+                .Select(g => new UserBidVM
+                {
+                    LotId = g.Key,
+                    IsLastBidder = _context.Lots
+                        .Where(l => l.Id == g.Key)
+                        .Select(l => l.IdClientMise == userId)
+                        .FirstOrDefault()  // Compare directement les strings IdClientMise et userId
+                })
                 .ToListAsync();
 
             return userBids;
+        }
+
+
+        // Logique pour récupérer les utilisateurs ayant déjà misé sur le lot
+        public List<string> GetUsersWhoBidOnLot(int lotId)
+        {
+            return new List<string> { /* Liste des IDs utilisateur */ };
+        }
+
+        public async Task<double?> GetUserLastBid(int lotId, string userId)
+        {
+            var lastBid = await _context.MiseAutomatiques
+                .Where(m => m.LotId == lotId && m.UserId == userId)
+                .OrderByDescending(m => m.DateMise)
+                .Select(m => (double?)Convert.ToDouble(m.Montant))  // Conversion explicite de decimal vers double
+                .FirstOrDefaultAsync();
+
+            return lastBid;
         }
 
         public ICollection<ArtisteVM> ObtenirTousArtistes()
@@ -665,5 +907,13 @@ namespace Gamma2024.Server.Services
                 }).ToList();
             return artistes;
         }
+
+        public async Task<int> GetNombreMises(int lotId)
+        {
+            return await _context.MiseAutomatiques
+                .Where(m => m.LotId == lotId)
+                .CountAsync();
+        }
+
     }
 }

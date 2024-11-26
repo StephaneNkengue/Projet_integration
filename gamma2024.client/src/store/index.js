@@ -1,5 +1,6 @@
 import { createStore } from "vuex";
 import { initApi } from "@/services/api";
+import { startSignalRConnection, stopSignalRConnection } from '@/services/signalR';
 
 const store = createStore({
     state: {
@@ -8,14 +9,36 @@ const store = createStore({
         roles: [],
         isLoggedIn: false,
         user: null,
-        socket: null,
+        connection: null, // Connexion SignalR
+        notificationConnection: null,
         lots: {},
-        userBids: []
+        userBids: [],
+        userOutbidLots: [],
+        notifications: [],
+        userBidHistory: {}, // Format: { lotId: { userId: montant } }
     },
     mutations: {
+        ADD_NOTIFICATION(state, message) {
+            state.userNotifications.push({ id: Date.now(), message, read: false });
+        },
+
+        MARK_ALL_AS_READ(state) {
+            state.userNotifications.forEach((notification) => {
+                notification.read = true;
+            });
+        },
+
         setLoggedIn(state, value) {
             state.isLoggedIn = value;
-            localStorage.setItem("isLoggedIn", value);
+            sessionStorage.setItem("isLoggedIn", value);
+            if (!value) {
+                state.userBids = [];
+                if (state.lots) {
+                    Object.values(state.lots).forEach((lot) => {
+                        lot.userHasBid = false;
+                    });
+                }
+            }
         },
         setUser(state, user) {
             console.log("Données reçues dans setUser:", user);
@@ -39,12 +62,12 @@ const store = createStore({
                     city: user.city,
                     province: user.province,
                     country: user.country,
-                    postalCode: user.postalCode
+                    postalCode: user.postalCode,
                 };
             } else {
                 state.user = null;
             }
-            localStorage.setItem("user", JSON.stringify(state.user));
+            sessionStorage.setItem("user", JSON.stringify(state.user));
         },
         setRoles(state, roles) {
             console.log("Roles reçus dans setRoles:", roles);
@@ -56,19 +79,19 @@ const store = createStore({
                 state.roles = [roles];
             }
             console.log("Roles après traitement:", state.roles);
-            localStorage.setItem("roles", JSON.stringify(state.roles));
+            sessionStorage.setItem("roles", JSON.stringify(state.roles));
         },
         setToken(state, token) {
             state.token = token;
             if (token) {
-                localStorage.setItem("token", token);
+                sessionStorage.setItem("token", token);
                 if (state.api) {
                     state.api.defaults.headers.common[
                         "Authorization"
                     ] = `Bearer ${token}`;
                 }
             } else {
-                localStorage.removeItem("token");
+                sessionStorage.removeItem("token");
                 if (state.api) {
                     delete state.api.defaults.headers.common["Authorization"];
                 }
@@ -76,6 +99,11 @@ const store = createStore({
         },
         SET_API(state, api) {
             state.api = api;
+            // Configurer le token s'il existe
+            const token = sessionStorage.getItem("token");
+            if (token) {
+                state.api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+            }
         },
         SET_CLIENT_INFO(state, clientInfo) {
             state.clientInfo = clientInfo;
@@ -84,27 +112,58 @@ const store = createStore({
             // Cette mutation ne fait rien, mais force la mise à jour des getters
             state.userDataVersion = (state.userDataVersion || 0) + 1;
         },
-        updateLotMise(state, { idLot, montant, userId }) {
-            console.log('Mise à jour du lot:', idLot, 'avec montant:', montant);
+        updateLotMise(state, { idLot, montant, userId, userLastBid, nombreMises }) {
+            console.log("Store - Mise à jour du lot:", {
+                idLot,
+                montant,
+                userId,
+                userActuel: state.user?.id
+            });
 
-            if (!state.lots[idLot]) {
-                // Créer un nouveau lot si non existant
-                state.lots[idLot] = {
+            const newLots = { ...state.lots };
+            if (!newLots[idLot]) {
+                newLots[idLot] = {
                     id: idLot,
                     mise: montant,
-                    idClientMise: userId
+                    idClientMise: userId,
+                    nombreMises: nombreMises
                 };
             } else {
-                // Mettre à jour le lot existant
-                state.lots[idLot] = {
-                    ...state.lots[idLot],
+                newLots[idLot] = {
+                    ...newLots[idLot],
                     mise: montant,
-                    idClientMise: userId
+                    idClientMise: userId,
+                    nombreMises: nombreMises
                 };
             }
+            state.lots = newLots;
+
+            // Mettre à jour userBids
+            if (userLastBid && userLastBid.userId === state.user?.id) {
+                if (!state.userBids.includes(idLot)) {
+                    state.userBids.push(idLot);
+                }
+            }
+
+            // Mettre à jour l'historique des mises
+            if (userLastBid) {
+                if (!state.userBidHistory[idLot]) {
+                    state.userBidHistory[idLot] = {};
+                }
+                state.userBidHistory[idLot][userLastBid.userId] = userLastBid.montant;
+            }
         },
-        SET_SOCKET(state, socket) {
-            state.socket = socket;
+
+        SET_CONNECTION(state, connection) {
+            if (state.connection) {
+                // Nettoyer les écouteurs de l'ancienne connexion
+                state.connection.off("ReceiveNewBid");
+            }
+            state.connection = connection;
+        },
+
+        SET_NOTIFICATION_CONNECTION(state, notificationConnection) {
+            state.notificationConnection = notificationConnection;
         },
         addUserBid(state, lotId) {
             if (!state.userBids.includes(lotId)) {
@@ -112,25 +171,89 @@ const store = createStore({
             }
         },
         setUserBids(state, bids) {
-            state.userBids = bids;
+            // Stocke les IDs des lots sur lesquels l'utilisateur a misé
+            state.userBids = bids.map(bid => bid.lotId);
+
+            // Met à jour chaque lot avec son statut
+            bids.forEach(bid => {
+                if (state.lots[bid.lotId]) {
+                    state.lots[bid.lotId] = {
+                        ...state.lots[bid.lotId],
+                        userHasBid: true,              // L'utilisateur a misé sur ce lot
+                        isOutbid: !bid.isLastBidder    // L'utilisateur n'est plus le dernier enchérisseur
+                    };
+                }
+            });
         },
         setLots(state, lots) {
-            state.lots = lots.reduce((acc, lot) => {
-                acc[lot.id] = {
+            // Convertir le tableau en objet indexé par id
+            const lotsObj = {};
+            lots.forEach((lot) => {
+                // Conserver l'état userHasBid s'il existe déjà
+                const existingLot = state.lots[lot.id];
+                lotsObj[lot.id] = {
                     ...lot,
-                    mise: lot.mise || 0
+                    userHasBid: existingLot ? existingLot.userHasBid : false,
                 };
-                return acc;
-            }, {});
-            console.log('Lots initialisés dans le store:', state.lots);
+            });
+            state.lots = lotsObj;
         },
         refreshLots(state) {
             // Forcer la réactivité en créant une nouvelle référence
             state.lots = [...state.lots];
+        },
+        updateLotsWithUserBids(state, userBids) {
+            if (!state.lots || !userBids) return;
+
+            // Mettre à jour les lots avec les informations de mise
+            Object.keys(state.lots).forEach((lotId) => {
+                const userBid = userBids.find((bid) => bid.lotId === parseInt(lotId));
+                const lot = state.lots[lotId];
+
+                if (userBid) {
+                    // L'utilisateur a misé sur ce lot
+                    const isHighestBidder = userBid.montant === lot.mise;
+                    state.lots[lotId] = {
+                        ...lot,
+                        userHasBid: true,
+                        isOutbid: !isHighestBidder && userBid.montant < lot.mise,
+                    };
+                }
+            });
+        },
+        clearUserBids(state) {
+            state.userBids = [];
+            if (state.lots) {
+                Object.values(state.lots).forEach((lot) => {
+                    lot.userHasBid = false;
+                });
+            }
+        },
+
+        setLotOutbid(state, lotId) {
+            state.outbidLots.push(lotId);
+        },
+        setSignalRConnection(state, connection) {  // Ajouter cette mutation manquante
+            state.connection = connection;
+        },
+        updateUserBid(state, { lotId, userId, montant }) {
+            if (!state.userBidHistory[lotId]) {
+                state.userBidHistory[lotId] = {};
+            }
+            state.userBidHistory[lotId][userId] = montant;
+        },
+        UPDATE_USER_LAST_BID(state, { lotId, userId, montant }) {
+            if (!state.userBidHistory) {
+                state.userBidHistory = {};  // Initialiser l'objet s'il n'existe pas
+            }
+            if (!state.userBidHistory[lotId]) {
+                state.userBidHistory[lotId] = {};
+            }
+            state.userBidHistory[lotId][userId] = montant;
         }
     },
     actions: {
-        async login({ commit, state }, userData) {
+        async login({ commit, state, dispatch }, userData) {
             try {
                 if (!state.api) {
                     throw new Error("API non initialisée");
@@ -149,10 +272,11 @@ const store = createStore({
                     commit("setRoles", response.data.roles);
                     if (response.data.token) {
                         commit("setToken", response.data.token);
-                        localStorage.setItem("token", response.data.token);
+                        sessionStorage.setItem("token", response.data.token);
                         state.api.defaults.headers.common[
                             "Authorization"
                         ] = `Bearer ${response.data.token}`;
+                        await dispatch("initializeSignalR");
                     }
                     return { success: true, roles: response.data.roles };
                 } else {
@@ -404,10 +528,6 @@ const store = createStore({
                 throw error;
             }
         },
-        async obtenirArtistes({ state }) {
-            const response = await state.api.get("/lots/artistes");
-            return response.data;
-        },
         async obtenirCategories({ state }) {
             const response = await state.api.get("/lots/categories");
             return response.data;
@@ -475,7 +595,7 @@ const store = createStore({
             }
         },
         async checkAuthStatus({ commit, state, dispatch }) {
-            const token = state.token || localStorage.getItem("token");
+            const token = state.token || sessionStorage.getItem("token");
             console.log("Token trouvé :", token ? "Oui" : "Non");
             if (!token) {
                 console.log("Aucun token trouvé, déconnexion de l'utilisateur");
@@ -501,6 +621,7 @@ const store = createStore({
                     commit("setLoggedIn", true);
                     commit("setUser", response.data.user);
                     commit("setRoles", response.data.roles);
+                    await dispatch("fetchUserBids");
                     dispatch("forceUpdate");
                 } else {
                     throw new Error("Non authentifié");
@@ -515,27 +636,42 @@ const store = createStore({
                     commit("setUser", null);
                     commit("setRoles", []);
                     commit("setToken", null);
-                    localStorage.removeItem("token");
+                    sessionStorage.removeItem("token");
                 }
             }
         },
         async logout({ commit, state }) {
             try {
-                // Appel à l'API pour invalider le token côté serveur (optionnel mais recommandé)
+                await stopSignalRConnection();
+                commit("SET_CONNECTION", null);
+                // Appel à l'API pour invalider le token côté serveur
                 const response = await state.api.post("/home/logout");
                 console.log("Réponse de la déconnexion:", response);
+
             } catch (error) {
-                console.error("Erreur lors de la déconnexion côté serveur:", error);
+                console.error("Erreur lors de la déconnexion:", error);
             } finally {
                 // Nettoyage des données côté client
                 commit("setLoggedIn", false);
                 commit("setUser", null);
                 commit("setRoles", []);
                 commit("setToken", null);
-                localStorage.removeItem("token");
-                localStorage.removeItem("user");
-                localStorage.removeItem("roles");
-                localStorage.removeItem("isLoggedIn");
+                commit("SET_CONNECTION", null); // Nettoyer la référence SignalR
+
+                // Nettoyage du stockage local
+                sessionStorage.removeItem("token");
+                sessionStorage.removeItem("user");
+                sessionStorage.removeItem("roles");
+                sessionStorage.removeItem("isLoggedIn");
+
+                // Réinitialiser les données liées aux mises
+                commit("updateLotMise", {
+                    idLot: null,
+                    montant: null,
+                    userId: null
+                });
+                state.userBids = [];
+                state.lots = {};
             }
         },
 
@@ -551,24 +687,33 @@ const store = createStore({
             }
         },
 
-        async initializeStore({ commit, state }) {
+        async initializeStore({ commit, dispatch }) {
             console.log("=== Initialisation du Store ===");
 
-            // Initialiser d'abord l'API
-            const api = initApi(() => state.token);
+            // Récupérer les données de session
+            const token = sessionStorage.getItem("token");
+            const savedIsLoggedIn = sessionStorage.getItem("isLoggedIn") === "true";
+            const savedUser = JSON.parse(sessionStorage.getItem("user"));
+            const savedRoles = JSON.parse(sessionStorage.getItem("roles")) || [];
+
+            // Initialiser l'API avec le token
+            const api = initApi(() => token);
+            if (token) {
+                api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+            }
             commit("SET_API", api);
 
-            // Ensuite, récupérer l'état depuis localStorage
-            const savedIsLoggedIn = localStorage.getItem("isLoggedIn") === "true";
-            const savedToken = localStorage.getItem("token");
-            const savedUser = JSON.parse(localStorage.getItem("user"));
-            const savedRoles = JSON.parse(localStorage.getItem("roles")) || [];
-
             // Initialiser l'état
+            commit("setToken", token);
             commit("setLoggedIn", savedIsLoggedIn);
             commit("setUser", savedUser);
             commit("setRoles", savedRoles);
-            commit("setToken", savedToken); // Déplacer setToken après l'initialisation de l'API
+
+            if (savedIsLoggedIn) {
+                await dispatch("fetchUserBids");
+                // Initialiser SignalR après la connexion
+                await dispatch("initializeSignalR");
+            }
         },
 
         async chercherTousEncansVisibles({ commit, state }) {
@@ -711,9 +856,7 @@ const store = createStore({
 
         async chercherTousLotsRecherche({ state }) {
             try {
-                const response = await state.api.get(
-                    `/lots/cherchertouslotsrecherche`
-                );
+                const response = await state.api.get(`/lots/cherchertouslotsrecherche`);
 
                 console.log("Réponse reçue:", response);
                 return response;
@@ -777,93 +920,86 @@ const store = createStore({
             commit("refreshUserData");
         },
 
-        async placerMise({ state, commit, dispatch }, { idLot, montant }) {
+        async placerMise({ state, commit, dispatch }, miseData) {
             try {
-                const miseData = {
-                    idLot: idLot,
-                    montant: parseFloat(montant),
-                    userId: state.user?.id
-                };
+                console.log('Store - Début placerMise:', miseData);
 
-                const response = await state.api.post('/lots/placerMise', miseData);
+                const response = await state.api.post("/lots/placerMise", {
+                    LotId: miseData.lotId,
+                    Montant: parseFloat(miseData.montant),
+                    UserId: state.user?.id,
+                    MontantMaximal: miseData.montantMaximal
+                });
 
-                if (response.data.success) {
-                    commit('addUserBid', idLot);
-                    commit('updateLotMise', {
-                        idLot: idLot,
-                        montant: montant,
-                        userId: state.user.id
-                    });
-                    await dispatch('fetchUserBids');
-                }
-
+                console.log('Store - Réponse placerMise:', response.data);
                 return response.data;
             } catch (error) {
-                console.error('Erreur lors de la mise:', error);
-                const errorMessage = error.response?.data?.message || "Erreur lors de la mise";
+                console.error("Store - Erreur lors de la mise:", error);
+                console.log('Store - Détails de l\'erreur:', {
+                    status: error.response?.status,
+                    data: error.response?.data,
+                    message: error.message
+                });
                 return {
                     success: false,
-                    message: errorMessage
+                    message: error.response?.data?.message || "Erreur lors de la mise"
                 };
-            }
-        },
-        async initWebSocket({ commit, state, dispatch }) {
-            try {
-                // Fermer l'ancienne connexion si elle existe
-                if (state.socket) {
-                    state.socket.close();
-                }
-
-                const wsUrl = state.api.defaults.baseURL
-                    .replace('http://', 'ws://')
-                    .replace('/api', '/ws');
-
-                const socket = new WebSocket(wsUrl);
-
-                socket.onopen = () => {
-                    console.log('WebSocket connecté');
-                };
-
-                socket.onmessage = (event) => {
-                    const data = JSON.parse(event.data);
-                    console.log('Message WebSocket reçu:', data);
-
-                    if (data.type === 'NOUVELLE_MISE') {
-                        // S'assurer que les valeurs sont du bon type
-                        commit('updateLotMise', {
-                            idLot: parseInt(data.idLot),
-                            montant: parseFloat(data.montant),
-                            userId: data.userId
-                        });
-                    }
-                };
-
-                socket.onerror = (error) => {
-                    console.error('Erreur WebSocket:', error);
-                };
-
-                socket.onclose = () => {
-                    console.log('WebSocket déconnecté');
-                    // Tenter de se reconnecter après un délai
-                    setTimeout(() => {
-                        console.log('Tentative de reconnexion WebSocket...');
-                        dispatch('initWebSocket');
-                    }, 5000);
-                };
-
-                commit('SET_SOCKET', socket);
-            } catch (error) {
-                console.error('Erreur lors de l\'initialisation du WebSocket:', error);
             }
         },
 
         async fetchUserBids({ state, commit }) {
-            if (!state.user?.id) return;
+            if (!state.user?.id || !state.token) return;
+
             try {
-                const response = await state.api.get(`/lots/userBids/${state.user.id}`);
+                const response = await state.api.get(`/lots/userBids/${state.user.id}`, {
+                    headers: {
+                        'Authorization': `Bearer ${state.token}`
+                    }
+                });
                 commit("setUserBids", response.data);
             } catch (error) {
                 console.error("Erreur lors du chargement des mises:", error);
+                // Si erreur d'authentification, nettoyer les données
+                if (error.response?.status === 401) {
+                    commit("setUserBids", []);
+                }
+            }
+        },
+
+        async initializeSignalR({ commit, state }) {
+            // Vérifier si une connexion existe déjà
+            if (state.connection) {
+                console.log("SignalR connection already exists");
+                return;
+            }
+
+            if (!state.isLoggedIn) return;
+
+            try {
+                const baseUrl = state.api.defaults.baseURL.replace('/api', '');
+                const connection = await startSignalRConnection(baseUrl, state.token);
+
+                if (connection) {
+                    connection.on("ReceiveNewBid", (data) => {
+                        commit("updateLotMise", {
+                            idLot: data.idLot,
+                            montant: data.montant,
+                            userId: data.userId
+                        });
+
+                        if (data.userLastBid?.userId === state.user?.id) {
+                            commit("UPDATE_USER_LAST_BID", {
+                                lotId: data.idLot,
+                                userId: data.userLastBid.userId,
+                                montant: data.userLastBid.montant
+                            });
+                        }
+                    });
+
+                    commit("SET_CONNECTION", connection);
+                }
+            } catch (error) {
+                console.error("Erreur lors de l'initialisation de SignalR:", error);
             }
         },
 
@@ -893,20 +1029,55 @@ const store = createStore({
                 if (response.data.success) {
                     return {
                         success: true,
-                        message: response.data.message
+                        message: response.data.message,
                     };
                 } else {
                     return {
                         success: false,
-                        message: response.data.message
+                        message: response.data.message,
                     };
                 }
             } catch (error) {
                 console.error("Erreur lors de la création du compte:", error);
                 return {
                     success: false,
-                    message: error.response?.data?.message || "Une erreur est survenue lors de la création du compte"
+                    message:
+                        error.response?.data?.message ||
+                        "Une erreur est survenue lors de la création du compte",
                 };
+            }
+        },
+        async fetchFactureInfoMembre({ commit, state }) {
+            try {
+                const response = await state.api.get("/factures/chercherFacturesMembre");
+                console.log("Données reçues de l'API:", response.data);
+                return response.data;
+            } catch (error) {
+                console.error("Erreur détaillée:", error.response || error);
+                throw error;
+            }
+        },
+
+        async obtenirArtistes({ state }) {
+            const response = await state.api.get("/lots/artistes");
+            return response.data;
+        },
+
+        async creerSetupIntent({ state }) {
+            try {
+                const response = await state.api.post("/paiement/creerSetupIntent");
+                return response;
+            } catch (error) {
+                return "Erreur, veuillez réessayer";
+            }
+        },
+
+        async chercherCartesUser({ state }) {
+            try {
+                const response = await state.api.get("/paiement/chercherCartes");
+                return response;
+            } catch (error) {
+                return "Erreur, veuillez réessayer";
             }
         },
         async fetchFactureInfo({ commit, state }) {
@@ -920,15 +1091,15 @@ const store = createStore({
                 throw error;
             }
         },
-        async fetchFactureInfoMembre({ commit, state }) {
-            try {
-                const response = await state.api.get("/factures/chercherFacturesMembre");
-                console.log("Données reçues de l'API:", response.data); // Pour le débogage
 
-                return response.data;
+        async creerPaymentIntent({ state }, idFacture) {
+            try {
+                const response = await state.api.post(
+                    "/paiement/creerPaymentIntent/" + idFacture
+                );
+                return response;
             } catch (error) {
-                console.error("Erreur détaillée:", error.response || error);
-                throw error;
+                return "Erreur, veuillez réessayer";
             }
         },
         async chercherPrevisualisationLivraison({ state }, idFacture) {
@@ -940,36 +1111,7 @@ const store = createStore({
                 throw error;
             }
         },
-        async creerPaymentIntent({ state }, idFacture) {
-            try {
-                const response = await state.api.post(
-                    "/paiement/creerPaymentIntent/" + idFacture
-                );
-                return response;
-            } catch (error) {
-                return "Erreur, veuillez réessayer";
-            }
-        },
-        async creerSetupIntent({ state }) {
-            try {
-                const response = await state.api.post(
-                    "/paiement/creerSetupIntent"
-                );
-                return response;
-            } catch (error) {
-                return "Erreur, veuillez réessayer";
-            }
-        },
-        async chercherCartesUser({ state }) {
-            try {
-                const response = await state.api.get(
-                    "/paiement/chercherCartes"
-                );
-                return response;
-            } catch (error) {
-                return "Erreur, veuillez réessayer";
-            }
-        },
+
         async chercherAdressesClient({ state }) {
             try {
                 const response = await state.api.get(
@@ -980,6 +1122,7 @@ const store = createStore({
                 return "Erreur, veuillez réessayer";
             }
         },
+
         async enregistrerChoixLivraison({ state }, choixLivraison) {
             try {
                 const response = await state.api.post(
@@ -990,6 +1133,7 @@ const store = createStore({
                 return "Erreur, veuillez réessayer";
             }
         },
+
         async supprimerCarte({ state }, pmId) {
             try {
                 const response = await state.api.post(
@@ -1000,12 +1144,24 @@ const store = createStore({
                 return "Erreur, veuillez réessayer";
             }
         },
-        async chercherFacturesChoixAFaire({ state }) {
+
+        async getUserBidForLot({ state, commit }, lotId) {
+            // Ne faire l'appel que si l'utilisateur est connecté
+            if (!state.isLoggedIn) return 0;
+            
             try {
-                const response = await state.api.get("/factures/chercherFacturesChoixAFaire");
-                return response;
+                const response = await state.api.get(`/lots/userLastBid/${lotId}`);
+                if (response.data > 0) {
+                    commit('UPDATE_USER_LAST_BID', {
+                        lotId,
+                        userId: state.user?.id,
+                        montant: response.data
+                    });
+                }
+                return response.data;
             } catch (error) {
-                return "Erreur, veuillez réessayer";
+                console.error("Erreur lors de la récupération de la dernière mise:", error);
+                return 0;
             }
         },
         async chargerClientsFinEncan({ state }, numeroEncan) {
@@ -1023,9 +1179,17 @@ const store = createStore({
             } catch (error) {
                 return "Erreur, veuillez réessayer";
             }
+        },
+        async chercherFacturesChoixAFaire({ state }) {
+            try {
+                const response = await state.api.get("/factures/chercherFacturesChoixAFaire");
+                return response;
+            } catch (error) {
+                return "Erreur, veuillez réessayer";
+            }
         }
-    },
 
+    },
     getters: {
         isAdmin: (state) => {
             // console.log("Rôles dans le getter isAdmin:", state.roles);
@@ -1061,8 +1225,12 @@ const store = createStore({
         },
         getAllLots: (state) => {
             return Object.values(state.lots);
+        },
+        getUniqueOffersCount: (state) => (lotId) => {
+            const lot = state.lots[lotId];
+            return lot?.nombreMises || 0;
         }
-    }
+    },
 });
 
 // Initialiser le store immédiatement
