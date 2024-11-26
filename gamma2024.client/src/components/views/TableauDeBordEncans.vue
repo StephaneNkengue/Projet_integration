@@ -1,16 +1,35 @@
 <template>
-    <div class="d-flex flex-column justify-content-between">
-        <div class="d-flex justify-content-between">
-            <h2 class="d-flex-1">Liste des encans</h2>
-            <router-link :to="{ name: 'TableauDeBordEncansAjout' }"
-                         class="text-decoration-none">
-                <button class="btn bleuMarinSecondaireFond btnSurvolerBleuMoyenFond btnClick text-white d-flex-1"
-                        type="button"
-                        id="ajouterEncanButton">
-                    Ajouter un encan
-                </button>
-            </router-link>
+    <div class="container">
+        <h1 class="text-center mb-5">Liste des encans</h1>
+
+        <div class="container mb-5">
+            <h3 class="text-center" for="Recherche">Rechercher un encan </h3>
+            <div class="d-flex flex-column gap-3 align-items-center">
+                <input data-bs-theme="light"
+                       type="search"
+                       aria-label="RechercheNum"
+                       v-model="encanRechercheNumEncan"
+                       placeholder="Numéro encan"
+                       class="form-control w-50" />
+
+                <input data-bs-theme="light"
+                       type="search"
+                       aria-label="RechercheDate"
+                       v-model="encanRechercheDate"
+                       placeholder="Date AAAA-MM-JJ"
+                       class="form-control w-50" />
+            </div>
         </div>
+
+        <router-link :to="{ name: 'TableauDeBordEncansAjout' }"
+                     class="text-decoration-none">
+            <button class="btn btn-lg btn-block w-100 btnSurvolerBleuMoyenFond btnClick text-white"
+                    type="button"
+                    id="ajouterEncanButton">
+                Ajouter un encan
+            </button>
+        </router-link>
+
         <transition name="fade">
             <div v-if="errorMessage" class="alert alert-danger">
                 {{ errorMessage }}
@@ -22,8 +41,8 @@
             </div>
         </transition>
 
-        <div class="d-flex justify-content-between">
-            <div class="d-flex flex-row w-100 px-4 me-2 gap-2 pt-3">
+        <div class="d-flex justify-content-end my-4">
+            <div class="d-flex flex-row gap-2">
                 <button class="d-flex align-items-center text-center rounded btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
                         @click="changerNbEncanParPage(20)"
                         v-bind:disabled="encansParPage == 20">
@@ -47,20 +66,6 @@
                 </button>
             </div>
 
-            <div class="d-flex me-1 gap-1 align-items-center">
-                <label for="Recherche">Rechercher: </label>
-                <input data-bs-theme="light"
-                       type="search"
-                       aria-label="RechercheNum"
-                       v-model="encanRechercheNumEncan"
-                       placeholder="Numéro encan" />
-
-                <input data-bs-theme="light"
-                       type="search"
-                       aria-label="RechercheDate"
-                       v-model="encanRechercheDate"
-                       placeholder="Date AAAA-MM-JJ" />
-            </div>
         </div>
 
         <div class="d-flex gap-2 justify-content-center" v-if="chargement">
@@ -76,7 +81,7 @@
             </div>
 
             <div v-else>
-                <table class="table table-striped mt-5 mx-0 text-center">
+                <table class="table table-striped mx-0 text-center">
                     <thead>
                         <tr>
                             <th data-field="numeroEncan">Encan</th>
