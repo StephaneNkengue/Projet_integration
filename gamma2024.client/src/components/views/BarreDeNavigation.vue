@@ -209,7 +209,7 @@
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-6">
-                                    <div class="col mt-2">
+                                    <div class="col">
                                         <label class="text-nowrap recherchelabel fw-bold"
                                                for="rechercheLotsValeurEstimee">
                                             Prix estimé
