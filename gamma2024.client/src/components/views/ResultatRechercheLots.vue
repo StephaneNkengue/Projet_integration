@@ -1,6 +1,6 @@
 <template>
     <div class="d-flex flex-column align-items-center pb-3">
-        <h1>Résultat de la recherche de lots</h1>
+        <h1 id="titreRechercheLots"></h1>
     </div>
 
     <div class="d-flex gap-2 w-100" v-if="chargement">
@@ -158,6 +158,7 @@
 
     function filtrerLesLotsParNumeroEncan() {
         var stringquery = JSON.parse(route.query.data);
+        document.getElementById("titreRechercheLots").innerHTML = "Résultat de la recherche de lots pour l'Encan " + stringquery.numeroEncan;
         lotsFiltres.value = lotsFiltres.value.filter((lot) => {
             if (stringquery.stringNumeroEncan) {
                 if (stringquery.selectNumeroEncan == 0) {
