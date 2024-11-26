@@ -5,8 +5,9 @@
     </span>
     <div class="container mt-5">
         <router-link class="text-decoration-none" :to="{ name: 'ChoixLivraison', params: {idFacture:facture.id} }" v-for="facture in listeFacturesChoixAFaire" :key="facture.id">
-            <div class="alert alert-danger" role="alert">
-                Veuillez faire votre choix de livraison pour l'encan {{ facture.numeroEncan }}
+            <div class="alert alert-danger d-flex flex-row gap-1" role="alert">
+                <p class="m-0">Veuillez faire votre choix de livraison pour l'encan {{ facture.numeroEncan }} : </p>
+                <p class="text-decoration-underline m-0">Payez la facture ici!</p>
             </div>
         </router-link>
 
@@ -66,12 +67,12 @@
                                     <div class="col">
                                         <img v-if="encan.livraison == true"
                                              src="/icons/livrable.png" />
-                                        <p v-else-if="encan.livraison == false">
-                                            Cueillette
-                                        </p>
-                                        <p v-else>
-                                            !
-                                        </p>
+                                        <img v-else-if="encan.livraison == false"
+                                             src="/icons/Cueillette.png"
+                                             class="imgCueillette" />
+                                        <img v-else
+                                             src="/icons/IconeAvertissement.png"
+                                             class="imgAvertissement" />
                                     </div>
 
                                     <div class="col-10 d-flex flex-row">
@@ -317,6 +318,14 @@
     img {
         width: 25px;
         height: 30px;
+    }
+
+    .imgCueillette {
+        height: 28px;
+    }
+
+    .imgAvertissement {
+        height: 25px;
     }
 
     table,
