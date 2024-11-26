@@ -5,8 +5,9 @@
     </span>
     <div class="container mt-5">
         <router-link class="text-decoration-none" :to="{ name: 'ChoixLivraison', params: {idFacture:facture.id} }" v-for="facture in listeFacturesChoixAFaire" :key="facture.id">
-            <div class="alert alert-danger" role="alert">
-                Veuillez faire votre choix de livraison pour l'encan {{ facture.numeroEncan }}
+            <div class="alert alert-danger d-flex flex-row gap-1" role="alert">
+                <p class="m-0">Veuillez faire votre choix de livraison pour l'encan {{ facture.numeroEncan }} : </p>
+                <p class="text-decoration-underline m-0">Payez la facture ici!</p>
             </div>
         </router-link>
 
@@ -63,6 +64,17 @@
                             <h2 class="accordion-header px-0 d-flex" :style="{border: styleBorder}">
                                 <button class="accordion-button h-52" type="button" data-bs-toggle="collapse" :data-bs-target="'#collapse' + encan.encan"
                                         aria-expanded="true" :aria-controls="'collapse' + encan.encan">
+                                    <div class="col">
+                                        <img v-if="encan.livraison == true"
+                                             src="/icons/livrable.png" />
+                                        <img v-else-if="encan.livraison == false"
+                                             src="/icons/Cueillette.png"
+                                             class="imgCueillette" />
+                                        <img v-else
+                                             src="/icons/IconeAvertissement.png"
+                                             class="imgAvertissement" />
+                                    </div>
+
                                     <div class="col-10 d-flex flex-row">
                                         <div class="pe-5">
                                             Encan : {{ encan.encan }}
@@ -103,18 +115,12 @@
                                                 <tr>
                                                     <th scope="col">Numéro du lot</th>
                                                     <th scope="col">Prix vendu</th>
-                                                    <th scope="col">Livraison</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 <tr v-for="lot in facture.lots" :key="lot.id">
                                                     <td scope="row">{{ lot.numero }}</td>
                                                     <td>{{ lot.mise }}$</td>
-                                                    <td>
-                                                        <img v-if="lot.estLivrable"
-                                                             src="/icons/livrable.png" />
-                                                        <img v-else src="/icons/nonlivrable.png" />
-                                                    </td>
                                                 </tr>
                                             </tbody>
                                         </table>
@@ -312,6 +318,14 @@
     img {
         width: 25px;
         height: 30px;
+    }
+
+    .imgCueillette {
+        height: 28px;
+    }
+
+    .imgAvertissement {
+        height: 25px;
     }
 
     table,

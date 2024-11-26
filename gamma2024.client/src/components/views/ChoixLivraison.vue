@@ -1,8 +1,25 @@
 <template>
+    <FactureModal  v-if="factureLivraisonCreee != ''" :facturePdfPath="factureLivraisonCreee.pathFactureLivraison" :idFacture="'Livraison'+factureLivraisonCreee.idFacture"></FactureModal>
+   
     <div class="container d-flex flex-column align-items-center">
         <h1>Choix de livraison</h1>
 
         <p id="message" v-show="siMessage"></p>
+
+        <div v-if="factureLivraisonCreee != ''" class="d-flex flex-column gap-2">
+            <button 
+                    class="btn bleuMoyenFond btnSurvolerBleuMoyenFond text-white"
+                    data-bs-toggle="modal"
+                    :data-bs-target="'#modalLivraison'+factureLivraisonCreee.idFacture">
+                Voir la facture de livraison
+            </button>
+
+            <router-link :to="{name:'HistoriqueAchatsParMembre'}" class="text-decoration-none">
+                <button type="button" class="btn bleuMoyenFond btnSurvolerBleuMoyenFond text-white">
+                    Retour vers l'historique des achats
+                </button>
+            </router-link>
+        </div>
 
         <div v-if="chargement">
             <div class="spinner-border" role="status"></div>
@@ -10,6 +27,22 @@
         <div v-else-if="!siMessage" class="d-flex flex-column">
             <p>Vos achats durant l'encan {{facture.facture.numeroEncan}} sont livrables. Veuillez faire votre choix de livraison.</p>
 
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th scope="col">Numéro du lot</th>
+                        <th scope="col">Description</th>
+                        <th scope="col">Prix vendu</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="fac in facture.facture.lots" :key="fac.id">
+                        <td scope="row">{{ fac.numero }}</td>
+                        <td>{{ fac.description }}</td>
+                        <td>{{ fac.mise }}$</td>
+                    </tr>
+                </tbody>
+            </table>
 
             <div class="form-check form-check-inline">
                 <input class="form-check-input mt-7" type="radio" name="inlineRadioOptions" id="aucuneLivraison" value="aucune" checked @change="montrerFormLivraison = false; siDonation= false">
@@ -97,6 +130,7 @@
     import { onMounted, ref } from "vue"
     import { useStore } from "vuex"
     import { useRouter } from "vue-router";
+    import FactureModal from "@/components/modals/VoirFactureModal.vue";
 
     const router = useRouter();
 
@@ -115,6 +149,7 @@
     const siMessage = ref(false)
     const chargementSauvegarde = ref(false)
     const cartes = ref([])
+    const factureLivraisonCreee = ref("");
 
     onMounted(async () => {
         try {
@@ -165,18 +200,25 @@
                 }
             }
 
-            const factureLivraisonId = await store.dispatch("enregistrerChoixLivraison", choixLivraison)
+            const response = await store.dispatch("enregistrerChoixLivraison", choixLivraison)
+            factureLivraisonCreee.value = response.data;
 
             siMessage.value = true
             document.getElementById("message").innerText = "Choix de livraison sauvegardé et payé."
 
-            setTimeout(() => {
+            if(factureLivraisonCreee.value == ''){
+                siMessage.value = true
+                document.getElementById("message").innerText = "Choix de livraison sauvegardé."
+
+                setTimeout(() => {
                 router.push({ name: 'HistoriqueAchatsParMembre' })
             }, 5000);
+            }
+            
 
         } catch (error) {
             siMessage.value = true
-            document.getElementById("message").innerText = error.response.data
+            document.getElementById("message").innerText = error.response
         }
     })
 </script>

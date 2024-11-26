@@ -58,7 +58,7 @@ namespace Gamma2024.Server.Services
             return null;
         }
 
-        public async Task<FactureLivraison> AjouterFactureLivraison(FactureLivraisonAjoutVM choix)
+        public async Task<FactureLivraisonModalVM> AjouterFactureLivraison(FactureLivraisonAjoutVM choix)
         {
             if (choix.IdAdresse == null)
             {
@@ -127,7 +127,11 @@ namespace Gamma2024.Server.Services
             _context.FactureLivraisons.Update(factureLivraison);
             _context.SaveChanges();
 
-            return factureLivraison;
+            return new FactureLivraisonModalVM()
+            {
+                IdFacture = factureLivraison.Id,
+                PathFactureLivraison = path,
+            };
         }
 
         public FactureLivraison ChercherFactureLivraison(int idFactureLivraison)
