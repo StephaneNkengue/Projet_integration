@@ -198,7 +198,7 @@
                     <div class="container collapse card mb-5 bg-white aucunPaddingPourCarteLots"
                          id="navbarToggleRechercheAvancee">
                         <div class="card-header d-flex justify-content-center">
-                            <h2 id="titreBarreDeRechercheDeLots"></h2>
+                            <h2>{{titreBarreDeRechercheDeLots}}</h2>
                         </div>
                         <div class="card-body">
                             <div class="row">
@@ -578,6 +578,7 @@
     const listeDesCategories = ref([]);
     const listeDesMediums = ref([]);
 
+    const titreBarreDeRechercheDeLots = ref("");
     var rechercheNumeroEncan = ref();
     const rechercheEncansDate1 = ref();
     const rechercheEncansDate2 = ref();
@@ -632,8 +633,8 @@
                 rechercheNumeroEncan = numeroEncanPresent;
             }
         }
-        if (document.getElementById("titreBarreDeRechercheDeLots")) {
-            document.getElementById("titreBarreDeRechercheDeLots").innerHTML = "Recherche avancée de lots dans l'Encan " + rechercheNumeroEncan;
+        if (titreBarreDeRechercheDeLots) {
+            titreBarreDeRechercheDeLots.value = "Recherche avancée de lots dans l'Encan " + rechercheNumeroEncan;
         }
     }
 
@@ -853,7 +854,6 @@
             }
             next();
         }
-        changeTitreBarreRecherche();
     });
 
     const desacDateFinEntre = computed(() => {
@@ -963,7 +963,6 @@
         listeDesArtistes.value = await store.dispatch("obtenirArtistes");
         listeDesMediums.value = await store.dispatch("obtenirMediums");
         listeDesCategories.value = await store.dispatch("obtenirCategories");
-        changeTitreBarreRecherche();
     });
 </script>
 <style scoped>

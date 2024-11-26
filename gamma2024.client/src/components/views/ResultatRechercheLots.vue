@@ -160,21 +160,12 @@
         var stringquery = JSON.parse(route.query.data);
         document.getElementById("titreRechercheLots").innerHTML = "Résultat de la recherche de lots pour l'Encan " + stringquery.numeroEncan;
         lotsFiltres.value = lotsFiltres.value.filter((lot) => {
-            if (stringquery.stringNumeroEncan) {
-                if (stringquery.selectNumeroEncan == 0) {
-                    if (lot.numeroEncan.valueOf() == stringquery.stringNumeroEncan) {
-                        return true
-                    }
-                    return false
+            if (stringquery.numeroEncan) {
+                if (lot.numeroEncan.valueOf() == stringquery.numeroEncan) {
+                    return true
                 }
-                if (stringquery.selectNumeroEncan == 1 && stringquery.stringNumeroEncan2) {
-                    if (lot.numeroEncan.valueOf() >= stringquery.stringNumeroEncan && lot.numeroEncan.valueOf() <= stringquery.stringNumeroEncan2) {
-                        return true
-                    }
-                    return false
-                }
+                else { return false }
             }
-            return true
         });
     };
 
