@@ -93,56 +93,58 @@
                             <th>Actions</th>
                         </tr>
                     </thead>
-                    <tr v-for="encan in listeEncansFiltree" :key="encan.id">
-                        <td>{{ encan.numeroEncan }}</td>
-                        <td class="d-flex justify-content-center">
-                            <div class="d-flex collapse dropdown dropdown-center">
-                                <button :encanId="encan.id"
-                                        class="btn dropdown-toggle bleuMarinSecondaireFond rounded text-white contenuListeDropdown fs-7"
-                                        type="button"
-                                        data-bs-toggle="dropdown"
-                                        aria-expanded="false">
-                                    <span v-if="encan.estPublie == true">Publié</span>
-                                    <span v-else>Non publié</span>
-                                </button>
+                    <tbody>
+                        <tr v-for="encan in listeEncansFiltree" :key="encan.id">
+                            <td>{{ encan.numeroEncan }}</td>
+                            <td>
+                                <div class="d-flex justify-content-center collapse dropdown dropdown-center">
+                                    <button :encanId="encan.id"
+                                            class="btn dropdown-toggle bleuMarinSecondaireFond rounded text-white contenuListeDropdown fs-7"
+                                            type="button"
+                                            data-bs-toggle="dropdown"
+                                            aria-expanded="false">
+                                        <span v-if="encan.estPublie == true">Publié</span>
+                                        <span v-else>Non publié</span>
+                                    </button>
 
-                                <ul class="dropdown-menu dropdown-menu-dark bleuMarinFond text-center">
-                                    <li>
-                                        <a class="dropdown-item"
-                                           @click="encanPublieMAJ(true)"
-                                           :encanId="encan.id">Publié</a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item"
-                                           @click="encanPublieMAJ(false)"
-                                           :encanId="encan.id">Non publié</a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </td>
-                        <td>{{ encan.dateDebut.split("T")[0] }}</td>
-                        <td>{{ encan.dateFin.split("T")[0] }}</td>
-                        <td>
-                            {{ encan.dateDebut.split("T")[0] }}
-                            {{ encan.dateDebutSoireeCloture.split("T")[1] }}
-                        </td>
-                        <td>{{ encan.nbLots }}</td>
-                        <td>
-                            <button class="btn btn_edit px-3 me-3" @click="editerEncan(encan.id)">
-                                <img src="/public/icons/Edit_icon.png"
-                                     class="img-fluid"
-                                     alt="..." />
-                            </button>
-                            <button class="btn btn-danger px-3 btn_delete"
-                                    data-bs-toggle="modal"
-                                    :data-bs-target="'#' + encan.numeroEncan">
-                                <img src="/public/icons/Delete_icon.png"
-                                     class="img-fluid"
-                                     alt="..." />
-                            </button>
-                        </td>
-                        <ConfirmDelete :h="encan" @supprimerEncan="supprimerMonEncan" />
-                    </tr>
+                                    <ul class="dropdown-menu dropdown-menu-dark bleuMarinFond text-center">
+                                        <li>
+                                            <a class="dropdown-item"
+                                               @click="encanPublieMAJ(true)"
+                                               :encanId="encan.id">Publié</a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item"
+                                               @click="encanPublieMAJ(false)"
+                                               :encanId="encan.id">Non publié</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </td>
+                            <td>{{ encan.dateDebut.split("T")[0] }}</td>
+                            <td>{{ encan.dateFin.split("T")[0] }}</td>
+                            <td>
+                                {{ encan.dateDebut.split("T")[0] }}
+                                {{ encan.dateDebutSoireeCloture.split("T")[1] }}
+                            </td>
+                            <td>{{ encan.nbLots }}</td>
+                            <td>
+                                <button class="btn btn_edit px-3 me-3" @click="editerEncan(encan.id)">
+                                    <img src="/public/icons/Edit_icon.png"
+                                         class="img-fluid"
+                                         alt="..." />
+                                </button>
+                                <button class="btn btn-danger px-3 btn_delete"
+                                        data-bs-toggle="modal"
+                                        :data-bs-target="'#' + encan.numeroEncan">
+                                    <img src="/public/icons/Delete_icon.png"
+                                         class="img-fluid"
+                                         alt="..." />
+                                </button>
+                            </td>
+                            <ConfirmDelete :h="encan" @supprimerEncan="supprimerMonEncan" />
+                        </tr>
+                    </tbody>
                 </table>
             </div>
 
