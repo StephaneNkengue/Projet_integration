@@ -183,7 +183,7 @@
                 </div>
             </nav>
             <div v-if="
-          $route.name == 'EncanPresent' ||
+          $route.name == 'EncanPresent' && ilYAUnEncanPresent == true ||
           $route.name == 'Encan' ||
           $route.name == 'ResultatRechercheLots'
         ">
@@ -584,6 +584,7 @@
     const listeDesCategories = ref([]);
     const listeDesMediums = ref([]);
 
+    const ilYAUnEncanPresent = ref(false);
     const titreBarreDeRechercheDeLots = ref("");
     var rechercheNumeroEncan = ref();
     const rechercheEncansDate1 = ref();
@@ -620,13 +621,14 @@
         }
     );
 
-    var numeroEncanPresent = ref();
+    var numeroEncanPresent = null;
 
     async function verifierSiEncanPresent() {
-        numeroEncanPresent = ref();
+        numeroEncanPresent = null;
         var response = await store.dispatch("chercherEncanEnCours");
         if (response.status == 200) {
             numeroEncanPresent = response.data.numeroEncan.toString();
+            ilYAUnEncanPresent.value = true;
         }
     }
 
@@ -638,7 +640,7 @@
             rechercheNumeroEncan = route.params.numeroEncan;
         } else if (route.name == "EncanPresent") {
             await verifierSiEncanPresent();
-            if (numeroEncanPresent != ref()) {
+            if (numeroEncanPresent != null) {
                 rechercheNumeroEncan = numeroEncanPresent;
             }
         }
@@ -784,7 +786,7 @@
             var listeDesSelectsQuiOntBesoinDeInvalide = document.querySelectorAll(
                 ".selectPourListeQuiOntBesoinDeInvalide"
             );
-            if (to.name == "ResultatRechercheLots" || to.name == "DetailsLot") {
+            if (to.name == "ResultatRechercheLots") {
                 if (document.querySelector("#navbarToggleRechercheAvancee")) {
                     document
                         .querySelector("#navbarToggleRechercheAvancee")
@@ -793,13 +795,19 @@
                 next();
             } else {
                 elementsAEffacer.forEach((element) => {
-                    element.value = "";
+                    if (element) {
+                        element.value = "";
+                    }
                 });
                 listeDesSelects.forEach((select) => {
-                    select.value = 0;
+                    if (select) {
+                        select.value = 0;
+                    }
                 });
                 listeDesSelectsQuiOntBesoinDeInvalide.forEach((select) => {
-                    select.value = "";
+                    if (select) {
+                        select.value = "";
+                    }
                 });
                 if (document.querySelectorAll(".inputAAfficher")) {
                     document.querySelectorAll(".inputAAfficher").forEach((el) => {
