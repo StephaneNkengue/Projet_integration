@@ -94,7 +94,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="encan in listeEncansFiltree" :key="encan.id">
+                        <tr v-for="encan in encansAffiche" :key="encan.id">
                             <td>{{ encan.numeroEncan }}</td>
                             <td>
                                 <div class="d-flex justify-content-center collapse dropdown dropdown-center">
@@ -248,18 +248,24 @@
             ({ dateDebut, dateFin, dateDebutSoireeCloture }) => {
                 const dateDebutObj = new Date(dateDebut);
                 const dateFinObj = new Date(dateFin);
-                const dateDebutSoireeObj = new Date(dateDebutSoireeCloture);
 
-                return (
-                    dateDebut.toString().startsWith(encanRechercheDate.value) ||
-                    dateFin.toString().startsWith(encanRechercheDate.value) ||
-                    dateDebutSoireeCloture
-                        .toString()
-                        .startsWith(encanRechercheDate.value) ||
-                    (rechercheDate >= dateDebutObj && rechercheDate <= dateFinObj) ||
-                    (rechercheDate >= dateDebutSoireeObj &&
-                        rechercheDate <= dateFinSoireeObj)
-                );
+                let listeEncanRechecheDate = encanRechercheDate.value.split("-")
+
+                if(listeEncanRechecheDate.length == 3 && !listeEncanRechecheDate.includes("")){
+                    return (
+                        dateDebut.toString().startsWith(encanRechercheDate.value) ||
+                        dateFin.toString().startsWith(encanRechercheDate.value) ||
+                        dateDebutSoireeCloture.startsWith(encanRechercheDate.value) ||
+                        (rechercheDate >= dateDebutObj && rechercheDate <= dateFinObj) 
+                    );
+                }
+                else{
+                    return (
+                        dateDebut.toString().startsWith(encanRechercheDate.value) ||
+                        dateFin.toString().startsWith(encanRechercheDate.value) ||
+                        dateDebutSoireeCloture.startsWith(encanRechercheDate.value)
+                    );
+                }
             }
         );
 
