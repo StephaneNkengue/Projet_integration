@@ -183,7 +183,7 @@
                 </div>
             </nav>
             <div v-if="
-          $route.name == 'EncanPresent' ||
+          $route.name == 'EncanPresent' && ilYAUnEncanPresent == true ||
           $route.name == 'Encan' ||
           $route.name == 'ResultatRechercheLots'
         ">
@@ -584,6 +584,7 @@
     const listeDesCategories = ref([]);
     const listeDesMediums = ref([]);
 
+    const ilYAUnEncanPresent = ref(false);
     const titreBarreDeRechercheDeLots = ref("");
     var rechercheNumeroEncan = ref();
     const rechercheEncansDate1 = ref();
@@ -620,11 +621,15 @@
         }
     );
 
-    var numeroEncanPresent = ref();
+    var numeroEncanPresent = null;
 
     async function verifierSiEncanPresent() {
+        numeroEncanPresent = null;
         var response = await store.dispatch("chercherEncanEnCours");
-        numeroEncanPresent = response.data.numeroEncan.toString();
+        if (response.status == 200) {
+            numeroEncanPresent = response.data.numeroEncan.toString();
+            ilYAUnEncanPresent.value = true;
+        }
     }
 
     const changementDeRoute = computed(() => route.fullPath)
@@ -790,13 +795,19 @@
                 next();
             } else {
                 elementsAEffacer.forEach((element) => {
-                    element.value = "";
+                    if (element) {
+                        element.value = "";
+                    }
                 });
                 listeDesSelects.forEach((select) => {
-                    select.value = 0;
+                    if (select) {
+                        select.value = 0;
+                    }
                 });
                 listeDesSelectsQuiOntBesoinDeInvalide.forEach((select) => {
-                    select.value = "";
+                    if (select) {
+                        select.value = "";
+                    }
                 });
                 if (document.querySelectorAll(".inputAAfficher")) {
                     document.querySelectorAll(".inputAAfficher").forEach((el) => {
