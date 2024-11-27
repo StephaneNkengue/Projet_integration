@@ -622,7 +622,8 @@
 
     var numeroEncanPresent = ref();
 
-    async function verifierSiEncanPresent() {
+    async function venumeroEncanPresent = ref();rifierSiEncanPresent() {
+        numeroEncanPresent = ref();
         var response = await store.dispatch("chercherEncanEnCours");
         if (response.status == 200) {
             numeroEncanPresent = response.data.numeroEncan.toString();
