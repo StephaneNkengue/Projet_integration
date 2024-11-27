@@ -624,7 +624,9 @@
 
     async function verifierSiEncanPresent() {
         var response = await store.dispatch("chercherEncanEnCours");
-        numeroEncanPresent = response.data.numeroEncan.toString();
+        if (response.status == 200) {
+            numeroEncanPresent = response.data.numeroEncan.toString();
+        }
     }
 
     const changementDeRoute = computed(() => route.fullPath)
@@ -635,7 +637,7 @@
             rechercheNumeroEncan = route.params.numeroEncan;
         } else if (route.name == "EncanPresent") {
             await verifierSiEncanPresent();
-            if (numeroEncanPresent != null) {
+            if (numeroEncanPresent != ref()) {
                 rechercheNumeroEncan = numeroEncanPresent;
             }
         }
@@ -781,7 +783,7 @@
             var listeDesSelectsQuiOntBesoinDeInvalide = document.querySelectorAll(
                 ".selectPourListeQuiOntBesoinDeInvalide"
             );
-            if (to.name == "ResultatRechercheLots") {
+            if (to.name == "ResultatRechercheLots" || to.name == "DetailsLot") {
                 if (document.querySelector("#navbarToggleRechercheAvancee")) {
                     document
                         .querySelector("#navbarToggleRechercheAvancee")
