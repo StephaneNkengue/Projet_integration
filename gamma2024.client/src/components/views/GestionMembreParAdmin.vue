@@ -10,46 +10,59 @@
                placeholder="Rechercher un membre"
                aria-label="Search" />
 
-        <div class="overflow-auto">
-            <table class="table table-striped mt-5 mb-5 col-md-12 text-center">
-                <thead>
-                    <tr>
-                        <th scope="col">Nom</th>
-                        <th scope="col">Prénom</th>
-                        <th scope="col">Pseudonyme</th>
-                        <th scope="col">Courriel</th>
-                        <th scope="col">Voir</th>
-                        <th scope="col">État</th>
-                    </tr>
-                </thead>
-                <tbody class="fs-6">
-                    <tr v-for="membre in filteredMembres" :key="membre.id">
-                        <td class="align-middle">{{ membre.name }}</td>
-                        <td class="align-middle">{{ membre.firstName }}</td>
-                        <td class="align-middle">{{ membre.userName }}</td>
-                        <td class="align-middle">{{ membre.email }}</td>
-                        <td class="align-middle">
-                            <span>
-                                <button class="btn btn-info" @click="detailsDuMembre(membre.id)">
-                                    <img src="/images/ice.png" class="img-fluid" alt="..." />
-                                </button>
-                            </span>
-                        </td>
-                        <td class="align-middle">
-                            <span v-if="membre.estBloque">
-                                <button class="btn btn-danger" @click="debloquerUnMembre(membre)">
-                                    <img src="/images/Locked.png" class="img-fluid" alt="..." />
-                                </button>
-                            </span>
-                            <span v-else>
-                                <button class="btn btn-success" @click="bloquerUnMembre(membre)">
-                                    <img src="/images/Unlocked.png" class="img-fluid" alt="..." />
-                                </button>
-                            </span>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+        <div class="d-flex gap-2 justify-content-center" v-if="chargement">
+            <div class="spinner-border" role="status">
+                <span class="visually-hidden">Chargement des membres...</span>
+            </div>
+            <p>Chargement des membres en cours...</p>
+        </div>
+
+        <div v-if="!chargement" class="w-100">
+            <div class="d-flex justify-content-center" v-if="!filteredMembres.length">
+                <h2>Aucun résultat trouvé</h2>
+            </div>
+
+            <div v-else class="overflow-auto">
+                <table class="table table-striped mt-5 mb-5 col-md-12 text-center">
+                    <thead>
+                        <tr>
+                            <th scope="col">Nom</th>
+                            <th scope="col">Prénom</th>
+                            <th scope="col">Pseudonyme</th>
+                            <th scope="col">Courriel</th>
+                            <th scope="col">Voir</th>
+                            <th scope="col">État</th>
+                        </tr>
+                    </thead>
+                    <tbody class="fs-6">
+                        <tr v-for="membre in filteredMembres" :key="membre.id">
+                            <td class="align-middle">{{ membre.name }}</td>
+                            <td class="align-middle">{{ membre.firstName }}</td>
+                            <td class="align-middle">{{ membre.userName }}</td>
+                            <td class="align-middle">{{ membre.email }}</td>
+                            <td class="align-middle">
+                                <span>
+                                    <button class="btn btn-info" @click="detailsDuMembre(membre.id)">
+                                        <img src="/images/ice.png" class="img-fluid" alt="..." />
+                                    </button>
+                                </span>
+                            </td>
+                            <td class="align-middle">
+                                <span v-if="membre.estBloque">
+                                    <button class="btn btn-danger" @click="debloquerUnMembre(membre)">
+                                        <img src="/images/Locked.png" class="img-fluid" alt="..." />
+                                    </button>
+                                </span>
+                                <span v-else>
+                                    <button class="btn btn-success" @click="bloquerUnMembre(membre)">
+                                        <img src="/images/Unlocked.png" class="img-fluid" alt="..." />
+                                    </button>
+                                </span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </template>
@@ -63,6 +76,8 @@
     const router = useRouter();
     let mesMembres = ref([]);
     const searchQuery = ref("");
+
+    const chargement = ref(true);
 
     onMounted(async () => {
         try {
@@ -91,6 +106,8 @@
         mesMembres.value = response.map((membre) => ({
             ...membre,
         }));
+
+        chargement.value = false;
     };
 
     // Propriété calculée pour filtrer les membres en fonction de la recherche
