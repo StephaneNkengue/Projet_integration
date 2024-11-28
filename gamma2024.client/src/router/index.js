@@ -32,6 +32,7 @@ import ResultatRechercheLots from "@/components/views/ResultatRechercheLots.vue"
 import ResultatRechercheEncans from "@/components/views/ResultatRechercheEncans.vue";
 import GestionCartes from "@/components/views/GestionCartes.vue";
 import HistoriqueAchatsParMembre from "@/components/views/HistoriqueAchatsParMembre.vue"
+import HistoriqueMisesParMembre from "@/components/views/HistoriqueMisesParMembre.vue";
 
 import ChoixLivraison from "@/components/views/ChoixLivraison.vue";
 import ConditionsCompagnie from "@/components/views/ConditionsCompagnie.vue"
@@ -278,6 +279,12 @@ const routes = [
         name: "ConditionsCompagnie",
         component: ConditionsCompagnie,
         meta: { requiresAuth: false },
+    },
+    {
+        path: "/historiqueMisesParMembre",
+        name: "HistoriqueMisesParMembre",
+        component: HistoriqueMisesParMembre,
+        meta: { requiresAuth: true, requiredRole: "Client" },
     },
 ];
 

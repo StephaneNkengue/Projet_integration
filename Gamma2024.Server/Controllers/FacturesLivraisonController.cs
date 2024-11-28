@@ -47,7 +47,7 @@ namespace Gamma2024.Server.Controllers
         public async Task<IActionResult> EnregistrerChoixLivraison([FromBody] FactureLivraisonAjoutVM choixLivraison)
         {
             var factureLivraison = await _factureLivraisonService.AjouterFactureLivraison(choixLivraison);
-            return Ok();
+            return Ok(factureLivraison);
         }
     }
 }

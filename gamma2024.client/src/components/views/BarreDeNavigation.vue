@@ -61,6 +61,12 @@
                                     <a class="nav-link"> Historique des achats </a>
                                 </router-link>
                             </li>
+                            <li class="nav-item" v-if="estConnecte && estClient">
+                                <router-link :to="{ name: 'HistoriqueMisesParMembre' }"
+                                             class="text-decoration-none">
+                                    <a class="nav-link"> Historique des mises </a>
+                                </router-link>
+                            </li>
                         </ul>
 
                         <div class="d-flex justify-content-center gap-3 mb-2 mb-lg-0 flex-row align-items-center justify-content-center">
@@ -177,9 +183,10 @@
                 </div>
             </nav>
             <div v-if="
-          $route.name == 'EncanPresent' ||
+          $route.name == 'EncanPresent' && ilYAUnEncanPresent == true ||
           $route.name == 'Encan' ||
-          $route.name == 'ResultatRechercheLots'">
+          $route.name == 'ResultatRechercheLots'
+        ">
                 <nav class="navbar bg-white navbarRechercheAvancee">
                     <div class="container-fluid d-flex justify-content-end">
                         <button class="navbar-toggler loupetoggler"
@@ -197,53 +204,12 @@
                     <div class="container collapse card mb-5 bg-white aucunPaddingPourCarteLots"
                          id="navbarToggleRechercheAvancee">
                         <div class="card-header d-flex justify-content-center">
-                            <h2>Recherche avancée de lots</h2>
+                            <h2>{{titreBarreDeRechercheDeLots}}</h2>
                         </div>
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-6">
-                                    <div class="col mt-2">
-                                        <label class="text-nowrap recherchelabel fw-bold"
-                                               for="rechercheLotsNumeroEncan">
-                                            Numéro d'encan
-                                        </label>
-                                        <div class="row">
-                                            <div class="col-sm-4">
-                                                <select class="form-select py-0 selectPourListe"
-                                                        id="selectNumeroEncan"
-                                                        @change="affichageInputNumeroEncan"
-                                                        aria-label="Default select example">
-                                                    <option class="py-0" value="0" selected>Égal à</option>
-                                                    <option class="py-0"
-                                                            id="selectNumeroEncanEntre"
-                                                            value="1">
-                                                        Entre
-                                                    </option>
-                                                </select>
-                                            </div>
-
-                                            <div class="col-sm">
-                                                <input type="number"
-                                                       maxlength="10"
-                                                       class="form-control rechercheinput align-self-end"
-                                                       id="rechercheLotsNumeroEncan" />
-                                            </div>
-                                            <div class="col-sm-auto inputAAfficher align-items-center"
-                                                 id="inputAAfficherNumeroEncan">
-                                                <label class="fs-6">et</label>
-                                            </div>
-                                            <div class="col-sm inputAAfficher"
-                                                 id="inputAAfficherNumeroEncan">
-                                                <input type="number"
-                                                       maxlength="10"
-                                                       class="form-control rechercheinput align-self-end"
-                                                       id="rechercheLotsNumeroEncan2" />
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-6">
-                                    <div class="col mt-2">
+                                    <div class="col">
                                         <label class="text-nowrap recherchelabel fw-bold"
                                                for="rechercheLotsValeurEstimee">
                                             Prix estimé
@@ -254,7 +220,9 @@
                                                         id="selectValeurEstimee"
                                                         @change="affichageInputValeurEstimee"
                                                         aria-label="Default select example">
-                                                    <option class="py-0" value="0" selected>Égale à</option>
+                                                    <option class="py-0" value="0" selected>
+                                                        Égale à
+                                                    </option>
                                                     <option class="py-0" value="1">Inférieure à</option>
                                                     <option class="py-0" value="2">Supérieure à</option>
                                                     <option class="py-0"
@@ -285,9 +253,7 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="row mt-2">
-                                <div class="col-md-4">
+                                <div class="col-6">
                                     <label class="text-nowrap recherchelabel fw-bold"
                                            for="rechercheLotsArtiste">
                                         Artiste
@@ -299,10 +265,17 @@
                                         <option class="py-0 pasDeChoix" value="" selected>
                                             Pas de choix
                                         </option>
-                                        <option v-for="artiste in listeDesArtistes" :key="artiste.nomArtiste" class="py-0" :value="artiste.nomArtiste">{{artiste.nomArtiste}}</option>
+                                        <option v-for="artiste in listeDesArtistes"
+                                                :key="artiste.nomArtiste"
+                                                class="py-0"
+                                                :value="artiste.nomArtiste">
+                                            {{ artiste.nomArtiste }}
+                                        </option>
                                     </select>
                                 </div>
-                                <div class="col-md-4">
+                            </div>
+                            <div class="row mt-2">
+                                <div class="col-md-6">
                                     <label class="text-nowrap recherchelabel fw-bold"
                                            for="rechercheLotsCategorie">
                                         Catégorie
@@ -314,10 +287,15 @@
                                         <option class="py-0 pasDeChoix" value="" selected>
                                             Pas de choix
                                         </option>
-                                        <option v-for="categorie in listeDesCategories" :key="categorie.id" class="py-0" :value="categorie.id">{{categorie.nom}}</option>
+                                        <option v-for="categorie in listeDesCategories"
+                                                :key="categorie.id"
+                                                class="py-0"
+                                                :value="categorie.id">
+                                            {{ categorie.nom }}
+                                        </option>
                                     </select>
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-md-6">
                                     <label class="text-nowrap recherchelabel fw-bold"
                                            for="rechercheLotsMedium">
                                         Medium
@@ -329,7 +307,12 @@
                                         <option class="py-0 pasDeChoix" value="" selected>
                                             Pas de choix
                                         </option>
-                                        <option v-for="medium in listeDesMediums" :key="medium.id" class="py-0" :value="medium.id">{{medium.type}}</option>
+                                        <option v-for="medium in listeDesMediums"
+                                                :key="medium.id"
+                                                class="py-0"
+                                                :value="medium.id">
+                                            {{ medium.type }}
+                                        </option>
                                     </select>
                                 </div>
                             </div>
@@ -346,10 +329,14 @@
                                                         id="selectHauteur"
                                                         @change="affichageInputHauteur"
                                                         aria-label="Default select example">
-                                                    <option class="py-0" value="0" selected>Égale à</option>
+                                                    <option class="py-0" value="0" selected>
+                                                        Égale à
+                                                    </option>
                                                     <option class="py-0" value="1">Inférieure à</option>
                                                     <option class="py-0" value="2">Supérieure à</option>
-                                                    <option class="py-0" value="3" id="selectHauteurEntre">
+                                                    <option class="py-0"
+                                                            value="3"
+                                                            id="selectHauteurEntre">
                                                         Entre
                                                     </option>
                                                 </select>
@@ -364,7 +351,8 @@
                                                  id="inputAAfficherHauteur">
                                                 <label class="fs-6">et</label>
                                             </div>
-                                            <div class="col-sm inputAAfficher" id="inputAAfficherHauteur">
+                                            <div class="col-sm inputAAfficher"
+                                                 id="inputAAfficherHauteur">
                                                 <input type="number"
                                                        maxlength="10"
                                                        class="form-control rechercheinput align-self-end"
@@ -385,10 +373,14 @@
                                                         id="selectLargeur"
                                                         @change="affichageInputLargeur"
                                                         aria-label="Default select example">
-                                                    <option class="py-0" value="0" selected>Égale à</option>
+                                                    <option class="py-0" value="0" selected>
+                                                        Égale à
+                                                    </option>
                                                     <option class="py-0" value="1">Inférieure à</option>
                                                     <option class="py-0" value="2">Supérieure à</option>
-                                                    <option class="py-0" value="3" id="selectLargeurEntre">
+                                                    <option class="py-0"
+                                                            value="3"
+                                                            id="selectLargeurEntre">
                                                         Entre
                                                     </option>
                                                 </select>
@@ -404,7 +396,8 @@
                                                  id="inputAAfficherLargeur">
                                                 <label class="fs-6">et</label>
                                             </div>
-                                            <div class="col-sm inputAAfficher" id="inputAAfficherLargeur">
+                                            <div class="col-sm inputAAfficher"
+                                                 id="inputAAfficherLargeur">
                                                 <input type="number"
                                                        maxlength="10"
                                                        class="form-control rechercheinput align-self-end"
@@ -429,7 +422,8 @@
           $route.name == 'EncansPasses' ||
           $route.name == 'EncansFuturs' ||
           $route.name == 'TousLesEncans' ||
-          $route.name == 'ResultatRechercheEncans'">
+          $route.name == 'ResultatRechercheEncans'
+        ">
                 <nav class="navbar bg-white navbarRechercheAvancee">
                     <div class="container-fluid d-flex justify-content-end">
                         <button class="navbar-toggler loupetoggler"
@@ -463,7 +457,9 @@
                                                         id="selectNumeroEncan"
                                                         @change="affichageInputNumeroEncan"
                                                         aria-label="Default select example">
-                                                    <option class="py-0" value="0" selected>Égal à</option>
+                                                    <option class="py-0" value="0" selected>
+                                                        Égal à
+                                                    </option>
                                                     <option class="py-0"
                                                             id="selectNumeroEncanEntre"
                                                             value="1">
@@ -504,12 +500,12 @@
                                                         id="selectDate"
                                                         @change="affichageInputDate"
                                                         aria-label="Default select example">
-                                                    <option class="py-0" value="0" selected>Égale à</option>
+                                                    <option class="py-0" value="0" selected>
+                                                        Égale à
+                                                    </option>
                                                     <option class="py-0" value="1">Inférieure à</option>
                                                     <option class="py-0" value="2">Supérieure à</option>
-                                                    <option class="py-0"
-                                                            value="3"
-                                                            id="selectDateEntre">
+                                                    <option class="py-0" value="3" id="selectDateEntre">
                                                         Entre
                                                     </option>
                                                 </select>
@@ -559,9 +555,7 @@
                     </div>
                 </div>
             </div>
-            <div v-else class="bg-white aucuneBarreDeRechercheAnvancee">
-
-            </div>
+            <div v-else class="bg-white aucuneBarreDeRechercheAnvancee"></div>
         </div>
     </header>
 </template>
@@ -569,8 +563,8 @@
     import { computed, watch, reactive, ref, onMounted } from "vue";
     import { useStore } from "vuex";
     import { useRouter, useRoute } from "vue-router";
-    import VueDatePicker from '@vuepic/vue-datepicker';
-    import '@vuepic/vue-datepicker/dist/main.css'
+    import VueDatePicker from "@vuepic/vue-datepicker";
+    import "@vuepic/vue-datepicker/dist/main.css";
     import { fr } from "date-fns/locale";
     import moment from "moment";
 
@@ -590,6 +584,9 @@
     const listeDesCategories = ref([]);
     const listeDesMediums = ref([]);
 
+    const ilYAUnEncanPresent = ref(false);
+    const titreBarreDeRechercheDeLots = ref("");
+    var rechercheNumeroEncan = ref();
     const rechercheEncansDate1 = ref();
     const rechercheEncansDate2 = ref();
 
@@ -624,15 +621,44 @@
         }
     );
 
+    var numeroEncanPresent = null;
+
+    async function verifierSiEncanPresent() {
+        numeroEncanPresent = null;
+        var response = await store.dispatch("chercherEncanEnCours");
+        if (response.status == 200) {
+            numeroEncanPresent = response.data.numeroEncan.toString();
+            ilYAUnEncanPresent.value = true;
+        }
+    }
+
+    const changementDeRoute = computed(() => route.fullPath)
+    watch(changementDeRoute, changeTitreBarreRecherche)
+
+    async function changeTitreBarreRecherche() {
+        if (route.name == "Encan") {
+            rechercheNumeroEncan = route.params.numeroEncan;
+        } else if (route.name == "EncanPresent") {
+            await verifierSiEncanPresent();
+            if (numeroEncanPresent != null) {
+                rechercheNumeroEncan = numeroEncanPresent;
+            }
+        }
+        if (titreBarreDeRechercheDeLots) {
+            titreBarreDeRechercheDeLots.value = "Recherche avancée de lots dans l'Encan " + rechercheNumeroEncan;
+        }
+    }
+
     async function rechercheAvanceeLots() {
         var stringquery = {};
-        var selectNumeroEncan = document.querySelector("#selectNumeroEncan").value;
-        var stringNumeroEncan = document.querySelector(
-            "#rechercheLotsNumeroEncan"
-        ).value;
-        var stringNumeroEncan2 = document.querySelector(
-            "#rechercheLotsNumeroEncan2"
-        ).value;
+        if (route.name == "Encan") {
+            rechercheNumeroEncan = route.params.numeroEncan;
+        } else if (route.name == "EncanPresent") {
+            await verifierSiEncanPresent();
+            if (numeroEncanPresent != null) {
+                rechercheNumeroEncan = numeroEncanPresent;
+            }
+        }
         var selectValeurEstimee = document.querySelector(
             "#selectValeurEstimee"
         ).value;
@@ -652,41 +678,35 @@
         var stringLargeur = document.querySelector("#rechercheLotsLargeur").value;
         var stringLargeur2 = document.querySelector("#rechercheLotsLargeur2").value;
 
-        if (stringNumeroEncan) {
-            stringquery['selectNumeroEncan'] = selectNumeroEncan;
-            stringquery['stringNumeroEncan'] = stringNumeroEncan;
-            if (selectNumeroEncan == 1) {
-                stringquery['stringNumeroEncan2'] = stringNumeroEncan2;
-            }
-        }
+        stringquery["numeroEncan"] = rechercheNumeroEncan;
         if (stringValeurEstimee) {
-            stringquery['selectValeurEstimee'] = selectValeurEstimee;
-            stringquery['stringValeurEstimee'] = stringValeurEstimee;
+            stringquery["selectValeurEstimee"] = selectValeurEstimee;
+            stringquery["stringValeurEstimee"] = stringValeurEstimee;
             if (selectValeurEstimee == 3) {
-                stringquery['stringValeurEstimee2'] = stringValeurEstimee2;
+                stringquery["stringValeurEstimee2"] = stringValeurEstimee2;
             }
         }
         if (selectArtiste != 0) {
-            stringquery['selectArtiste'] = selectArtiste;
+            stringquery["selectArtiste"] = selectArtiste;
         }
         if (selectCategorie != 0) {
-            stringquery['selectCategorie'] = selectCategorie;
+            stringquery["selectCategorie"] = selectCategorie;
         }
         if (selectMedium != 0) {
-            stringquery['selectMedium'] = selectMedium;
+            stringquery["selectMedium"] = selectMedium;
         }
         if (stringHauteur) {
-            stringquery['selectHauteur'] = selectHauteur;
-            stringquery['stringHauteur'] = stringHauteur;
+            stringquery["selectHauteur"] = selectHauteur;
+            stringquery["stringHauteur"] = stringHauteur;
             if (selectHauteur == 3) {
-                stringquery['stringHauteur2'] = stringHauteur2;
+                stringquery["stringHauteur2"] = stringHauteur2;
             }
         }
         if (stringLargeur) {
-            stringquery['selectLargeur'] = selectLargeur;
-            stringquery['stringLargeur'] = stringLargeur;
+            stringquery["selectLargeur"] = selectLargeur;
+            stringquery["stringLargeur"] = stringLargeur;
             if (selectLargeur == 3) {
-                stringquery['stringLargeur2'] = stringLargeur2;
+                stringquery["stringLargeur2"] = stringLargeur2;
             }
         }
 
@@ -696,23 +716,6 @@
                 data: JSON.stringify(stringquery),
             },
         });
-    }
-
-    function affichageInputNumeroEncan() {
-        var inputAAfficher = document.querySelectorAll("#inputAAfficherNumeroEncan");
-        var selectNumeroEncanEntre = document.querySelector(
-            "#selectNumeroEncanEntre"
-        );
-
-        if (selectNumeroEncanEntre.selected) {
-            inputAAfficher.forEach((el, index) => {
-                el.style.display = "inline-block";
-            });
-        } else if (!selectNumeroEncanEntre.selected) {
-            inputAAfficher.forEach((el) => {
-                el.style.display = "none";
-            });
-        }
     }
 
     function affichageInputValeurEstimee() {
@@ -766,34 +769,45 @@
 
     // La barre de recherche avancée garde les informations ou non selon le changement de page
     router.beforeEach((to, from, next) => {
-        if (from.name == 'ResultatRechercheLots' || from.name == 'Encan' || from.name == 'EncanPresent') {
+        if (
+            from.name == "ResultatRechercheLots" ||
+            from.name == "Encan" ||
+            from.name == "EncanPresent"
+        ) {
             var elementsAEffacer = [
-                document.querySelector("#rechercheLotsNumeroEncan"),
-                document.querySelector("#rechercheLotsNumeroEncan2"),
                 document.querySelector("#rechercheLotsValeurEstimee"),
                 document.querySelector("#rechercheLotsValeurEstimee2"),
                 document.querySelector("#rechercheLotsHauteur"),
                 document.querySelector("#rechercheLotsHauteur2"),
                 document.querySelector("#rechercheLotsLargeur"),
-                document.querySelector("#rechercheLotsLargeur2")
-            ]
+                document.querySelector("#rechercheLotsLargeur2"),
+            ];
             var listeDesSelects = document.querySelectorAll(".selectPourListe");
-            var listeDesSelectsQuiOntBesoinDeInvalide = document.querySelectorAll(".selectPourListeQuiOntBesoinDeInvalide");
-            if (to.name == 'ResultatRechercheLots') {
+            var listeDesSelectsQuiOntBesoinDeInvalide = document.querySelectorAll(
+                ".selectPourListeQuiOntBesoinDeInvalide"
+            );
+            if (to.name == "ResultatRechercheLots") {
                 if (document.querySelector("#navbarToggleRechercheAvancee")) {
-                    document.querySelector("#navbarToggleRechercheAvancee").classList.remove("show");
+                    document
+                        .querySelector("#navbarToggleRechercheAvancee")
+                        .classList.remove("show");
                 }
-                next()
-            }
-            else {
+                next();
+            } else {
                 elementsAEffacer.forEach((element) => {
-                    element.value = "";
+                    if (element) {
+                        element.value = "";
+                    }
                 });
                 listeDesSelects.forEach((select) => {
-                    select.value = 0;
+                    if (select) {
+                        select.value = 0;
+                    }
                 });
                 listeDesSelectsQuiOntBesoinDeInvalide.forEach((select) => {
-                    select.value = "";
+                    if (select) {
+                        select.value = "";
+                    }
                 });
                 if (document.querySelectorAll(".inputAAfficher")) {
                     document.querySelectorAll(".inputAAfficher").forEach((el) => {
@@ -801,34 +815,39 @@
                     });
                 }
                 if (document.querySelector("#navbarToggleRechercheAvancee")) {
-                    document.querySelector("#navbarToggleRechercheAvancee").classList.remove("show");
+                    document
+                        .querySelector("#navbarToggleRechercheAvancee")
+                        .classList.remove("show");
                 }
-                next()
+                next();
             }
-        }
-        else if (from.name == 'ResultatRechercheEncans' || from.name == 'EncansPasses' || from.name == 'EncansFuturs' || from.name == 'TousLesEncans') {
+        } else if (
+            from.name == "ResultatRechercheEncans" ||
+            from.name == "EncansPasses" ||
+            from.name == "EncansFuturs" ||
+            from.name == "TousLesEncans"
+        ) {
             var elementsAEffacer = [
                 document.querySelector("#rechercheEncansNumeroEncan"),
                 document.querySelector("#rechercheEncansNumeroEncan2"),
-            ]
-            var datesAEffacer = [
-                rechercheEncansDate1,
-                rechercheEncansDate2,
-            ]
+            ];
+            var datesAEffacer = [rechercheEncansDate1, rechercheEncansDate2];
             var listeDesSelects = document.querySelectorAll(".selectPourListe");
-            if (to.name == 'ResultatRechercheEncans') {
+            if (to.name == "ResultatRechercheEncans") {
                 if (document.querySelector("#navbarToggleRechercheAvancee")) {
-                    document.querySelector("#navbarToggleRechercheAvancee").classList.remove("show");
+                    document
+                        .querySelector("#navbarToggleRechercheAvancee")
+                        .classList.remove("show");
                 }
-                next()
-            }
-            else {
+                next();
+            } else {
                 elementsAEffacer.forEach((element) => {
                     element.value = "";
                 });
                 datesAEffacer.forEach((date) => {
                     date.value = "";
                 });
+
                 listeDesSelects.forEach((select) => {
                     select.value = 0;
                 });
@@ -838,18 +857,21 @@
                     });
                 }
                 if (document.querySelector("#navbarToggleRechercheAvancee")) {
-                    document.querySelector("#navbarToggleRechercheAvancee").classList.remove("show");
+                    document
+                        .querySelector("#navbarToggleRechercheAvancee")
+                        .classList.remove("show");
                 }
-                next()
+                next();
             }
-        }
-        else {
+        } else {
             if (document.querySelector("#navbarToggleRechercheAvancee")) {
-                document.querySelector("#navbarToggleRechercheAvancee").classList.remove("show");
+                document
+                    .querySelector("#navbarToggleRechercheAvancee")
+                    .classList.remove("show");
             }
-            next()
+            next();
         }
-    })
+    });
 
     const desacDateFinEntre = computed(() => {
         if (rechercheEncansDate1.value) {
@@ -880,26 +902,24 @@
         var stringNumeroEncan2 = document.querySelector(
             "#rechercheEncansNumeroEncan2"
         ).value;
-        var selectDate = document.querySelector(
-            "#selectDate"
-        ).value;
-        var stringDate = moment(rechercheEncansDate1.value).format('yyyy-MM-DD');
-        var stringDate2 = moment(rechercheEncansDate2.value).format('yyyy-MM-DD');
+        var selectDate = document.querySelector("#selectDate").value;
+        var stringDate = moment(rechercheEncansDate1.value).format("yyyy-MM-DD");
+        var stringDate2 = moment(rechercheEncansDate2.value).format("yyyy-MM-DD");
 
         if (stringNumeroEncan) {
-            stringquery['selectNumeroEncan'] = selectNumeroEncan;
-            stringquery['stringNumeroEncan'] = stringNumeroEncan;
+            stringquery["selectNumeroEncan"] = selectNumeroEncan;
+            stringquery["stringNumeroEncan"] = stringNumeroEncan;
             if (selectNumeroEncan == 1) {
-                stringquery['stringNumeroEncan2'] = stringNumeroEncan2;
+                stringquery["stringNumeroEncan2"] = stringNumeroEncan2;
             }
         }
         if (rechercheEncansDate1.value) {
-            var stringDate = moment(rechercheEncansDate1.value).format('yyyy-MM-DD');
-            stringquery['selectDate'] = selectDate;
-            stringquery['stringDate'] = stringDate;
+            var stringDate = moment(rechercheEncansDate1.value).format("yyyy-MM-DD");
+            stringquery["selectDate"] = selectDate;
+            stringquery["stringDate"] = stringDate;
             if (selectDate == 3 && rechercheEncansDate2.value) {
-                var stringDate2 = moment(rechercheEncansDate2.value).format('yyyy-MM-DD');
-                stringquery['stringDate2'] = stringDate2;
+                var stringDate2 = moment(rechercheEncansDate2.value).format("yyyy-MM-DD");
+                stringquery["stringDate2"] = stringDate2;
             }
         }
 
@@ -911,11 +931,26 @@
         });
     }
 
+    function affichageInputNumeroEncan() {
+        var inputAAfficher = document.querySelectorAll("#inputAAfficherNumeroEncan");
+        var selectNumeroEncanEntre = document.querySelector(
+            "#selectNumeroEncanEntre"
+        );
+
+        if (selectNumeroEncanEntre.selected) {
+            inputAAfficher.forEach((el, index) => {
+                el.style.display = "inline-block";
+            });
+        } else if (!selectNumeroEncanEntre.selected) {
+            inputAAfficher.forEach((el) => {
+                el.style.display = "none";
+            });
+        }
+    }
+
     function affichageInputDate() {
         var inputAAfficher = document.querySelectorAll(".inputAAfficherDate");
-        var selectDateEntre = document.querySelector(
-            "#selectDateEntre"
-        );
+        var selectDateEntre = document.querySelector("#selectDateEntre");
 
         if (selectDateEntre.selected) {
             inputAAfficher.forEach((el, index) => {
@@ -942,9 +977,9 @@
         document.querySelectorAll(".dropdown-toggle").forEach((dropdownToggle) => {
             new bootstrap.Dropdown(dropdownToggle);
         });
-        listeDesArtistes.value = await store.dispatch('obtenirArtistes');
-        listeDesMediums.value = await store.dispatch('obtenirMediums');
-        listeDesCategories.value = await store.dispatch('obtenirCategories');
+        listeDesArtistes.value = await store.dispatch("obtenirArtistes");
+        listeDesMediums.value = await store.dispatch("obtenirMediums");
+        listeDesCategories.value = await store.dispatch("obtenirCategories");
     });
 </script>
 <style scoped>
@@ -1017,6 +1052,7 @@
     }
 
     .inputAAfficher {
+        height: 25px;
         display: none;
     }
 

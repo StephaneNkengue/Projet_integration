@@ -23,6 +23,7 @@ namespace Gamma2024.Server.Data
         public DbSet<Adresse> Adresses { get; set; } = default!;
         public DbSet<Medium> Mediums { get; set; } = default!;
         public DbSet<Charite> Charites { get; set; } = default!;
+        public DbSet<MiseAutomatique> MiseAutomatiques { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -130,6 +131,18 @@ namespace Gamma2024.Server.Data
                 .WithOne(l => l.Medium)
                 .HasForeignKey(l => l.IdMedium)
                 .OnDelete(DeleteBehavior.Restrict);
+
+
+            // Configuration pour MiseAutomatique
+            builder.Entity<MiseAutomatique>()
+                .HasOne(m => m.Lot)
+                .WithMany(l => l.MisesAutomatiques)
+                .HasForeignKey(m => m.LotId);
+
+            builder.Entity<MiseAutomatique>()
+                .HasOne(m => m.User)
+                .WithMany()
+                .HasForeignKey(m => m.UserId);
         }
 
         private void CreateRolesAndUsers(ModelBuilder builder)

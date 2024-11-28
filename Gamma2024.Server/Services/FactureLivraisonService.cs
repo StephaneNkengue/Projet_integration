@@ -58,8 +58,10 @@ namespace Gamma2024.Server.Services
             return null;
         }
 
-        public async Task<FactureLivraison> AjouterFactureLivraison(FactureLivraisonAjoutVM choix)
+        public async Task<FactureLivraisonModalVM> AjouterFactureLivraison(FactureLivraisonAjoutVM choix)
         {
+            var factureLivraison = new FactureLivraison();
+            AdresseVM adresseTemp = new();
             if (choix.IdAdresse == null)
             {
                 var facture = _context.Factures.FirstOrDefault(f => f.Id == choix.IdFacture);
@@ -69,16 +71,31 @@ namespace Gamma2024.Server.Services
 
                 return null;
             }
-
-            var factureLivraison = new FactureLivraison
+            else if (choix.IdAdresse == 0)
             {
-                IdFacture = choix.IdFacture,
-                Facture = _context.Factures.Include(f => f.Lots).Include(f => f.Client.Adresses).First(f => f.Id == choix.IdFacture),
-                IdAdresse = choix.IdAdresse.Value,
-                IdCharite = choix.IdCharite,
-                DateAchat = DateTime.Now,
-                FacturePDFPath = ""
-            };
+                factureLivraison = new FactureLivraison
+                {
+                    IdFacture = choix.IdFacture,
+                    Facture = _context.Factures.Include(f => f.Lots).Include(f => f.Client.Adresses).First(f => f.Id == choix.IdFacture),
+                    IdCharite = choix.IdCharite,
+                    DateAchat = DateTime.Now,
+                    FacturePDFPath = ""
+                };
+                adresseTemp = choix.Adresse;
+            }
+            else
+            {
+                factureLivraison = new FactureLivraison
+                {
+                    IdFacture = choix.IdFacture,
+                    Facture = _context.Factures.Include(f => f.Lots).Include(f => f.Client.Adresses).First(f => f.Id == choix.IdFacture),
+                    IdAdresse = choix.IdAdresse.Value,
+                    IdCharite = choix.IdCharite,
+                    DateAchat = DateTime.Now,
+                    FacturePDFPath = ""
+                };
+            }
+
             _context.FactureLivraisons.Add(factureLivraison);
             _context.SaveChanges();
 
@@ -117,7 +134,23 @@ namespace Gamma2024.Server.Services
                 Don = 0
             };
 
-            if (choix.Don.HasValue)
+            if (adresseTemp != null)
+            {
+                factureLivraisonGen.Client.AdresseLigne1 = $"{adresseTemp.NumeroCivique} {adresseTemp.Rue}";
+                factureLivraisonGen.Client.AdresseLigne2 = $"{adresseTemp.Appartement}";
+                factureLivraisonGen.Client.AdresseLigne3 = $"{adresseTemp.Ville}, {adresseTemp.Province}, {adresseTemp.Pays}";
+                factureLivraisonGen.Client.CodePostal = $"{adresseTemp.CodePostal}";
+            }
+            else
+            {
+                var adresse = _context.Adresses.First(a => a.Id == choix.IdAdresse);
+                factureLivraisonGen.Client.AdresseLigne1 = $"{adresse.Numero} {adresse.Rue}";
+                factureLivraisonGen.Client.AdresseLigne2 = $"{adresse.Appartement}";
+                factureLivraisonGen.Client.AdresseLigne3 = $"{adresse.Ville}, {adresse.Province}, {adresse.Pays}";
+                factureLivraisonGen.Client.CodePostal = $"{adresse.CodePostal}";
+            }
+
+            if (choix.Don.HasValue && choix.Don != false)
             {
                 factureLivraisonGen.Don = factureLivraison.Don;
             }
@@ -127,7 +160,11 @@ namespace Gamma2024.Server.Services
             _context.FactureLivraisons.Update(factureLivraison);
             _context.SaveChanges();
 
-            return factureLivraison;
+            return new FactureLivraisonModalVM()
+            {
+                IdFacture = factureLivraison.Id,
+                PathFactureLivraison = path,
+            };
         }
 
         public FactureLivraison ChercherFactureLivraison(int idFactureLivraison)

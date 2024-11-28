@@ -390,7 +390,7 @@ namespace Gamma2024.Server.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("IdAdresse")
+                    b.Property<int?>("IdAdresse")
                         .HasColumnType("int");
 
                     b.Property<int?>("IdCharite")
@@ -524,6 +524,42 @@ namespace Gamma2024.Server.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Mediums");
+                });
+
+            modelBuilder.Entity("Gamma2024.Server.Models.MiseAutomatique", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("DateMise")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("EstMiseAutomatique")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("LotId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("Montant")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal?>("MontantMaximal")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("LotId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("MiseAutomatiques");
                 });
 
             modelBuilder.Entity("Gamma2024.Server.Models.Photo", b =>
@@ -799,8 +835,7 @@ namespace Gamma2024.Server.Migrations
                     b.HasOne("Gamma2024.Server.Models.Adresse", "Adresse")
                         .WithMany("FacturesLivraisons")
                         .HasForeignKey("IdAdresse")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("Gamma2024.Server.Models.Charite", "Charite")
                         .WithMany("FacturesLivraisons")
@@ -851,6 +886,25 @@ namespace Gamma2024.Server.Migrations
                     b.Navigation("Medium");
 
                     b.Navigation("Vendeur");
+                });
+
+            modelBuilder.Entity("Gamma2024.Server.Models.MiseAutomatique", b =>
+                {
+                    b.HasOne("Gamma2024.Server.Models.Lot", "Lot")
+                        .WithMany("MisesAutomatiques")
+                        .HasForeignKey("LotId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Gamma2024.Server.Models.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Lot");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Gamma2024.Server.Models.Photo", b =>
@@ -965,6 +1019,8 @@ namespace Gamma2024.Server.Migrations
             modelBuilder.Entity("Gamma2024.Server.Models.Lot", b =>
                 {
                     b.Navigation("EncanLots");
+
+                    b.Navigation("MisesAutomatiques");
 
                     b.Navigation("Photos");
                 });
