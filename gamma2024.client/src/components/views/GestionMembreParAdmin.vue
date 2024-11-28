@@ -1,12 +1,15 @@
 <template lang="">
-    <div class="container mt-5">
+    <div class="container">
+        <h1 class="text-center mb-5">Liste des membres</h1>
+
         <h3 class="text-center">Rechercher un membre</h3>
+
         <input v-model="searchQuery"
                class="form-control row col-10 ms-1"
                type="search"
                placeholder="Rechercher un membre"
                aria-label="Search" />
-        <h1 class="text-center mt-5">Liste des membres</h1>
+
         <div class="overflow-auto">
             <table class="table table-striped mt-5 mb-5 col-md-12 text-center">
                 <thead>

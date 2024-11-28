@@ -2,8 +2,8 @@
     <div class="container">
         <h1 class="text-center mb-5">Liste des encans</h1>
 
-
         <h3 class="text-center" for="Recherche">Rechercher un encan </h3>
+
         <div class="d-flex flex-column gap-3 align-items-center mb-5">
             <input data-bs-theme="light"
                    type="search"
