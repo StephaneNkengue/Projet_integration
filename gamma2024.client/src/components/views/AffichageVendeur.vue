@@ -45,9 +45,9 @@
 
         <div class="d-flex gap-2 justify-content-center" v-if="chargement">
             <div class="spinner-border" role="status">
-                <span class="visually-hidden">Chargement des ventes...</span>
+                <span class="visually-hidden">Chargement des vendeurs...</span>
             </div>
-            <p>Chargement des ventes en cours...</p>
+            <p>Chargement des vendeurs en cours...</p>
         </div>
 
         <div v-if="!chargement" class="w-100">
