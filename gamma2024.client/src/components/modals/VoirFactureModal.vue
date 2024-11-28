@@ -40,8 +40,10 @@
     const chargement = ref(true)
 
     onMounted(async () => {
-        const response = await store.state.api.defaults.baseURL.replace("/api", "")
-        pdf.value = response + props.facturePdfPath
+        const response = await store.state.api.defaults.avatarURL
+        console.log(response)
+        pdf.value = response + "/" + props.facturePdfPath
+        console.log(pdf.value)
 
         if (pdf.value != response) {
             chargement.value = false

@@ -1,7 +1,7 @@
 <template>
     <div class="d-flex flex-column align-items-center pb-3">
         <h1>Résultat de la recherche d'encans</h1>
-        <div class="d-flex gap-2 w-100" v-if="chargement">
+        <div class="d-flex gap-2 w-100 justify-content-center" v-if="chargement">
             <div class="spinner-border" role="status">
                 <span class="visually-hidden">Chargement des encans...</span>
             </div>

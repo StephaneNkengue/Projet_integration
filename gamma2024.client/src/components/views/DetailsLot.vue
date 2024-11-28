@@ -14,8 +14,8 @@
                 <h1 class="text-center">Lot {{lot.numero}}</h1>
             </div>
 
-            <div class="row gap-5 w-100 cols-lg-2 cols-1">
-                <div class="col d-flex pt-3 bleuMoyenFond contourDiv text-white align-items-center">
+            <div class="row w-100 align-items-stretch justify-content-around">
+                <div class="col-12 col-lg-4 d-flex pt-3 bleuMoyenFond contourDiv text-white align-items-center mb-3 mb-lg-0">
                     <div class="col text-center">
                         <p>{{lot.artiste}}</p>
                         <p>{{lot.hauteur}} x {{lot.largeur}} po</p>
@@ -28,7 +28,7 @@
                         <img v-else src="/icons/IconeNonLivrable.png" alt="livrable" height="80" />
                     </div>
                 </div>
-                <div class="col">
+                <div class="col-12 col-lg-7 d-flex flex-column justify-content-between">
                     <div id="carouselExampleIndicators" class="carousel">
 
                         <div class="carousel-inner">
@@ -36,7 +36,7 @@
                             <div v-for="(image, index) in lot.photos">
                                 <div :class="{active: index==0, 'carousel-item': true}">
                                     <div class="d-flex justify-content-center">
-                                        <img :src="urlApi + image" height="400" alt="...">
+                                        <img :src="urlApi + image" alt="..." class="w-100">
                                     </div>
                                 </div>
                             </div>
@@ -52,13 +52,12 @@
                             <span class="visually-hidden">Previous</span>
                         </a>
 
-                        <div class="gap-1 d-flex">
+                        <div class="gap-1 d-flex flex-wrap justify-content-around">
 
                             <div v-for="(image, index) in lot.photos">
-                                <a data-bs-target="#carouselExampleIndicators" :data-bs-slide-to="index" class="active " aria-current="true" :aria-label="'Slide ' + (index+1)">
+                                <a data-bs-target="#carouselExampleIndicators" :data-bs-slide-to="index" class="active " aria-current="true" :aria-label="'Slide ' + (index+1)" role="button">
                                     <img :src="urlApi + image" height="60" alt="Image du lot">
                                 </a>
-
                             </div>
                         </div>
 

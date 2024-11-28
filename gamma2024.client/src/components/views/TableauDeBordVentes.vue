@@ -3,16 +3,18 @@
         <FactureModal :facturePdfPath="facture.pdfPath" :idFacture="'Fac' + facture.id"></FactureModal>
         <FactureModal v-if="facture.livraison == true" :facturePdfPath="facture.pdfPathLivraison" :idFacture="'Livraison'+facture.id"></FactureModal>
     </span>
-    <div class="container mt-5">
+    <div class="container">
+        <h1 class="text-center mb-5">Liste des ventes</h1>
+
         <h3 class="text-center">Rechercher une vente</h3>
+
         <input v-model="searchQuery"
                class="form-control row col-10 ms-1"
                type="search"
                placeholder="Rechercher une vente"
                aria-label="Search" />
-        <h1 class="text-center mt-5">Liste des ventes</h1>
 
-        <div class="d-flex flex-row gap-2 justify-content-end mb-3">
+        <div class="d-flex flex-row gap-2 justify-content-end my-4">
             <button class="d-flex align-items-center text-center rounded btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
                     @click="changerNbVenteParPage(20)"
                     v-bind:disabled="ventesParPage == 20">
@@ -67,7 +69,7 @@
                                     </div>
                                 </button>
                             </h2>
-                            <!--Changer le 233 en le numero de l'encan le plus récent-->
+
                             <div :id="'collapse' + encan.encan"
                                  class="accordion-collapse collapse"
                                  :class="{ show: encan == numerosEncans[0] }"
@@ -117,7 +119,7 @@
                                                  data-bs-parent="#accordionClient">
                                                 <div class="accordion-body">
                                                     <table class="table">
-                                                        <thead>
+                                                        <thead class="table-dark">
                                                             <tr>
                                                                 <th scope="col">Numéro du lot</th>
                                                                 <th scope="col">Prix vendu</th>
@@ -125,8 +127,8 @@
                                                         </thead>
                                                         <tbody>
                                                             <tr v-for="lot in facture.lots" :key="lot.id">
-                                                                <td scope="row">{{ lot.numero }}</td>
-                                                                <td>{{ lot.mise }}$</td>
+                                                                <td class="align-middle" scope="row">{{ lot.numero }}</td>
+                                                                <td class="align-middle">{{ lot.mise }}$</td>
                                                             </tr>
                                                         </tbody>
                                                     </table>
