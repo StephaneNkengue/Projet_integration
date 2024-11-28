@@ -1,6 +1,6 @@
 <template>
     <div v-if="isLoading">Chargement...</div>
-    <div class="pt-5 container">
+    <div class="pt-md-5 container">
         <div class="container d-flex flex-column justify-content-start align-items-stretch card p-5 mb-5">
             <div class="card-header">
                 <!-- Ajout de la section avatar -->
@@ -46,7 +46,7 @@
                     <div class="card mb-5">
                         <div class="card-header">Informations générales</div>
                         <div class="card-body">
-                            <div class="row mt-3">
+                            <div class="row mt-md-3">
                                 <div class="col-md-6">
                                     <label for="nom">Nom</label>
                                     <input type="text"
@@ -77,7 +77,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="row mt-3">
+                            <div class="row mt-md-3">
                                 <div class="col-md-6">
                                     <label for="pseudonyme">Pseudonyme</label>
                                     <input type="text"
@@ -108,7 +108,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="row mt-3">
+                            <div class="row mt-md-3">
                                 <div class="col-md-6">
                                     <label class="labels">Courriel</label>
                                     <input type="text"
@@ -127,7 +127,7 @@
                                     </button>
                                 </div>
                             </div>
-                            <div class="d-flex flex-column col-md-12 mt-3"
+                            <div class="d-flex flex-column col-md-12 mt-md-3"
                                  v-if="changeVisible">
                                 <div class="form-group">
                                     <label for="currentPassword">Mot de passe actuel</label>
@@ -177,7 +177,7 @@
                     <div class="card my-5">
                         <div class="card-header">Adresse</div>
                         <div class="card-body">
-                            <div class="row mt-3">
+                            <div class="row mt-md-3">
                                 <div class="col-md-6">
                                     <label for="numeroCivique">Numéro civique</label>
                                     <input type="text"
@@ -208,7 +208,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="row mt-3">
+                            <div class="row mt-md-3">
                                 <div class="col-md-6">
                                     <label for="appartement">Appartement/bureau</label>
                                     <input type="text"
@@ -231,7 +231,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="row mt-3">
+                            <div class="row mt-md-3">
                                 <div class="col-md-6">
                                     <label for="province">Province</label>
                                     <select id="province"
@@ -259,7 +259,7 @@
                                            v-model="formData.adresse.pays" />
                                 </div>
                             </div>
-                            <div class="row mt-3">
+                            <div class="row mt-md-3">
                                 <div class="col-md-12">
                                     <label class="labels">Code postal</label>
                                     <div class="input-wrapper">
@@ -282,8 +282,8 @@
                         </div>
                     </div>
 
-                    <div class="d-flex justify-content-end gap-2 py-3 card-footer">
-                        <button class="btn btn-secondary rounded-pill px-4 me-4"
+                    <div class="d-flex justify-content-start justify-content-md-end gap-2 py-3 card-footer flex-column flex-md-row px-3">
+                        <button class="btn btn-secondary rounded-pill px-4"
                                 :disabled="!formDataChanged"
                                 type="button"
                                 @click="resetForm">
@@ -292,14 +292,14 @@
                         <button type="submit"
                                 :class="[
                 isFormValid && formDataChanged ? 'bleuValide' : 'bleuNonValide',
-                'btn rounded-pill px-4 me-4',
+                'btn rounded-pill px-4',
               ]"
                                 :disabled="!isFormValid || !formDataChanged">
                             <div class="d-flex flex-row align-items-center">
-                            <img src="/images/save_img.png"
-                                 class="img-fluid img_password"
-                                 alt="icon_save" />
-                            <span class="ms-2">Enregistrer</span>
+                                <img src="/images/save_img.png"
+                                     class="img-fluid img_password"
+                                     alt="icon_save" />
+                                <span class="ms-2">Enregistrer</span>
                             </div>
                         </button>
                     </div>
