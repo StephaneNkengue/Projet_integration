@@ -295,10 +295,12 @@
                 'btn rounded-pill px-4 me-4',
               ]"
                                 :disabled="!isFormValid || !formDataChanged">
+                            <div class="d-flex flex-row align-items-center">
                             <img src="/images/save_img.png"
                                  class="img-fluid img_password"
                                  alt="icon_save" />
                             <span class="ms-2">Enregistrer</span>
+                            </div>
                         </button>
                     </div>
                 </form>
