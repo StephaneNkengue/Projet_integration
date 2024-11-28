@@ -1,128 +1,137 @@
 <template>
-    <div class="d-flex justify-content-between">
-        <h2 class="d-flex-1">Liste des lots</h2>
+    <div class="container">
+        <!--<div class="d-flex justify-content-between">-->
+        <h1 class="d-flex-1 text-center mb-5">Liste des lots</h1>
+
         <div v-if="messageConfirmation" class="d-flex-1 alert alert-success py-0">
             {{ messageConfirmation }}
         </div>
-    </div>
-    <div class="d-flex justify-content-end">
-        <div class="d-flex d-flex-1 justify-content-end">
-            <button class="bleuMoyenFond btnSurvolerBleuMoyenFond boutonPersonnalise text-white d-flex-1"
-                    type="button"
-                    id="ajouterLotButton"
-                    @click="redirigerVersCreationLot">
-                Ajouter un lot
-            </button>
-            <div class="dropdown d-flex-1">
-                <button class="bleuMoyenFond btnSurvolerBleuMoyenFond boutonPersonnalise text-white dropdown-toggle"
+
+        <!--</div>-->
+        <div class="d-flex justify-content-center">
+            <div class="d-flex d-flex-1 justify-content-end">
+                <button class="btn bleuMoyenFond btnSurvolerBleuMoyenFond boutonPersonnalise text-white d-flex-1"
                         type="button"
-                        id="dropdownMenuButton"
-                        data-toggle="dropdown"
-                        data-bs-toggle="dropdown"
-                        aria-haspopup="true"
-                        aria-expanded="false">
-                    Sélectionner les colonnes
+                        id="ajouterLotButton"
+                        @click="redirigerVersCreationLot">
+                    Ajouter un lot
                 </button>
-                <ul class="dropdown-menu">
-                    <li class="d-flex justify-content-start dropdown-item">
-                        <input class="checkboxTous d-flex-1"
-                               type="checkbox"
-                               id="tousSelectionnerCheckbox"
-                               v-model="tousSelectionne"
-                               @change="toggleToutesColonnes" />
-                        <label class="d-flex-1 labelpadding"
-                               for="tousSelectionnerCheckbox">
-                            Tous Sélectionner
-                        </label>
-                    </li>
-                    <li v-for="(visible, colonne) in colonnesVisibles" :key="colonne" class="d-flex justify-content-start dropdown-item">
-                        <input class="checkboxSeul d-flex-1"
-                               type="checkbox"
-                               :id="`lot${colonne.charAt(0).toUpperCase() + colonne.slice(1)}Checkbox`"
-                               :checked="visible"
-                               :disabled="tousSelectionne"
-                               @change="toggleColonne(colonne)" />
-                        <label class="d-flex-1 labelpadding" :for="`lot${colonne.charAt(0).toUpperCase() + colonne.slice(1)}Checkbox`">
-                            {{ colonne.charAt(0).toUpperCase() + colonne.slice(1) }}
-                        </label>
-                    </li>
-                </ul>
-            </div>
-            <div class="d-flex d-flex-1 me-1 gap-1 px-4 align-items-center">
-                <label class="labelRecherche" for="Recherche">Rechercher : </label>
-                <input data-bs-theme="light"
-                       type="search"
-                       aria-label="Recherche"
-                       v-model="rechercheDansListeDeLot" />
-                <div class="dropdown d-flex-1">
-                    <button class="bleuMoyenFond btnSurvolerBleuMoyenFond boutonPersonnalise text-white dropdown-toggle"
-                            type="button"
-                            id="dropdownMenuButton"
-                            data-toggle="dropdown"
-                            data-bs-toggle="dropdown"
-                            aria-haspopup="true"
-                            aria-expanded="false">
-                        Recherche Avancée
-                    </button>
-                    <ul class="dropdown-menu">
-                        <li class="d-flex justify-content-start dropdown-item">
-                            <input class="checkboxTousRecherche d-flex-1"
-                                   type="checkbox"
-                                   id="tousSelectionnerCheckboxRecherche"
-                                   checked />
-                            <label class="d-flex-1" for="tousSelectionnerCheckboxRecherche">
-                                Tous Sélectionner
-                            </label>
-                        </li>
-                        <li v-for="(visible, colonne) in colonnesVisibles"
-                            :key="colonne"
-                            class="d-flex justify-content-start dropdown-item">
-                            <input class="checkboxSeulRecherche d-flex-1"
-                                   type="checkbox"
-                                   :id="`lot${
+
+                <div class="d-flex d-flex-1 me-1 gap-1 px-4 align-items-center">
+                    <label class="labelRecherche" for="Recherche">Rechercher : </label>
+                    <input data-bs-theme="light"
+                           type="search"
+                           aria-label="Recherche"
+                           v-model="rechercheDansListeDeLot" />
+                    <div class="dropdown d-flex-1">
+                        <button class="btn bleuMoyenFond btnSurvolerBleuMoyenFond boutonPersonnalise text-white dropdown-toggle"
+                                type="button"
+                                id="dropdownMenuButton"
+                                data-toggle="dropdown"
+                                data-bs-toggle="dropdown"
+                                aria-haspopup="true"
+                                aria-expanded="false">
+                            Recherche Avancée
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li class="d-flex justify-content-start dropdown-item">
+                                <input class="checkboxTousRecherche d-flex-1"
+                                       type="checkbox"
+                                       id="tousSelectionnerCheckboxRecherche"
+                                       checked />
+                                <label class="d-flex-1" for="tousSelectionnerCheckboxRecherche">
+                                    Tous Sélectionner
+                                </label>
+                            </li>
+                            <li v-for="(visible, colonne) in colonnesVisibles"
+                                :key="colonne"
+                                class="d-flex justify-content-start dropdown-item">
+                                <input class="checkboxSeulRecherche d-flex-1"
+                                       type="checkbox"
+                                       :id="`lot${
                   colonne.charAt(0).toUpperCase() + colonne.slice(1)
                 }CheckboxRecherche`"
-                                   checked
-                                   disabled />
-                            <label class="d-flex-1"
-                                   :for="`lot${colonne.charAt(0).toUpperCase() + colonne.slice(1)}CheckboxRecherche`">
-                                {{(colonne.charAt(0).toUpperCase() + colonne.slice(1)).replace(/([A-Z])/g," $1")}}
-                            </label>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="d-flex-1">
-                <div class="d-flex flex-row-reverse w-100 px-4 me-2 gap-2">
-                    <button class="d-flex align-items-center text-center rounded btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
-                            type="button"
-                            @click="afficherTousLots"
-                            v-bind:disabled="lotsParPage == nbLotsRecus">
-                        Tous
-                    </button>
-                    <button class="d-flex align-items-center text-center rounded btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
-                            type="button"
-                            @click="afficherLotsParPage(100)"
-                            v-bind:disabled="lotsParPage == 100">
-                        100
-                    </button>
-                    <button class="d-flex align-items-center text-center rounded btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
-                            type="button"
-                            @click="afficherLotsParPage(50)"
-                            v-bind:disabled="lotsParPage == 50">
-                        50
-                    </button>
-                    <button class="d-flex align-items-center text-center rounded btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
-                            type="button"
-                            @click="afficherLotsParPage(20)"
-                            v-bind:disabled="lotsParPage == 20">
-                        20
-                    </button>
+                                       checked
+                                       disabled />
+                                <label class="d-flex-1"
+                                       :for="`lot${colonne.charAt(0).toUpperCase() + colonne.slice(1)}CheckboxRecherche`">
+                                    {{(colonne.charAt(0).toUpperCase() + colonne.slice(1)).replace(/([A-Z])/g," $1")}}
+                                </label>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <div class="d-flex justify-content-between px-3 my-4">
+        <div class="dropdown d-flex-1">
+            <button class="btn bleuMoyenFond btnSurvolerBleuMoyenFond boutonPersonnalise text-white dropdown-toggle"
+                    type="button"
+                    id="dropdownMenuButton"
+                    data-toggle="dropdown"
+                    data-bs-toggle="dropdown"
+                    aria-haspopup="true"
+                    aria-expanded="false">
+                Sélectionner les colonnes
+            </button>
+            <ul class="dropdown-menu">
+                <li class="d-flex justify-content-start dropdown-item">
+                    <input class="checkboxTous d-flex-1"
+                           type="checkbox"
+                           id="tousSelectionnerCheckbox"
+                           v-model="tousSelectionne"
+                           @change="toggleToutesColonnes" />
+                    <label class="d-flex-1 labelpadding"
+                           for="tousSelectionnerCheckbox">
+                        Tous Sélectionner
+                    </label>
+                </li>
+                <li v-for="(visible, colonne) in colonnesVisibles" :key="colonne" class="d-flex justify-content-start dropdown-item">
+                    <input class="checkboxSeul d-flex-1"
+                           type="checkbox"
+                           :id="`lot${colonne.charAt(0).toUpperCase() + colonne.slice(1)}Checkbox`"
+                           :checked="visible"
+                           :disabled="tousSelectionne"
+                           @change="toggleColonne(colonne)" />
+                    <label class="d-flex-1 labelpadding" :for="`lot${colonne.charAt(0).toUpperCase() + colonne.slice(1)}Checkbox`">
+                        {{ colonne.charAt(0).toUpperCase() + colonne.slice(1) }}
+                    </label>
+                </li>
+            </ul>
+        </div>
+
+        <div class="d-flex-1">
+            <div class="d-flex flex-row-reverse gap-2">
+                <button class="d-flex align-items-center text-center rounded btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
+                        type="button"
+                        @click="afficherTousLots"
+                        v-bind:disabled="lotsParPage == nbLotsRecus">
+                    Tous
+                </button>
+                <button class="d-flex align-items-center text-center rounded btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
+                        type="button"
+                        @click="afficherLotsParPage(100)"
+                        v-bind:disabled="lotsParPage == 100">
+                    100
+                </button>
+                <button class="d-flex align-items-center text-center rounded btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
+                        type="button"
+                        @click="afficherLotsParPage(50)"
+                        v-bind:disabled="lotsParPage == 50">
+                    50
+                </button>
+                <button class="d-flex align-items-center text-center rounded btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
+                        type="button"
+                        @click="afficherLotsParPage(20)"
+                        v-bind:disabled="lotsParPage == 20">
+                    20
+                </button>
+            </div>
+        </div>
+    </div>
+
     <div class="margesPourTable">
         <table class="table table-striped">
             <colgroup id="colgroup">
@@ -143,8 +152,8 @@
                 <col id="colModifier">
                 <col id="colSupprimer">
             </colgroup>
-            <thead>
-                <tr>
+            <thead class="table-dark">
+                <tr class="align-middle">
                     <th v-if="colonnesVisibles.encan">Encan</th>
                     <th v-if="colonnesVisibles.numero">Lot #</th>
                     <th v-if="colonnesVisibles.prixOuverture">Prix Ouverture</th>
@@ -161,10 +170,12 @@
                     <th v-if="colonnesVisibles.livraison">Livraison</th>
                     <th v-if="colonnesVisibles.modifier"></th>
                     <th v-if="colonnesVisibles.supprimer"></th>
+                    <th>Actions</th>
+                    <!--<th></th>-->
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="lot in lotsAffiches" :key="lot.id">
+                <tr v-for="lot in lotsAffiches" :key="lot.id" class="align-middle">
                     <td v-if="colonnesVisibles.encan">{{ lot.numeroEncan }}</td>
                     <td v-if="colonnesVisibles.numero">{{ lot.code }}</td>
                     <td v-if="colonnesVisibles.prixOuverture">{{ lot.prixOuverture }}</td>
@@ -189,17 +200,23 @@
                         <img v-else src="/icons/nonlivrable.png" width="40" height="40" />
                     </td>
                     <td>
-                        <router-link :to="{ name: 'ModificationLot', params: { id: lot.id } }">
-                            <img src="/icons/modifier.png" width="30" height="30" />
-                        </router-link>
+                        <div class="d-flex">
+                            <router-link :to="{ name: 'ModificationLot', params: { id: lot.id } }">
+                                <button class="btn bleuMarinSecondaireFond px-3 me-3">
+                                    <img src="/public/icons/Edit_icon.png" width="30" height="30" />
+                                </button>
+                            </router-link>
+
+                            <button class="btn btn-danger px-3 btn_delete">
+                                <img @click="ouvrirBoiteModale(lot.id)"
+                                     src="/public/icons/Delete_icon.png"
+                                     width="25"
+                                     height="30" />
+                            </button>
+                        </div>
                     </td>
-                    <td>
-                        <img @click="ouvrirBoiteModale(lot.id)"
-                             class="curseurpointeur"
-                             src="/icons/supprimer.png"
-                             width="30"
-                             height="30" />
-                    </td>
+                    <!--<td>
+                    </td>-->
                 </tr>
             </tbody>
         </table>
@@ -212,7 +229,7 @@
                 class="btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
                 @click="reculerPage"
                 v-bind:disabled="pageCourante == 1">
-            Précédent
+            <
         </button>
 
         <!-- Boutons de pages -->
@@ -231,7 +248,7 @@
                 class="btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
                 @click="avancerPage"
                 v-bind:disabled="pageCourante == nbPages">
-            Suivant
+            >
         </button>
     </div>
 
@@ -247,6 +264,8 @@
             </div>
         </div>
     </div>
+
+
 </template>
 
 <script setup>
@@ -652,19 +671,15 @@
     };
 </script>
 
-<style>
+<style scoped>
     .boutonPersonnalise {
-        margin: 5px;
+        /*margin: 5px;*/
         padding-left: 15px;
         padding-right: 15px;
         border: none;
         border-radius: 5px;
-        font-size: 15px;
-        height: 25px;
-    }
-
-    h2 {
-        padding-left: 15px;
+        /*font-size: 15px;*/
+        /*height: 25px;*/
     }
 
     .labelRecherche {
@@ -726,9 +741,7 @@
         font-size: 13px;
         text-align: center !important;
     }
-</style>
 
-<style scoped>
     .modal-overlay {
         position: fixed;
         top: 0;
@@ -769,4 +782,12 @@
         background-color: #d4edda;
         color: #155724;
     }
+
+    .btn_delete {
+        background-color: rgb(194, 8, 8);
+    }
+
+        .btn_delete:hover {
+            background-color: rgb(235, 6, 6);
+        }
 </style>
