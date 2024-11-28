@@ -3,16 +3,17 @@
         <FactureModal :facturePdfPath="facture.pdfPath" :idFacture="'Fac' + facture.id"></FactureModal>
         <FactureModal v-if="facture.livraison == true" :facturePdfPath="facture.pdfPathLivraison" :idFacture="'Livraison'+facture.id"></FactureModal>
     </span>
-    <div class="container mt-5">
+    <div class="container">
+        <h1 class="text-center mb-5">Liste des ventes</h1>
+
         <h3 class="text-center">Rechercher une vente</h3>
         <input v-model="searchQuery"
                class="form-control row col-10 ms-1"
                type="search"
                placeholder="Rechercher une vente"
                aria-label="Search" />
-        <h1 class="text-center mt-5">Liste des ventes</h1>
 
-        <div class="d-flex flex-row gap-2 justify-content-end mb-3">
+        <div class="d-flex flex-row gap-2 justify-content-end my-4">
             <button class="d-flex align-items-center text-center rounded btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
                     @click="changerNbVenteParPage(20)"
                     v-bind:disabled="ventesParPage == 20">
