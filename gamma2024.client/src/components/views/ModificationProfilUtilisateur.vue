@@ -295,7 +295,7 @@
                 'btn rounded-pill px-4',
               ]"
                                 :disabled="!isFormValid || !formDataChanged">
-                            <div class="d-flex flex-row align-items-center">
+                            <div class="d-flex flex-row align-items-center justify-content-center">
                                 <img src="/images/save_img.png"
                                      class="img-fluid img_password"
                                      alt="icon_save" />
