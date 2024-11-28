@@ -14,7 +14,7 @@
                 <h1 class="text-center">Lot {{lot.numero}}</h1>
             </div>
 
-            <div class="row gap-5 w-100 cols-lg-2 cols-1">
+            <div class="row gap-5 w-100">
                 <div class="col d-flex pt-3 bleuMoyenFond contourDiv text-white align-items-center">
                     <div class="col text-center">
                         <p>{{lot.artiste}}</p>
@@ -52,13 +52,12 @@
                             <span class="visually-hidden">Previous</span>
                         </a>
 
-                        <div class="gap-1 d-flex">
+                        <div class="gap-1 d-flex flex-wrap justify-content-around">
 
                             <div v-for="(image, index) in lot.photos">
-                                <a data-bs-target="#carouselExampleIndicators" :data-bs-slide-to="index" class="active " aria-current="true" :aria-label="'Slide ' + (index+1)">
+                                <a data-bs-target="#carouselExampleIndicators" :data-bs-slide-to="index" class="active " aria-current="true" :aria-label="'Slide ' + (index+1)" role="button">
                                     <img :src="urlApi + image" height="60" alt="Image du lot">
                                 </a>
-
                             </div>
                         </div>
 
