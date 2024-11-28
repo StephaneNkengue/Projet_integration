@@ -54,17 +54,16 @@
                                     <a class="nav-link"> Encans futurs </a>
                                 </router-link>
                             </li>
-
-                            <li class="nav-item" v-if="estConnecte && estClient">
-                                <router-link :to="{ name: 'HistoriqueAchatsParMembre' }"
-                                             class="text-decoration-none">
-                                    <a class="nav-link"> Historique des achats </a>
-                                </router-link>
-                            </li>
                             <li class="nav-item" v-if="estConnecte && estClient">
                                 <router-link :to="{ name: 'HistoriqueMisesParMembre' }"
                                              class="text-decoration-none">
                                     <a class="nav-link"> Historique des mises </a>
+                                </router-link>
+                            </li>
+                            <li class="nav-item" v-if="estConnecte && estClient">
+                                <router-link :to="{ name: 'HistoriqueAchatsParMembre' }"
+                                             class="text-decoration-none">
+                                    <a class="nav-link"> Historique des achats </a>
                                 </router-link>
                             </li>
                         </ul>
@@ -522,7 +521,7 @@
                                                            :clearable="true"
                                                            :action-row="{ showNow: true }"
                                                            :format-locale="fr"
-                                                           :year-range="[2000, new Date().getFullYear() + 10]" />
+                                                           :year-range="[2000, new Date().getFullYear() +10]" />
                                             <div class="col-sm-auto inputAAfficher inputAAfficherDate align-items-center"
                                                  id="inputAAfficherDate">
                                                 <label class="fs-6">et</label>
@@ -647,6 +646,7 @@
         if (titreBarreDeRechercheDeLots) {
             titreBarreDeRechercheDeLots.value = "Recherche avancée de lots dans l'Encan " + rechercheNumeroEncan;
         }
+        verifierSiQueryDansURL();
     }
 
     async function rechercheAvanceeLots() {
@@ -725,15 +725,16 @@
         var selectValeurestimeeEntre = document.querySelector(
             "#selectValeurEstimeeEntre"
         );
-
-        if (selectValeurEstimeeEntre.selected) {
-            inputAAfficher.forEach((el, index) => {
-                el.style.display = "inline-block";
-            });
-        } else if (!selectValeurEstimeeEntre.selected) {
-            inputAAfficher.forEach((el) => {
-                el.style.display = "none";
-            });
+        if (selectValeurestimeeEntre) {
+            if (selectValeurEstimeeEntre.selected) {
+                inputAAfficher.forEach((el, index) => {
+                    el.style.display = "inline-block";
+                });
+            } else if (!selectValeurEstimeeEntre.selected) {
+                inputAAfficher.forEach((el) => {
+                    el.style.display = "none";
+                });
+            }
         }
     }
 
@@ -741,14 +742,16 @@
         var inputAAfficher = document.querySelectorAll("#inputAAfficherHauteur");
         var selectHauteurEntre = document.querySelector("#selectHauteurEntre");
 
-        if (selectHauteurEntre.selected) {
-            inputAAfficher.forEach((el, index) => {
-                el.style.display = "inline-block";
-            });
-        } else if (!selectHauteurEntre.selected) {
-            inputAAfficher.forEach((el) => {
-                el.style.display = "none";
-            });
+        if (selectHauteurEntre) {
+            if (selectHauteurEntre.selected) {
+                inputAAfficher.forEach((el, index) => {
+                    el.style.display = "inline-block";
+                });
+            } else if (!selectHauteurEntre.selected) {
+                inputAAfficher.forEach((el) => {
+                    el.style.display = "none";
+                });
+            }
         }
     }
 
@@ -756,14 +759,16 @@
         var inputAAfficher = document.querySelectorAll("#inputAAfficherLargeur");
         var selectLargeurEntre = document.querySelector("#selectLargeurEntre");
 
-        if (selectLargeurEntre.selected) {
-            inputAAfficher.forEach((el, index) => {
-                el.style.display = "inline-block";
-            });
-        } else if (!selectLargeurEntre.selected) {
-            inputAAfficher.forEach((el) => {
-                el.style.display = "none";
-            });
+        if (selectLargeurEntre) {
+            if (selectLargeurEntre.selected) {
+                inputAAfficher.forEach((el, index) => {
+                    el.style.display = "inline-block";
+                });
+            } else if (!selectLargeurEntre.selected) {
+                inputAAfficher.forEach((el) => {
+                    el.style.display = "none";
+                });
+            }
         }
     }
 
@@ -870,6 +875,7 @@
                     .classList.remove("show");
             }
             next();
+            changeTitreBarreRecherche();
         }
     });
 
@@ -937,14 +943,16 @@
             "#selectNumeroEncanEntre"
         );
 
-        if (selectNumeroEncanEntre.selected) {
-            inputAAfficher.forEach((el, index) => {
-                el.style.display = "inline-block";
-            });
-        } else if (!selectNumeroEncanEntre.selected) {
-            inputAAfficher.forEach((el) => {
-                el.style.display = "none";
-            });
+        if (selectNumeroEncanEntre) {
+            if (selectNumeroEncanEntre.selected) {
+                inputAAfficher.forEach((el, index) => {
+                    el.style.display = "inline-block";
+                });
+            } else if (!selectNumeroEncanEntre.selected) {
+                inputAAfficher.forEach((el) => {
+                    el.style.display = "none";
+                });
+            }
         }
     }
 
@@ -952,14 +960,78 @@
         var inputAAfficher = document.querySelectorAll(".inputAAfficherDate");
         var selectDateEntre = document.querySelector("#selectDateEntre");
 
-        if (selectDateEntre.selected) {
-            inputAAfficher.forEach((el, index) => {
-                el.style.display = "inline-block";
-            });
-        } else if (!selectDateEntre.selected) {
-            inputAAfficher.forEach((el) => {
-                el.style.display = "none";
-            });
+        if (selectDateEntre) {
+            if (selectDateEntre.selected) {
+                inputAAfficher.forEach((el, index) => {
+                    el.style.display = "inline-block";
+                });
+            } else if (!selectDateEntre.selected) {
+                inputAAfficher.forEach((el) => {
+                    el.style.display = "none";
+                });
+            }
+        }
+    }
+
+    function verifierSiQueryDansURL() {
+        if (route.query.data != null) {
+            var stringquery = JSON.parse(route.query.data);
+
+            if (stringquery.numeroEncan) {
+                rechercheNumeroEncan = stringquery.numeroEncan;
+                if (titreBarreDeRechercheDeLots) {
+                    titreBarreDeRechercheDeLots.value = "Recherche avancée de lots dans l'Encan " + rechercheNumeroEncan;
+                }
+            }
+            if (stringquery.stringValeurEstimee) {
+                document.querySelector("#selectValeurEstimee").value = stringquery.selectValeurEstimee;
+                document.querySelector("#rechercheLotsValeurEstimee").value = stringquery.stringValeurEstimee;
+                if (stringquery.selectValeurEstimee == 3 && stringquery.stringValeurEstimee2) {
+                    document.querySelector("#rechercheLotsValeurEstimee2").value = stringquery.stringValeurEstimee2;
+                }
+            }
+            if (stringquery.selectArtiste != 0 && stringquery.selectArtiste != null) {
+                document.querySelector("#selectArtiste").value = stringquery.selectArtiste;
+            }
+            if (stringquery.selectCategorie != 0 && stringquery.selectCategorie != null) {
+                document.querySelector("#selectCategorie").value = stringquery.selectCategorie;
+            }
+            if (stringquery.selectMedium != 0 && stringquery.selectMedium != null) {
+                document.querySelector("#selectMedium").value = stringquery.selectMedium;
+            }
+            if (stringquery.stringHauteur) {
+                document.querySelector("#selectHauteur").value = stringquery.selectHauteur;
+                document.querySelector("#rechercheLotsHauteur").value = stringquery.stringHauteur;
+                if (stringquery.selectHauteur == 3 && stringquery.stringHauteur2) {
+                    document.querySelector("#rechercheLotsHauteur2").value = stringquery.stringHauteur2;
+                }
+            }
+            if (stringquery.stringLargeur) {
+                document.querySelector("#selectLargeur").value = stringquery.selectLargeur;
+                document.querySelector("#rechercheLotsLargeur").value = stringquery.stringLargeur;
+                if (stringquery.selectLargeur == 3 && stringquery.stringLargeur2) {
+                    document.querySelector("#rechercheLotsLargeur2").value = stringquery.stringLargeur2;
+                }
+            }
+            if (stringquery.stringNumeroEncan) {
+                document.querySelector("#selectNumeroEncan").value = stringquery.selectNumeroEncan;
+                document.querySelector("#rechercheEncansNumeroEncan").value = stringquery.stringNumeroEncan;
+                if (stringquery.selectNumeroEncan == 1 && stringquery.stringNumeroEncan2) {
+                    document.querySelector("#rechercheEncansNumeroEncan2").value = stringquery.stringNumeroEncan2;
+                }
+            }
+            if (stringquery.stringDate) {
+                document.querySelector("#selectDate").value = stringquery.selectDate;
+                rechercheEncansDate1.value = moment(stringquery.stringDate);
+                if (stringquery.selectDate == 3 && stringquery.stringDate2) {
+                    rechercheEncansDate2.value = moment(stringquery.stringDate2);
+                }
+            }
+            affichageInputValeurEstimee();
+            affichageInputHauteur();
+            affichageInputLargeur();
+            affichageInputNumeroEncan();
+            affichageInputDate();
         }
     }
 
@@ -980,6 +1052,7 @@
         listeDesArtistes.value = await store.dispatch("obtenirArtistes");
         listeDesMediums.value = await store.dispatch("obtenirMediums");
         listeDesCategories.value = await store.dispatch("obtenirCategories");
+        verifierSiQueryDansURL();
     });
 </script>
 <style scoped>
