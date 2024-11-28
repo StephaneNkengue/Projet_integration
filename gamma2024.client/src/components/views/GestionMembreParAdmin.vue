@@ -10,6 +10,32 @@
                placeholder="Rechercher un membre"
                aria-label="Search" />
 
+        <div class="d-flex justify-content-end my-4">
+            <div class="d-flex flex-row gap-2">
+                <button class="d-flex align-items-center text-center rounded btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
+                        @click="changerNbMembreParPage(20)"
+                        v-bind:disabled="membresParPage == 20">
+                    20
+                </button>
+                <button class="d-flex align-items-center text-center rounded btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
+                        @click="changerNbMembreParPage(50)"
+                        v-bind:disabled="membresParPage == 50">
+                    50
+                </button>
+                <button class="d-flex align-items-center text-center rounded btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
+                        @click="changerNbMembreParPage(100)"
+                        v-bind:disabled="membresParPage == 100">
+                    100
+                </button>
+                <button class="d-flex align-items-center text-center rounded btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
+                        type="button"
+                        @click="afficherTousMembres"
+                        v-bind:disabled="membresParPage == nbMembresRecus">
+                    Tous
+                </button>
+            </div>
+        </div>
+
         <div class="d-flex gap-2 justify-content-center" v-if="chargement">
             <div class="spinner-border" role="status">
                 <span class="visually-hidden">Chargement des membres...</span>
@@ -23,8 +49,8 @@
             </div>
 
             <div v-else class="overflow-auto">
-                <table class="table table-striped mt-5 mb-5 col-md-12 text-center">
-                    <thead>
+                <table class="table table-striped col-md-12 text-center">
+                    <thead class="table-dark">
                         <tr>
                             <th scope="col">Nom</th>
                             <th scope="col">Prénom</th>
@@ -35,7 +61,7 @@
                         </tr>
                     </thead>
                     <tbody class="fs-6">
-                        <tr v-for="membre in filteredMembres" :key="membre.id">
+                        <tr v-for="membre in membresAffiche" :key="membre.id">
                             <td class="align-middle">{{ membre.name }}</td>
                             <td class="align-middle">{{ membre.firstName }}</td>
                             <td class="align-middle">{{ membre.userName }}</td>
@@ -64,11 +90,37 @@
                 </table>
             </div>
         </div>
+
+        <div class="d-flex flex-row justify-content-center gap-1 flex-wrap p-3" v-if="membresAffiche.length != 0">
+            <button type="button"
+                    class="btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
+                    @click="reculerPage"
+                    v-bind:disabled="pageCourante == 1">
+                <
+            </button>
+
+            <div v-for="item in listePagination">
+                <button type="button"
+                        class="btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
+                        :pageId="item"
+                        @click="changerPage()"
+                        v-bind:disabled="pageCourante == item || item == '...'">
+                    {{ item }}
+                </button>
+            </div>
+
+            <button type="button"
+                    class="btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
+                    @click="avancerPage"
+                    v-bind:disabled="pageCourante == nbPages">
+                >
+            </button>
+        </div>
     </div>
 </template>
 
 <script setup>
-    import { ref, onMounted, computed } from "vue";
+    import { ref, onMounted, computed, watch } from "vue";
     import { useStore } from "vuex";
     import { useRouter } from "vue-router";
 
@@ -78,6 +130,13 @@
     const searchQuery = ref("");
 
     const chargement = ref(true);
+
+    const nbMembresRecus = ref();
+    const membresParPage = ref();
+    const listePagination = ref([]);
+    const pageCourante = ref(1);
+    const nbPages = ref();
+    const membresAffiche = ref([]);
 
     onMounted(async () => {
         try {
@@ -107,6 +166,13 @@
             ...membre,
         }));
 
+        nbMembresRecus.value = filteredMembres.value.length;
+        membresParPage.value = nbMembresRecus.value;
+        nbPages.value = recalculerNbPages();
+
+        genererListePagination();
+        chercherMembresAAfficher();
+
         chargement.value = false;
     };
 
@@ -121,6 +187,10 @@
                 membre.email.toLowerCase().includes(searchLower)
             );
         });
+
+        nbMembresRecus.value = tousLesMembres.value.length;
+        pageCourante.value = 1;
+        AjusterPagination();
     });
 
     const tousLesMembres = computed(() => {
@@ -129,6 +199,90 @@
         }
         return [];
     });
+
+    watch(filteredMembres, () => {
+        membresAffiche.value = filteredMembres.value;
+    });
+
+
+    //ici
+    const changerNbMembreParPage = ref(function (nouvMembresParPage) {
+        membresParPage.value = nouvMembresParPage;
+        nbPages.value = recalculerNbPages();
+        pageCourante.value = 1;
+        AjusterPagination();
+    });
+
+    const afficherTousMembres = ref(function () {
+        membresParPage.value = nbMembresRecus.value;
+        nbPages.value = recalculerNbPages();
+        pageCourante.value = 1;
+        AjusterPagination();
+    });
+
+    const reculerPage = ref(function () {
+        if (pageCourante.value > 1) {
+            pageCourante.value--;
+        }
+    });
+
+    const avancerPage = ref(function () {
+        if (pageCourante.value < nbPages.value) {
+            pageCourante.value++;
+        }
+    });
+
+    const changerPage = ref(function () {
+        pageCourante.value = parseInt(event.srcElement.getAttribute("pageId"));
+    });
+
+    function recalculerNbPages() {
+        return Math.ceil(nbMembresRecus.value / membresParPage.value);
+    }
+
+    function genererListePagination() {
+        listePagination.value = [];
+
+        for (let i = 1; i <= nbPages.value; i++) {
+            if (
+                i == 1 ||
+                (i >= pageCourante.value - 1 && i <= pageCourante.value + 1) ||
+                i == nbPages.value
+            ) {
+                listePagination.value.push(i);
+            } else if (
+                listePagination.value[listePagination.value.length - 1] != "..."
+            ) {
+                listePagination.value.push("...");
+            }
+        }
+    }
+
+    function chercherMembresAAfficher() {
+        membresAffiche.value = [];
+
+        let positionDebut = (pageCourante.value - 1) * membresParPage.value;
+        let positionFin = pageCourante.value * membresParPage.value;
+
+        for (
+            let i = positionDebut;
+            i < positionFin && i < filteredMembres.value.length;
+            i++
+        ) {
+            membresAffiche.value.push(filteredMembres.value[i]);
+        }
+    }
+
+    watch(pageCourante, () => {
+        genererListePagination();
+        chercherMembresAAfficher();
+    });
+
+    function AjusterPagination() {
+        nbPages.value = recalculerNbPages();
+        genererListePagination();
+        chercherMembresAAfficher();
+    }
 </script>
 
 <style scoped>
