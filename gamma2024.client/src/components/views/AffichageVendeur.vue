@@ -1,63 +1,140 @@
 <template>
-    <div class="container mt-5">
-        <h1 class="text-center mb-4 fw-bold display-4">Gestion des vendeurs</h1>
+    <div class="container">
+        <h1 class="text-center mb-5">Gestion des vendeurs</h1>
+
         <h3 class="text-center">Rechercher un vendeur</h3>
+
         <input v-model="searchQuery"
-               class="form-control row col-10 ms-1"
+               class="form-control mb-5"
                type="search"
                placeholder="Rechercher un vendeur"
                aria-label="Search" />
-        <router-link :to="{ name: 'VendeurCreation'}"
-                     class="btn btn-lg btn-block mb-4 w-100 bleuMarinSecondaireFond text-white mt-5">
-            Ajouter un vendeur
-        </router-link>
-        <div class="overflow-y-auto">
-            <table class="table table-striped table-borderless text-center mb-5">
-                <thead class="table-dark">
-                    <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">Nom</th>
-                        <th scope="col">Prénom</th>
-                        <th scope="col">Courriel</th>
-                        <th scope="col">Téléphone</th>
-                        <th scope="col">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr v-for="(vendeur, index) in filteredVendeurs" :key="vendeur.id">
-                        <th scope="row" class="align-middle">{{ index + 1 }}</th>
-                        <td class="align-middle">{{ vendeur.nom }}</td>
-                        <td class="align-middle">{{ vendeur.prenom }}</td>
-                        <td class="align-middle">{{ vendeur.courriel }}</td>
-                        <td class="align-middle">{{ vendeur.telephone }}</td>
-                        <td>
-                            <button class="btn bleuMarinSecondaireFond px-3 me-3">
-                                <router-link :to="{
-                  name: 'vendeurModification',
-                  params: { id: vendeur.id.toString() },
-                }"
-                                             class="text-decoration-none">
-                                    <img src="/public/icons/Edit_icon.png"
-                                         class="img-fluid"
-                                         alt="..." />
-                                </router-link>
-                            </button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
 
+        <router-link :to="{ name: 'VendeurCreation'}"
+                     class="text-decoration-none">
+            <button class="btn btn-lg btn-block w-100 btnSurvolerBleuMoyenFond btnClick text-white">
+                Ajouter un vendeur
+            </button>
+        </router-link>
+
+        <div class="d-flex justify-content-end my-4">
+            <div class="d-flex flex-row gap-2">
+                <button class="d-flex align-items-center text-center rounded btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
+                        @click="changerNbVendeurParPage(20)"
+                        v-bind:disabled="vendeursParPage == 20">
+                    20
+                </button>
+                <button class="d-flex align-items-center text-center rounded btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
+                        @click="changerNbVendeurParPage(50)"
+                        v-bind:disabled="vendeursParPage == 50">
+                    50
+                </button>
+                <button class="d-flex align-items-center text-center rounded btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
+                        @click="changerNbVendeurParPage(100)"
+                        v-bind:disabled="vendeursParPage == 100">
+                    100
+                </button>
+                <button class="d-flex align-items-center text-center rounded btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
+                        type="button"
+                        @click="afficherTousVendeurs"
+                        v-bind:disabled="vendeursParPage == nbVendeursRecus">
+                    Tous
+                </button>
+            </div>
+        </div>
+
+        <div class="d-flex gap-2 justify-content-center" v-if="chargement">
+            <div class="spinner-border" role="status">
+                <span class="visually-hidden">Chargement des ventes...</span>
+            </div>
+            <p>Chargement des ventes en cours...</p>
+        </div>
+
+        <div v-if="!chargement" class="w-100">
+            <div class="d-flex justify-content-center" v-if="!vendeursAffichage.length">
+                <h2>Aucun résultat trouvé</h2>
+            </div>
+
+            <div v-else class="overflow-y-auto">
+                <table class="table table-striped text-center">
+                    <thead class="table-dark">
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Nom</th>
+                            <th scope="col">Prénom</th>
+                            <th scope="col">Courriel</th>
+                            <th scope="col">Téléphone</th>
+                            <th scope="col">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="(vendeur, index) in vendeursAffiche" :key="vendeur.id">
+                            <td scope="row" class="align-middle">{{ index + 1 }}</td>
+                            <td class="align-middle">{{ vendeur.nom }}</td>
+                            <td class="align-middle">{{ vendeur.prenom }}</td>
+                            <td class="align-middle">{{ vendeur.courriel }}</td>
+                            <td class="align-middle">{{ vendeur.telephone }}</td>
+                            <td>
+                                <button class="btn bleuMarinSecondaireFond px-3">
+                                    <router-link :to="{name: 'vendeurModification', params: { id: vendeur.id.toString() }}"
+                                                 class="text-decoration-none">
+                                        <img src="/public/icons/Edit_icon.png"
+                                             class="img-fluid"
+                                             alt="..." />
+                                    </router-link>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+
+        <div class="d-flex flex-row justify-content-center gap-1 flex-wrap p-3" v-if="vendeursAffiche.length != 0">
+            <button type="button"
+                    class="btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
+                    @click="reculerPage"
+                    v-bind:disabled="pageCourante == 1">
+                <
+            </button>
+
+            <div v-for="item in listePagination">
+                <button type="button"
+                        class="btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
+                        :pageId="item"
+                        @click="changerPage()"
+                        v-bind:disabled="pageCourante == item || item == '...'">
+                    {{ item }}
+                </button>
+            </div>
+
+            <button type="button"
+                    class="btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
+                    @click="avancerPage"
+                    v-bind:disabled="pageCourante == nbPages">
+                >
+            </button>
         </div>
     </div>
 </template>
 
 <script setup>
-    import { ref, onMounted, computed } from "vue";
+    import { ref, onMounted, computed, watch } from "vue";
     import { useStore } from "vuex";
 
     const store = useStore();
     const vendeurs = ref(null);
     const searchQuery = ref("");
+
+    const nbVendeursRecus = ref();
+    const vendeursParPage = ref();
+    const listePagination = ref([]);
+    const pageCourante = ref(1);
+    const nbPages = ref();
+    const vendeursAffiche = ref([]);
+
+    const chargement = ref(true);
 
     const vendeursAffichage = computed(() => {
         if (vendeurs.value) {
@@ -69,6 +146,15 @@
     onMounted(async () => {
         try {
             vendeurs.value = await store.dispatch("obtenirTousVendeurs");
+
+            nbVendeursRecus.value = vendeursAffichage.value.length;
+            vendeursParPage.value = nbVendeursRecus.value;
+            nbPages.value = recalculerNbPages();
+
+            genererListePagination();
+            chercherVendeursAAfficher();
+
+            chargement.value = false;
         } catch (error) {
             console.error("Erreur lors de la récupération des vendeurs:", error);
         }
@@ -84,36 +170,102 @@
                 vendeur.telephone.toLowerCase().includes(searchLower)
             );
         });
+
+        nbVendeursRecus.value = vendeursAffichage.value.length;
+        pageCourante.value = 1;
+        AjusterPagination();
     });
+
+    watch(filteredVendeurs, () => {
+        vendeursAffiche.value = filteredVendeurs.value;
+    });
+
+    const changerNbVendeurParPage = ref(function (nouvVendeursParPage) {
+        vendeursParPage.value = nouvVendeursParPage;
+        nbPages.value = recalculerNbPages();
+        pageCourante.value = 1;
+        AjusterPagination();
+    });
+
+    const afficherTousVendeurs = ref(function () {
+        vendeursParPage.value = nbVendeursRecus.value;
+        nbPages.value = recalculerNbPages();
+        pageCourante.value = 1;
+        AjusterPagination();
+    });
+
+    const reculerPage = ref(function () {
+        if (pageCourante.value > 1) {
+            pageCourante.value--;
+        }
+    });
+
+    const avancerPage = ref(function () {
+        if (pageCourante.value < nbPages.value) {
+            pageCourante.value++;
+        }
+    });
+
+    const changerPage = ref(function () {
+        pageCourante.value = parseInt(event.srcElement.getAttribute("pageId"));
+    });
+
+    function recalculerNbPages() {
+        return Math.ceil(nbVendeursRecus.value / vendeursParPage.value);
+    }
+
+    function genererListePagination() {
+        listePagination.value = [];
+
+        for (let i = 1; i <= nbPages.value; i++) {
+            if (
+                i == 1 ||
+                (i >= pageCourante.value - 1 && i <= pageCourante.value + 1) ||
+                i == nbPages.value
+            ) {
+                listePagination.value.push(i);
+            } else if (
+                listePagination.value[listePagination.value.length - 1] != "..."
+            ) {
+                listePagination.value.push("...");
+            }
+        }
+    }
+
+    function chercherVendeursAAfficher() {
+        vendeursAffiche.value = [];
+
+        let positionDebut = (pageCourante.value - 1) * vendeursParPage.value;
+        let positionFin = pageCourante.value * vendeursParPage.value;
+
+        for (
+            let i = positionDebut;
+            i < positionFin && i < vendeursAffichage.value.length;
+            i++
+        ) {
+            vendeursAffiche.value.push(vendeursAffichage.value[i]);
+        }
+    }
+
+    watch(pageCourante, () => {
+        genererListePagination();
+        chercherVendeursAAfficher();
+    });
+
+    function AjusterPagination() {
+        nbPages.value = recalculerNbPages();
+        genererListePagination();
+        chercherVendeursAAfficher();
+    }
 </script>
 
 <style scoped>
-    .bleuMarinSecondaireFond {
-        background-color: #1e3a8a;
-        border-color: #1e3a8a;
-    }
-
-        .bleuMarinSecondaireFond:hover {
-            background-color: #4d6dc4;
-            border-color: #1e3a8a;
-        }
-
-    /* Ajoutez ces styles pour le texte */
-    .container {
-        font-family: Arial, sans-serif;
-    }
-
-    h1,
     .btn {
         color: #ffffff;
     }
 
     .table {
         color: #333333;
-    }
-
-    h1 {
-        color: #1e3a8a;
     }
 
     table,
@@ -139,13 +291,11 @@
             background-color: #1e3a8a;
         }
 
-    /* Ajoutez ces styles pour supprimer les bordures du tableau */
     .table-borderless th,
     .table-borderless td {
         border: none !important;
     }
 
-    /* Ajustez l'espacement entre les lignes si nécessaire */
     .table-striped {
         margin-bottom: 3px;
         padding-top: 3px;
