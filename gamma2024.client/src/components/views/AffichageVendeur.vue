@@ -291,16 +291,6 @@
             background-color: #1e3a8a;
         }
 
-    .table-borderless th,
-    .table-borderless td {
-        border: none !important;
-    }
-
-    .table-striped {
-        margin-bottom: 3px;
-        padding-top: 3px;
-    }
-
     img {
         width: 25px;
         height: 30px;
@@ -312,9 +302,5 @@
 
     td {
         font-size: 16px;
-    }
-
-    .btn_edit:hover {
-        background-color: #243e5f;
     }
 </style>
