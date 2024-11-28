@@ -9,14 +9,14 @@
                    type="search"
                    aria-label="RechercheNum"
                    v-model="encanRechercheNumEncan"
-                   placeholder="Numéro encan"
+                   placeholder="Rechercher par numéro encan"
                    class="form-control" />
 
             <input data-bs-theme="light"
                    type="search"
                    aria-label="RechercheDate"
                    v-model="encanRechercheDate"
-                   placeholder="Date AAAA-MM-JJ"
+                   placeholder="Rechercher par date (AAAA-MM-JJ)"
                    class="form-control" />
         </div>
 
