@@ -80,7 +80,7 @@
                                                  class="text-decoration-none">
                                         <img src="/public/icons/Edit_icon.png"
                                              width="30"
-                                             alt="..." />
+                                             alt="Editer" />
                                     </router-link>
                                 </button>
                             </td>
