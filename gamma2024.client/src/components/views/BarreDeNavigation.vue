@@ -916,7 +916,7 @@
             var stringDate = moment(rechercheEncansDate1.value).format("yyyy-MM-DD");
             stringquery["selectDate"] = selectDate.value;
             stringquery["stringDate"] = stringDate;
-            if (selectDate == 3 && rechercheEncansDate2.value) {
+            if (selectDate.value == 3 && rechercheEncansDate2.value) {
                 var stringDate2 = moment(rechercheEncansDate2.value).format("yyyy-MM-DD");
                 stringquery["stringDate2"] = stringDate2;
             }
