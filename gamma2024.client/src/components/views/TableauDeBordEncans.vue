@@ -128,7 +128,7 @@
                             </td>
                             <td class="align-middle">{{ encan.nbLots }}</td>
                             <td class="align-middle">
-                                <div class="d-flex flex-row">
+                                <div class="d-flex flex-row justify-content-center">
                                     <button class="btn bleuMarinSecondaireFond px-3 me-3" @click="editerEncan(encan.id)">
                                         <img src="/public/icons/Edit_icon.png"
                                              width="30"
