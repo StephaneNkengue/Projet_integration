@@ -331,7 +331,6 @@
                                                 <select class="form-select py-0 selectPourListe"
                                                         v-model="selectHauteur"
                                                         id="selectHauteur"
-                                                        @change="affichageInputHauteur"
                                                         aria-label="Default select example">
                                                     <option class="py-0" value="0" selected>
                                                         Égale à
@@ -378,7 +377,6 @@
                                                 <select class="form-select py-0 selectPourListe"
                                                         v-model="selectLargeur"
                                                         id="selectLargeur"
-                                                        @change="affichageInputLargeur"
                                                         aria-label="Default select example">
                                                     <option class="py-0" value="0" selected>
                                                         Égale à
@@ -465,7 +463,6 @@
                                                 <select class="form-select py-0 selectPourListe"
                                                         v-model="selectNumeroEncan"
                                                         id="selectNumeroEncan"
-                                                        @change="affichageInputNumeroEncan"
                                                         aria-label="Default select example">
                                                     <option class="py-0" value="0" selected>
                                                         Égal à
@@ -511,7 +508,6 @@
                                                 <select class="form-select py-0 selectPourListe"
                                                         v-model="selectDate"
                                                         id="selectDate"
-                                                        @change="affichageInputDate"
                                                         aria-label="Default select example">
                                                     <option class="py-0" value="0" selected>
                                                         Égale à
@@ -710,16 +706,16 @@
         }
         if (rechercheLotsHauteur.value) {
             stringquery["selectHauteur"] = selectHauteur.value;
-            stringquery["stringHauteur"] = rechercheLotsHauteur.valeur;
+            stringquery["stringHauteur"] = rechercheLotsHauteur.value;
             if (selectHauteur.value == 3) {
-                stringquery["stringHauteur2"] = rechercheLotsHauteur2.valeur;
+                stringquery["stringHauteur2"] = rechercheLotsHauteur2.value;
             }
         }
         if (rechercheLotsLargeur.valeur) {
-            stringquery["selectLargeur"] = selectLargeur.valeur;
-            stringquery["stringLargeur"] = rechercheLotsLargeur.valeur;
+            stringquery["selectLargeur"] = selectLargeur.value;
+            stringquery["stringLargeur"] = rechercheLotsLargeur.value;
             if (selectLargeur.value == 3) {
-                stringquery["stringLargeur2"] = rechercheLotsLargeur.valeur;
+                stringquery["stringLargeur2"] = rechercheLotsLargeur.value;
             }
         }
 
@@ -930,10 +926,6 @@
                     rechercheEncansDate2.value = moment(stringquery.stringDate2);
                 }
             }
-            affichageInputHauteur();
-            affichageInputLargeur();
-            affichageInputNumeroEncan();
-            affichageInputDate();
         }
     }
 
