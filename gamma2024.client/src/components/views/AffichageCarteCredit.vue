@@ -26,7 +26,10 @@
                     </div>
                 </div>
             </div>
-            <button class="btn btn-danger mt-3" @click="supprimerCarte" v-if="estClient">
+            <button v-if="estClient"
+                    class="btn btn-danger mt-3"
+                    data-bs-toggle="modal"
+                    :data-bs-target="'#' + carte.paymentMethodId">
                 Supprimer
             </button>
         </div>
@@ -42,10 +45,5 @@
     const props = defineProps({
         carte: Object
     });
-    const emit = defineEmits(['supprimerCarte'])
-
-    const supprimerCarte = ref(function () {
-        emit('supprimerCarte', props.carte.paymentMethodId)
-    })
 </script>
 <style></style>
