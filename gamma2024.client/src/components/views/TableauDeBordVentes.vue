@@ -50,7 +50,7 @@
                 <h2>Aucun résultat trouvé</h2>
             </div>
 
-            <div v-else class="mb-5">
+            <div v-else>
                 <div class="accordion" id="accordionEncan">
                     <div class="accordion-item" v-for="encan in numerosEncans" :key="encan">
                         <div v-if="filteredVentes.filter((x) => x.encan == encan.encan) != 0">
@@ -352,7 +352,7 @@
     }
 
     td {
-        font-size: 16px;
+        font-size: 14px;
     }
 
     .btnVisuel {
