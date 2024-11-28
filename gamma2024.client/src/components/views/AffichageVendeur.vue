@@ -79,7 +79,7 @@
                                     <router-link :to="{name: 'vendeurModification', params: { id: vendeur.id.toString() }}"
                                                  class="text-decoration-none">
                                         <img src="/public/icons/Edit_icon.png"
-                                             class="img-fluid"
+                                             width="30"
                                              alt="..." />
                                     </router-link>
                                 </button>
@@ -299,11 +299,6 @@
     .table-striped {
         margin-bottom: 3px;
         padding-top: 3px;
-    }
-
-    img {
-        width: 25px;
-        height: 30px;
     }
 
     th {
