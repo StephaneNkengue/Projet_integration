@@ -65,7 +65,6 @@
                     Tous
                 </button>
             </div>
-
         </div>
 
         <div class="d-flex gap-2 justify-content-center" v-if="chargement">
@@ -82,7 +81,7 @@
 
             <div v-else>
                 <table class="table table-striped mx-0 text-center">
-                    <thead>
+                    <thead class="table-dark">
                         <tr>
                             <th data-field="numeroEncan">Encan</th>
                             <th data-field="statut">Statut</th>
@@ -95,8 +94,8 @@
                     </thead>
                     <tbody>
                         <tr v-for="encan in encansAffiche" :key="encan.id">
-                            <td>{{ encan.numeroEncan }}</td>
-                            <td>
+                            <td class="align-middle">{{ encan.numeroEncan }}</td>
+                            <td class="align-middle">
                                 <div class="d-flex justify-content-center collapse dropdown dropdown-center">
                                     <button :encanId="encan.id"
                                             class="btn dropdown-toggle bleuMarinSecondaireFond rounded text-white contenuListeDropdown fs-7"
@@ -121,14 +120,14 @@
                                     </ul>
                                 </div>
                             </td>
-                            <td>{{ encan.dateDebut.split("T")[0] }}</td>
-                            <td>{{ encan.dateFin.split("T")[0] }}</td>
-                            <td>
+                            <td class="align-middle">{{ encan.dateDebut.split("T")[0] }}</td>
+                            <td class="align-middle">{{ encan.dateFin.split("T")[0] }}</td>
+                            <td class="align-middle">
                                 {{ encan.dateDebut.split("T")[0] }}
                                 {{ encan.dateDebutSoireeCloture.split("T")[1] }}
                             </td>
-                            <td>{{ encan.nbLots }}</td>
-                            <td>
+                            <td class="align-middle">{{ encan.nbLots }}</td>
+                            <td class="align-middle">
                                 <button class="btn btn_edit px-3 me-3" @click="editerEncan(encan.id)">
                                     <img src="/public/icons/Edit_icon.png"
                                          class="img-fluid"
@@ -251,15 +250,15 @@
 
                 let listeEncanRechecheDate = encanRechercheDate.value.split("-")
 
-                if(listeEncanRechecheDate.length == 3 && !listeEncanRechecheDate.includes("")){
+                if (listeEncanRechecheDate.length == 3 && !listeEncanRechecheDate.includes("")) {
                     return (
                         dateDebut.toString().startsWith(encanRechercheDate.value) ||
                         dateFin.toString().startsWith(encanRechercheDate.value) ||
                         dateDebutSoireeCloture.startsWith(encanRechercheDate.value) ||
-                        (rechercheDate >= dateDebutObj && rechercheDate <= dateFinObj) 
+                        (rechercheDate >= dateDebutObj && rechercheDate <= dateFinObj)
                     );
                 }
-                else{
+                else {
                     return (
                         dateDebut.toString().startsWith(encanRechercheDate.value) ||
                         dateFin.toString().startsWith(encanRechercheDate.value) ||
