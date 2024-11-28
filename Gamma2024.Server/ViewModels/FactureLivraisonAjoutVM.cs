@@ -8,5 +8,6 @@ namespace Gamma2024.Server.ViewModels
         public int IdFacture { get; set; }
         public int? IdAdresse { get; set; }
         public string? PmId { get; set; }
+        public AdresseVM? Adresse { get; set; }
     }
 }
