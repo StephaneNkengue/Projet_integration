@@ -2,24 +2,24 @@
     <div class="container">
         <h1 class="text-center mb-5">Liste des encans</h1>
 
-        <div class="container mb-5">
-            <h3 class="text-center" for="Recherche">Rechercher un encan </h3>
-            <div class="d-flex flex-column gap-3 align-items-center">
-                <input data-bs-theme="light"
-                       type="search"
-                       aria-label="RechercheNum"
-                       v-model="encanRechercheNumEncan"
-                       placeholder="Numéro encan"
-                       class="form-control w-50" />
 
-                <input data-bs-theme="light"
-                       type="search"
-                       aria-label="RechercheDate"
-                       v-model="encanRechercheDate"
-                       placeholder="Date AAAA-MM-JJ"
-                       class="form-control w-50" />
-            </div>
+        <h3 class="text-center" for="Recherche">Rechercher un encan </h3>
+        <div class="d-flex flex-column gap-3 align-items-center mb-5">
+            <input data-bs-theme="light"
+                   type="search"
+                   aria-label="RechercheNum"
+                   v-model="encanRechercheNumEncan"
+                   placeholder="Numéro encan"
+                   class="form-control" />
+
+            <input data-bs-theme="light"
+                   type="search"
+                   aria-label="RechercheDate"
+                   v-model="encanRechercheDate"
+                   placeholder="Date AAAA-MM-JJ"
+                   class="form-control" />
         </div>
+
 
         <router-link :to="{ name: 'TableauDeBordEncansAjout' }"
                      class="text-decoration-none">
