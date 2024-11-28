@@ -7,6 +7,7 @@
         <h1 class="text-center mb-5">Liste des ventes</h1>
 
         <h3 class="text-center">Rechercher une vente</h3>
+
         <input v-model="searchQuery"
                class="form-control row col-10 ms-1"
                type="search"
@@ -118,7 +119,7 @@
                                                  data-bs-parent="#accordionClient">
                                                 <div class="accordion-body">
                                                     <table class="table">
-                                                        <thead>
+                                                        <thead class="table-dark">
                                                             <tr>
                                                                 <th scope="col">Numéro du lot</th>
                                                                 <th scope="col">Prix vendu</th>
@@ -126,8 +127,8 @@
                                                         </thead>
                                                         <tbody>
                                                             <tr v-for="lot in facture.lots" :key="lot.id">
-                                                                <td scope="row">{{ lot.numero }}</td>
-                                                                <td>{{ lot.mise }}$</td>
+                                                                <td class="align-middle" scope="row">{{ lot.numero }}</td>
+                                                                <td class="align-middle">{{ lot.mise }}$</td>
                                                             </tr>
                                                         </tbody>
                                                     </table>
