@@ -19,7 +19,7 @@
                             aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    Êtes-vous sur de vouloir supprimer cette carte ({{props.marque.toUpperCase()}} {{props.dernier4Numero}})?
+                    Êtes-vous sûr de vouloir supprimer cette carte ({{props.marque.toUpperCase()}} {{props.dernier4Numero}})?
                 </div>
                 <div class="modal-footer">
                     <button type="button"
