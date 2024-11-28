@@ -216,6 +216,7 @@
                                         <div class="row">
                                             <div class="col-sm-4">
                                                 <select class="form-select py-0 selectPourListe"
+                                                        v-model="selectValeurEstimee"
                                                         id="selectValeurEstimee"
                                                         @change="affichageInputValeurEstimee"
                                                         aria-label="Default select example">
@@ -225,8 +226,7 @@
                                                     <option class="py-0" value="1">Inférieure à</option>
                                                     <option class="py-0" value="2">Supérieure à</option>
                                                     <option class="py-0"
-                                                            value="3"
-                                                            id="selectValeurEstimeeEntre">
+                                                            value="3">
                                                         Entre
                                                     </option>
                                                 </select>
@@ -236,6 +236,7 @@
                                                 <input type="number"
                                                        maxlength="10"
                                                        class="form-control rechercheinput align-self-end"
+                                                       v-model="rechercheLotsValeurEstimee"
                                                        id="rechercheLotsValeurEstimee" />
                                             </div>
                                             <div class="col-sm-auto inputAAfficher align-items-center"
@@ -247,6 +248,7 @@
                                                 <input type="number"
                                                        maxlength="10"
                                                        class="form-control rechercheinput align-self-end"
+                                                       v-model="rechercheLotsValeurEstimee2"
                                                        id="rechercheLotsValeurEstimee2" />
                                             </div>
                                         </div>
@@ -258,6 +260,7 @@
                                         Artiste
                                     </label>
                                     <select class="form-select py-0 align-self-center selectPourListeQuiOntBesoinDeInvalide"
+                                            v-model="selectArtiste"
                                             id="selectArtiste"
                                             aria-label="Default select example"
                                             required>
@@ -280,6 +283,7 @@
                                         Catégorie
                                     </label>
                                     <select class="form-select py-0 align-self-center selectPourListeQuiOntBesoinDeInvalide"
+                                            v-model="selectCategorie"
                                             id="selectCategorie"
                                             aria-label="Default select example"
                                             required>
@@ -300,6 +304,7 @@
                                         Medium
                                     </label>
                                     <select class="form-select py-0 align-self-center selectPourListeQuiOntBesoinDeInvalide"
+                                            v-model="selectMedium"
                                             id="selectMedium"
                                             aria-label="Default select example"
                                             required>
@@ -325,6 +330,7 @@
                                         <div class="row">
                                             <div class="col-sm-4">
                                                 <select class="form-select py-0 selectPourListe"
+                                                        v-model="selectHauteur"
                                                         id="selectHauteur"
                                                         @change="affichageInputHauteur"
                                                         aria-label="Default select example">
@@ -344,6 +350,7 @@
                                                 <input type="number"
                                                        maxlength="10"
                                                        class="form-control rechercheinput align-self-end"
+                                                       v-model="rechercheLotsHauteur"
                                                        id="rechercheLotsHauteur" />
                                             </div>
                                             <div class="col-sm-auto inputAAfficher align-items-center"
@@ -355,6 +362,7 @@
                                                 <input type="number"
                                                        maxlength="10"
                                                        class="form-control rechercheinput align-self-end"
+                                                       v-model="rechercheLotsHauteur2"
                                                        id="rechercheLotsHauteur2" />
                                             </div>
                                         </div>
@@ -369,6 +377,7 @@
                                         <div class="row">
                                             <div class="col-sm-4">
                                                 <select class="form-select py-0 selectPourListe"
+                                                        v-model="selectLargeur"
                                                         id="selectLargeur"
                                                         @change="affichageInputLargeur"
                                                         aria-label="Default select example">
@@ -389,6 +398,7 @@
                                                 <input type="number"
                                                        maxlength="10"
                                                        class="form-control rechercheinput align-self-end"
+                                                       v-model="rechercheLotsLargeur"
                                                        id="rechercheLotsLargeur" />
                                             </div>
                                             <div class="col-sm-auto inputAAfficher align-items-center"
@@ -400,6 +410,7 @@
                                                 <input type="number"
                                                        maxlength="10"
                                                        class="form-control rechercheinput align-self-end"
+                                                       v-model="rechercheLotsLargeur2"
                                                        id="rechercheLotsLargeur2" />
                                             </div>
                                         </div>
@@ -453,6 +464,7 @@
                                         <div class="row">
                                             <div class="col-sm-4">
                                                 <select class="form-select py-0 selectPourListe"
+                                                        v-model="selectNumeroEncan"
                                                         id="selectNumeroEncan"
                                                         @change="affichageInputNumeroEncan"
                                                         aria-label="Default select example">
@@ -471,6 +483,7 @@
                                                 <input type="number"
                                                        maxlength="10"
                                                        class="form-control rechercheinput align-self-end"
+                                                       v-model="rechercheEncansNumeroEncan"
                                                        id="rechercheEncansNumeroEncan" />
                                             </div>
                                             <div class="col-sm-auto inputAAfficher align-items-center"
@@ -482,6 +495,7 @@
                                                 <input type="number"
                                                        maxlength="10"
                                                        class="form-control rechercheinput align-self-end"
+                                                       v-model="rechercheEncansNumeroEncan2"
                                                        id="rechercheEncansNumeroEncan2" />
                                             </div>
                                         </div>
@@ -496,6 +510,7 @@
                                         <div class="row">
                                             <div class="col-sm-4">
                                                 <select class="form-select py-0 selectPourListe"
+                                                        v-model="selectDate"
                                                         id="selectDate"
                                                         @change="affichageInputDate"
                                                         aria-label="Default select example">
@@ -586,6 +601,22 @@
     const ilYAUnEncanPresent = ref(false);
     const titreBarreDeRechercheDeLots = ref("");
     var rechercheNumeroEncan = ref();
+    const selectValeurEstimee = ref(0);
+    const rechercheLotsValeurEstimee = ref();
+    const rechercheLotsValeurEstimee2 = ref();
+    const selectArtiste = ref("");
+    const selectCategorie = ref("");
+    const selectMedium = ref("");
+    const selectHauteur = ref(0);
+    const rechercheLotsHauteur = ref();
+    const rechercheLotsHauteur2 = ref();
+    const selectLargeur = ref(0);
+    const rechercheLotsLargeur = ref();
+    const rechercheLotsLargeur2 = ref();
+    const selectNumeroEncan = ref(0);
+    const rechercheEncansNumeroEncan = ref();
+    const rechercheEncansNumeroEncan2 = ref();
+    const selectDate = ref(0);
     const rechercheEncansDate1 = ref();
     const rechercheEncansDate2 = ref();
 
@@ -659,54 +690,36 @@
                 rechercheNumeroEncan = numeroEncanPresent;
             }
         }
-        var selectValeurEstimee = document.querySelector(
-            "#selectValeurEstimee"
-        ).value;
-        var stringValeurEstimee = document.querySelector(
-            "#rechercheLotsValeurEstimee"
-        ).value;
-        var stringValeurEstimee2 = document.querySelector(
-            "#rechercheLotsValeurEstimee2"
-        ).value;
-        var selectArtiste = document.querySelector("#selectArtiste").value;
-        var selectCategorie = document.querySelector("#selectCategorie").value;
-        var selectMedium = document.querySelector("#selectMedium").value;
-        var selectHauteur = document.querySelector("#selectHauteur").value;
-        var stringHauteur = document.querySelector("#rechercheLotsHauteur").value;
-        var stringHauteur2 = document.querySelector("#rechercheLotsHauteur2").value;
-        var selectLargeur = document.querySelector("#selectLargeur").value;
-        var stringLargeur = document.querySelector("#rechercheLotsLargeur").value;
-        var stringLargeur2 = document.querySelector("#rechercheLotsLargeur2").value;
 
         stringquery["numeroEncan"] = rechercheNumeroEncan;
-        if (stringValeurEstimee) {
-            stringquery["selectValeurEstimee"] = selectValeurEstimee;
-            stringquery["stringValeurEstimee"] = stringValeurEstimee;
-            if (selectValeurEstimee == 3) {
-                stringquery["stringValeurEstimee2"] = stringValeurEstimee2;
+        if (rechercheLotsValeurEstimee.value) {
+            stringquery["selectValeurEstimee"] = selectValeurEstimee.value;
+            stringquery["stringValeurEstimee"] = rechercheLotsValeurEstimee.value;
+            if (selectValeurEstimee.value == 3) {
+                stringquery["stringValeurEstimee2"] = rechercheLotsValeurEstimee2.value;
             }
         }
-        if (selectArtiste != 0) {
-            stringquery["selectArtiste"] = selectArtiste;
+        if (selectArtiste.value != 0) {
+            stringquery["selectArtiste"] = selectArtiste.value;
         }
-        if (selectCategorie != 0) {
-            stringquery["selectCategorie"] = selectCategorie;
+        if (selectCategorie.value != 0) {
+            stringquery["selectCategorie"] = selectCategorie.value;
         }
-        if (selectMedium != 0) {
-            stringquery["selectMedium"] = selectMedium;
+        if (selectMedium.value != 0) {
+            stringquery["selectMedium"] = selectMedium.value;
         }
-        if (stringHauteur) {
-            stringquery["selectHauteur"] = selectHauteur;
-            stringquery["stringHauteur"] = stringHauteur;
-            if (selectHauteur == 3) {
-                stringquery["stringHauteur2"] = stringHauteur2;
+        if (rechercheLotsHauteur.value) {
+            stringquery["selectHauteur"] = selectHauteur.value;
+            stringquery["stringHauteur"] = rechercheLotsHauteur.valeur;
+            if (selectHauteur.value == 3) {
+                stringquery["stringHauteur2"] = rechercheLotsHauteur2.valeur;
             }
         }
-        if (stringLargeur) {
-            stringquery["selectLargeur"] = selectLargeur;
-            stringquery["stringLargeur"] = stringLargeur;
-            if (selectLargeur == 3) {
-                stringquery["stringLargeur2"] = stringLargeur2;
+        if (rechercheLotsLargeur.valeur) {
+            stringquery["selectLargeur"] = selectLargeur.valeur;
+            stringquery["stringLargeur"] = rechercheLotsLargeur.valeur;
+            if (selectLargeur.value == 3) {
+                stringquery["stringLargeur2"] = rechercheLotsLargeur.valeur;
             }
         }
 
@@ -722,53 +735,43 @@
         var inputAAfficher = document.querySelectorAll(
             "#inputAAfficherValeurEstimee"
         );
-        var selectValeurestimeeEntre = document.querySelector(
-            "#selectValeurEstimeeEntre"
-        );
-        if (selectValeurestimeeEntre) {
-            if (selectValeurEstimeeEntre.selected) {
-                inputAAfficher.forEach((el, index) => {
-                    el.style.display = "inline-block";
-                });
-            } else if (!selectValeurEstimeeEntre.selected) {
-                inputAAfficher.forEach((el) => {
-                    el.style.display = "none";
-                });
-            }
+
+        if (selectValeurEstimee.value == 3) {
+            inputAAfficher.forEach((el, index) => {
+                el.style.display = "inline-block";
+            });
+        } else if (selectValeurEstimee.value != 3) {
+            inputAAfficher.forEach((el) => {
+                el.style.display = "none";
+            });
         }
     }
 
     function affichageInputHauteur() {
         var inputAAfficher = document.querySelectorAll("#inputAAfficherHauteur");
-        var selectHauteurEntre = document.querySelector("#selectHauteurEntre");
 
-        if (selectHauteurEntre) {
-            if (selectHauteurEntre.selected) {
-                inputAAfficher.forEach((el, index) => {
-                    el.style.display = "inline-block";
-                });
-            } else if (!selectHauteurEntre.selected) {
-                inputAAfficher.forEach((el) => {
-                    el.style.display = "none";
-                });
-            }
+        if (selectHauteur.value == 3) {
+            inputAAfficher.forEach((el, index) => {
+                el.style.display = "inline-block";
+            });
+        } else if (selectHauteur.value != 3) {
+            inputAAfficher.forEach((el) => {
+                el.style.display = "none";
+            });
         }
     }
 
     function affichageInputLargeur() {
         var inputAAfficher = document.querySelectorAll("#inputAAfficherLargeur");
-        var selectLargeurEntre = document.querySelector("#selectLargeurEntre");
 
-        if (selectLargeurEntre) {
-            if (selectLargeurEntre.selected) {
-                inputAAfficher.forEach((el, index) => {
-                    el.style.display = "inline-block";
-                });
-            } else if (!selectLargeurEntre.selected) {
-                inputAAfficher.forEach((el) => {
-                    el.style.display = "none";
-                });
-            }
+        if (selectLargeur.value == 3) {
+            inputAAfficher.forEach((el, index) => {
+                el.style.display = "inline-block";
+            });
+        } else if (selectLargeur.value != 3) {
+            inputAAfficher.forEach((el) => {
+                el.style.display = "none";
+            });
         }
     }
 
@@ -780,12 +783,12 @@
             from.name == "EncanPresent"
         ) {
             var elementsAEffacer = [
-                document.querySelector("#rechercheLotsValeurEstimee"),
-                document.querySelector("#rechercheLotsValeurEstimee2"),
-                document.querySelector("#rechercheLotsHauteur"),
-                document.querySelector("#rechercheLotsHauteur2"),
-                document.querySelector("#rechercheLotsLargeur"),
-                document.querySelector("#rechercheLotsLargeur2"),
+                rechercheLotsValeurEstimee,
+                rechercheLotsValeurEstimee2,
+                rechercheLotsHauteur,
+                rechercheLotsHauteur2,
+                rechercheLotsLargeur,
+                rechercheLotsLargeur2,
             ];
             var listeDesSelects = document.querySelectorAll(".selectPourListe");
             var listeDesSelectsQuiOntBesoinDeInvalide = document.querySelectorAll(
@@ -833,8 +836,8 @@
             from.name == "TousLesEncans"
         ) {
             var elementsAEffacer = [
-                document.querySelector("#rechercheEncansNumeroEncan"),
-                document.querySelector("#rechercheEncansNumeroEncan2"),
+                rechercheEncansNumeroEncan,
+                rechercheEncansNumeroEncan2,
             ];
             var datesAEffacer = [rechercheEncansDate1, rechercheEncansDate2];
             var listeDesSelects = document.querySelectorAll(".selectPourListe");
@@ -901,27 +904,17 @@
 
     async function rechercheAvanceeEncans() {
         var stringquery = {};
-        var selectNumeroEncan = document.querySelector("#selectNumeroEncan").value;
-        var stringNumeroEncan = document.querySelector(
-            "#rechercheEncansNumeroEncan"
-        ).value;
-        var stringNumeroEncan2 = document.querySelector(
-            "#rechercheEncansNumeroEncan2"
-        ).value;
-        var selectDate = document.querySelector("#selectDate").value;
-        var stringDate = moment(rechercheEncansDate1.value).format("yyyy-MM-DD");
-        var stringDate2 = moment(rechercheEncansDate2.value).format("yyyy-MM-DD");
 
-        if (stringNumeroEncan) {
-            stringquery["selectNumeroEncan"] = selectNumeroEncan;
-            stringquery["stringNumeroEncan"] = stringNumeroEncan;
-            if (selectNumeroEncan == 1) {
-                stringquery["stringNumeroEncan2"] = stringNumeroEncan2;
+        if (rechercheEncansNumeroEncan.value) {
+            stringquery["selectNumeroEncan"] = selectNumeroEncan.value;
+            stringquery["stringNumeroEncan"] = rechercheEncansNumeroEncan.value;
+            if (selectNumeroEncan.value == 1) {
+                stringquery["stringNumeroEncan2"] = rechercheEncansNumeroEncan2.value;
             }
         }
         if (rechercheEncansDate1.value) {
             var stringDate = moment(rechercheEncansDate1.value).format("yyyy-MM-DD");
-            stringquery["selectDate"] = selectDate;
+            stringquery["selectDate"] = selectDate.value;
             stringquery["stringDate"] = stringDate;
             if (selectDate == 3 && rechercheEncansDate2.value) {
                 var stringDate2 = moment(rechercheEncansDate2.value).format("yyyy-MM-DD");
@@ -939,37 +932,29 @@
 
     function affichageInputNumeroEncan() {
         var inputAAfficher = document.querySelectorAll("#inputAAfficherNumeroEncan");
-        var selectNumeroEncanEntre = document.querySelector(
-            "#selectNumeroEncanEntre"
-        );
 
-        if (selectNumeroEncanEntre) {
-            if (selectNumeroEncanEntre.selected) {
-                inputAAfficher.forEach((el, index) => {
-                    el.style.display = "inline-block";
-                });
-            } else if (!selectNumeroEncanEntre.selected) {
-                inputAAfficher.forEach((el) => {
-                    el.style.display = "none";
-                });
-            }
+        if (selectNumeroEncan.value == 3) {
+            inputAAfficher.forEach((el, index) => {
+                el.style.display = "inline-block";
+            });
+        } else if (selectNumeroEncan.value != 3) {
+            inputAAfficher.forEach((el) => {
+                el.style.display = "none";
+            });
         }
     }
 
     function affichageInputDate() {
         var inputAAfficher = document.querySelectorAll(".inputAAfficherDate");
-        var selectDateEntre = document.querySelector("#selectDateEntre");
 
-        if (selectDateEntre) {
-            if (selectDateEntre.selected) {
-                inputAAfficher.forEach((el, index) => {
-                    el.style.display = "inline-block";
-                });
-            } else if (!selectDateEntre.selected) {
-                inputAAfficher.forEach((el) => {
-                    el.style.display = "none";
-                });
-            }
+        if (selectDate.value == 3) {
+            inputAAfficher.forEach((el, index) => {
+                el.style.display = "inline-block";
+            });
+        } else if (selectDate != 3) {
+            inputAAfficher.forEach((el) => {
+                el.style.display = "none";
+            });
         }
     }
 
