@@ -1,5 +1,5 @@
 <template>
-    <div class="d-flex flex-column align-items-center pb-3">
+    <div class="d-flex flex-column align-items-center text-center pb-3">
         <h1 id="titreRechercheLots"></h1>
     </div>
 
