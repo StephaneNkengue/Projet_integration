@@ -128,7 +128,7 @@
                             </td>
                             <td class="align-middle">{{ encan.nbLots }}</td>
                             <td class="align-middle">
-                                <button class="btn btn_edit px-3 me-3" @click="editerEncan(encan.id)">
+                                <button class="btn bleuMarinSecondaireFond px-3 me-3" @click="editerEncan(encan.id)">
                                     <img src="/public/icons/Edit_icon.png"
                                          class="img-fluid"
                                          alt="..." />
@@ -395,14 +395,6 @@
     .dropdown-toggle[aria-expanded="true"] {
         background-color: #5a708a;
     }
-
-    .btn_edit {
-        background-color: #243e5f;
-    }
-
-        .btn_edit:hover {
-            background-color: #142336;
-        }
 
     .dropdown-item:active {
         background-color: #5a708a;

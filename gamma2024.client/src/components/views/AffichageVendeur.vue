@@ -260,16 +260,6 @@
 </script>
 
 <style scoped>
-    .bleuMarinSecondaireFond {
-        background-color: #1e3a8a;
-        border-color: #1e3a8a;
-    }
-
-        .bleuMarinSecondaireFond:hover {
-            background-color: #4d6dc4;
-            border-color: #1e3a8a;
-        }
-
     .btn {
         color: #ffffff;
     }
