@@ -1,6 +1,6 @@
 <template>
     <div class="container">
-        <h1 class="text-center mb-5">Gestion des vendeurs</h1>
+        <h1 class="text-center mb-5">Liste des vendeurs</h1>
 
         <h3 class="text-center">Rechercher un vendeur</h3>
 
