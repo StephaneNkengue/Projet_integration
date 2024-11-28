@@ -22,7 +22,7 @@
                 </button>
             </router-link>
             <div class="d-flex flex-wrap w-100 justify-content-between">
-                <div v-for="carte in cartes" class="col-6 p-3">
+                <div v-for="carte in cartes" class="col-12 col-md-6 p-3">
                     <AffichageCarteCredit :carte="carte"></AffichageCarteCredit>
                 </div>
             </div>
