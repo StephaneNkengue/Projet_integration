@@ -61,15 +61,18 @@
                 const response = await store.dispatch("chercherCartesUser")
                 cartes.value = response.data
                 siMessageSuccess.value = true
+                siMessage.value = false
                 document.querySelector("#messageSuccess").innerHTML = "Carte supprimé avec succès."
             }
             else {
                 siMessage.value = true
+                siMessageSuccess.value = false
                 document.querySelector("#message").innerHTML = "Vous devez avoir au moins une carte dans votre profil afin d'utiliser nos services"
             }
 
         } catch (error) {
             siMessage.value = true
+            siMessageSuccess.value = false
             document.querySelector("#message").innerHTML = error
         }
     })
