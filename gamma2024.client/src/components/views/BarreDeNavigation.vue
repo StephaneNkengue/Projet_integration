@@ -218,7 +218,6 @@
                                                 <select class="form-select py-0 selectPourListe"
                                                         v-model="selectValeurEstimee"
                                                         id="selectValeurEstimee"
-                                                        @change="affichageInputValeurEstimee"
                                                         aria-label="Default select example">
                                                     <option class="py-0" value="0" selected>
                                                         Égale à
@@ -239,12 +238,12 @@
                                                        v-model="rechercheLotsValeurEstimee"
                                                        id="rechercheLotsValeurEstimee" />
                                             </div>
-                                            <div class="col-sm-auto inputAAfficher align-items-center"
-                                                 id="inputAAfficherValeurEstimee">
+                                            <div v-if="selectValeurEstimee == 3"
+                                                 class="col-sm-auto align-items-center inputAAfficher">
                                                 <label class="fs-6">et</label>
                                             </div>
-                                            <div class="col-sm inputAAfficher"
-                                                 id="inputAAfficherValeurEstimee">
+                                            <div v-if="selectValeurEstimee == 3"
+                                                 class="col-sm">
                                                 <input type="number"
                                                        maxlength="10"
                                                        class="form-control rechercheinput align-self-end"
@@ -353,12 +352,12 @@
                                                        v-model="rechercheLotsHauteur"
                                                        id="rechercheLotsHauteur" />
                                             </div>
-                                            <div class="col-sm-auto inputAAfficher align-items-center"
-                                                 id="inputAAfficherHauteur">
+                                            <div v-if="selectHauteur == 3"
+                                                 class="col-sm-auto align-items-center inputAAfficher">
                                                 <label class="fs-6">et</label>
                                             </div>
-                                            <div class="col-sm inputAAfficher"
-                                                 id="inputAAfficherHauteur">
+                                            <div v-if="selectHauteur == 3"
+                                                 class="col-sm">
                                                 <input type="number"
                                                        maxlength="10"
                                                        class="form-control rechercheinput align-self-end"
@@ -401,12 +400,12 @@
                                                        v-model="rechercheLotsLargeur"
                                                        id="rechercheLotsLargeur" />
                                             </div>
-                                            <div class="col-sm-auto inputAAfficher align-items-center"
-                                                 id="inputAAfficherLargeur">
+                                            <div v-if="selectLargeur == 3"
+                                                 class="col-sm-auto align-items-center inputAAfficher">
                                                 <label class="fs-6">et</label>
                                             </div>
-                                            <div class="col-sm inputAAfficher"
-                                                 id="inputAAfficherLargeur">
+                                            <div v-if="selectLargeur == 3"
+                                                 class="col-sm">
                                                 <input type="number"
                                                        maxlength="10"
                                                        class="form-control rechercheinput align-self-end"
@@ -486,12 +485,12 @@
                                                        v-model="rechercheEncansNumeroEncan"
                                                        id="rechercheEncansNumeroEncan" />
                                             </div>
-                                            <div class="col-sm-auto inputAAfficher align-items-center"
-                                                 id="inputAAfficherNumeroEncan">
+                                            <div v-if="selectNumeroEncan == 1"
+                                                 class="col-sm-auto align-items-center inputAAfficher">
                                                 <label class="fs-6">et</label>
                                             </div>
-                                            <div class="col-sm inputAAfficher"
-                                                 id="inputAAfficherNumeroEncan">
+                                            <div v-if="selectNumeroEncan == 1"
+                                                 class="col-sm">
                                                 <input type="number"
                                                        maxlength="10"
                                                        class="form-control rechercheinput align-self-end"
@@ -537,14 +536,15 @@
                                                            :action-row="{ showNow: true }"
                                                            :format-locale="fr"
                                                            :year-range="[2000, new Date().getFullYear() +10]" />
-                                            <div class="col-sm-auto inputAAfficher inputAAfficherDate align-items-center"
-                                                 id="inputAAfficherDate">
+                                            <div v-if="selectDate == 3"
+                                                 class="col-sm-auto align-items-center inputAAfficher">
                                                 <label class="fs-6">et</label>
                                             </div>
-                                            <VueDatePicker type="date"
+                                            <VueDatePicker v-if="selectDate == 3"
+                                                           type="date"
                                                            v-model="rechercheEncansDate2"
                                                            id="rechercheEncansDate2"
-                                                           class="col-sm inputAAfficher inputAAfficherDate"
+                                                           class="col-sm"
                                                            :min-date="desacDateFinEntre"
                                                            :enable-time-picker="false"
                                                            select-text="Choisir"
@@ -731,50 +731,6 @@
         });
     }
 
-    function affichageInputValeurEstimee() {
-        var inputAAfficher = document.querySelectorAll(
-            "#inputAAfficherValeurEstimee"
-        );
-
-        if (selectValeurEstimee.value == 3) {
-            inputAAfficher.forEach((el, index) => {
-                el.style.display = "inline-block";
-            });
-        } else if (selectValeurEstimee.value != 3) {
-            inputAAfficher.forEach((el) => {
-                el.style.display = "none";
-            });
-        }
-    }
-
-    function affichageInputHauteur() {
-        var inputAAfficher = document.querySelectorAll("#inputAAfficherHauteur");
-
-        if (selectHauteur.value == 3) {
-            inputAAfficher.forEach((el, index) => {
-                el.style.display = "inline-block";
-            });
-        } else if (selectHauteur.value != 3) {
-            inputAAfficher.forEach((el) => {
-                el.style.display = "none";
-            });
-        }
-    }
-
-    function affichageInputLargeur() {
-        var inputAAfficher = document.querySelectorAll("#inputAAfficherLargeur");
-
-        if (selectLargeur.value == 3) {
-            inputAAfficher.forEach((el, index) => {
-                el.style.display = "inline-block";
-            });
-        } else if (selectLargeur.value != 3) {
-            inputAAfficher.forEach((el) => {
-                el.style.display = "none";
-            });
-        }
-    }
-
     // La barre de recherche avancée garde les informations ou non selon le changement de page
     router.beforeEach((to, from, next) => {
         if (
@@ -817,11 +773,6 @@
                         select.value = "";
                     }
                 });
-                if (document.querySelectorAll(".inputAAfficher")) {
-                    document.querySelectorAll(".inputAAfficher").forEach((el) => {
-                        el.style.display = "none";
-                    });
-                }
                 if (document.querySelector("#navbarToggleRechercheAvancee")) {
                     document
                         .querySelector("#navbarToggleRechercheAvancee")
@@ -859,11 +810,6 @@
                 listeDesSelects.forEach((select) => {
                     select.value = 0;
                 });
-                if (document.querySelectorAll(".inputAAfficher")) {
-                    document.querySelectorAll(".inputAAfficher").forEach((el) => {
-                        el.style.display = "none";
-                    });
-                }
                 if (document.querySelector("#navbarToggleRechercheAvancee")) {
                     document
                         .querySelector("#navbarToggleRechercheAvancee")
@@ -930,34 +876,6 @@
         });
     }
 
-    function affichageInputNumeroEncan() {
-        var inputAAfficher = document.querySelectorAll("#inputAAfficherNumeroEncan");
-
-        if (selectNumeroEncan.value == 3) {
-            inputAAfficher.forEach((el, index) => {
-                el.style.display = "inline-block";
-            });
-        } else if (selectNumeroEncan.value != 3) {
-            inputAAfficher.forEach((el) => {
-                el.style.display = "none";
-            });
-        }
-    }
-
-    function affichageInputDate() {
-        var inputAAfficher = document.querySelectorAll(".inputAAfficherDate");
-
-        if (selectDate.value == 3) {
-            inputAAfficher.forEach((el, index) => {
-                el.style.display = "inline-block";
-            });
-        } else if (selectDate != 3) {
-            inputAAfficher.forEach((el) => {
-                el.style.display = "none";
-            });
-        }
-    }
-
     function verifierSiQueryDansURL() {
         if (route.query.data != null) {
             var stringquery = JSON.parse(route.query.data);
@@ -1012,7 +930,6 @@
                     rechercheEncansDate2.value = moment(stringquery.stringDate2);
                 }
             }
-            affichageInputValeurEstimee();
             affichageInputHauteur();
             affichageInputLargeur();
             affichageInputNumeroEncan();
@@ -1111,7 +1028,6 @@
 
     .inputAAfficher {
         height: 25px;
-        display: none;
     }
 
     .card-body {
