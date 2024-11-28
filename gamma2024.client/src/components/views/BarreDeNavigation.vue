@@ -711,7 +711,7 @@
                 stringquery["stringHauteur2"] = rechercheLotsHauteur2.value;
             }
         }
-        if (rechercheLotsLargeur.valeur) {
+        if (rechercheLotsLargeur.value) {
             stringquery["selectLargeur"] = selectLargeur.value;
             stringquery["stringLargeur"] = rechercheLotsLargeur.value;
             if (selectLargeur.value == 3) {
