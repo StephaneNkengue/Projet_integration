@@ -68,7 +68,7 @@
                                     </div>
                                 </button>
                             </h2>
-                            <!--Changer le 233 en le numero de l'encan le plus récent-->
+
                             <div :id="'collapse' + encan.encan"
                                  class="accordion-collapse collapse"
                                  :class="{ show: encan == numerosEncans[0] }"

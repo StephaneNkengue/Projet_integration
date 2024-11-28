@@ -59,7 +59,7 @@ namespace Gamma2024.Server.Services
                 facture.Telephone = client.PhoneNumber;
             }
 
-            return factures;
+            return factures.OrderByDescending(f => f.Encan).ToList();
         }
 
         public ICollection<Facture> ChercherFacturesParEncan(int numeroEncan)
