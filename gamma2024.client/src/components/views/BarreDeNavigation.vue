@@ -969,44 +969,44 @@
                 }
             }
             if (stringquery.stringValeurEstimee) {
-                document.querySelector("#selectValeurEstimee").value = stringquery.selectValeurEstimee;
-                document.querySelector("#rechercheLotsValeurEstimee").value = stringquery.stringValeurEstimee;
+                selectValeurEstimee.value = stringquery.selectValeurEstimee;
+                rechercheLotsValeurEstimee.value = stringquery.stringValeurEstimee;
                 if (stringquery.selectValeurEstimee == 3 && stringquery.stringValeurEstimee2) {
-                    document.querySelector("#rechercheLotsValeurEstimee2").value = stringquery.stringValeurEstimee2;
+                    rechercheLotsValeurEstimee2.value = stringquery.stringValeurEstimee2;
                 }
             }
             if (stringquery.selectArtiste != 0 && stringquery.selectArtiste != null) {
-                document.querySelector("#selectArtiste").value = stringquery.selectArtiste;
+                selectArtiste.value = stringquery.selectArtiste;
             }
             if (stringquery.selectCategorie != 0 && stringquery.selectCategorie != null) {
-                document.querySelector("#selectCategorie").value = stringquery.selectCategorie;
+                selectCategorie.value = stringquery.selectCategorie;
             }
             if (stringquery.selectMedium != 0 && stringquery.selectMedium != null) {
-                document.querySelector("#selectMedium").value = stringquery.selectMedium;
+                selectMedium.value = stringquery.selectMedium;
             }
             if (stringquery.stringHauteur) {
-                document.querySelector("#selectHauteur").value = stringquery.selectHauteur;
-                document.querySelector("#rechercheLotsHauteur").value = stringquery.stringHauteur;
+                selectHauteur.value = stringquery.selectHauteur;
+                rechercheLotsHauteur.value = stringquery.stringHauteur;
                 if (stringquery.selectHauteur == 3 && stringquery.stringHauteur2) {
-                    document.querySelector("#rechercheLotsHauteur2").value = stringquery.stringHauteur2;
+                    rechercheLotsHauteur2.value = stringquery.stringHauteur2;
                 }
             }
             if (stringquery.stringLargeur) {
-                document.querySelector("#selectLargeur").value = stringquery.selectLargeur;
-                document.querySelector("#rechercheLotsLargeur").value = stringquery.stringLargeur;
+                selectLargeur.value = stringquery.selectLargeur;
+                rechercheLotsLargeur.value = stringquery.stringLargeur;
                 if (stringquery.selectLargeur == 3 && stringquery.stringLargeur2) {
-                    document.querySelector("#rechercheLotsLargeur2").value = stringquery.stringLargeur2;
+                    rechercheLotsLargeur2.value = stringquery.stringLargeur2;
                 }
             }
             if (stringquery.stringNumeroEncan) {
-                document.querySelector("#selectNumeroEncan").value = stringquery.selectNumeroEncan;
-                document.querySelector("#rechercheEncansNumeroEncan").value = stringquery.stringNumeroEncan;
+                selectNumeroEncan.value = stringquery.selectNumeroEncan;
+                rechercheEncansNumeroEncan.value = stringquery.stringNumeroEncan;
                 if (stringquery.selectNumeroEncan == 1 && stringquery.stringNumeroEncan2) {
-                    document.querySelector("#rechercheEncansNumeroEncan2").value = stringquery.stringNumeroEncan2;
+                    rechercheEncansNumeroEncan2.value = stringquery.stringNumeroEncan2;
                 }
             }
             if (stringquery.stringDate) {
-                document.querySelector("#selectDate").value = stringquery.selectDate;
+                selectDate.value = stringquery.selectDate;
                 rechercheEncansDate1.value = moment(stringquery.stringDate);
                 if (stringquery.selectDate == 3 && stringquery.stringDate2) {
                     rechercheEncansDate2.value = moment(stringquery.stringDate2);
