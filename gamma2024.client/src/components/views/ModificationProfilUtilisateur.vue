@@ -1,7 +1,7 @@
 <template>
     <div v-if="isLoading">Chargement...</div>
     <div class="pt-md-5 container">
-        <div class="container d-flex flex-column justify-content-start align-items-stretch card p-5 mb-5">
+        <div class="container d-flex flex-column justify-content-start align-items-stretch card p-md-5 mb-5">
             <div class="card-header">
                 <!-- Ajout de la section avatar -->
                 <div class="avatar-section mb-4 d-flex flex-column align-items-center">
