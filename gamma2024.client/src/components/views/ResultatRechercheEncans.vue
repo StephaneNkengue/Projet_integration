@@ -104,10 +104,7 @@
     const encansAffiche = ref();
     const nbPages = ref();
     const chargement = ref(true);
-
-    const mois = [
-
-    ];
+    const numEncanCours = ref(0);
 
     onMounted(async () => {
         try {
@@ -115,6 +112,18 @@
         } catch (error) {
         }
     });
+
+    const voirEncan = ref(function (numeroEncanRecu) {
+        console.log(numeroEncanRecu)
+        if (numeroEncanRecu == numEncanCours.value) {
+            router.push({ name: 'EncanPresent' })
+        }
+        else {
+            router.push({
+                name: 'Encan', params: { numeroEncan: numeroEncanRecu }
+            })
+        }
+    })
 
     const queryChangement = computed(() => route.query)
     watch(queryChangement, initialiseData)
@@ -133,6 +142,7 @@
 
         chercherEncansAAfficher();
         chargement.value = false;
+        console.log(encansFiltres.value);
     }
 
     function genererListeDEncansFiltree() {

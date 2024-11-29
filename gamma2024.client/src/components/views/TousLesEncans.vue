@@ -53,6 +53,7 @@
     onMounted(async () => {
         const response = await store.dispatch("chercherTousEncansVisibles");
         encans.value = response.data
+        console.log(encans.value);
 
         const responseNumEncanCourrant = await store.dispatch("chercherNumeroEncanEnCours");
         if (responseNumEncanCourrant.data != '') {
