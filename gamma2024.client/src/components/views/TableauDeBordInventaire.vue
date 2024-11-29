@@ -198,7 +198,7 @@
                         <td>
                             <div class="d-flex">
                                 <router-link :to="{ name: 'ModificationLot', params: { id: lot.id } }">
-                                    <button class="btn bleuMarinSecondaireFond px-3 me-3">
+                                    <button class="btn btnModifierIcone bleuMarinSecondaireFond px-3 me-3">
                                         <img src="/public/icons/Edit_icon.png" width="30" height="30" />
                                     </button>
                                 </router-link>

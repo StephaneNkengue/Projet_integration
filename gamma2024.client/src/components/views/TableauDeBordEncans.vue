@@ -128,7 +128,7 @@
                             </td>
                             <td class="align-middle">{{ encan.nbLots }}</td>
                             <td class="align-middle">
-                                <button class="btn bleuMarinSecondaireFond px-3 me-3" @click="editerEncan(encan.id)">
+                                <button class="btn bleuMarinSecondaireFond btnModifierIcone px-3 me-3" @click="editerEncan(encan.id)">
                                     <img src="/public/icons/Edit_icon.png"
                                          class="img-fluid"
                                          alt="..." />

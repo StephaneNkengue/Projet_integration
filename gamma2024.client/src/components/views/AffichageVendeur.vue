@@ -75,7 +75,7 @@
                             <td class="align-middle">{{ vendeur.courriel }}</td>
                             <td class="align-middle">{{ vendeur.telephone }}</td>
                             <td>
-                                <button class="btn bleuMarinSecondaireFond px-3">
+                                <button class="btn btnModifierIcone bleuMarinSecondaireFond px-3">
                                     <router-link :to="{name: 'vendeurModification', params: { id: vendeur.id.toString() }}"
                                                  class="text-decoration-none">
                                         <img src="/public/icons/Edit_icon.png"
