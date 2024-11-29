@@ -2,28 +2,28 @@
     <div class="container">
         <h1 class="text-center mb-5">Liste des encans</h1>
 
-
         <h3 class="text-center" for="Recherche">Rechercher un encan </h3>
+
         <div class="d-flex flex-column gap-3 align-items-center mb-5">
             <input data-bs-theme="light"
                    type="search"
                    aria-label="RechercheNum"
                    v-model="encanRechercheNumEncan"
-                   placeholder="Numéro encan"
+                   placeholder="Rechercher par numéro encan"
                    class="form-control" />
 
             <input data-bs-theme="light"
                    type="search"
                    aria-label="RechercheDate"
                    v-model="encanRechercheDate"
-                   placeholder="Date AAAA-MM-JJ"
+                   placeholder="Rechercher par date (AAAA-MM-JJ)"
                    class="form-control" />
         </div>
 
 
         <router-link :to="{ name: 'TableauDeBordEncansAjout' }"
                      class="text-decoration-none">
-            <button class="btn btn-lg btn-block w-100 btnSurvolerBleuMoyenFond btnClick text-white"
+            <button class="btn fs-5 btn-block w-100 btnSurvolerBleuMoyenFond btnClick text-white"
                     type="button"
                     id="ajouterEncanButton">
                 Ajouter un encan
@@ -41,40 +41,40 @@
             </div>
         </transition>
 
-        <div class="d-flex justify-content-end my-4">
-            <div class="d-flex flex-row gap-2">
-                <button class="d-flex align-items-center text-center rounded btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
-                        @click="changerNbEncanParPage(20)"
-                        v-bind:disabled="encansParPage == 20">
-                    20
-                </button>
-                <button class="d-flex align-items-center text-center rounded btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
-                        @click="changerNbEncanParPage(50)"
-                        v-bind:disabled="encansParPage == 50">
-                    50
-                </button>
-                <button class="d-flex align-items-center text-center rounded btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
-                        @click="changerNbEncanParPage(100)"
-                        v-bind:disabled="encansParPage == 100">
-                    100
-                </button>
-                <button class="d-flex align-items-center text-center rounded btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
-                        type="button"
-                        @click="afficherTousEncans"
-                        v-bind:disabled="encansParPage == nbEncansRecus">
-                    Tous
-                </button>
-            </div>
-        </div>
-
-        <div class="d-flex gap-2 justify-content-center" v-if="chargement">
+        <div class="d-flex gap-2 justify-content-center mt-4" v-if="chargement">
             <div class="spinner-border" role="status">
-                <span class="visually-hidden">Chargement des ventes...</span>
+                <span class="visually-hidden">Chargement des encans...</span>
             </div>
-            <p>Chargement des ventes en cours...</p>
+            <p>Chargement des encans en cours...</p>
         </div>
 
         <div v-if="!chargement" class="w-100">
+            <div class="d-flex justify-content-end my-4">
+                <div class="d-flex flex-row gap-2">
+                    <button class="d-flex align-items-center text-center rounded btn text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
+                            @click="changerNbEncanParPage(20)"
+                            v-bind:disabled="encansParPage == 20">
+                        20
+                    </button>
+                    <button class="d-flex align-items-center text-center rounded btn text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
+                            @click="changerNbEncanParPage(50)"
+                            v-bind:disabled="encansParPage == 50">
+                        50
+                    </button>
+                    <button class="d-flex align-items-center text-center rounded btn text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
+                            @click="changerNbEncanParPage(100)"
+                            v-bind:disabled="encansParPage == 100">
+                        100
+                    </button>
+                    <button class="d-flex align-items-center text-center rounded btn text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
+                            type="button"
+                            @click="afficherTousEncans"
+                            v-bind:disabled="encansParPage == nbEncansRecus">
+                        Tous
+                    </button>
+                </div>
+            </div>
+
             <div class="d-flex justify-content-center" v-if="!listeEncansFiltree.length">
                 <h2>Aucun résultat trouvé</h2>
             </div>
@@ -129,7 +129,7 @@
                             <td class="align-middle">{{ encan.nbLots }}</td>
                             <td class="align-middle">
                                 <div class="d-flex flex-row justify-content-center">
-                                    <button class="btn bleuMarinSecondaireFond px-3 me-3" @click="editerEncan(encan.id)">
+                                    <button class="btn bleuMarinSecondaireFond px-3 me-3 btnModifierIcone" @click="editerEncan(encan.id)">
                                         <img src="/public/icons/Edit_icon.png"
                                              width="30"
                                              alt="..." />
@@ -149,32 +149,31 @@
                 </table>
             </div>
 
-        </div>
-
-        <div class="d-flex flex-row justify-content-center gap-1 flex-wrap p-3" v-if="listeEncansFiltree.length != 0">
-            <button type="button"
-                    class="btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
-                    @click="reculerPage"
-                    v-bind:disabled="pageCourante == 1">
-                <
-            </button>
-
-            <div v-for="item in listePagination">
+            <div class="d-flex flex-row justify-content-center gap-1 flex-wrap p-3" v-if="listeEncansFiltree.length != 0">
                 <button type="button"
-                        class="btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
-                        :pageId="item"
-                        @click="changerPage()"
-                        v-bind:disabled="pageCourante == item || item == '...'">
-                    {{ item }}
+                        class="btn text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
+                        @click="reculerPage"
+                        v-bind:disabled="pageCourante == 1">
+                    <
+                </button>
+
+                <div v-for="item in listePagination">
+                    <button type="button"
+                            class="btn text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
+                            :pageId="item"
+                            @click="changerPage()"
+                            v-bind:disabled="pageCourante == item || item == '...'">
+                        {{ item }}
+                    </button>
+                </div>
+
+                <button type="button"
+                        class="btn text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
+                        @click="avancerPage"
+                        v-bind:disabled="pageCourante == nbPages">
+                    >
                 </button>
             </div>
-
-            <button type="button"
-                    class="btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
-                    @click="avancerPage"
-                    v-bind:disabled="pageCourante == nbPages">
-                >
-            </button>
         </div>
     </div>
 </template>

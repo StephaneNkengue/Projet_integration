@@ -15,37 +15,37 @@
 
         <div v-else class="d-flex flex-column align-items-center">
             <div class="d-flex flex-row-reverse w-100 px-4 me-2 gap-2">
-                <button class="rounded bleuMoyenFond btn btnSurvolerBleuMoyenFond"
+                <button class="rounded btn btnSurvolerBleuMoyenFond"
                         v-if="!siTuile"
                         @click="changerTypeAffichage('tuile')">
                     <img src="/icons/IconTableau.png"
                          alt="Affichage en tableau"
                          height="25" />
                 </button>
-                <button class="rounded bleuMoyenFond btn btnSurvolerBleuMoyenFond"
+                <button class="rounded btn btnSurvolerBleuMoyenFond"
                         v-else
                         @click="changerTypeAffichage('liste')">
                     <img src="/icons/IconListe.png"
                          alt="Affichage en liste"
                          height="25" />
                 </button>
-                <button class="d-flex align-items-center text-center rounded btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
+                <button class="d-flex align-items-center text-center rounded btn text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
                         type="button"
                         @click="afficherTousLots"
                         v-bind:disabled="lotsParPage == nbLotsRecus">
                     Tous
                 </button>
-                <button class="d-flex align-items-center text-center rounded btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
+                <button class="d-flex align-items-center text-center rounded btn text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
                         @click="changerNbLotParPage(100)"
                         v-bind:disabled="lotsParPage == 100">
                     100
                 </button>
-                <button class="d-flex align-items-center text-center rounded btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
+                <button class="d-flex align-items-center text-center rounded btn text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
                         @click="changerNbLotParPage(50)"
                         v-bind:disabled="lotsParPage == 50">
                     50
                 </button>
-                <button class="d-flex align-items-center text-center rounded btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
+                <button class="d-flex align-items-center text-center rounded btn text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
                         @click="changerNbLotParPage(20)"
                         v-bind:disabled="lotsParPage == 20">
                     20
@@ -69,7 +69,7 @@
 
             <div class="d-flex flex-row justify-content-center gap-1 flex-wrap p-3">
                 <button type="button"
-                        class="btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
+                        class="btn text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
                         @click="reculerPage"
                         v-bind:disabled="pageCourante == 1">
                     ⮜
@@ -77,7 +77,7 @@
 
                 <div v-for="item in listePagination">
                     <button type="button"
-                            class="btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
+                            class="btn text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
                             :pageId="item"
                             @click="changerPage()"
                             v-bind:disabled="pageCourante == item || item == '...'">
@@ -86,7 +86,7 @@
                 </div>
 
                 <button type="button"
-                        class="btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
+                        class="btn text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
                         @click="avancerPage"
                         v-bind:disabled="pageCourante == nbPages">
                     ⮞

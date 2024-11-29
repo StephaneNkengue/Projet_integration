@@ -12,7 +12,7 @@
                              @click="triggerFileInput"
                              @error="handleImageError" />
                     </div>
-                    <button @click="triggerFileInput" class="btn btn-primary mt-3">
+                    <button @click="triggerFileInput" class="btn btnSurvolerBleuMoyenFond text-white mt-3">
                         Modifier l'avatar
                     </button>
                     <input type="file"
