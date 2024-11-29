@@ -65,198 +65,210 @@
             </div>
         </div>
 
-        <div class="d-flex justify-content-between my-4">
-            <div class="dropdown d-flex-1">
-                <button class="btn btnSurvolerBleuMoyenFond boutonPersonnalise text-white dropdown-toggle"
-                        type="button"
-                        id="dropdownMenuButton"
-                        data-toggle="dropdown"
-                        data-bs-toggle="dropdown"
-                        aria-haspopup="true"
-                        aria-expanded="false">
-                    Sélectionner les colonnes
-                </button>
-                <ul class="dropdown-menu">
-                    <li class="d-flex justify-content-start dropdown-item">
-                        <input class="checkboxTous d-flex-1"
-                               type="checkbox"
-                               id="tousSelectionnerCheckbox"
-                               v-model="tousSelectionne"
-                               @change="toggleToutesColonnes" />
-                        <label class="d-flex-1"
-                               for="tousSelectionnerCheckbox">
-                            Tous Sélectionner
-                        </label>
-                    </li>
-                    <li v-for="(visible, colonne) in colonnesVisibles" :key="colonne" class="d-flex justify-content-start dropdown-item">
-                        <input class="checkboxSeul d-flex-1"
-                               type="checkbox"
-                               :id="`lot${colonne.charAt(0).toUpperCase() + colonne.slice(1)}Checkbox`"
-                               :checked="visible"
-                               :disabled="tousSelectionne"
-                               @change="toggleColonne(colonne)" />
-                        <label class="d-flex-1" :for="`lot${colonne.charAt(0).toUpperCase() + colonne.slice(1)}Checkbox`">
-                            {{ colonne.charAt(0).toUpperCase() + colonne.slice(1) }}
-                        </label>
-                    </li>
-                </ul>
+        <div class="d-flex gap-2 justify-content-center mt-4" v-if="chargement">
+            <div class="spinner-border" role="status">
+                <span class="visually-hidden">Chargement des lots...</span>
             </div>
+            <p>Chargement des lots en cours...</p>
+        </div>
 
-            <div class="d-flex-1">
-                <div class="d-flex flex-row gap-2">
-                    <button class="d-flex align-items-center text-center rounded btn text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
+        <div v-if="!chargement" class="w-100">
+            <div class="d-flex justify-content-between my-4">
+                <div class="dropdown d-flex-1">
+                    <button class="btn btnSurvolerBleuMoyenFond boutonPersonnalise text-white dropdown-toggle"
                             type="button"
-                            @click="afficherLotsParPage(20)"
-                            v-bind:disabled="lotsParPage == 20">
-                        20
+                            id="dropdownMenuButton"
+                            data-toggle="dropdown"
+                            data-bs-toggle="dropdown"
+                            aria-haspopup="true"
+                            aria-expanded="false">
+                        Sélectionner les colonnes
                     </button>
-                    <button class="d-flex align-items-center text-center rounded btn text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
-                            type="button"
-                            @click="afficherLotsParPage(50)"
-                            v-bind:disabled="lotsParPage == 50">
-                        50
-                    </button>
-                    <button class="d-flex align-items-center text-center rounded btn text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
-                            type="button"
-                            @click="afficherLotsParPage(100)"
-                            v-bind:disabled="lotsParPage == 100">
-                        100
-                    </button>
-                    <button class="d-flex align-items-center text-center rounded btn text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
-                            type="button"
-                            @click="afficherTousLots"
-                            v-bind:disabled="lotsParPage == nbLotsRecus">
-                        Tous
-                    </button>
+                    <ul class="dropdown-menu">
+                        <li class="d-flex justify-content-start dropdown-item">
+                            <input class="checkboxTous d-flex-1"
+                                   type="checkbox"
+                                   id="tousSelectionnerCheckbox"
+                                   v-model="tousSelectionne"
+                                   @change="toggleToutesColonnes" />
+                            <label class="d-flex-1"
+                                   for="tousSelectionnerCheckbox">
+                                Tous Sélectionner
+                            </label>
+                        </li>
+                        <li v-for="(visible, colonne) in colonnesVisibles" :key="colonne" class="d-flex justify-content-start dropdown-item">
+                            <input class="checkboxSeul d-flex-1"
+                                   type="checkbox"
+                                   :id="`lot${colonne.charAt(0).toUpperCase() + colonne.slice(1)}Checkbox`"
+                                   :checked="visible"
+                                   :disabled="tousSelectionne"
+                                   @change="toggleColonne(colonne)" />
+                            <label class="d-flex-1" :for="`lot${colonne.charAt(0).toUpperCase() + colonne.slice(1)}Checkbox`">
+                                {{ colonne.charAt(0).toUpperCase() + colonne.slice(1) }}
+                            </label>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="d-flex-1">
+                    <div class="d-flex flex-row gap-2">
+                        <button class="d-flex align-items-center text-center rounded btn text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
+                                type="button"
+                                @click="afficherLotsParPage(20)"
+                                v-bind:disabled="lotsParPage == 20">
+                            20
+                        </button>
+                        <button class="d-flex align-items-center text-center rounded btn text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
+                                type="button"
+                                @click="afficherLotsParPage(50)"
+                                v-bind:disabled="lotsParPage == 50">
+                            50
+                        </button>
+                        <button class="d-flex align-items-center text-center rounded btn text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
+                                type="button"
+                                @click="afficherLotsParPage(100)"
+                                v-bind:disabled="lotsParPage == 100">
+                            100
+                        </button>
+                        <button class="d-flex align-items-center text-center rounded btn text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
+                                type="button"
+                                @click="afficherTousLots"
+                                v-bind:disabled="lotsParPage == nbLotsRecus">
+                            Tous
+                        </button>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <div class="margesPourTable">
-            <table class="table table-striped text-center">
-                <colgroup id="colgroup">
-                    <col id="colEncan">
-                    <col id="colNumero">
-                    <col id="colPrixOuverture">
-                    <col id="colValeurMinPourVente">
-                    <col id="colEstimationMin">
-                    <col id="colEstimationMax">
-                    <col id="colCategorie">
-                    <col id="colArtiste">
-                    <col id="colDimensions">
-                    <col id="colDescription">
-                    <col id="colMedium">
-                    <col id="colVendeur">
-                    <col id="colVendu">
-                    <col id="colLivraison">
-                    <col id="colModifier">
-                    <col id="colSupprimer">
-                </colgroup>
-                <thead class="table-dark">
-                    <tr class="align-middle">
-                        <th v-if="colonnesVisibles.encan">Encan</th>
-                        <th v-if="colonnesVisibles.numero">Lot #</th>
-                        <th v-if="colonnesVisibles.prixOuverture">Prix Ouverture</th>
-                        <th v-if="colonnesVisibles.valeurMinPourVente">Valeur Min Pour Vente</th>
-                        <th v-if="colonnesVisibles.estimationMin">Estimation Min</th>
-                        <th v-if="colonnesVisibles.estimationMax">Estimation Max</th>
-                        <th v-if="colonnesVisibles.categorie">Catégorie</th>
-                        <th v-if="colonnesVisibles.artiste">Artiste</th>
-                        <th v-if="colonnesVisibles.dimension">Dimension (en po)</th>
-                        <th v-if="colonnesVisibles.description">Description</th>
-                        <th v-if="colonnesVisibles.medium">Medium</th>
-                        <th v-if="colonnesVisibles.vendeur">Vendeur</th>
-                        <th v-if="colonnesVisibles.estVendu">Vendu</th>
-                        <th v-if="colonnesVisibles.livraison">Livraison</th>
-                        <th v-if="colonnesVisibles.modifier"></th>
-                        <th v-if="colonnesVisibles.supprimer"></th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr v-for="lot in lotsAffiches" :key="lot.id" class="align-middle">
-                        <td v-if="colonnesVisibles.encan">{{ lot.numeroEncan }}</td>
-                        <td v-if="colonnesVisibles.numero">{{ lot.code }}</td>
-                        <td v-if="colonnesVisibles.prixOuverture">{{ lot.prixOuverture }}</td>
-                        <td v-if="colonnesVisibles.valeurMinPourVente">
-                            <span v-if="lot.prixMinPourVente=='0 $'"></span>
-                            <span v-else>{{ lot.prixMinPourVente }}</span>
-                        </td>
-                        <td v-if="colonnesVisibles.estimationMin">{{ lot.valeurEstimeMin }}</td>
-                        <td v-if="colonnesVisibles.estimationMax">{{ lot.valeurEstimeMax }}</td>
-                        <td v-if="colonnesVisibles.categorie">{{ lot.categorie }}</td>
-                        <td v-if="colonnesVisibles.artiste">{{ lot.artiste }}</td>
-                        <td v-if="colonnesVisibles.dimension">{{ lot.dimension }}</td>
-                        <td v-if="colonnesVisibles.description">{{ lot.description }}</td>
-                        <td v-if="colonnesVisibles.medium">{{ lot.medium }}</td>
-                        <td v-if="colonnesVisibles.vendeur">{{ lot.vendeur }}</td>
-                        <td v-if="colonnesVisibles.estVendu">
-                            <img v-if="lot.estVendu" src="/icons/vendu.png" width="40" height="40" />
-                            <img v-else src="/icons/nonvendu.png" width="40" height="40" />
-                        </td>
-                        <td v-if="colonnesVisibles.livraison">
-                            <img v-if="lot.estLivrable" src="/icons/livrable.png" width="40" height="40" />
-                            <img v-else src="/icons/nonlivrable.png" width="40" height="40" />
-                        </td>
-                        <td>
-                            <div class="d-flex">
-                                <router-link :to="{ name: 'ModificationLot', params: { id: lot.id } }">
-                                    <button class="btn btnModifierIcone bleuMarinSecondaireFond px-3 me-3">
-                                        <img src="/public/icons/Edit_icon.png" width="30" height="30" />
+            <div class="d-flex justify-content-center" v-if="!lotsAffiches.length">
+                <h2>Aucun résultat trouvé</h2>
+            </div>
+
+            <div class="margesPourTable" v-else>
+                <table class="table table-striped text-center">
+                    <colgroup id="colgroup">
+                        <col id="colEncan">
+                        <col id="colNumero">
+                        <col id="colPrixOuverture">
+                        <col id="colValeurMinPourVente">
+                        <col id="colEstimationMin">
+                        <col id="colEstimationMax">
+                        <col id="colCategorie">
+                        <col id="colArtiste">
+                        <col id="colDimensions">
+                        <col id="colDescription">
+                        <col id="colMedium">
+                        <col id="colVendeur">
+                        <col id="colVendu">
+                        <col id="colLivraison">
+                        <col id="colModifier">
+                        <col id="colSupprimer">
+                    </colgroup>
+                    <thead class="table-dark">
+                        <tr class="align-middle">
+                            <th v-if="colonnesVisibles.encan">Encan</th>
+                            <th v-if="colonnesVisibles.numero">Lot #</th>
+                            <th v-if="colonnesVisibles.prixOuverture">Prix Ouverture</th>
+                            <th v-if="colonnesVisibles.valeurMinPourVente">Valeur Min Pour Vente</th>
+                            <th v-if="colonnesVisibles.estimationMin">Estimation Min</th>
+                            <th v-if="colonnesVisibles.estimationMax">Estimation Max</th>
+                            <th v-if="colonnesVisibles.categorie">Catégorie</th>
+                            <th v-if="colonnesVisibles.artiste">Artiste</th>
+                            <th v-if="colonnesVisibles.dimension">Dimension (en po)</th>
+                            <th v-if="colonnesVisibles.description">Description</th>
+                            <th v-if="colonnesVisibles.medium">Medium</th>
+                            <th v-if="colonnesVisibles.vendeur">Vendeur</th>
+                            <th v-if="colonnesVisibles.estVendu">Vendu</th>
+                            <th v-if="colonnesVisibles.livraison">Livraison</th>
+                            <th v-if="colonnesVisibles.modifier"></th>
+                            <th v-if="colonnesVisibles.supprimer"></th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="lot in lotsAffiches" :key="lot.id" class="align-middle">
+                            <td v-if="colonnesVisibles.encan">{{ lot.numeroEncan }}</td>
+                            <td v-if="colonnesVisibles.numero">{{ lot.code }}</td>
+                            <td v-if="colonnesVisibles.prixOuverture">{{ lot.prixOuverture }}</td>
+                            <td v-if="colonnesVisibles.valeurMinPourVente">
+                                <span v-if="lot.prixMinPourVente=='0 $'"></span>
+                                <span v-else>{{ lot.prixMinPourVente }}</span>
+                            </td>
+                            <td v-if="colonnesVisibles.estimationMin">{{ lot.valeurEstimeMin }}</td>
+                            <td v-if="colonnesVisibles.estimationMax">{{ lot.valeurEstimeMax }}</td>
+                            <td v-if="colonnesVisibles.categorie">{{ lot.categorie }}</td>
+                            <td v-if="colonnesVisibles.artiste">{{ lot.artiste }}</td>
+                            <td v-if="colonnesVisibles.dimension">{{ lot.dimension }}</td>
+                            <td v-if="colonnesVisibles.description">{{ lot.description }}</td>
+                            <td v-if="colonnesVisibles.medium">{{ lot.medium }}</td>
+                            <td v-if="colonnesVisibles.vendeur">{{ lot.vendeur }}</td>
+                            <td v-if="colonnesVisibles.estVendu">
+                                <img v-if="lot.estVendu" src="/icons/vendu.png" width="40" height="40" />
+                                <img v-else src="/icons/nonvendu.png" width="40" height="40" />
+                            </td>
+                            <td v-if="colonnesVisibles.livraison">
+                                <img v-if="lot.estLivrable" src="/icons/livrable.png" width="40" height="40" />
+                                <img v-else src="/icons/nonlivrable.png" width="40" height="40" />
+                            </td>
+                            <td>
+                                <div class="d-flex">
+                                    <router-link :to="{ name: 'ModificationLot', params: { id: lot.id } }">
+                                        <button class="btn btnModifierIcone bleuMarinSecondaireFond px-3 me-3">
+                                            <img src="/public/icons/Edit_icon.png" width="30" height="30" />
+                                        </button>
+                                    </router-link>
+
+                                    <button class="btn btn-danger px-3 btn_delete">
+                                        <img @click="ouvrirBoiteModale(lot.id)"
+                                             src="/public/icons/Delete_icon.png"
+                                             width="25"
+                                             height="30" />
                                     </button>
-                                </router-link>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
 
-                                <button class="btn btn-danger px-3 btn_delete">
-                                    <img @click="ouvrirBoiteModale(lot.id)"
-                                         src="/public/icons/Delete_icon.png"
-                                         width="25"
-                                         height="30" />
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <div class="d-flex flex-row justify-content-center gap-1 flex-wrap p-3">
-            <button type="button"
-                    class="btn text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
-                    @click="reculerPage"
-                    v-bind:disabled="pageCourante == 1">
-                <
-            </button>
-
-            <div v-for="item in listePagination">
+            <div class="d-flex flex-row justify-content-center gap-1 flex-wrap p-3">
                 <button type="button"
                         class="btn text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
-                        :pageId="item"
-                        @click="changerPage(item)"
-                        v-bind:disabled="pageCourante == item || item == '...'">
-                    {{ item }}
+                        @click="reculerPage"
+                        v-bind:disabled="pageCourante == 1">
+                    <
+                </button>
+
+                <div v-for="item in listePagination">
+                    <button type="button"
+                            class="btn text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
+                            :pageId="item"
+                            @click="changerPage(item)"
+                            v-bind:disabled="pageCourante == item || item == '...'">
+                        {{ item }}
+                    </button>
+                </div>
+
+                <button type="button"
+                        class="btn text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
+                        @click="avancerPage"
+                        v-bind:disabled="pageCourante == nbPages">
+                    >
                 </button>
             </div>
 
-            <button type="button"
-                    class="btn text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
-                    @click="avancerPage"
-                    v-bind:disabled="pageCourante == nbPages">
-                >
-            </button>
-        </div>
-
-        <div v-if="lotASupprimer !== null" class="modal-overlay">
-            <div class="modal-content">
-                <p>Êtes-vous sûr de vouloir supprimer ce lot ?</p>
-                <div class="modal-buttons">
-                    <button @click="confirmerSuppression" class="btn btn-danger">OK</button>
-                    <button @click="annulerSuppression" class="btn btn-secondary">
-                        Annuler
-                    </button>
+            <div v-if="lotASupprimer !== null" class="modal-overlay">
+                <div class="modal-content">
+                    <p>Êtes-vous sûr de vouloir supprimer ce lot ?</p>
+                    <div class="modal-buttons">
+                        <button @click="confirmerSuppression" class="btn btn-danger">OK</button>
+                        <button @click="annulerSuppression" class="btn btn-secondary">
+                            Annuler
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
-
     </div>
 </template>
 
