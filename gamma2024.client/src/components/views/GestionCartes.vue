@@ -5,9 +5,9 @@
     <div class="container">
         <h1 class="text-center">Gestion des cartes de crédit</h1>
 
-        <div class="alert alert-danger" role="alert" id="message" v-show="siMessage">
+        <div class="alert alert-danger mx-3" role="alert" id="message" v-show="siMessage">
         </div>
-        <div class="alert alert-success" role="alert" id="messageSuccess" v-show="siMessageSuccess">
+        <div class="alert alert-success mx-3" role="alert" id="messageSuccess" v-show="siMessageSuccess">
         </div>
 
         <div v-if="chargement" class=text-center>
@@ -16,13 +16,19 @@
             </div>
         </div>
         <div v-else>
-            <router-link :to="{name: 'EnregistrerCarte'}">
-                <button class="btn btn-outline bleuMoyenFond text-white btnSurvolerBleuMoyenFond my-2">
-                    Ajouter une carte
-                </button>
-            </router-link>
-            <div class="d-flex flex-wrap w-100 justify-content-between">
-                <div v-for="carte in cartes" class="col-6 p-3">
+            <div class="d-flex justify-content-center justify-content-md-start">
+                <router-link :to="{name: 'EnregistrerCarte'}">
+                    <button class="btn btn-outline bleuMoyenFond text-white btnSurvolerBleuMoyenFond my-2 mx-3">
+                        Ajouter une carte
+                    </button>
+                </router-link>
+            </div>
+
+            <div v-if="cartes.length == 0" class="text-center">
+                <h5>Aucun carte trouvé. Afin d'utiliser nos services, vous devez avoir au moins une carte sur votre profil.</h5>
+            </div>
+            <div class="d-flex flex-wrap w-100 justify-content-between" v-else>
+                <div v-for="carte in cartes" class="col-12 col-md-6 p-3">
                     <AffichageCarteCredit :carte="carte"></AffichageCarteCredit>
                 </div>
             </div>
