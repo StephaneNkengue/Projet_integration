@@ -71,13 +71,13 @@
 
                         <div class="d-flex justify-content-center gap-3 mb-2 mb-lg-0 flex-row align-items-center justify-content-center">
                             <router-link :to="{ name: 'Inscription' }" v-if="!estConnecte">
-                                <button class="btn btn-outline bleuMoyenFond text-white py-0 butttonNavBar btnSurvolerBleuMoyenFond"
+                                <button class="btn btn-outline bleuMoyenFond btnBarreNavBleuMoyenFond text-white py-0 butttonNavBar btnSurvolerBleuMoyenFond"
                                         type="button">
                                     Inscription
                                 </button>
                             </router-link>
                             <router-link :to="{ name: 'Connexion' }" v-if="!estConnecte">
-                                <button class="btn btn-outline bleuMoyenFond text-white py-0 butttonNavBar btnSurvolerBleuMoyenFond"
+                                <button class="btn btn-outline bleuMoyenFond btnBarreNavBleuMoyenFond text-white py-0 butttonNavBar btnSurvolerBleuMoyenFond"
                                         type="button">
                                     Connexion
                                 </button>
