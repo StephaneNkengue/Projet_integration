@@ -1,7 +1,7 @@
 <template>
-    <div class="bg-image py-5 imageDeFondEsquise h-100">
-        <div class="container d-flex flex-column justify-content-start align-items-stretch container col-md-6 bg-white bg-opacity-75 cadreBlanc px-5">
-            <h2 class="fs-1 text-center fw-bold mt-5">Inscription</h2>
+    <div class="bg-image px-2 px-md-0 py-3 py-md-5 imageDeFondEsquise h-100">
+        <div class="container d-flex flex-column justify-content-start align-items-stretch container col-md-6 bg-white bg-opacity-75 cadreBlanc px-3 px-md-5">
+            <h2 class="fs-1 text-center fw-bold mt-5 ps-0">Inscription</h2>
             <p class="text-center">Obtenir un compte membre</p>
 
             <div v-if="errorMessage" class="alert alert-danger">
