@@ -1,188 +1,258 @@
 <template>
-    <header class="sticky-top">
-        <div>
-            <nav class="navbar navbar-expand-lg bleuMarinSecondaireFond py-0"
-                 data-bs-theme="dark">
-                <div class="container-fluid justify-content-between">
-                    <router-link :to="{ name: 'Accueil' }" class="text-decoration-none">
-                        <a class="navbar-brand d-flex align-items-center fs-6">
-                            <img src="/images/Logo.png"
-                                 alt="Les Encans de Nantes"
-                                 height="40" />
-                            Les Encans de Nantes <br />au Québec
-                        </a>
+  <header class="sticky-top">
+    <div>
+      <nav
+        class="navbar navbar-expand-lg bleuMarinSecondaireFond py-0"
+        data-bs-theme="dark"
+      >
+        <div class="container-fluid justify-content-between">
+          <router-link :to="{ name: 'Accueil' }" class="text-decoration-none">
+            <a class="navbar-brand d-flex align-items-center fs-6">
+              <img
+                src="/images/Logo.png"
+                alt="Les Encans de Nantes"
+                height="40"
+              />
+              Les Encans de Nantes <br />au Québec
+            </a>
+          </router-link>
+
+          <button
+            class="navbar-toggler"
+            data-bs-theme="dark"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <span class="navbar-toggler-icon"></span>
+          </button>
+
+          <div
+            class="collapse navbar-collapse justify-content-between"
+            id="navbarSupportedContent"
+          >
+            <ul class="navbar-nav text-center">
+              <li
+                class="nav-item align-self-center d-flex align-items-center nav-link"
+              >
+                <router-link
+                  :to="{ name: 'Accueil' }"
+                  class="text-decoration-none"
+                >
+                  Accueil
+                </router-link>
+              </li>
+
+              <li class="nav-item nav-link">
+                <router-link
+                  :to="{ name: 'EncanPresent' }"
+                  class="text-decoration-none"
+                >
+                  Encan courant
+                </router-link>
+              </li>
+
+              <li class="nav-item nav-link">
+                <router-link
+                  :to="{ name: 'EncansPasses' }"
+                  class="text-decoration-none"
+                >
+                  Encans passés
+                </router-link>
+              </li>
+
+              <li class="nav-item nav-link">
+                <router-link
+                  :to="{ name: 'EncansFuturs' }"
+                  class="text-decoration-none"
+                >
+                  Encans futurs
+                </router-link>
+              </li>
+
+              <li class="nav-item nav-link" v-if="estConnecte && estClient">
+                <router-link
+                  :to="{ name: 'HistoriqueAchatsParMembre' }"
+                  class="text-decoration-none"
+                >
+                  Historique des achats
+                </router-link>
+              </li>
+              <li class="nav-item nav-link" v-if="estConnecte && estClient">
+                <router-link
+                  :to="{ name: 'HistoriqueMisesParMembre' }"
+                  class="text-decoration-none"
+                >
+                  Historique des mises
+                </router-link>
+              </li>
+            </ul>
+
+            <div
+              class="d-flex justify-content-center gap-3 mb-2 mb-lg-0 flex-row align-items-center justify-content-center"
+            >
+              <router-link :to="{ name: 'Inscription' }" v-if="!estConnecte">
+                <button
+                  class="btn btn-outline bleuMoyenFond text-white py-0 butttonNavBar btnSurvolerBleuMoyenFond"
+                  type="button"
+                >
+                  Inscription
+                </button>
+              </router-link>
+              <router-link :to="{ name: 'Connexion' }" v-if="!estConnecte">
+                <button
+                  class="btn btn-outline bleuMoyenFond text-white py-0 butttonNavBar btnSurvolerBleuMoyenFond"
+                  type="button"
+                >
+                  Connexion
+                </button>
+              </router-link>
+
+              <div
+                class="dropdown text-white align-self-stretch justify-content-center align-items-center d-flex"
+                v-if="estAdmin"
+              >
+                <a
+                  class="nav-link dropdown-toggle"
+                  role="button"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                >
+                  Tableau de bord
+                </a>
+                <ul class="dropdown-menu bleuMarinFond text-center">
+                  <li>
+                    <router-link
+                      :to="{ name: 'TableauDeBordInventaire' }"
+                      class="text-decoration-none"
+                    >
+                      <a class="dropdown-item contenuListeDropdown"
+                        >Inventaire</a
+                      >
                     </router-link>
+                  </li>
+                  <li>
+                    <router-link
+                      :to="{ name: 'TableauDeBordEncans' }"
+                      class="text-decoration-none"
+                    >
+                      <a class="dropdown-item contenuListeDropdown">Encans</a>
+                    </router-link>
+                  </li>
+                  <li>
+                    <router-link
+                      :to="{ name: 'AffichageVendeurs' }"
+                      class="text-decoration-none"
+                    >
+                      <a class="dropdown-item contenuListeDropdown">Vendeurs</a>
+                    </router-link>
+                  </li>
+                  <li>
+                    <router-link
+                      :to="{ name: 'TableauDeBordVentes' }"
+                      class="text-decoration-none"
+                    >
+                      <a class="dropdown-item contenuListeDropdown">Ventes</a>
+                    </router-link>
+                  </li>
+                  <li>
+                    <router-link
+                      :to="{ name: 'GestionMembre' }"
+                      class="text-decoration-none"
+                    >
+                      <a class="dropdown-item contenuListeDropdown"
+                        >Profils de membre</a
+                      >
+                    </router-link>
+                  </li>
+                </ul>
+              </div>
 
-                    <button class="navbar-toggler"
-                            data-bs-theme="dark"
-                            type="button"
-                            data-bs-toggle="collapse"
-                            data-bs-target="#navbarSupportedContent"
-                            aria-controls="navbarSupportedContent"
-                            aria-expanded="false"
-                            aria-label="Toggle navigation">
-                        <span class="navbar-toggler-icon"></span>
-                    </button>
-
-                    <div class="collapse navbar-collapse justify-content-between"
-                         id="navbarSupportedContent">
-                        <ul class="navbar-nav text-center">
-                            <li class="nav-item align-self-center d-flex align-items-center">
-                                <router-link :to="{ name: 'Accueil' }"
-                                             class="text-decoration-none">
-                                    <a class="nav-link active"> Accueil </a>
-                                </router-link>
-                            </li>
-
-                            <li class="nav-item">
-                                <router-link :to="{ name: 'EncanPresent' }"
-                                             class="text-decoration-none">
-                                    <a class="nav-link"> Encan courant </a>
-                                </router-link>
-                            </li>
-
-                            <li class="nav-item">
-                                <router-link :to="{ name: 'EncansPasses' }"
-                                             class="text-decoration-none">
-                                    <a class="nav-link"> Encans passés </a>
-                                </router-link>
-                            </li>
-
-                            <li class="nav-item">
-                                <router-link :to="{ name: 'EncansFuturs' }"
-                                             class="text-decoration-none">
-                                    <a class="nav-link"> Encans futurs </a>
-                                </router-link>
-                            </li>
-                            <li class="nav-item" v-if="estConnecte && estClient">
-                                <router-link :to="{ name: 'HistoriqueMisesParMembre' }"
-                                             class="text-decoration-none">
-                                    <a class="nav-link"> Historique des mises </a>
-                                </router-link>
-                            </li>
-                            <li class="nav-item" v-if="estConnecte && estClient">
-                                <router-link :to="{ name: 'HistoriqueAchatsParMembre' }"
-                                             class="text-decoration-none">
-                                    <a class="nav-link"> Historique des achats </a>
-                                </router-link>
-                            </li>
-                        </ul>
-
-                        <div class="d-flex justify-content-center gap-3 mb-2 mb-lg-0 flex-row align-items-center justify-content-center">
-                            <router-link :to="{ name: 'Inscription' }" v-if="!estConnecte">
-                                <button class="btn btn-outline bleuMoyenFond text-white py-0 butttonNavBar btnSurvolerBleuMoyenFond"
-                                        type="button">
-                                    Inscription
-                                </button>
-                            </router-link>
-                            <router-link :to="{ name: 'Connexion' }" v-if="!estConnecte">
-                                <button class="btn btn-outline bleuMoyenFond text-white py-0 butttonNavBar btnSurvolerBleuMoyenFond"
-                                        type="button">
-                                    Connexion
-                                </button>
-                            </router-link>
-
-                            <div class="dropdown text-white align-self-stretch justify-content-center align-items-center d-flex"
-                                 v-if="estAdmin">
-                                <a class="nav-link dropdown-toggle"
-                                   role="button"
-                                   data-bs-toggle="dropdown"
-                                   aria-expanded="false">
-                                    Tableau de bord
-                                </a>
-                                <ul class="dropdown-menu bleuMarinFond text-center">
-                                    <li>
-                                        <router-link :to="{ name: 'TableauDeBordInventaire' }"
-                                                     class="text-decoration-none">
-                                            <a class="dropdown-item contenuListeDropdown">Inventaire</a>
-                                        </router-link>
-                                    </li>
-                                    <li>
-                                        <router-link :to="{ name: 'TableauDeBordEncans' }"
-                                                     class="text-decoration-none">
-                                            <a class="dropdown-item contenuListeDropdown">Encans</a>
-                                        </router-link>
-                                    </li>
-                                    <li>
-                                        <router-link :to="{ name: 'AffichageVendeurs' }"
-                                                     class="text-decoration-none">
-                                            <a class="dropdown-item contenuListeDropdown">Vendeurs</a>
-                                        </router-link>
-                                    </li>
-                                    <li>
-                                        <router-link :to="{ name: 'TableauDeBordVentes' }"
-                                                     class="text-decoration-none">
-                                            <a class="dropdown-item contenuListeDropdown">Ventes</a>
-                                        </router-link>
-                                    </li>
-                                    <li>
-                                        <router-link :to="{ name: 'GestionMembre' }"
-                                                     class="text-decoration-none">
-                                            <a class="dropdown-item contenuListeDropdown">Profils de membre</a>
-                                        </router-link>
-                                    </li>
-                                </ul>
-                            </div>
-
-                            <div class="dropdown text-white align-self-stretch justify-content-center align-items-center d-flex"
-                                 v-if="estConnecte && !estAdmin">
-                                <a class="nav-link d-flex align-items-center justify-content-center"
-                                   role="button"
-                                   data-bs-toggle="dropdown"
-                                   aria-expanded="false"
-                                   @click="notification = !notification">
-                                    <img src="/icons/IconeCloche.png"
-                                         alt="Icon cloche"
-                                         height="25" />
-                                </a>
-                                <ul class="dropdown-menu bleuMarinFond text-center">
-                                    <li v-for="index in 5" :key="index">
-                                        <router-link :to="{ name: 'Accueil' }"
-                                                     class="text-decoration-none text-white d-flex align-items-center gap-3">
-                                            <a class="dropdown-item text-white btnSurvolerBleuMoyenFond"
-                                               @click="notification = false">
-                                                test
-                                            </a>
-                                        </router-link>
-                                    </li>
-                                </ul>
-                            </div>
-                            <div class="dropdown text-white" v-if="estConnecte">
-                                <a class="nav-link d-flex align-items-center"
-                                   role="button"
-                                   data-bs-toggle="dropdown"
-                                   aria-expanded="false">
-                                    <p class="m-0 me-1">{{ username }}</p>
-                                    <img :src="avatarUrl"
-                                         alt="Avatar"
-                                         class="imgProfile rounded-circle" />
-                                </a>
-                                <ul class="dropdown-menu dropdown-menu-end bleuMarinFond text-center end-0 top-100">
-                                    <li>
-                                        <router-link v-if="estClient"
-                                                     :to="{ name: 'ModificationProfilUtilisateur' }"
-                                                     class="text-decoration-none text-white d-flex align-items-center gap-3">
-                                            <a class="dropdown-item text-white btnSurvolerBleuMoyenFond"
-                                               @click="activationDropdownProfil = false">
-                                                Profil
-                                            </a>
-                                        </router-link>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item text-danger btnSurvolerBleuMoyenFond fw-bold"
-                                           href="#"
-                                           @click.prevent="deconnecter">
-                                            Déconnexion
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </nav>
-            <div v-if="
-          $route.name == 'EncanPresent' && ilYAUnEncanPresent == true ||
+              <div
+                class="dropdown text-white align-self-stretch justify-content-center align-items-center d-flex"
+                v-if="estConnecte && !estAdmin"
+              >
+                <a
+                  class="nav-link d-flex align-items-center justify-content-center"
+                  role="button"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                  @click="notification = !notification"
+                >
+                  <img
+                    src="/icons/IconeCloche.png"
+                    alt="Icon cloche"
+                    height="25"
+                  />
+                </a>
+                <ul class="dropdown-menu bleuMarinFond text-center">
+                  <li v-for="index in 5" :key="index">
+                    <router-link
+                      :to="{ name: 'Accueil' }"
+                      class="text-decoration-none text-white d-flex align-items-center gap-3"
+                    >
+                      <a
+                        class="dropdown-item text-white btnSurvolerBleuMoyenFond"
+                        @click="notification = false"
+                      >
+                        test
+                      </a>
+                    </router-link>
+                  </li>
+                </ul>
+              </div>
+              <div class="dropdown text-white" v-if="estConnecte">
+                <a
+                  class="nav-link d-flex align-items-center"
+                  role="button"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                >
+                  <p class="m-0 me-1">{{ username }}</p>
+                  <img
+                    :src="avatarUrl"
+                    alt="Avatar"
+                    class="imgProfile rounded-circle"
+                  />
+                </a>
+                <ul
+                  class="dropdown-menu dropdown-menu-end bleuMarinFond text-center end-0 top-100"
+                >
+                  <li>
+                    <router-link
+                      v-if="estClient"
+                      :to="{ name: 'ModificationProfilUtilisateur' }"
+                      class="text-decoration-none text-white d-flex align-items-center gap-3"
+                    >
+                      <a
+                        class="dropdown-item text-white btnSurvolerBleuMoyenFond"
+                        @click="activationDropdownProfil = false"
+                      >
+                        Profil
+                      </a>
+                    </router-link>
+                  </li>
+                  <li>
+                    <a
+                      class="dropdown-item text-danger btnSurvolerBleuMoyenFond fw-bold"
+                      href="#"
+                      @click.prevent="deconnecter"
+                    >
+                      Déconnexion
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </nav>
+      <div
+        v-if="
+          ($route.name == 'EncanPresent' && ilYAUnEncanPresent == true) ||
           $route.name == 'Encan' ||
           $route.name == 'ResultatRechercheLots'
         ">
@@ -570,29 +640,29 @@
     </header>
 </template>
 <script setup>
-    import { computed, watch, reactive, ref, onMounted } from "vue";
-    import { useStore } from "vuex";
-    import { useRouter, useRoute } from "vue-router";
-    import VueDatePicker from "@vuepic/vue-datepicker";
-    import "@vuepic/vue-datepicker/dist/main.css";
-    import { fr } from "date-fns/locale";
-    import moment from "moment";
+import { computed, watch, ref, onMounted } from "vue";
+import { useStore } from "vuex";
+import { RouterLink, useRouter, useRoute } from "vue-router";
+import VueDatePicker from "@vuepic/vue-datepicker";
+import "@vuepic/vue-datepicker/dist/main.css";
+import { fr } from "date-fns/locale";
+import moment from "moment";
 
-    const store = useStore();
-    const router = useRouter();
-    const route = useRoute();
+const store = useStore();
+const router = useRouter();
+const route = useRoute();
 
-    const estConnecte = computed(() => store.state.isLoggedIn);
-    const estAdmin = computed(() => store.getters.isAdmin);
-    const estClient = computed(() => store.getters.isClient);
-    const username = computed(() => store.getters.username);
-    const avatarUrl = computed(() => store.getters.avatarUrl);
+const estConnecte = computed(() => store.state.isLoggedIn);
+const estAdmin = computed(() => store.getters.isAdmin);
+const estClient = computed(() => store.getters.isClient);
+const username = computed(() => store.getters.username);
+const avatarUrl = computed(() => store.getters.avatarUrl);
 
-    const currentUser = ref(null);
+const currentUser = ref(null);
 
-    const listeDesArtistes = ref([]);
-    const listeDesCategories = ref([]);
-    const listeDesMediums = ref([]);
+const listeDesArtistes = ref([]);
+const listeDesCategories = ref([]);
+const listeDesMediums = ref([]);
 
     const ilYAUnEncanPresent = ref(false);
     const titreBarreDeRechercheDeLots = ref("");
@@ -616,50 +686,50 @@
     const rechercheEncansDate1 = ref();
     const rechercheEncansDate2 = ref();
 
-    watch(
-        () => store.state.user,
-        (newUser) => {
-            currentUser.value = newUser;
-        },
-        { deep: true, immediate: true }
-    );
+watch(
+  () => store.state.user,
+  (newUser) => {
+    currentUser.value = newUser;
+  },
+  { deep: true, immediate: true }
+);
 
-    const refreshUserInfo = async () => {
-        if (store.state.isLoggedIn) {
-            try {
-                await store.dispatch("fetchClientInfo");
-            } catch (error) {
-                console.error(
-                    "Erreur lors de la récupération des informations client:",
-                    error
-                );
-            }
-        }
-    };
-
-    // Appelez refreshUserInfo lorsque l'utilisateur se connecte
-    watch(
-        () => store.state.isLoggedIn,
-        (newValue) => {
-            if (newValue) {
-                refreshUserInfo();
-            }
-        }
-    );
-
-    var numeroEncanPresent = null;
-
-    async function verifierSiEncanPresent() {
-        numeroEncanPresent = null;
-        var response = await store.dispatch("chercherEncanEnCours");
-        if (response.status == 200) {
-            numeroEncanPresent = response.data.numeroEncan.toString();
-            ilYAUnEncanPresent.value = true;
-        }
+const refreshUserInfo = async () => {
+  if (store.state.isLoggedIn) {
+    try {
+      await store.dispatch("fetchClientInfo");
+    } catch (error) {
+      console.error(
+        "Erreur lors de la récupération des informations client:",
+        error
+      );
     }
+  }
+};
 
-    const changementDeRoute = computed(() => route.fullPath)
-    watch(changementDeRoute, changeTitreBarreRecherche)
+// Appelez refreshUserInfo lorsque l'utilisateur se connecte
+watch(
+  () => store.state.isLoggedIn,
+  (newValue) => {
+    if (newValue) {
+      refreshUserInfo();
+    }
+  }
+);
+
+var numeroEncanPresent = null;
+
+async function verifierSiEncanPresent() {
+  numeroEncanPresent = null;
+  var response = await store.dispatch("chercherEncanEnCours");
+  if (response.status == 200) {
+    numeroEncanPresent = response.data.numeroEncan.toString();
+    ilYAUnEncanPresent.value = true;
+  }
+}
+
+const changementDeRoute = computed(() => route.fullPath);
+watch(changementDeRoute, changeTitreBarreRecherche);
 
     async function changeTitreBarreRecherche() {
         if (route.name == "Encan") {
@@ -824,25 +894,25 @@
         }
     });
 
-    const desacDateFinEntre = computed(() => {
-        if (rechercheEncansDate1.value) {
-            const dateDebutDesac = new Date(rechercheEncansDate1.value);
-            dateDebutDesac.setDate(dateDebutDesac.getDate() + 1);
+const desacDateFinEntre = computed(() => {
+  if (rechercheEncansDate1.value) {
+    const dateDebutDesac = new Date(rechercheEncansDate1.value);
+    dateDebutDesac.setDate(dateDebutDesac.getDate() + 1);
 
-            return [dateDebutDesac];
-        }
-        return [new Date()];
-    });
+    return [dateDebutDesac];
+  }
+  return [new Date()];
+});
 
-    const desacDateDebutEntre = computed(() => {
-        if (rechercheEncansDate2.value) {
-            const dateFinDesac = new Date(rechercheEncansDate2.value);
-            dateFinDesac.setDate(dateFinDesac.getDate() - 1);
+const desacDateDebutEntre = computed(() => {
+  if (rechercheEncansDate2.value) {
+    const dateFinDesac = new Date(rechercheEncansDate2.value);
+    dateFinDesac.setDate(dateFinDesac.getDate() - 1);
 
-            return [dateFinDesac];
-        }
-        return null;
-    });
+    return [dateFinDesac];
+  }
+  return null;
+});
 
     async function rechercheAvanceeEncans() {
         var stringquery = {};
@@ -864,13 +934,13 @@
             }
         }
 
-        router.push({
-            path: "/resultatrechercheencans",
-            query: {
-                data: JSON.stringify(stringquery),
-            },
-        });
-    }
+  router.push({
+    path: "/resultatrechercheencans",
+    query: {
+      data: JSON.stringify(stringquery),
+    },
+  });
+}
 
     function verifierSiQueryDansURL() {
         if (route.query.data != null) {
@@ -929,15 +999,15 @@
         }
     }
 
-    // Définition de activationRecherche
-    const activationRecherche = ref(false);
-    const activationDropdownProfil = ref(false);
-    const notification = ref(false);
+// Définition de activationRecherche
+const activationRecherche = ref(false);
+const activationDropdownProfil = ref(false);
+const notification = ref(false);
 
-    const deconnecter = async () => {
-        await store.dispatch("logout");
-        router.push("/"); // Redirige vers la page d'accueil après la déconnexion
-    };
+const deconnecter = async () => {
+  await store.dispatch("logout");
+  router.push("/"); // Redirige vers la page d'accueil après la déconnexion
+};
 
     onMounted(async () => {
         document.querySelectorAll(".dropdown-toggle").forEach((dropdownToggle) => {
@@ -950,115 +1020,123 @@
     });
 </script>
 <style scoped>
-    .ms-7 {
-        margin-left: 7.9rem;
-    }
+.ms-7 {
+  margin-left: 7.9rem;
+}
 
-    .start-79 {
-        left: 79%;
-    }
+.start-79 {
+  left: 79%;
+}
 
-    .imgProfile {
-        width: 40px;
-        height: 40px;
-    }
+.imgProfile {
+  width: 40px;
+  height: 40px;
+}
 
-    input.form-control {
-        height: 25px !important;
-        font-size: 15px !important;
-    }
+input.form-control {
+  height: 25px !important;
+  font-size: 15px !important;
+}
 
-    select {
-        width: 100% !important;
-    }
+select {
+  width: 100% !important;
+}
 
-        select.form-select {
-            height: 25px !important;
-            margin-right: 10px !important;
-            font-size: 15px !important;
-        }
+select.form-select {
+  height: 25px !important;
+  margin-right: 10px !important;
+  font-size: 15px !important;
+}
 
-        select option {
-            height: 25px !important;
-            font-size: 15px !important;
-        }
+select option {
+  height: 25px !important;
+  font-size: 15px !important;
+}
 
-    recherchelabel {
-        margin-left: 10px !important;
-        margin-right: 10px !important;
-        font-weight: bold !important;
-    }
+recherchelabel {
+  margin-left: 10px !important;
+  margin-right: 10px !important;
+  font-weight: bold !important;
+}
 
-    .rechercheinput {
-        margin-right: 10px !important;
-    }
+.rechercheinput {
+  margin-right: 10px !important;
+}
 
-    .margesPourTable {
-        padding-left: 15px;
-        padding-right: 15px;
-    }
+.margesPourTable {
+  padding-left: 15px;
+  padding-right: 15px;
+}
 
-    .aucunPaddingPourCarteLots {
-        padding-left: 0px !important;
-        padding-right: 0px !important;
-        width: 1000px;
-    }
+.aucunPaddingPourCarteLots {
+  padding-left: 0px !important;
+  padding-right: 0px !important;
+  width: 1000px;
+}
 
-    .aucunPaddingPourCarteEncans {
-        padding-left: 0px !important;
-        padding-right: 0px !important;
-        width: 1100px;
-    }
+.aucunPaddingPourCarteEncans {
+  padding-left: 0px !important;
+  padding-right: 0px !important;
+  width: 1100px;
+}
 
-    .aucuneBarreDeRechercheAnvancee {
-        min-height: 30px;
-    }
+.aucuneBarreDeRechercheAnvancee {
+  min-height: 30px;
+}
 
-    .selectwidth {
-        width: 160px;
-    }
+.selectwidth {
+  width: 160px;
+}
 
     .inputAAfficher {
         height: 25px;
     }
 
-    .card-body {
-        padding-top: 0px !important;
-        padding-bottom: 10px !important;
-    }
+.card-body {
+  padding-top: 0px !important;
+  padding-bottom: 10px !important;
+}
 
-    select,
-    select option {
-        color: #000000;
-    }
+select,
+select option {
+  color: #000000;
+}
 
-        select:invalid,
-        select option[value=""] {
-            color: #999999;
-        }
+select:invalid,
+select option[value=""] {
+  color: #999999;
+}
 
-    .navbarRechercheAvancee {
-        padding-top: 3px !important;
-        padding-bottom: 2px !important;
-        border: none !important;
-    }
+.navbarRechercheAvancee {
+  padding-top: 3px !important;
+  padding-bottom: 2px !important;
+  border: none !important;
+}
 
-    .loupetoggler {
-        padding-top: 0px !important;
-        padding-bottom: 0px !important;
-        padding-left: 0px !important;
-        padding-right: 0px !important;
-        width: 25px;
-        height: 25px;
-        /*background-image: none;*/
-    }
+.loupetoggler {
+  padding-top: 0px !important;
+  padding-bottom: 0px !important;
+  padding-left: 0px !important;
+  padding-right: 0px !important;
+  width: 25px;
+  height: 25px;
+  /*background-image: none;*/
+}
 
-    /*Pour faire changer l'icone du menu hamburger de la recherche*/
-    .iconeloupe {
-        position: relative !important;
-        top: -1px !important;
-        width: 20px !important;
-        height: 20px !important;
-        background-image: url("/icons/Recherche.png") !important;
-    }
+/*Pour faire changer l'icone du menu hamburger de la recherche*/
+.iconeloupe {
+  position: relative !important;
+  top: -1px !important;
+  width: 20px !important;
+  height: 20px !important;
+  background-image: url("/icons/Recherche.png") !important;
+}
+
+.navbar .navbar-collapse .navbar-nav a {
+  color: #ffffffa4;
+}
+
+.navbar .navbar-collapse .navbar-nav a.router-link-active {
+  color: #fff;
+}
 </style>
