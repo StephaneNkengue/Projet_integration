@@ -1,5 +1,4 @@
 using Gamma2024.Server.Services;
-using Gamma2024.Server.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
@@ -43,11 +42,11 @@ namespace Gamma2024.Server.Controllers
             return Ok(factureLivraison);
         }
 
-        [HttpPost("EnregistrerChoixLivraison")]
-        public async Task<IActionResult> EnregistrerChoixLivraison([FromBody] FactureLivraisonAjoutVM choixLivraison)
-        {
-            var factureLivraison = await _factureLivraisonService.AjouterFactureLivraison(choixLivraison);
-            return Ok(factureLivraison);
-        }
+        //[HttpPost("EnregistrerChoixLivraison")]
+        //public async Task<IActionResult> EnregistrerChoixLivraison([FromBody] FactureLivraisonAjoutVM choixLivraison)
+        //{
+        //    var factureLivraison = await _factureLivraisonService.AjouterFactureLivraison(choixLivraison);
+        //    return Ok(factureLivraison);
+        //}
     }
 }
