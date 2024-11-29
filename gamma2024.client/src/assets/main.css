@@ -28,6 +28,10 @@
     background-color: #1C3755;
 }
 
+.btnBarreNavBleuMoyenFond:enabled {
+    background-color: #83a0ba;
+}
+
 .btnDesactiverBleuMoyenFond:disabled {
     background-color: #617d9a;
 }
