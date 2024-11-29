@@ -25,7 +25,7 @@
 
                             <StepPanel v-if="activeIndex === 1" value="1">
                                 <div class="container px-4 py-2">
-                                    <div class="row mb-3 justify-content-around">
+                                    <div class="row mb-md-3 justify-content-around">
                                         <div class="col col-md-6 col-12">
                                             <div class="form-group">
                                                 <label for="nom">Nom</label>
@@ -65,7 +65,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="row mb-3 justify-content-around">
+                                    <div class="row mb-md-3 justify-content-around">
                                         <div class="col col-md-6 col-12">
                                             <div class="form-group">
                                                 <label for="courriel">Courriel</label>
@@ -121,7 +121,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="row mb-3 justify-content-around">
+                                    <div class="row mb-md-3 justify-content-around">
                                         <div class="col col-md-12">
                                             <div class="form-group">
                                                 <label for="pseudonyme">Pseudonyme</label>
@@ -158,7 +158,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="row mb-3 justify-content-around">
+                                    <div class="row mb-md-3 justify-content-around">
                                         <div class="col col-md-6 col-12">
                                             <div class="form-group">
                                                 <label for="motDePasse">Mot de passe</label>
@@ -222,7 +222,7 @@
 
                             <StepPanel v-if="activeIndex === 2">
                                 <div class="container px-4 py-2">
-                                    <div class="row mb-3 justify-content-around">
+                                    <div class="row mb-md-3 justify-content-around">
                                         <div class="col col-md-6 col-12">
                                             <div class="form-group">
                                                 <label for="numeroCivique">Numéro Civique</label>
@@ -261,7 +261,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="row mb-3 justify-content-around">
+                                    <div class="row mb-md-3 justify-content-around">
                                         <div class="col col-md-6 col-12">
                                             <div class="form-group">
                                                 <label for="appartement">Appartement/Bureau</label>
@@ -292,7 +292,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="row mb-3 justify-content-around">
+                                    <div class="row mb-md-3 justify-content-around">
                                         <div class="col col-md-6 col-12">
                                             <div class="form-group">
                                                 <label for="province">Province </label>
@@ -331,7 +331,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="d-flex flex-row justify-content-between mb-3">
+                                    <div class="d-flex flex-row justify-content-between mb-md-3">
                                         <div class="col col-md-12">
                                             <div class="form-group">
                                                 <label for="postalCode">Code Postal</label>
