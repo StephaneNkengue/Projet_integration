@@ -41,33 +41,7 @@
             </div>
         </transition>
 
-        <div class="d-flex justify-content-end my-4">
-            <div class="d-flex flex-row gap-2">
-                <button class="d-flex align-items-center text-center rounded btn text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
-                        @click="changerNbEncanParPage(20)"
-                        v-bind:disabled="encansParPage == 20">
-                    20
-                </button>
-                <button class="d-flex align-items-center text-center rounded btn text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
-                        @click="changerNbEncanParPage(50)"
-                        v-bind:disabled="encansParPage == 50">
-                    50
-                </button>
-                <button class="d-flex align-items-center text-center rounded btn text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
-                        @click="changerNbEncanParPage(100)"
-                        v-bind:disabled="encansParPage == 100">
-                    100
-                </button>
-                <button class="d-flex align-items-center text-center rounded btn text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
-                        type="button"
-                        @click="afficherTousEncans"
-                        v-bind:disabled="encansParPage == nbEncansRecus">
-                    Tous
-                </button>
-            </div>
-        </div>
-
-        <div class="d-flex gap-2 justify-content-center" v-if="chargement">
+        <div class="d-flex gap-2 justify-content-center mt-4" v-if="chargement">
             <div class="spinner-border" role="status">
                 <span class="visually-hidden">Chargement des encans...</span>
             </div>
@@ -75,6 +49,32 @@
         </div>
 
         <div v-if="!chargement" class="w-100">
+            <div class="d-flex justify-content-end my-4">
+                <div class="d-flex flex-row gap-2">
+                    <button class="d-flex align-items-center text-center rounded btn text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
+                            @click="changerNbEncanParPage(20)"
+                            v-bind:disabled="encansParPage == 20">
+                        20
+                    </button>
+                    <button class="d-flex align-items-center text-center rounded btn text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
+                            @click="changerNbEncanParPage(50)"
+                            v-bind:disabled="encansParPage == 50">
+                        50
+                    </button>
+                    <button class="d-flex align-items-center text-center rounded btn text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
+                            @click="changerNbEncanParPage(100)"
+                            v-bind:disabled="encansParPage == 100">
+                        100
+                    </button>
+                    <button class="d-flex align-items-center text-center rounded btn text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
+                            type="button"
+                            @click="afficherTousEncans"
+                            v-bind:disabled="encansParPage == nbEncansRecus">
+                        Tous
+                    </button>
+                </div>
+            </div>
+
             <div class="d-flex justify-content-center" v-if="!listeEncansFiltree.length">
                 <h2>Aucun résultat trouvé</h2>
             </div>
@@ -149,32 +149,31 @@
                 </table>
             </div>
 
-        </div>
-
-        <div class="d-flex flex-row justify-content-center gap-1 flex-wrap p-3" v-if="listeEncansFiltree.length != 0">
-            <button type="button"
-                    class="btn text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
-                    @click="reculerPage"
-                    v-bind:disabled="pageCourante == 1">
-                <
-            </button>
-
-            <div v-for="item in listePagination">
+            <div class="d-flex flex-row justify-content-center gap-1 flex-wrap p-3" v-if="listeEncansFiltree.length != 0">
                 <button type="button"
                         class="btn text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
-                        :pageId="item"
-                        @click="changerPage()"
-                        v-bind:disabled="pageCourante == item || item == '...'">
-                    {{ item }}
+                        @click="reculerPage"
+                        v-bind:disabled="pageCourante == 1">
+                    <
+                </button>
+
+                <div v-for="item in listePagination">
+                    <button type="button"
+                            class="btn text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
+                            :pageId="item"
+                            @click="changerPage()"
+                            v-bind:disabled="pageCourante == item || item == '...'">
+                        {{ item }}
+                    </button>
+                </div>
+
+                <button type="button"
+                        class="btn text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
+                        @click="avancerPage"
+                        v-bind:disabled="pageCourante == nbPages">
+                    >
                 </button>
             </div>
-
-            <button type="button"
-                    class="btn text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
-                    @click="avancerPage"
-                    v-bind:disabled="pageCourante == nbPages">
-                >
-            </button>
         </div>
     </div>
 </template>
