@@ -23,7 +23,7 @@
 
         <router-link :to="{ name: 'TableauDeBordEncansAjout' }"
                      class="text-decoration-none">
-            <button class="btn btn-lg btn-block w-100 btnSurvolerBleuMoyenFond btnClick text-white"
+            <button class="btn fs-5 btn-block w-100 btnSurvolerBleuMoyenFond btnClick text-white"
                     type="button"
                     id="ajouterEncanButton">
                 Ajouter un encan
@@ -80,7 +80,7 @@
             </div>
 
             <div v-else>
-                <table class="table table-striped mx-0 text-center">
+                <table class="table table-striped text-center">
                     <thead class="table-dark">
                         <tr>
                             <th data-field="numeroEncan">Encan</th>
