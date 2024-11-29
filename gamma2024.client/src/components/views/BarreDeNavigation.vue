@@ -71,13 +71,13 @@
 
                         <div class="d-flex justify-content-center gap-3 mb-2 mb-lg-0 flex-row align-items-center justify-content-center">
                             <router-link :to="{ name: 'Inscription' }" v-if="!estConnecte">
-                                <button class="btn btn-outline bleuMoyenFond btnBarreNavBleuMoyenFond text-white py-0 butttonNavBar btnSurvolerBleuMoyenFond"
+                                <button class="btn btn-outline btnBarreNavBleuMoyenFond text-white py-0 butttonNavBar btnSurvolerBleuMoyenFond"
                                         type="button">
                                     Inscription
                                 </button>
                             </router-link>
                             <router-link :to="{ name: 'Connexion' }" v-if="!estConnecte">
-                                <button class="btn btn-outline bleuMoyenFond btnBarreNavBleuMoyenFond text-white py-0 butttonNavBar btnSurvolerBleuMoyenFond"
+                                <button class="btn btn-outline btnBarreNavBleuMoyenFond text-white py-0 butttonNavBar btnSurvolerBleuMoyenFond"
                                         type="button">
                                     Connexion
                                 </button>
@@ -409,7 +409,7 @@
                             </div>
                         </div>
                         <div class="col mt-2 mb-2 d-flex justify-content-center">
-                            <button class="d-flex align-items-center text-center rounded btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
+                            <button class="d-flex align-items-center text-center rounded btn text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
                                     type="button"
                                     @click="rechercheAvanceeLots">
                                 Lancer la rechercher
@@ -546,7 +546,7 @@
                             </div>
                         </div>
                         <div class="col mt-2 mb-2 d-flex justify-content-center">
-                            <button class="d-flex align-items-center text-center rounded btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
+                            <button class="d-flex align-items-center text-center rounded btn text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
                                     type="button"
                                     @click="rechercheAvanceeEncans">
                                 Lancer la rechercher

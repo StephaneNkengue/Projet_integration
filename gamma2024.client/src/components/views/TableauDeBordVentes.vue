@@ -15,22 +15,22 @@
                aria-label="Search" />
 
         <div class="d-flex flex-row gap-2 justify-content-end my-4">
-            <button class="d-flex align-items-center text-center rounded btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
+            <button class="d-flex align-items-center text-center rounded btn text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
                     @click="changerNbVenteParPage(20)"
                     v-bind:disabled="ventesParPage == 20">
                 20
             </button>
-            <button class="d-flex align-items-center text-center rounded btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
+            <button class="d-flex align-items-center text-center rounded btn text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
                     @click="changerNbVenteParPage(50)"
                     v-bind:disabled="ventesParPage == 50">
                 50
             </button>
-            <button class="d-flex align-items-center text-center rounded btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
+            <button class="d-flex align-items-center text-center rounded btn text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
                     @click="changerNbVenteParPage(100)"
                     v-bind:disabled="ventesParPage == 100">
                 100
             </button>
-            <button class="d-flex align-items-center text-center rounded btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
+            <button class="d-flex align-items-center text-center rounded btn text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
                     type="button"
                     @click="afficherTousVentes"
                     v-bind:disabled="ventesParPage == nbVentesRecus">
@@ -146,7 +146,7 @@
 
         <div class="d-flex flex-row justify-content-center gap-1 flex-wrap p-3" v-if="ventesAffiche.length != 0">
             <button type="button"
-                    class="btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
+                    class="btn text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
                     @click="reculerPage"
                     v-bind:disabled="pageCourante == 1">
                 <
@@ -154,7 +154,7 @@
 
             <div v-for="item in listePagination" :key="item.id">
                 <button type="button"
-                        class="btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
+                        class="btn text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
                         :pageId="item"
                         @click="changerPage()"
                         v-bind:disabled="pageCourante == item || item == '...'">
@@ -163,7 +163,7 @@
             </div>
 
             <button type="button"
-                    class="btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
+                    class="btn text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
                     @click="avancerPage"
                     v-bind:disabled="pageCourante == nbPages">
                 >

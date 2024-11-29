@@ -17,7 +17,7 @@
         </div>
         <div v-else>
             <router-link :to="{name: 'EnregistrerCarte'}">
-                <button class="btn btn-outline bleuMoyenFond text-white btnSurvolerBleuMoyenFond my-2">
+                <button class="btn btn-outline text-white btnSurvolerBleuMoyenFond my-2">
                     Ajouter une carte
                 </button>
             </router-link>

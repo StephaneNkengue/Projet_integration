@@ -11,7 +11,7 @@
                 <div id="payment-element">
                     <!--Stripe.js injects the Payment Element-->
                 </div>
-                <button id="submit" class="btn btn-outline bleuMoyenFond text-white btnSurvolerBleuMoyenFond my-2">
+                <button id="submit" class="btn btn-outline text-white btnSurvolerBleuMoyenFond my-2">
                     <div class="spinner-grow d-none" id="spinner"></div>
                     <span id="button-text">Enregistrer</span>
                 </button>

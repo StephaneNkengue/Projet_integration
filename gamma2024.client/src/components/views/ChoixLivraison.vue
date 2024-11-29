@@ -7,14 +7,14 @@
         <p id="message" v-show="siMessage"></p>
 
         <div v-if="factureLivraisonCreee != ''" class="d-flex flex-column gap-2">
-            <button class="btn bleuMoyenFond btnSurvolerBleuMoyenFond text-white"
+            <button class="btn btnSurvolerBleuMoyenFond text-white"
                     data-bs-toggle="modal"
                     :data-bs-target="'#modalLivraison'+factureLivraisonCreee.idFacture">
                 Voir la facture de livraison
             </button>
 
             <router-link :to="{name:'HistoriqueAchatsParMembre'}" class="text-decoration-none">
-                <button type="button" class="btn bleuMoyenFond btnSurvolerBleuMoyenFond text-white">
+                <button type="button" class="btn btnSurvolerBleuMoyenFond text-white">
                     Retour vers l'historique des achats
                 </button>
             </router-link>
@@ -258,7 +258,7 @@
 
             <div class="mt-7">
                 <button id="submit"
-                        class="btn btn-outline bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond my-2 col-3"
+                        class="btn btn-outline text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond my-2 col-3"
                         @click="enregistrerChoixLivraison">
                     <div class="spinner-grow"
                          id="spinner"
