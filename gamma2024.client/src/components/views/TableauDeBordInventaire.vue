@@ -1,65 +1,68 @@
 <template>
     <div class="px-3">
-        <h1 class="text-center mb-5">Liste des lots</h1>
+        <div class="container">
 
-        <div v-if="messageConfirmation" class="alert alert-success py-0">
-            {{ messageConfirmation }}sdsdd
-        </div>
+            <h1 class="text-center mb-5">Liste des lots</h1>
 
-        <h3 class="text-center" for="Recherche">Rechercher un lot</h3>
-
-        <div class="d-flex gap-3 align-items-center mb-5">
-            <div class="dropdown">
-                <button class="btn btnSurvolerBleuMoyenFond boutonPersonnalise text-white dropdown-toggle"
-                        type="button"
-                        id="dropdownMenuButton"
-                        data-toggle="dropdown"
-                        data-bs-toggle="dropdown"
-                        aria-haspopup="true"
-                        aria-expanded="false">
-                    Recherche avancée
-                </button>
-                <ul class="dropdown-menu">
-                    <li class="d-flex dropdown-item">
-                        <input class="checkboxTousRecherche d-flex-1"
-                               type="checkbox"
-                               id="tousSelectionnerCheckboxRecherche"
-                               checked />
-                        <label class="d-flex-1" for="tousSelectionnerCheckboxRecherche">
-                            Tous Sélectionner
-                        </label>
-                    </li>
-                    <li v-for="(visible, colonne) in colonnesVisibles"
-                        :key="colonne"
-                        class="d-flex justify-content-start dropdown-item">
-                        <input class="checkboxSeulRecherche d-flex-1"
-                               type="checkbox"
-                               :id="`lot${ colonne.charAt(0).toUpperCase() + colonne.slice(1) } CheckboxRecherche`"
-                               checked
-                               disabled />
-                        <label class="d-flex-1"
-                               :for="`lot${colonne.charAt(0).toUpperCase() + colonne.slice(1)}CheckboxRecherche`">
-                            {{(colonne.charAt(0).toUpperCase() + colonne.slice(1)).replace(/([A-Z])/g," $1")}}
-                        </label>
-                    </li>
-                </ul>
+            <div v-if="messageConfirmation" class="alert alert-success py-0">
+                {{ messageConfirmation }}sdsdd
             </div>
 
-            <input data-bs-theme="light"
-                   type="search"
-                   aria-label="Recherche"
-                   v-model="rechercheDansListeDeLot"
-                   placeholder="Rechercher un lot"
-                   class="form-control inputRecherche" />
-        </div>
+            <h3 class="text-center" for="Recherche">Rechercher un lot</h3>
 
-        <div>
-            <button class="btn fs-5 btn-block w-100 btnSurvolerBleuMoyenFond btnClick text-white"
-                    type="button"
-                    id="ajouterLotButton"
-                    @click="redirigerVersCreationLot">
-                Ajouter un lot
-            </button>
+            <div class="d-flex gap-3 align-items-center mb-5">
+                <div class="dropdown">
+                    <button class="btn btnSurvolerBleuMoyenFond boutonPersonnalise text-white dropdown-toggle"
+                            type="button"
+                            id="dropdownMenuButton"
+                            data-toggle="dropdown"
+                            data-bs-toggle="dropdown"
+                            aria-haspopup="true"
+                            aria-expanded="false">
+                        Recherche avancée
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li class="d-flex dropdown-item">
+                            <input class="checkboxTousRecherche d-flex-1"
+                                   type="checkbox"
+                                   id="tousSelectionnerCheckboxRecherche"
+                                   checked />
+                            <label class="d-flex-1" for="tousSelectionnerCheckboxRecherche">
+                                Tous Sélectionner
+                            </label>
+                        </li>
+                        <li v-for="(visible, colonne) in colonnesVisibles"
+                            :key="colonne"
+                            class="d-flex justify-content-start dropdown-item">
+                            <input class="checkboxSeulRecherche d-flex-1"
+                                   type="checkbox"
+                                   :id="`lot${ colonne.charAt(0).toUpperCase() + colonne.slice(1) } CheckboxRecherche`"
+                                   checked
+                                   disabled />
+                            <label class="d-flex-1"
+                                   :for="`lot${colonne.charAt(0).toUpperCase() + colonne.slice(1)}CheckboxRecherche`">
+                                {{(colonne.charAt(0).toUpperCase() + colonne.slice(1)).replace(/([A-Z])/g," $1")}}
+                            </label>
+                        </li>
+                    </ul>
+                </div>
+
+                <input data-bs-theme="light"
+                       type="search"
+                       aria-label="Recherche"
+                       v-model="rechercheDansListeDeLot"
+                       placeholder="Rechercher un lot"
+                       class="form-control inputRecherche" />
+            </div>
+
+            <div>
+                <button class="btn fs-5 btn-block w-100 btnSurvolerBleuMoyenFond btnClick text-white"
+                        type="button"
+                        id="ajouterLotButton"
+                        @click="redirigerVersCreationLot">
+                    Ajouter un lot
+                </button>
+            </div>
         </div>
 
         <div class="d-flex justify-content-between my-4">
