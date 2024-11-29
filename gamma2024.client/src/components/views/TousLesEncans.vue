@@ -16,7 +16,7 @@
 
             <div v-else class="w-100 px-3 row row-cols-lg-2 row-cols-1">
                 <div v-for="index in encans" class="col py-3">
-                    <span @click="voirEncan(index.numeroEncan)">
+                    <span @click="voirEncan(index.numeroEncan)" role="button">
                         <AffichageEncanTuile :encan="index" />
                     </span>
                 </div>
@@ -53,6 +53,7 @@
     onMounted(async () => {
         const response = await store.dispatch("chercherTousEncansVisibles");
         encans.value = response.data
+        console.log(encans.value);
 
         const responseNumEncanCourrant = await store.dispatch("chercherNumeroEncanEnCours");
         if (responseNumEncanCourrant.data != '') {

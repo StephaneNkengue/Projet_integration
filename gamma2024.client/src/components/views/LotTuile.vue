@@ -4,13 +4,14 @@
       'user-bid': isUserHighestBidder,
       'user-outbid': isUserOutbid
     }"
-                 :to="{ name: 'DetailsLot', params: { idLot: lot.id } }">
-        <div class="align-self-stretch">
-            <div class="card-body d-flex flex-column justify-content-between">
-                <div class="d-flex align-items-middle justify-content-between">
-                    <p class="fs-8 pe-2 mt-1 mb-0 text-truncate">
-                        Lot {{ lot.numero }} - {{ lot.artiste }} {{ lot.hauteur }}x{{ lot.largeur }}po
-                    </p>
+    :to="{ name: 'DetailsLot', params: { idLot: lot.id } }"
+  >
+    <div class="align-self-stretch h-100">
+      <div class="card-body d-flex flex-column justify-content-between h-100">
+        <div class="d-flex align-items-middle justify-content-between">
+          <p class="fs-8 pe-2 mt-1 mb-0 text-truncate">
+            Lot {{ lot.numero }} - {{ lot.artiste }} {{ lot.hauteur }}x{{ lot.largeur }}po
+          </p>
 
                     <img src="/icons/IconeLivrable.png"
                          height="30"

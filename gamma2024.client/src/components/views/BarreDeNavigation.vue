@@ -1,73 +1,95 @@
 <template>
-    <header class="sticky-top">
-        <div>
-            <nav class="navbar navbar-expand-lg bleuMarinSecondaireFond py-0"
-                 data-bs-theme="dark">
-                <div class="container-fluid justify-content-between">
-                    <router-link :to="{ name: 'Accueil' }" class="text-decoration-none">
-                        <a class="navbar-brand d-flex align-items-center fs-6">
-                            <img src="/images/Logo.png"
-                                 alt="Les Encans de Nantes"
-                                 height="40" />
-                            Les Encans de Nantes <br />au Québec
-                        </a>
-                    </router-link>
+  <header class="sticky-top">
+    <div>
+      <nav
+        class="navbar navbar-expand-lg bleuMarinSecondaireFond py-0"
+        data-bs-theme="dark"
+      >
+        <div class="container-fluid justify-content-between">
+          <router-link :to="{ name: 'Accueil' }" class="text-decoration-none">
+            <a class="navbar-brand d-flex align-items-center fs-6">
+              <img
+                src="/images/Logo.png"
+                alt="Les Encans de Nantes"
+                height="40"
+              />
+              Les Encans de Nantes <br />au Québec
+            </a>
+          </router-link>
 
-                    <button class="navbar-toggler"
-                            data-bs-theme="dark"
-                            type="button"
-                            data-bs-toggle="collapse"
-                            data-bs-target="#navbarSupportedContent"
-                            aria-controls="navbarSupportedContent"
-                            aria-expanded="false"
-                            aria-label="Toggle navigation">
-                        <span class="navbar-toggler-icon"></span>
-                    </button>
+          <button
+            class="navbar-toggler"
+            data-bs-theme="dark"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <span class="navbar-toggler-icon"></span>
+          </button>
 
-                    <div class="collapse navbar-collapse justify-content-between"
-                         id="navbarSupportedContent">
-                        <ul class="navbar-nav text-center">
-                            <li class="nav-item align-self-center d-flex align-items-center">
-                                <router-link :to="{ name: 'Accueil' }"
-                                             class="text-decoration-none">
-                                    <a class="nav-link active"> Accueil </a>
-                                </router-link>
-                            </li>
+          <div
+            class="collapse navbar-collapse justify-content-between"
+            id="navbarSupportedContent"
+          >
+            <ul class="navbar-nav text-center">
+              <li
+                class="nav-item align-self-center d-flex align-items-center nav-link"
+              >
+                <router-link
+                  :to="{ name: 'Accueil' }"
+                  class="text-decoration-none"
+                >
+                  Accueil
+                </router-link>
+              </li>
 
-                            <li class="nav-item">
-                                <router-link :to="{ name: 'EncanPresent' }"
-                                             class="text-decoration-none">
-                                    <a class="nav-link"> Encan courant </a>
-                                </router-link>
-                            </li>
+              <li class="nav-item nav-link">
+                <router-link
+                  :to="{ name: 'EncanPresent' }"
+                  class="text-decoration-none"
+                >
+                  Encan courant
+                </router-link>
+              </li>
 
-                            <li class="nav-item">
-                                <router-link :to="{ name: 'EncansPasses' }"
-                                             class="text-decoration-none">
-                                    <a class="nav-link"> Encans passés </a>
-                                </router-link>
-                            </li>
+              <li class="nav-item nav-link">
+                <router-link
+                  :to="{ name: 'EncansPasses' }"
+                  class="text-decoration-none"
+                >
+                  Encans passés
+                </router-link>
+              </li>
 
-                            <li class="nav-item">
-                                <router-link :to="{ name: 'EncansFuturs' }"
-                                             class="text-decoration-none">
-                                    <a class="nav-link"> Encans futurs </a>
-                                </router-link>
-                            </li>
+              <li class="nav-item nav-link">
+                <router-link
+                  :to="{ name: 'EncansFuturs' }"
+                  class="text-decoration-none"
+                >
+                  Encans futurs
+                </router-link>
+              </li>
 
-                            <li class="nav-item" v-if="estConnecte && estClient">
-                                <router-link :to="{ name: 'HistoriqueAchatsParMembre' }"
-                                             class="text-decoration-none">
-                                    <a class="nav-link"> Historique des achats </a>
-                                </router-link>
-                            </li>
-                            <li class="nav-item" v-if="estConnecte && estClient">
-                                <router-link :to="{ name: 'HistoriqueMisesParMembre' }"
-                                             class="text-decoration-none">
-                                    <a class="nav-link"> Historique des mises </a>
-                                </router-link>
-                            </li>
-                        </ul>
+              <li class="nav-item nav-link" v-if="estConnecte && estClient">
+                <router-link
+                  :to="{ name: 'HistoriqueAchatsParMembre' }"
+                  class="text-decoration-none"
+                >
+                  Historique des achats
+                </router-link>
+              </li>
+              <li class="nav-item nav-link" v-if="estConnecte && estClient">
+                <router-link
+                  :to="{ name: 'HistoriqueMisesParMembre' }"
+                  class="text-decoration-none"
+                >
+                  Historique des mises
+                </router-link>
+              </li>
+            </ul>
 
                         <div class="d-flex justify-content-center gap-3 mb-2 mb-lg-0 flex-row align-items-center justify-content-center">
                             <router-link :to="{ name: 'Inscription' }" v-if="!estConnecte">
@@ -83,107 +105,148 @@
                                 </button>
                             </router-link>
 
-                            <div class="dropdown text-white align-self-stretch justify-content-center align-items-center d-flex"
-                                 v-if="estAdmin">
-                                <a class="nav-link dropdown-toggle"
-                                   role="button"
-                                   data-bs-toggle="dropdown"
-                                   aria-expanded="false">
-                                    Tableau de bord
-                                </a>
-                                <ul class="dropdown-menu bleuMarinFond text-center">
-                                    <li>
-                                        <router-link :to="{ name: 'TableauDeBordInventaire' }"
-                                                     class="text-decoration-none">
-                                            <a class="dropdown-item contenuListeDropdown">Inventaire</a>
-                                        </router-link>
-                                    </li>
-                                    <li>
-                                        <router-link :to="{ name: 'TableauDeBordEncans' }"
-                                                     class="text-decoration-none">
-                                            <a class="dropdown-item contenuListeDropdown">Encans</a>
-                                        </router-link>
-                                    </li>
-                                    <li>
-                                        <router-link :to="{ name: 'AffichageVendeurs' }"
-                                                     class="text-decoration-none">
-                                            <a class="dropdown-item contenuListeDropdown">Vendeurs</a>
-                                        </router-link>
-                                    </li>
-                                    <li>
-                                        <router-link :to="{ name: 'TableauDeBordVentes' }"
-                                                     class="text-decoration-none">
-                                            <a class="dropdown-item contenuListeDropdown">Ventes</a>
-                                        </router-link>
-                                    </li>
-                                    <li>
-                                        <router-link :to="{ name: 'GestionMembre' }"
-                                                     class="text-decoration-none">
-                                            <a class="dropdown-item contenuListeDropdown">Profils de membre</a>
-                                        </router-link>
-                                    </li>
-                                </ul>
-                            </div>
+              <div
+                class="dropdown text-white align-self-stretch justify-content-center align-items-center d-flex"
+                v-if="estAdmin"
+              >
+                <a
+                  class="nav-link dropdown-toggle"
+                  role="button"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                >
+                  Tableau de bord
+                </a>
+                <ul class="dropdown-menu bleuMarinFond text-center">
+                  <li>
+                    <router-link
+                      :to="{ name: 'TableauDeBordInventaire' }"
+                      class="text-decoration-none"
+                    >
+                      <a class="dropdown-item contenuListeDropdown"
+                        >Inventaire</a
+                      >
+                    </router-link>
+                  </li>
+                  <li>
+                    <router-link
+                      :to="{ name: 'TableauDeBordEncans' }"
+                      class="text-decoration-none"
+                    >
+                      <a class="dropdown-item contenuListeDropdown">Encans</a>
+                    </router-link>
+                  </li>
+                  <li>
+                    <router-link
+                      :to="{ name: 'AffichageVendeurs' }"
+                      class="text-decoration-none"
+                    >
+                      <a class="dropdown-item contenuListeDropdown">Vendeurs</a>
+                    </router-link>
+                  </li>
+                  <li>
+                    <router-link
+                      :to="{ name: 'TableauDeBordVentes' }"
+                      class="text-decoration-none"
+                    >
+                      <a class="dropdown-item contenuListeDropdown">Ventes</a>
+                    </router-link>
+                  </li>
+                  <li>
+                    <router-link
+                      :to="{ name: 'GestionMembre' }"
+                      class="text-decoration-none"
+                    >
+                      <a class="dropdown-item contenuListeDropdown"
+                        >Profils de membre</a
+                      >
+                    </router-link>
+                  </li>
+                </ul>
+              </div>
 
-                            <div class="dropdown text-white align-self-stretch justify-content-center align-items-center d-flex"
-                                 v-if="estConnecte && !estAdmin">
-                                <a class="nav-link d-flex align-items-center justify-content-center"
-                                   role="button"
-                                   data-bs-toggle="dropdown"
-                                   aria-expanded="false"
-                                   @click="notification = !notification">
-                                    <img src="/icons/IconeCloche.png"
-                                         alt="Icon cloche"
-                                         height="25" />
-                                </a>
-                                <ul class="dropdown-menu bleuMarinFond text-center">
-                                    <li v-for="index in 5" :key="index">
-                                        <router-link :to="{ name: 'Accueil' }"
-                                                     class="text-decoration-none text-white d-flex align-items-center gap-3">
-                                            <a class="dropdown-item text-white btnSurvolerBleuMoyenFond"
-                                               @click="notification = false">
-                                                test
-                                            </a>
-                                        </router-link>
-                                    </li>
-                                </ul>
-                            </div>
-                            <div class="dropdown text-white" v-if="estConnecte">
-                                <a class="nav-link d-flex align-items-center"
-                                   role="button"
-                                   data-bs-toggle="dropdown"
-                                   aria-expanded="false">
-                                    <p class="m-0 me-1">{{ username }}</p>
-                                    <img :src="avatarUrl"
-                                         alt="Avatar"
-                                         class="imgProfile rounded-circle" />
-                                </a>
-                                <ul class="dropdown-menu dropdown-menu-end bleuMarinFond text-center end-0 top-100">
-                                    <li>
-                                        <router-link v-if="estClient"
-                                                     :to="{ name: 'ModificationProfilUtilisateur' }"
-                                                     class="text-decoration-none text-white d-flex align-items-center gap-3">
-                                            <a class="dropdown-item text-white btnSurvolerBleuMoyenFond"
-                                               @click="activationDropdownProfil = false">
-                                                Profil
-                                            </a>
-                                        </router-link>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item text-danger btnSurvolerBleuMoyenFond fw-bold"
-                                           href="#"
-                                           @click.prevent="deconnecter">
-                                            Déconnexion
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </nav>
-            <div v-if="
-          $route.name == 'EncanPresent' && ilYAUnEncanPresent == true ||
+              <div
+                class="dropdown text-white align-self-stretch justify-content-center align-items-center d-flex"
+                v-if="estConnecte && !estAdmin"
+              >
+                <a
+                  class="nav-link d-flex align-items-center justify-content-center"
+                  role="button"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                  @click="notification = !notification"
+                >
+                  <img
+                    src="/icons/IconeCloche.png"
+                    alt="Icon cloche"
+                    height="25"
+                  />
+                </a>
+                <ul class="dropdown-menu bleuMarinFond text-center">
+                  <li v-for="index in 5" :key="index">
+                    <router-link
+                      :to="{ name: 'Accueil' }"
+                      class="text-decoration-none text-white d-flex align-items-center gap-3"
+                    >
+                      <a
+                        class="dropdown-item text-white btnSurvolerBleuMoyenFond"
+                        @click="notification = false"
+                      >
+                        test
+                      </a>
+                    </router-link>
+                  </li>
+                </ul>
+              </div>
+              <div class="dropdown text-white" v-if="estConnecte">
+                <a
+                  class="nav-link d-flex align-items-center"
+                  role="button"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                >
+                  <p class="m-0 me-1">{{ username }}</p>
+                  <img
+                    :src="avatarUrl"
+                    alt="Avatar"
+                    class="imgProfile rounded-circle"
+                  />
+                </a>
+                <ul
+                  class="dropdown-menu dropdown-menu-end bleuMarinFond text-center end-0 top-100"
+                >
+                  <li>
+                    <router-link
+                      v-if="estClient"
+                      :to="{ name: 'ModificationProfilUtilisateur' }"
+                      class="text-decoration-none text-white d-flex align-items-center gap-3"
+                    >
+                      <a
+                        class="dropdown-item text-white btnSurvolerBleuMoyenFond"
+                        @click="activationDropdownProfil = false"
+                      >
+                        Profil
+                      </a>
+                    </router-link>
+                  </li>
+                  <li>
+                    <a
+                      class="dropdown-item text-danger btnSurvolerBleuMoyenFond fw-bold"
+                      href="#"
+                      @click.prevent="deconnecter"
+                    >
+                      Déconnexion
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </nav>
+      <div
+        v-if="
+          ($route.name == 'EncanPresent' && ilYAUnEncanPresent == true) ||
           $route.name == 'Encan' ||
           $route.name == 'ResultatRechercheLots'
         ">
@@ -217,8 +280,8 @@
                                         <div class="row">
                                             <div class="col-sm-4">
                                                 <select class="form-select py-0 selectPourListe"
+                                                        v-model="selectValeurEstimee"
                                                         id="selectValeurEstimee"
-                                                        @change="affichageInputValeurEstimee"
                                                         aria-label="Default select example">
                                                     <option class="py-0" value="0" selected>
                                                         Égale à
@@ -226,8 +289,7 @@
                                                     <option class="py-0" value="1">Inférieure à</option>
                                                     <option class="py-0" value="2">Supérieure à</option>
                                                     <option class="py-0"
-                                                            value="3"
-                                                            id="selectValeurEstimeeEntre">
+                                                            value="3">
                                                         Entre
                                                     </option>
                                                 </select>
@@ -237,17 +299,19 @@
                                                 <input type="number"
                                                        maxlength="10"
                                                        class="form-control rechercheinput align-self-end"
+                                                       v-model="rechercheLotsValeurEstimee"
                                                        id="rechercheLotsValeurEstimee" />
                                             </div>
-                                            <div class="col-sm-auto inputAAfficher align-items-center"
-                                                 id="inputAAfficherValeurEstimee">
+                                            <div v-if="selectValeurEstimee == 3"
+                                                 class="col-sm-auto align-items-center inputAAfficher">
                                                 <label class="fs-6">et</label>
                                             </div>
-                                            <div class="col-sm inputAAfficher"
-                                                 id="inputAAfficherValeurEstimee">
+                                            <div v-if="selectValeurEstimee == 3"
+                                                 class="col-sm">
                                                 <input type="number"
                                                        maxlength="10"
                                                        class="form-control rechercheinput align-self-end"
+                                                       v-model="rechercheLotsValeurEstimee2"
                                                        id="rechercheLotsValeurEstimee2" />
                                             </div>
                                         </div>
@@ -259,6 +323,7 @@
                                         Artiste
                                     </label>
                                     <select class="form-select py-0 align-self-center selectPourListeQuiOntBesoinDeInvalide"
+                                            v-model="selectArtiste"
                                             id="selectArtiste"
                                             aria-label="Default select example"
                                             required>
@@ -281,6 +346,7 @@
                                         Catégorie
                                     </label>
                                     <select class="form-select py-0 align-self-center selectPourListeQuiOntBesoinDeInvalide"
+                                            v-model="selectCategorie"
                                             id="selectCategorie"
                                             aria-label="Default select example"
                                             required>
@@ -301,6 +367,7 @@
                                         Medium
                                     </label>
                                     <select class="form-select py-0 align-self-center selectPourListeQuiOntBesoinDeInvalide"
+                                            v-model="selectMedium"
                                             id="selectMedium"
                                             aria-label="Default select example"
                                             required>
@@ -326,8 +393,8 @@
                                         <div class="row">
                                             <div class="col-sm-4">
                                                 <select class="form-select py-0 selectPourListe"
+                                                        v-model="selectHauteur"
                                                         id="selectHauteur"
-                                                        @change="affichageInputHauteur"
                                                         aria-label="Default select example">
                                                     <option class="py-0" value="0" selected>
                                                         Égale à
@@ -345,17 +412,19 @@
                                                 <input type="number"
                                                        maxlength="10"
                                                        class="form-control rechercheinput align-self-end"
+                                                       v-model="rechercheLotsHauteur"
                                                        id="rechercheLotsHauteur" />
                                             </div>
-                                            <div class="col-sm-auto inputAAfficher align-items-center"
-                                                 id="inputAAfficherHauteur">
+                                            <div v-if="selectHauteur == 3"
+                                                 class="col-sm-auto align-items-center inputAAfficher">
                                                 <label class="fs-6">et</label>
                                             </div>
-                                            <div class="col-sm inputAAfficher"
-                                                 id="inputAAfficherHauteur">
+                                            <div v-if="selectHauteur == 3"
+                                                 class="col-sm">
                                                 <input type="number"
                                                        maxlength="10"
                                                        class="form-control rechercheinput align-self-end"
+                                                       v-model="rechercheLotsHauteur2"
                                                        id="rechercheLotsHauteur2" />
                                             </div>
                                         </div>
@@ -370,8 +439,8 @@
                                         <div class="row">
                                             <div class="col-sm-4">
                                                 <select class="form-select py-0 selectPourListe"
+                                                        v-model="selectLargeur"
                                                         id="selectLargeur"
-                                                        @change="affichageInputLargeur"
                                                         aria-label="Default select example">
                                                     <option class="py-0" value="0" selected>
                                                         Égale à
@@ -390,17 +459,19 @@
                                                 <input type="number"
                                                        maxlength="10"
                                                        class="form-control rechercheinput align-self-end"
+                                                       v-model="rechercheLotsLargeur"
                                                        id="rechercheLotsLargeur" />
                                             </div>
-                                            <div class="col-sm-auto inputAAfficher align-items-center"
-                                                 id="inputAAfficherLargeur">
+                                            <div v-if="selectLargeur == 3"
+                                                 class="col-sm-auto align-items-center inputAAfficher">
                                                 <label class="fs-6">et</label>
                                             </div>
-                                            <div class="col-sm inputAAfficher"
-                                                 id="inputAAfficherLargeur">
+                                            <div v-if="selectLargeur == 3"
+                                                 class="col-sm">
                                                 <input type="number"
                                                        maxlength="10"
                                                        class="form-control rechercheinput align-self-end"
+                                                       v-model="rechercheLotsLargeur2"
                                                        id="rechercheLotsLargeur2" />
                                             </div>
                                         </div>
@@ -454,8 +525,8 @@
                                         <div class="row">
                                             <div class="col-sm-4">
                                                 <select class="form-select py-0 selectPourListe"
+                                                        v-model="selectNumeroEncan"
                                                         id="selectNumeroEncan"
-                                                        @change="affichageInputNumeroEncan"
                                                         aria-label="Default select example">
                                                     <option class="py-0" value="0" selected>
                                                         Égal à
@@ -472,17 +543,19 @@
                                                 <input type="number"
                                                        maxlength="10"
                                                        class="form-control rechercheinput align-self-end"
+                                                       v-model="rechercheEncansNumeroEncan"
                                                        id="rechercheEncansNumeroEncan" />
                                             </div>
-                                            <div class="col-sm-auto inputAAfficher align-items-center"
-                                                 id="inputAAfficherNumeroEncan">
+                                            <div v-if="selectNumeroEncan == 1"
+                                                 class="col-sm-auto align-items-center inputAAfficher">
                                                 <label class="fs-6">et</label>
                                             </div>
-                                            <div class="col-sm inputAAfficher"
-                                                 id="inputAAfficherNumeroEncan">
+                                            <div v-if="selectNumeroEncan == 1"
+                                                 class="col-sm">
                                                 <input type="number"
                                                        maxlength="10"
                                                        class="form-control rechercheinput align-self-end"
+                                                       v-model="rechercheEncansNumeroEncan2"
                                                        id="rechercheEncansNumeroEncan2" />
                                             </div>
                                         </div>
@@ -497,8 +570,8 @@
                                         <div class="row">
                                             <div class="col-sm-4">
                                                 <select class="form-select py-0 selectPourListe"
+                                                        v-model="selectDate"
                                                         id="selectDate"
-                                                        @change="affichageInputDate"
                                                         aria-label="Default select example">
                                                     <option class="py-0" value="0" selected>
                                                         Égale à
@@ -522,15 +595,16 @@
                                                            :clearable="true"
                                                            :action-row="{ showNow: true }"
                                                            :format-locale="fr"
-                                                           :year-range="[2000, new Date().getFullYear() + 10]" />
-                                            <div class="col-sm-auto inputAAfficher inputAAfficherDate align-items-center"
-                                                 id="inputAAfficherDate">
+                                                           :year-range="[2000, new Date().getFullYear() +10]" />
+                                            <div v-if="selectDate == 3"
+                                                 class="col-sm-auto align-items-center inputAAfficher">
                                                 <label class="fs-6">et</label>
                                             </div>
-                                            <VueDatePicker type="date"
+                                            <VueDatePicker v-if="selectDate == 3"
+                                                           type="date"
                                                            v-model="rechercheEncansDate2"
                                                            id="rechercheEncansDate2"
-                                                           class="col-sm inputAAfficher inputAAfficherDate"
+                                                           class="col-sm"
                                                            :min-date="desacDateFinEntre"
                                                            :enable-time-picker="false"
                                                            select-text="Choisir"
@@ -560,80 +634,96 @@
     </header>
 </template>
 <script setup>
-    import { computed, watch, reactive, ref, onMounted } from "vue";
-    import { useStore } from "vuex";
-    import { useRouter, useRoute } from "vue-router";
-    import VueDatePicker from "@vuepic/vue-datepicker";
-    import "@vuepic/vue-datepicker/dist/main.css";
-    import { fr } from "date-fns/locale";
-    import moment from "moment";
+import { computed, watch, ref, onMounted } from "vue";
+import { useStore } from "vuex";
+import { RouterLink, useRouter, useRoute } from "vue-router";
+import VueDatePicker from "@vuepic/vue-datepicker";
+import "@vuepic/vue-datepicker/dist/main.css";
+import { fr } from "date-fns/locale";
+import moment from "moment";
 
-    const store = useStore();
-    const router = useRouter();
-    const route = useRoute();
+const store = useStore();
+const router = useRouter();
+const route = useRoute();
 
-    const estConnecte = computed(() => store.state.isLoggedIn);
-    const estAdmin = computed(() => store.getters.isAdmin);
-    const estClient = computed(() => store.getters.isClient);
-    const username = computed(() => store.getters.username);
-    const avatarUrl = computed(() => store.getters.avatarUrl);
+const estConnecte = computed(() => store.state.isLoggedIn);
+const estAdmin = computed(() => store.getters.isAdmin);
+const estClient = computed(() => store.getters.isClient);
+const username = computed(() => store.getters.username);
+const avatarUrl = computed(() => store.getters.avatarUrl);
 
-    const currentUser = ref(null);
+const currentUser = ref(null);
 
-    const listeDesArtistes = ref([]);
-    const listeDesCategories = ref([]);
-    const listeDesMediums = ref([]);
+const listeDesArtistes = ref([]);
+const listeDesCategories = ref([]);
+const listeDesMediums = ref([]);
 
     const ilYAUnEncanPresent = ref(false);
     const titreBarreDeRechercheDeLots = ref("");
     var rechercheNumeroEncan = ref();
+    const selectValeurEstimee = ref(0);
+    const rechercheLotsValeurEstimee = ref();
+    const rechercheLotsValeurEstimee2 = ref();
+    const selectArtiste = ref("");
+    const selectCategorie = ref("");
+    const selectMedium = ref("");
+    const selectHauteur = ref(0);
+    const rechercheLotsHauteur = ref();
+    const rechercheLotsHauteur2 = ref();
+    const selectLargeur = ref(0);
+    const rechercheLotsLargeur = ref();
+    const rechercheLotsLargeur2 = ref();
+    const selectNumeroEncan = ref(0);
+    const rechercheEncansNumeroEncan = ref();
+    const rechercheEncansNumeroEncan2 = ref();
+    const selectDate = ref(0);
     const rechercheEncansDate1 = ref();
     const rechercheEncansDate2 = ref();
 
-    watch(
-        () => store.state.user,
-        (newUser) => {
-            currentUser.value = newUser;
-        },
-        { deep: true, immediate: true }
-    );
+watch(
+  () => store.state.user,
+  (newUser) => {
+    currentUser.value = newUser;
+  },
+  { deep: true, immediate: true }
+);
 
-    const refreshUserInfo = async () => {
-        if (store.state.isLoggedIn) {
-            try {
-                await store.dispatch("fetchClientInfo");
-            } catch (error) {
-                console.error(
-                    "Erreur lors de la récupération des informations client:",
-                    error
-                );
-            }
-        }
-    };
-
-    // Appelez refreshUserInfo lorsque l'utilisateur se connecte
-    watch(
-        () => store.state.isLoggedIn,
-        (newValue) => {
-            if (newValue) {
-                refreshUserInfo();
-            }
-        }
-    );
-
-    var numeroEncanPresent = null;
-
-    async function verifierSiEncanPresent() {
-        numeroEncanPresent = null;
-        var response = await store.dispatch("chercherEncanEnCours");
-        if (response.status == 200) {
-            numeroEncanPresent = response.data.numeroEncan.toString();
-            ilYAUnEncanPresent.value = true;
-        }
+const refreshUserInfo = async () => {
+  if (store.state.isLoggedIn) {
+    try {
+      await store.dispatch("fetchClientInfo");
+    } catch (error) {
+      console.error(
+        "Erreur lors de la récupération des informations client:",
+        error
+      );
     }
+  }
+};
 
-    const changementDeRoute = computed(() => route.fullPath)
-    watch(changementDeRoute, changeTitreBarreRecherche)
+// Appelez refreshUserInfo lorsque l'utilisateur se connecte
+watch(
+  () => store.state.isLoggedIn,
+  (newValue) => {
+    if (newValue) {
+      refreshUserInfo();
+    }
+  }
+);
+
+var numeroEncanPresent = null;
+
+async function verifierSiEncanPresent() {
+  numeroEncanPresent = null;
+  var response = await store.dispatch("chercherEncanEnCours");
+  if (response.status == 200) {
+    numeroEncanPresent = response.data.numeroEncan.toString();
+    ilYAUnEncanPresent.value = true;
+  }
+}
+
+const changementDeRoute = computed(() => route.fullPath);
+watch(changementDeRoute, changeTitreBarreRecherche);
 
     async function changeTitreBarreRecherche() {
         if (route.name == "Encan") {
@@ -647,6 +737,7 @@
         if (titreBarreDeRechercheDeLots) {
             titreBarreDeRechercheDeLots.value = "Recherche avancée de lots dans l'Encan " + rechercheNumeroEncan;
         }
+        verifierSiQueryDansURL();
     }
 
     async function rechercheAvanceeLots() {
@@ -659,54 +750,36 @@
                 rechercheNumeroEncan = numeroEncanPresent;
             }
         }
-        var selectValeurEstimee = document.querySelector(
-            "#selectValeurEstimee"
-        ).value;
-        var stringValeurEstimee = document.querySelector(
-            "#rechercheLotsValeurEstimee"
-        ).value;
-        var stringValeurEstimee2 = document.querySelector(
-            "#rechercheLotsValeurEstimee2"
-        ).value;
-        var selectArtiste = document.querySelector("#selectArtiste").value;
-        var selectCategorie = document.querySelector("#selectCategorie").value;
-        var selectMedium = document.querySelector("#selectMedium").value;
-        var selectHauteur = document.querySelector("#selectHauteur").value;
-        var stringHauteur = document.querySelector("#rechercheLotsHauteur").value;
-        var stringHauteur2 = document.querySelector("#rechercheLotsHauteur2").value;
-        var selectLargeur = document.querySelector("#selectLargeur").value;
-        var stringLargeur = document.querySelector("#rechercheLotsLargeur").value;
-        var stringLargeur2 = document.querySelector("#rechercheLotsLargeur2").value;
 
         stringquery["numeroEncan"] = rechercheNumeroEncan;
-        if (stringValeurEstimee) {
-            stringquery["selectValeurEstimee"] = selectValeurEstimee;
-            stringquery["stringValeurEstimee"] = stringValeurEstimee;
-            if (selectValeurEstimee == 3) {
-                stringquery["stringValeurEstimee2"] = stringValeurEstimee2;
+        if (rechercheLotsValeurEstimee.value) {
+            stringquery["selectValeurEstimee"] = selectValeurEstimee.value;
+            stringquery["stringValeurEstimee"] = rechercheLotsValeurEstimee.value;
+            if (selectValeurEstimee.value == 3) {
+                stringquery["stringValeurEstimee2"] = rechercheLotsValeurEstimee2.value;
             }
         }
-        if (selectArtiste != 0) {
-            stringquery["selectArtiste"] = selectArtiste;
+        if (selectArtiste.value != 0) {
+            stringquery["selectArtiste"] = selectArtiste.value;
         }
-        if (selectCategorie != 0) {
-            stringquery["selectCategorie"] = selectCategorie;
+        if (selectCategorie.value != 0) {
+            stringquery["selectCategorie"] = selectCategorie.value;
         }
-        if (selectMedium != 0) {
-            stringquery["selectMedium"] = selectMedium;
+        if (selectMedium.value != 0) {
+            stringquery["selectMedium"] = selectMedium.value;
         }
-        if (stringHauteur) {
-            stringquery["selectHauteur"] = selectHauteur;
-            stringquery["stringHauteur"] = stringHauteur;
-            if (selectHauteur == 3) {
-                stringquery["stringHauteur2"] = stringHauteur2;
+        if (rechercheLotsHauteur.value) {
+            stringquery["selectHauteur"] = selectHauteur.value;
+            stringquery["stringHauteur"] = rechercheLotsHauteur.value;
+            if (selectHauteur.value == 3) {
+                stringquery["stringHauteur2"] = rechercheLotsHauteur2.value;
             }
         }
-        if (stringLargeur) {
-            stringquery["selectLargeur"] = selectLargeur;
-            stringquery["stringLargeur"] = stringLargeur;
-            if (selectLargeur == 3) {
-                stringquery["stringLargeur2"] = stringLargeur2;
+        if (rechercheLotsLargeur.value) {
+            stringquery["selectLargeur"] = selectLargeur.value;
+            stringquery["stringLargeur"] = rechercheLotsLargeur.value;
+            if (selectLargeur.value == 3) {
+                stringquery["stringLargeur2"] = rechercheLotsLargeur.value;
             }
         }
 
@@ -718,55 +791,6 @@
         });
     }
 
-    function affichageInputValeurEstimee() {
-        var inputAAfficher = document.querySelectorAll(
-            "#inputAAfficherValeurEstimee"
-        );
-        var selectValeurestimeeEntre = document.querySelector(
-            "#selectValeurEstimeeEntre"
-        );
-
-        if (selectValeurEstimeeEntre.selected) {
-            inputAAfficher.forEach((el, index) => {
-                el.style.display = "inline-block";
-            });
-        } else if (!selectValeurEstimeeEntre.selected) {
-            inputAAfficher.forEach((el) => {
-                el.style.display = "none";
-            });
-        }
-    }
-
-    function affichageInputHauteur() {
-        var inputAAfficher = document.querySelectorAll("#inputAAfficherHauteur");
-        var selectHauteurEntre = document.querySelector("#selectHauteurEntre");
-
-        if (selectHauteurEntre.selected) {
-            inputAAfficher.forEach((el, index) => {
-                el.style.display = "inline-block";
-            });
-        } else if (!selectHauteurEntre.selected) {
-            inputAAfficher.forEach((el) => {
-                el.style.display = "none";
-            });
-        }
-    }
-
-    function affichageInputLargeur() {
-        var inputAAfficher = document.querySelectorAll("#inputAAfficherLargeur");
-        var selectLargeurEntre = document.querySelector("#selectLargeurEntre");
-
-        if (selectLargeurEntre.selected) {
-            inputAAfficher.forEach((el, index) => {
-                el.style.display = "inline-block";
-            });
-        } else if (!selectLargeurEntre.selected) {
-            inputAAfficher.forEach((el) => {
-                el.style.display = "none";
-            });
-        }
-    }
-
     // La barre de recherche avancée garde les informations ou non selon le changement de page
     router.beforeEach((to, from, next) => {
         if (
@@ -775,12 +799,12 @@
             from.name == "EncanPresent"
         ) {
             var elementsAEffacer = [
-                document.querySelector("#rechercheLotsValeurEstimee"),
-                document.querySelector("#rechercheLotsValeurEstimee2"),
-                document.querySelector("#rechercheLotsHauteur"),
-                document.querySelector("#rechercheLotsHauteur2"),
-                document.querySelector("#rechercheLotsLargeur"),
-                document.querySelector("#rechercheLotsLargeur2"),
+                rechercheLotsValeurEstimee,
+                rechercheLotsValeurEstimee2,
+                rechercheLotsHauteur,
+                rechercheLotsHauteur2,
+                rechercheLotsLargeur,
+                rechercheLotsLargeur2,
             ];
             var listeDesSelects = document.querySelectorAll(".selectPourListe");
             var listeDesSelectsQuiOntBesoinDeInvalide = document.querySelectorAll(
@@ -809,11 +833,6 @@
                         select.value = "";
                     }
                 });
-                if (document.querySelectorAll(".inputAAfficher")) {
-                    document.querySelectorAll(".inputAAfficher").forEach((el) => {
-                        el.style.display = "none";
-                    });
-                }
                 if (document.querySelector("#navbarToggleRechercheAvancee")) {
                     document
                         .querySelector("#navbarToggleRechercheAvancee")
@@ -828,8 +847,8 @@
             from.name == "TousLesEncans"
         ) {
             var elementsAEffacer = [
-                document.querySelector("#rechercheEncansNumeroEncan"),
-                document.querySelector("#rechercheEncansNumeroEncan2"),
+                rechercheEncansNumeroEncan,
+                rechercheEncansNumeroEncan2,
             ];
             var datesAEffacer = [rechercheEncansDate1, rechercheEncansDate2];
             var listeDesSelects = document.querySelectorAll(".selectPourListe");
@@ -851,11 +870,6 @@
                 listeDesSelects.forEach((select) => {
                     select.value = 0;
                 });
-                if (document.querySelectorAll(".inputAAfficher")) {
-                    document.querySelectorAll(".inputAAfficher").forEach((el) => {
-                        el.style.display = "none";
-                    });
-                }
                 if (document.querySelector("#navbarToggleRechercheAvancee")) {
                     document
                         .querySelector("#navbarToggleRechercheAvancee")
@@ -870,108 +884,124 @@
                     .classList.remove("show");
             }
             next();
+            changeTitreBarreRecherche();
         }
     });
 
-    const desacDateFinEntre = computed(() => {
-        if (rechercheEncansDate1.value) {
-            const dateDebutDesac = new Date(rechercheEncansDate1.value);
-            dateDebutDesac.setDate(dateDebutDesac.getDate() + 1);
+const desacDateFinEntre = computed(() => {
+  if (rechercheEncansDate1.value) {
+    const dateDebutDesac = new Date(rechercheEncansDate1.value);
+    dateDebutDesac.setDate(dateDebutDesac.getDate() + 1);
 
-            return [dateDebutDesac];
-        }
-        return [new Date()];
-    });
+    return [dateDebutDesac];
+  }
+  return [new Date()];
+});
 
-    const desacDateDebutEntre = computed(() => {
-        if (rechercheEncansDate2.value) {
-            const dateFinDesac = new Date(rechercheEncansDate2.value);
-            dateFinDesac.setDate(dateFinDesac.getDate() - 1);
+const desacDateDebutEntre = computed(() => {
+  if (rechercheEncansDate2.value) {
+    const dateFinDesac = new Date(rechercheEncansDate2.value);
+    dateFinDesac.setDate(dateFinDesac.getDate() - 1);
 
-            return [dateFinDesac];
-        }
-        return null;
-    });
+    return [dateFinDesac];
+  }
+  return null;
+});
 
     async function rechercheAvanceeEncans() {
         var stringquery = {};
-        var selectNumeroEncan = document.querySelector("#selectNumeroEncan").value;
-        var stringNumeroEncan = document.querySelector(
-            "#rechercheEncansNumeroEncan"
-        ).value;
-        var stringNumeroEncan2 = document.querySelector(
-            "#rechercheEncansNumeroEncan2"
-        ).value;
-        var selectDate = document.querySelector("#selectDate").value;
-        var stringDate = moment(rechercheEncansDate1.value).format("yyyy-MM-DD");
-        var stringDate2 = moment(rechercheEncansDate2.value).format("yyyy-MM-DD");
 
-        if (stringNumeroEncan) {
-            stringquery["selectNumeroEncan"] = selectNumeroEncan;
-            stringquery["stringNumeroEncan"] = stringNumeroEncan;
-            if (selectNumeroEncan == 1) {
-                stringquery["stringNumeroEncan2"] = stringNumeroEncan2;
+        if (rechercheEncansNumeroEncan.value) {
+            stringquery["selectNumeroEncan"] = selectNumeroEncan.value;
+            stringquery["stringNumeroEncan"] = rechercheEncansNumeroEncan.value;
+            if (selectNumeroEncan.value == 1) {
+                stringquery["stringNumeroEncan2"] = rechercheEncansNumeroEncan2.value;
             }
         }
         if (rechercheEncansDate1.value) {
             var stringDate = moment(rechercheEncansDate1.value).format("yyyy-MM-DD");
-            stringquery["selectDate"] = selectDate;
+            stringquery["selectDate"] = selectDate.value;
             stringquery["stringDate"] = stringDate;
-            if (selectDate == 3 && rechercheEncansDate2.value) {
+            if (selectDate.value == 3 && rechercheEncansDate2.value) {
                 var stringDate2 = moment(rechercheEncansDate2.value).format("yyyy-MM-DD");
                 stringquery["stringDate2"] = stringDate2;
             }
         }
 
-        router.push({
-            path: "/resultatrechercheencans",
-            query: {
-                data: JSON.stringify(stringquery),
-            },
-        });
-    }
+  router.push({
+    path: "/resultatrechercheencans",
+    query: {
+      data: JSON.stringify(stringquery),
+    },
+  });
+}
 
-    function affichageInputNumeroEncan() {
-        var inputAAfficher = document.querySelectorAll("#inputAAfficherNumeroEncan");
-        var selectNumeroEncanEntre = document.querySelector(
-            "#selectNumeroEncanEntre"
-        );
+    function verifierSiQueryDansURL() {
+        if (route.query.data != null) {
+            var stringquery = JSON.parse(route.query.data);
 
-        if (selectNumeroEncanEntre.selected) {
-            inputAAfficher.forEach((el, index) => {
-                el.style.display = "inline-block";
-            });
-        } else if (!selectNumeroEncanEntre.selected) {
-            inputAAfficher.forEach((el) => {
-                el.style.display = "none";
-            });
+            if (stringquery.numeroEncan) {
+                rechercheNumeroEncan = stringquery.numeroEncan;
+                if (titreBarreDeRechercheDeLots) {
+                    titreBarreDeRechercheDeLots.value = "Recherche avancée de lots dans l'Encan " + rechercheNumeroEncan;
+                }
+            }
+            if (stringquery.stringValeurEstimee) {
+                selectValeurEstimee.value = stringquery.selectValeurEstimee;
+                rechercheLotsValeurEstimee.value = stringquery.stringValeurEstimee;
+                if (stringquery.selectValeurEstimee == 3 && stringquery.stringValeurEstimee2) {
+                    rechercheLotsValeurEstimee2.value = stringquery.stringValeurEstimee2;
+                }
+            }
+            if (stringquery.selectArtiste != 0 && stringquery.selectArtiste != null) {
+                selectArtiste.value = stringquery.selectArtiste;
+            }
+            if (stringquery.selectCategorie != 0 && stringquery.selectCategorie != null) {
+                selectCategorie.value = stringquery.selectCategorie;
+            }
+            if (stringquery.selectMedium != 0 && stringquery.selectMedium != null) {
+                selectMedium.value = stringquery.selectMedium;
+            }
+            if (stringquery.stringHauteur) {
+                selectHauteur.value = stringquery.selectHauteur;
+                rechercheLotsHauteur.value = stringquery.stringHauteur;
+                if (stringquery.selectHauteur == 3 && stringquery.stringHauteur2) {
+                    rechercheLotsHauteur2.value = stringquery.stringHauteur2;
+                }
+            }
+            if (stringquery.stringLargeur) {
+                selectLargeur.value = stringquery.selectLargeur;
+                rechercheLotsLargeur.value = stringquery.stringLargeur;
+                if (stringquery.selectLargeur == 3 && stringquery.stringLargeur2) {
+                    rechercheLotsLargeur2.value = stringquery.stringLargeur2;
+                }
+            }
+            if (stringquery.stringNumeroEncan) {
+                selectNumeroEncan.value = stringquery.selectNumeroEncan;
+                rechercheEncansNumeroEncan.value = stringquery.stringNumeroEncan;
+                if (stringquery.selectNumeroEncan == 1 && stringquery.stringNumeroEncan2) {
+                    rechercheEncansNumeroEncan2.value = stringquery.stringNumeroEncan2;
+                }
+            }
+            if (stringquery.stringDate) {
+                selectDate.value = stringquery.selectDate;
+                rechercheEncansDate1.value = moment(stringquery.stringDate);
+                if (stringquery.selectDate == 3 && stringquery.stringDate2) {
+                    rechercheEncansDate2.value = moment(stringquery.stringDate2);
+                }
+            }
         }
     }
 
-    function affichageInputDate() {
-        var inputAAfficher = document.querySelectorAll(".inputAAfficherDate");
-        var selectDateEntre = document.querySelector("#selectDateEntre");
+// Définition de activationRecherche
+const activationRecherche = ref(false);
+const activationDropdownProfil = ref(false);
+const notification = ref(false);
 
-        if (selectDateEntre.selected) {
-            inputAAfficher.forEach((el, index) => {
-                el.style.display = "inline-block";
-            });
-        } else if (!selectDateEntre.selected) {
-            inputAAfficher.forEach((el) => {
-                el.style.display = "none";
-            });
-        }
-    }
-
-    // Définition de activationRecherche
-    const activationRecherche = ref(false);
-    const activationDropdownProfil = ref(false);
-    const notification = ref(false);
-
-    const deconnecter = async () => {
-        await store.dispatch("logout");
-        router.push("/"); // Redirige vers la page d'accueil après la déconnexion
-    };
+const deconnecter = async () => {
+  await store.dispatch("logout");
+  router.push("/"); // Redirige vers la page d'accueil après la déconnexion
+};
 
     onMounted(async () => {
         document.querySelectorAll(".dropdown-toggle").forEach((dropdownToggle) => {
@@ -980,119 +1010,127 @@
         listeDesArtistes.value = await store.dispatch("obtenirArtistes");
         listeDesMediums.value = await store.dispatch("obtenirMediums");
         listeDesCategories.value = await store.dispatch("obtenirCategories");
+        verifierSiQueryDansURL();
     });
 </script>
 <style scoped>
-    .ms-7 {
-        margin-left: 7.9rem;
-    }
+.ms-7 {
+  margin-left: 7.9rem;
+}
 
-    .start-79 {
-        left: 79%;
-    }
+.start-79 {
+  left: 79%;
+}
 
-    .imgProfile {
-        width: 40px;
-        height: 40px;
-    }
+.imgProfile {
+  width: 40px;
+  height: 40px;
+}
 
-    input.form-control {
-        height: 25px !important;
-        font-size: 15px !important;
-    }
+input.form-control {
+  height: 25px !important;
+  font-size: 15px !important;
+}
 
-    select {
-        width: 100% !important;
-    }
+select {
+  width: 100% !important;
+}
 
-        select.form-select {
-            height: 25px !important;
-            margin-right: 10px !important;
-            font-size: 15px !important;
-        }
+select.form-select {
+  height: 25px !important;
+  margin-right: 10px !important;
+  font-size: 15px !important;
+}
 
-        select option {
-            height: 25px !important;
-            font-size: 15px !important;
-        }
+select option {
+  height: 25px !important;
+  font-size: 15px !important;
+}
 
-    recherchelabel {
-        margin-left: 10px !important;
-        margin-right: 10px !important;
-        font-weight: bold !important;
-    }
+recherchelabel {
+  margin-left: 10px !important;
+  margin-right: 10px !important;
+  font-weight: bold !important;
+}
 
-    .rechercheinput {
-        margin-right: 10px !important;
-    }
+.rechercheinput {
+  margin-right: 10px !important;
+}
 
-    .margesPourTable {
-        padding-left: 15px;
-        padding-right: 15px;
-    }
+.margesPourTable {
+  padding-left: 15px;
+  padding-right: 15px;
+}
 
-    .aucunPaddingPourCarteLots {
-        padding-left: 0px !important;
-        padding-right: 0px !important;
-        width: 1000px;
-    }
+.aucunPaddingPourCarteLots {
+  padding-left: 0px !important;
+  padding-right: 0px !important;
+  width: 1000px;
+}
 
-    .aucunPaddingPourCarteEncans {
-        padding-left: 0px !important;
-        padding-right: 0px !important;
-        width: 1100px;
-    }
+.aucunPaddingPourCarteEncans {
+  padding-left: 0px !important;
+  padding-right: 0px !important;
+  width: 1100px;
+}
 
-    .aucuneBarreDeRechercheAnvancee {
-        min-height: 30px;
-    }
+.aucuneBarreDeRechercheAnvancee {
+  min-height: 30px;
+}
 
-    .selectwidth {
-        width: 160px;
-    }
+.selectwidth {
+  width: 160px;
+}
 
     .inputAAfficher {
         height: 25px;
-        display: none;
     }
 
-    .card-body {
-        padding-top: 0px !important;
-        padding-bottom: 10px !important;
-    }
+.card-body {
+  padding-top: 0px !important;
+  padding-bottom: 10px !important;
+}
 
-    select,
-    select option {
-        color: #000000;
-    }
+select,
+select option {
+  color: #000000;
+}
 
-        select:invalid,
-        select option[value=""] {
-            color: #999999;
-        }
+select:invalid,
+select option[value=""] {
+  color: #999999;
+}
 
-    .navbarRechercheAvancee {
-        padding-top: 3px !important;
-        padding-bottom: 2px !important;
-        border: none !important;
-    }
+.navbarRechercheAvancee {
+  padding-top: 3px !important;
+  padding-bottom: 2px !important;
+  border: none !important;
+}
 
-    .loupetoggler {
-        padding-top: 0px !important;
-        padding-bottom: 0px !important;
-        padding-left: 0px !important;
-        padding-right: 0px !important;
-        width: 25px;
-        height: 25px;
-        /*background-image: none;*/
-    }
+.loupetoggler {
+  padding-top: 0px !important;
+  padding-bottom: 0px !important;
+  padding-left: 0px !important;
+  padding-right: 0px !important;
+  width: 25px;
+  height: 25px;
+  /*background-image: none;*/
+}
 
-    /*Pour faire changer l'icone du menu hamburger de la recherche*/
-    .iconeloupe {
-        position: relative !important;
-        top: -1px !important;
-        width: 20px !important;
-        height: 20px !important;
-        background-image: url("/icons/Recherche.png") !important;
-    }
+/*Pour faire changer l'icone du menu hamburger de la recherche*/
+.iconeloupe {
+  position: relative !important;
+  top: -1px !important;
+  width: 20px !important;
+  height: 20px !important;
+  background-image: url("/icons/Recherche.png") !important;
+}
+
+.navbar .navbar-collapse .navbar-nav a {
+  color: #ffffffa4;
+}
+
+.navbar .navbar-collapse .navbar-nav a.router-link-active {
+  color: #fff;
+}
 </style>

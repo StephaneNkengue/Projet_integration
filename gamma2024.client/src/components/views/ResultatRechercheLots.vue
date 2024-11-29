@@ -1,9 +1,9 @@
 <template>
-    <div class="d-flex flex-column align-items-center pb-3">
+    <div class="d-flex flex-column align-items-center text-center pb-3">
         <h1 id="titreRechercheLots"></h1>
     </div>
 
-    <div class="d-flex gap-2 w-100" v-if="chargement">
+    <div class="d-flex gap-2 w-100 justify-content-center" v-if="chargement">
         <div class="spinner-border" role="status">
             <span class="visually-hidden">Chargement des lots...</span>
         </div>

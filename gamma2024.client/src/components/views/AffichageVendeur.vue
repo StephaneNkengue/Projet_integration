@@ -79,8 +79,8 @@
                                     <router-link :to="{name: 'vendeurModification', params: { id: vendeur.id.toString() }}"
                                                  class="text-decoration-none">
                                         <img src="/public/icons/Edit_icon.png"
-                                             class="img-fluid"
-                                             alt="..." />
+                                             width="30"
+                                             alt="Editer" />
                                     </router-link>
                                 </button>
                             </td>
@@ -290,11 +290,6 @@
             color: #ffffff;
             background-color: #1e3a8a;
         }
-
-    img {
-        width: 25px;
-        height: 30px;
-    }
 
     th {
         font-size: 18px;

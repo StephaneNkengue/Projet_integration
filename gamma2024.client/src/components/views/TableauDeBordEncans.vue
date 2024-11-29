@@ -79,8 +79,8 @@
                 <h2>Aucun résultat trouvé</h2>
             </div>
 
-            <div v-else>
-                <table class="table table-striped text-center">
+            <div v-else class="overflow-auto">
+                <table class="table table-striped mx-0 text-center">
                     <thead class="table-dark">
                         <tr>
                             <th data-field="numeroEncan">Encan</th>
@@ -128,18 +128,20 @@
                             </td>
                             <td class="align-middle">{{ encan.nbLots }}</td>
                             <td class="align-middle">
-                                <button class="btn bleuMarinSecondaireFond btnModifierIcone px-3 me-3" @click="editerEncan(encan.id)">
-                                    <img src="/public/icons/Edit_icon.png"
-                                         class="img-fluid"
-                                         alt="..." />
-                                </button>
-                                <button class="btn btn-danger px-3 btn_delete"
-                                        data-bs-toggle="modal"
-                                        :data-bs-target="'#' + encan.numeroEncan">
-                                    <img src="/public/icons/Delete_icon.png"
-                                         class="img-fluid"
-                                         alt="..." />
-                                </button>
+                                <div class="d-flex flex-row justify-content-center">
+                                    <button class="btn bleuMarinSecondaireFond px-3 me-3 btnModifierIcone" @click="editerEncan(encan.id)">
+                                        <img src="/public/icons/Edit_icon.png"
+                                             width="30"
+                                             alt="..." />
+                                    </button>
+                                    <button class="btn btn-danger px-3 btn_delete"
+                                            data-bs-toggle="modal"
+                                            :data-bs-target="'#' + encan.numeroEncan">
+                                        <img src="/public/icons/Delete_icon.png"
+                                             width="30"
+                                             alt="..." />
+                                    </button>
+                                </div>
                             </td>
                             <ConfirmDelete :h="encan" @supprimerEncan="supprimerMonEncan" />
                         </tr>
