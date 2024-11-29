@@ -128,8 +128,8 @@ if (app.Environment.IsDevelopment())
 }
 else
 {
-    //app.UseExceptionHandler("/Error");
-    app.UseDeveloperExceptionPage();
+    app.UseExceptionHandler("/Error");
+    //app.UseDeveloperExceptionPage();
     app.UseHsts();
     app.UseCors("Production");
 }
