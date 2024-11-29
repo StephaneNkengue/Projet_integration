@@ -24,7 +24,7 @@
                 </router-link>
             </div>
 
-            <div v-if="cartes.value != []" class="text-center">
+            <div v-if="cartes.length == 0" class="text-center">
                 <h5>Aucun carte trouvé. Afin d'utiliser nos services, vous devez avoir au moins une carte sur votre profil.</h5>
             </div>
             <div class="d-flex flex-wrap w-100 justify-content-between" v-else>
