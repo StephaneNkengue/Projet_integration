@@ -10,33 +10,7 @@
                placeholder="Rechercher un membre"
                aria-label="Search" />
 
-        <div class="d-flex justify-content-end my-4">
-            <div class="d-flex flex-row gap-2">
-                <button class="d-flex align-items-center text-center rounded btn text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
-                        @click="changerNbMembreParPage(20)"
-                        v-bind:disabled="membresParPage == 20">
-                    20
-                </button>
-                <button class="d-flex align-items-center text-center rounded btn text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
-                        @click="changerNbMembreParPage(50)"
-                        v-bind:disabled="membresParPage == 50">
-                    50
-                </button>
-                <button class="d-flex align-items-center text-center rounded btn text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
-                        @click="changerNbMembreParPage(100)"
-                        v-bind:disabled="membresParPage == 100">
-                    100
-                </button>
-                <button class="d-flex align-items-center text-center rounded btn text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
-                        type="button"
-                        @click="afficherTousMembres"
-                        v-bind:disabled="membresParPage == nbMembresRecus">
-                    Tous
-                </button>
-            </div>
-        </div>
-
-        <div class="d-flex gap-2 justify-content-center" v-if="chargement">
+        <div class="d-flex gap-2 justify-content-center mt-4" v-if="chargement">
             <div class="spinner-border" role="status">
                 <span class="visually-hidden">Chargement des membres...</span>
             </div>
@@ -44,6 +18,32 @@
         </div>
 
         <div v-if="!chargement" class="w-100">
+            <div class="d-flex justify-content-end my-4">
+                <div class="d-flex flex-row gap-2">
+                    <button class="d-flex align-items-center text-center rounded btn text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
+                            @click="changerNbMembreParPage(20)"
+                            v-bind:disabled="membresParPage == 20">
+                        20
+                    </button>
+                    <button class="d-flex align-items-center text-center rounded btn text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
+                            @click="changerNbMembreParPage(50)"
+                            v-bind:disabled="membresParPage == 50">
+                        50
+                    </button>
+                    <button class="d-flex align-items-center text-center rounded btn text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
+                            @click="changerNbMembreParPage(100)"
+                            v-bind:disabled="membresParPage == 100">
+                        100
+                    </button>
+                    <button class="d-flex align-items-center text-center rounded btn text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
+                            type="button"
+                            @click="afficherTousMembres"
+                            v-bind:disabled="membresParPage == nbMembresRecus">
+                        Tous
+                    </button>
+                </div>
+            </div>
+
             <div class="d-flex justify-content-center" v-if="!filteredMembres.length">
                 <h2>Aucun résultat trouvé</h2>
             </div>
