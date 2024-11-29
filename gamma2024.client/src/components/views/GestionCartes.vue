@@ -23,7 +23,11 @@
                     </button>
                 </router-link>
             </div>
-            <div class="d-flex flex-wrap w-100 justify-content-between">
+
+            <div v-if="cartes.value != []" class="text-center">
+                <h5>Aucun carte trouvé. Afin d'utiliser nos services, vous devez avoir au moins une carte sur votre profil.</h5>
+            </div>
+            <div class="d-flex flex-wrap w-100 justify-content-between" v-else>
                 <div v-for="carte in cartes" class="col-12 col-md-6 p-3">
                     <AffichageCarteCredit :carte="carte"></AffichageCarteCredit>
                 </div>
