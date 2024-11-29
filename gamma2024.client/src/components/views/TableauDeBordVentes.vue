@@ -118,7 +118,7 @@
                                                  class="accordion-collapse collapse"
                                                  data-bs-parent="#accordionClient">
                                                 <div class="accordion-body">
-                                                    <table class="table">
+                                                    <table class="table text-center">
                                                         <thead class="table-dark">
                                                             <tr>
                                                                 <th scope="col">Numéro du lot</th>
