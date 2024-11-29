@@ -356,14 +356,15 @@
                                     </div>
                                 </div>
 
-                                <div class="d-flex justify-content-between gap-2 py-3">
-                                    <button class="btn btn-secondary rounded-pill px-5 ms-4"
+                                <div class="d-flex justify-content-center justify-content-md-between gap-2 py-3 flex-md-row flex-column align-items-center">
+                                    <button class="btn btn-secondary rounded-pill px-5 mb-3 mb-md-0"
                                             @click="allerAuSuivantPrecedent(1)">
                                         Précédent
                                     </button>
 
                                     <button type="submit"
                                             :disabled="stateFinal || isSubmitting"
+                                            class="mb-md-0"
                                             :class="[
                       stateFinal ? 'bleuValide' : 'bleuNonValide',
                       classeActiveBouton,
@@ -531,7 +532,7 @@
     const info = useVuelidate(rules.value.generalInfo, formData.generalInfo);
     const isSubmitting = ref(false);
 
-    const classeActiveBouton = ref("btn rounded-pill px-5 me-4");
+    const classeActiveBouton = ref("btn rounded-pill px-5");
 
     const state1 = computed(() => {
         return info.value.$invalid;
