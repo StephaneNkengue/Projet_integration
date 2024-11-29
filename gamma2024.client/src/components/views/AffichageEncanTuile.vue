@@ -40,7 +40,7 @@
     const props = defineProps({
         encan: Object,
     });
-
+    console.log(props.encan);
     const dateDebut = ref(
         formatageDate(props.encan.dateDebut, affiche2Annees(), false)
     );

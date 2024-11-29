@@ -142,6 +142,7 @@
 
         chercherEncansAAfficher();
         chargement.value = false;
+        console.log(encansFiltres.value);
     }
 
     function genererListeDEncansFiltree() {
