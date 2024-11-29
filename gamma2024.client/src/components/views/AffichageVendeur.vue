@@ -12,7 +12,7 @@
 
         <router-link :to="{ name: 'VendeurCreation'}"
                      class="text-decoration-none">
-            <button class="btn btn-lg btn-block w-100 btnSurvolerBleuMoyenFond btnClick text-white">
+            <button class="btn fs-5 btn-block w-100 btnSurvolerBleuMoyenFond btnClick text-white">
                 Ajouter un vendeur
             </button>
         </router-link>
