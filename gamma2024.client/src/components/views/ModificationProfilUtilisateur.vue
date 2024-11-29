@@ -2,7 +2,7 @@
     <div v-if="isLoading">Chargement...</div>
     <div class="pt-md-5 container">
         <div class="container d-flex flex-column justify-content-start align-items-stretch card p-md-5 mb-5">
-            <div class="card-header">
+            <div class="card-header mt-3 mx-3">
                 <!-- Ajout de la section avatar -->
                 <div class="avatar-section mb-4 d-flex flex-column align-items-center">
                     <div class="avatar-container">
@@ -40,7 +40,7 @@
 
             </div>
 
-            <div class="mt-3 card-body">
+            <div class="mt-md-3 card-body">
                 <form @submit.prevent="submitForm">
                     <!-- Informations générales -->
                     <div class="card mb-5">
