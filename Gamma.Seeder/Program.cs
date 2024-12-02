@@ -424,7 +424,8 @@ var nbLot233 = 0;
 foreach (var item in lots233)
 {
     nbLot233++;
-    item.DateFinLot = encans[1].DateDebutSoireeCloture + TimeSpan.FromDays(encans[1].PasLot * nbLot233);
+    item.DateDebutDecompteLot = encans[1].DateDebutSoireeCloture;
+    item.DateFinDecompteLot = encans[1].DateDebutSoireeCloture + TimeSpan.FromDays(encans[1].PasLot * nbLot233);
 }
 
 context.UpdateRange(lots233);
@@ -435,7 +436,8 @@ var nbLot232 = 0;
 foreach (var item in lots232)
 {
     nbLot232++;
-    item.DateFinLot = encans[0].DateDebutSoireeCloture + TimeSpan.FromSeconds(encans[0].PasLot * nbLot232);
+    item.DateDebutDecompteLot = encans[0].DateDebutSoireeCloture;
+    item.DateFinDecompteLot = encans[0].DateDebutSoireeCloture + TimeSpan.FromSeconds(encans[0].PasLot * nbLot232);
 }
 
 context.UpdateRange(lots232);
