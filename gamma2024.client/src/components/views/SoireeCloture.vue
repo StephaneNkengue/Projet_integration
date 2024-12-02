@@ -1,6 +1,6 @@
 <template>
   <div class="soiree-cloture" v-if="encan && lotsTriesParTemps.length > 0">
-    <h2>Soirée de clôture - Encan #{{ encan.numeroEncan }}</h2>
+    <h2 class="text-center w-100">Soirée de clôture - Encan #{{ encan.numeroEncan }}</h2>
     
     <div v-if="lotsRestants.length > 0">
       <!-- Les 15 premiers lots en tuiles -->
