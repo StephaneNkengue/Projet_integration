@@ -8,6 +8,8 @@ namespace Gamma2024.Server.Hub {
     {
         Task ReceiveNewBid(object bid);
         Task UpdateBidStatus(object status);
+        Task LotTempsUpdated(int lotId, DateTime nouveauTemps);
+        Task LotVendu(int lotId);
     }
 
     public class LotMiseHub : Hub<ILotMiseHub>

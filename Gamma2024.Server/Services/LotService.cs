@@ -664,14 +664,22 @@ namespace Gamma2024.Server.Services
 					if (encanLot?.EstEnSoireeCloture() == true)
 					{
 						// Si le temps restant est moins de 60 secondes, ajouter 60 secondes
-						var tempsRestant = (lot.DateFinDecompteLot - DateTime.Now).TotalSeconds;
-						if (tempsRestant < 60)
+						if (lot.DateFinDecompteLot.HasValue)
 						{
-							lot.DateFinDecompteLot = lot.DateFinDecompteLot.Value.AddSeconds(60);
-							await _context.SaveChangesAsync();
+							var tempsRestant = (lot.DateFinDecompteLot.Value - DateTime.Now).TotalSeconds;
+							if (tempsRestant < 60)
+							{
+								lot.DateFinDecompteLot = lot.DateFinDecompteLot.Value.AddSeconds(60);
+								await _context.SaveChangesAsync();
 
-							// Notifier tous les clients du nouveau temps
-							await _hubContext.Clients.All.LotTempsUpdated(lot.Id, lot.DateFinDecompteLot.Value);
+								// Notifier tous les clients du nouveau temps via le même canal ReceiveNewBid
+								await _hubContext.Clients.All.ReceiveNewBid(new
+								{
+									type = "tempsLotMisAJour",
+									lotId = lot.Id,
+									nouveauTemps = lot.DateFinDecompteLot.Value
+								});
+							}
 						}
 					}
 				}
@@ -901,9 +909,15 @@ namespace Gamma2024.Server.Services
 				await _context.SaveChangesAsync();
 				
 				// Notifier tous les clients via SignalR
-				await _hubContext.Clients.All.LotVendu(lotId);
+				await _hubContext.Clients.All.ReceiveNewBid(new
+				{
+					type = "lotVendu",
+					lotId = lotId,
+					timestamp = DateTime.Now
+				});
 			}
 		}
+
 
 	}
 }
