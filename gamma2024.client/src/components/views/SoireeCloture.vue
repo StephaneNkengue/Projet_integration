@@ -33,8 +33,8 @@
 import { ref, computed, onMounted, watch } from 'vue'
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
-import LotTuile from '@/components/LotTuile.vue'
-import LotListe from '@/components/LotListe.vue'
+import LotTuile from '@/components/views/LotTuile.vue'
+import LotListe from '@/components/views/LotListe.vue'
 
 const store = useStore()
 const router = useRouter()
@@ -66,10 +66,9 @@ const lotsRestants = computed(() =>
   Object.values(lots.value).filter(lot => !lot.estVendu)
 )
 
-// Surveiller s'il reste des lots
+// Si tous les lots sont vendus, rediriger vers EncanPresent
 watch(lotsRestants, async (newLots) => {
   if (newLots.length === 0) {
-    // Rediriger vers EncanPresent qui affichera le message approprié
     await router.push({ name: 'EncanPresent' });
   }
 })

@@ -1,9 +1,5 @@
 <template>
   <div class="d-flex flex-column align-items-center pb-3">
-    <h1>
-      Encan en cours <span v-if="encan != ''">({{ encan.numeroEncan }})</span>
-    </h1>
-
     <div class="d-flex gap-2" v-if="chargement">
       <div class="spinner-border" role="status">
         <span class="visually-hidden">Chargement des encans...</span>
@@ -12,16 +8,24 @@
     </div>
 
     <div v-if="!chargement" class="w-100">
-      <h5 class="text-center" v-if="type === 'aucun'">
-        Il n'y a présentement aucun encan en cours
-      </h5>
+      <div v-if="type === 'aucun'">
+        <h5 class="text-center">
+          Il n'y a présentement aucun encan en cours
+        </h5>
+      </div>
 
-      <div v-else>
+      <div v-else-if="type === 'courant'">
+        <h1>
+          Encan en cours <span v-if="encan != ''">({{ encan.numeroEncan }})</span>
+        </h1>
         <p class="text-center">
           Date de début de la soirée de clotûre: {{ soireeDate }}
         </p>
-        <AffichageLots v-if="type === 'courant'" :idEncan="encan.id" />
-        <SoireeCloture v-else-if="type === 'soireeCloture'" :encan="encan" />
+        <AffichageLots :idEncan="encan.id" />
+      </div>
+
+      <div v-else-if="type === 'soireeCloture'">
+        <SoireeCloture :encan="encan" />
       </div>
     </div>
   </div>

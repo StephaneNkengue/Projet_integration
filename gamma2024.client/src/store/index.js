@@ -1232,12 +1232,12 @@ const store = createStore({
             }
         },
         async verifierEtatEncan({ state, commit }) {
-            const response = await state.api.get('/encan/etat-courant')
+            const response = await state.api.get('/encans/etat-courant')
             const { type, encan } = response.data
             
             commit('SET_ENCAN_COURANT', encan)
             if (encan?.encanLots) {
-              commit('SET_LOTS', encan.encanLots.map(el => el.lot))
+              commit('setLots', encan.encanLots.map(el => el.lot))
             }
             
             return type // 'courant' ou 'soireeCloture' ou null

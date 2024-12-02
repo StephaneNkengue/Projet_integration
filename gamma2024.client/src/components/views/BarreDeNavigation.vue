@@ -658,8 +658,8 @@ const listeDesArtistes = ref([]);
 const listeDesCategories = ref([]);
 const listeDesMediums = ref([]);
 
-    const ilYAUnEncanPresent = ref(false);
-    const titreBarreDeRechercheDeLots = ref("");
+const ilYAUnEncanPresent = ref(false);
+const titreBarreDeRechercheDeLots = ref("");
     var rechercheNumeroEncan = ref();
     const selectValeurEstimee = ref(0);
     const rechercheLotsValeurEstimee = ref();
@@ -679,6 +679,8 @@ const listeDesMediums = ref([]);
     const selectDate = ref(0);
     const rechercheEncansDate1 = ref();
     const rechercheEncansDate2 = ref();
+    const interval = ref(null);
+
 
 watch(
   () => store.state.user,
@@ -714,11 +716,18 @@ watch(
 var numeroEncanPresent = null;
 
 async function verifierSiEncanPresent() {
-  numeroEncanPresent = null;
-  var response = await store.dispatch("chercherEncanEnCours");
-  if (response.status == 200) {
-    numeroEncanPresent = response.data.numeroEncan.toString();
-    ilYAUnEncanPresent.value = true;
+  try {
+    const response = await store.dispatch('verifierEtatEncan');
+    const type = response;
+    
+    if (type === 'courant' || type === 'soireeCloture') {
+      ilYAUnEncanPresent.value = true;
+    } else {
+      ilYAUnEncanPresent.value = false;
+    }
+  } catch (error) {
+    console.error("Erreur lors de la vérification de l'encan:", error);
+    ilYAUnEncanPresent.value = false;
   }
 }
 
@@ -1012,40 +1021,6 @@ const deconnecter = async () => {
         listeDesCategories.value = await store.dispatch("obtenirCategories");
         verifierSiQueryDansURL();
     });
-
-// Vérification périodique de l'état de l'encan
-const interval = ref(null);
-const ilYAUnEncanPresent = ref(false);
-
-async function verifierSiEncanPresent() {
-  try {
-    const response = await store.dispatch('verifierEtatEncan');
-    const type = response;
-    
-    if (type === 'courant' || type === 'soireeCloture') {
-      ilYAUnEncanPresent.value = true;
-    } else {
-      ilYAUnEncanPresent.value = false;
-    }
-  } catch (error) {
-    console.error("Erreur lors de la vérification de l'encan:", error);
-    ilYAUnEncanPresent.value = false;
-  }
-}
-
-// Démarrer la vérification périodique
-onMounted(() => {
-  verifierSiEncanPresent();
-  // Vérifier toutes les 30 secondes
-  interval.value = setInterval(verifierSiEncanPresent, 30000);
-});
-
-// Nettoyer l'intervalle quand le composant est détruit
-onUnmounted(() => {
-  if (interval.value) {
-    clearInterval(interval.value);
-  }
-});
 
 // Surveiller les changements de route pour mettre à jour l'état
 watch(
