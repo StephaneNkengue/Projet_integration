@@ -351,8 +351,8 @@ encans.Add(new Encan
 {
     NumeroEncan = 233,
     DateDebut = new DateTime(2024, 3, 15, 6, 0, 0),
-    DateFin = new DateTime(2025, 3, 18, 6, 0, 0),
-    DateDebutSoireeCloture = new DateTime(2025, 3, 18, 6, 0, 1),
+    DateFin = DateTime.Now.AddMinutes(1),
+    DateDebutSoireeCloture = DateTime.Now.AddMinutes(1),
     EstPublie = true,
     PasLot = 10,
     PasMise = 120
@@ -384,6 +384,7 @@ encans.Add(new Encan
 context.Encans.AddRange(encans);
 context.SaveChanges();
 
+
 Console.WriteLine("Association des lots au encans respectifs");
 var encanLots = new List<EncanLot>();
 
@@ -413,9 +414,31 @@ foreach (var item in lots233)
 }
 
 context.Encans.Update(encans[1]);
-context.SaveChanges();
 
 context.EncanLots.AddRange(encanLots);
+context.SaveChanges();
+
+
+///Ajout des decomptes 
+var nbLot233 = 0;
+foreach (var item in lots233)
+{
+    nbLot233++;
+    item.DateFinLot = encans[1].DateDebutSoireeCloture + TimeSpan.FromDays(encans[1].PasLot * nbLot233);
+}
+
+context.UpdateRange(lots233);
+context.SaveChanges();
+
+///// 
+var nbLot232 = 0;
+foreach (var item in lots232)
+{
+    nbLot232++;
+    item.DateFinLot = encans[0].DateDebutSoireeCloture + TimeSpan.FromSeconds(encans[0].PasLot * nbLot232);
+}
+
+context.UpdateRange(lots232);
 context.SaveChanges();
 
 Console.WriteLine("Ajout des charités");
