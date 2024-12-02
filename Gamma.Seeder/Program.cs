@@ -351,8 +351,8 @@ encans.Add(new Encan
 {
     NumeroEncan = 233,
     DateDebut = new DateTime(2024, 3, 15, 6, 0, 0),
-    DateFin = DateTime.Now.AddMinutes(1),
-    DateDebutSoireeCloture = DateTime.Now.AddMinutes(1),
+    DateFin = DateTime.Now.AddMinutes(10),
+    DateDebutSoireeCloture = DateTime.Now.AddMinutes(10),
     EstPublie = true,
     PasLot = 10,
     PasMise = 120

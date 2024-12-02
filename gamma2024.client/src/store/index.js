@@ -188,16 +188,16 @@ const store = createStore({
             });
         },
         setLots(state, lots) {
-            // Convertir le tableau en objet indexé par id
+            console.log("Mutation setLots - lots reçus:", lots)
             const lotsObj = {};
             lots.forEach((lot) => {
-                // Conserver l'état userHasBid s'il existe déjà
                 const existingLot = state.lots[lot.id];
                 lotsObj[lot.id] = {
                     ...lot,
                     userHasBid: existingLot ? existingLot.userHasBid : false,
                 };
             });
+            console.log("Lots après traitement:", lotsObj)
             state.lots = lotsObj;
         },
         refreshLots(state) {
@@ -1233,11 +1233,16 @@ const store = createStore({
         },
         async verifierEtatEncan({ state, commit }) {
             const response = await state.api.get('/encans/etat-courant')
+            console.log("Réponse etat-courant:", response.data)
             const { type, encan } = response.data
             
             commit('SET_ENCAN_COURANT', encan)
             if (encan?.encanLots) {
-              commit('setLots', encan.encanLots.map(el => el.lot))
+              console.log("Lots reçus de l'encan:", encan.encanLots)
+              commit('setLots', encan.encanLots.map(el => {
+                console.log("Traitement lot:", el.lot)
+                return el.lot
+              }))
             }
             
             return type // 'courant' ou 'soireeCloture' ou null
