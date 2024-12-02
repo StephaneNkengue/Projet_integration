@@ -149,7 +149,7 @@
                 </table>
             </div>
 
-            <div class="d-flex flex-row justify-content-center gap-1 flex-wrap p-3" v-if="listeEncansFiltree.length != 0">
+            <div class="d-flex flex-row justify-content-center gap-1 flex-wrap p-3" v-if="listeEncansFiltree.length">
                 <button type="button"
                         class="btn text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
                         @click="reculerPage"

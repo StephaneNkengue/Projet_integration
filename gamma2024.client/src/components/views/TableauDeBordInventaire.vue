@@ -74,7 +74,7 @@
 
         <div v-if="!chargement" class="w-100">
             <div class="d-flex justify-content-between my-4">
-                <div class="dropdown d-flex-1">
+                <div class="dropdown d-flex-1" v-if="lotsAffiches.length">
                     <button class="btn btnSurvolerBleuMoyenFond boutonPersonnalise text-white dropdown-toggle"
                             type="button"
                             id="dropdownMenuButton"
@@ -110,7 +110,7 @@
                     </ul>
                 </div>
 
-                <div class="d-flex-1">
+                <div class="d-flex-1" v-if="lotsAffiches.length">
                     <div class="d-flex flex-row gap-2">
                         <button class="d-flex align-items-center text-center rounded btn text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
                                 type="button"
@@ -231,7 +231,7 @@
                 </table>
             </div>
 
-            <div class="d-flex flex-row justify-content-center gap-1 flex-wrap p-3">
+            <div class="d-flex flex-row justify-content-center gap-1 flex-wrap p-3" v-if="lotsAffiches.length">
                 <button type="button"
                         class="btn text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
                         @click="reculerPage"
