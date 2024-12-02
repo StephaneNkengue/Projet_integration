@@ -25,7 +25,7 @@
         </div>
 
         <div v-if="!chargement" class="w-100">
-            <div class="d-flex justify-content-end my-4">
+            <div class="d-flex justify-content-end my-4" v-if="vendeursAffiche.length">
                 <div class="d-flex flex-row gap-2">
                     <button class="d-flex align-items-center text-center rounded btn text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
                             @click="changerNbVendeurParPage(20)"
@@ -51,7 +51,7 @@
                 </div>
             </div>
 
-            <div class="d-flex justify-content-center" v-if="!vendeursAffichage.length">
+            <div class="d-flex justify-content-center mt-4" v-if="!vendeursAffiche.length">
                 <h2>Aucun résultat trouvé</h2>
             </div>
 
@@ -89,7 +89,7 @@
                 </table>
             </div>
 
-            <div class="d-flex flex-row justify-content-center gap-1 flex-wrap p-3" v-if="vendeursAffiche.length != 0">
+            <div class="d-flex flex-row justify-content-center gap-1 flex-wrap p-3" v-if="vendeursAffiche.length">
                 <button type="button"
                         class="btn text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
                         @click="reculerPage"
