@@ -146,7 +146,7 @@
         try {
             vendeurs.value = await store.dispatch("obtenirTousVendeurs");
 
-            nbVendeursRecus.value = vendeursAffichage.value.length;
+            nbVendeursRecus.value = filteredVendeurs.value.length;
             vendeursParPage.value = nbVendeursRecus.value;
             nbPages.value = recalculerNbPages();
 
@@ -169,14 +169,14 @@
                 vendeur.telephone.toLowerCase().includes(searchLower)
             );
         });
-
-        nbVendeursRecus.value = vendeursAffichage.value.length;
-        pageCourante.value = 1;
-        AjusterPagination();
     });
 
     watch(filteredVendeurs, () => {
         vendeursAffiche.value = filteredVendeurs.value;
+
+        nbVendeursRecus.value = filteredVendeurs.value.length;
+        pageCourante.value = 1;
+        AjusterPagination();
     });
 
     const changerNbVendeurParPage = ref(function (nouvVendeursParPage) {
@@ -239,10 +239,10 @@
 
         for (
             let i = positionDebut;
-            i < positionFin && i < vendeursAffichage.value.length;
+            i < positionFin && i < filteredVendeurs.value.length;
             i++
         ) {
-            vendeursAffiche.value.push(vendeursAffichage.value[i]);
+            vendeursAffiche.value.push(filteredVendeurs.value[i]);
         }
     }
 
