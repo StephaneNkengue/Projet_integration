@@ -425,7 +425,7 @@ foreach (var item in lots233)
 {
     nbLot233++;
     item.DateDebutDecompteLot = encans[1].DateDebutSoireeCloture;
-    item.DateFinDecompteLot = encans[1].DateDebutSoireeCloture + TimeSpan.FromDays(encans[1].PasLot * nbLot233);
+    item.DateFinDecompteLot = encans[1].DateDebutSoireeCloture + TimeSpan.FromSeconds(encans[1].PasLot * nbLot233);
 }
 
 context.UpdateRange(lots233);

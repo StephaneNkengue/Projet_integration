@@ -393,6 +393,8 @@ namespace Gamma2024.Server.Services
 						IdClientMise = l.IdClientMise ?? "",
 						SeraLivree = l.SeraLivree ?? false,
 						NombreMises = l.MisesAutomatiques.Count(),
+						DateDebutDecompteLot = l.DateDebutDecompteLot,
+						DateFinDecompteLot = l.DateFinDecompteLot
 					})
 					.ToList();
 
@@ -600,11 +602,6 @@ namespace Gamma2024.Server.Services
 					return (false, "L'encan n'a pas encore commencé");
 				}
 
-				if (maintenant > encan.DateFin)
-				{
-					return (false, "L'encan est terminé");
-				}
-
 				// Vérification du pas d'enchère
 				if (!EstMiseValide(lot, lot.Mise.HasValue ? (decimal)lot.Mise.Value : 0m, mise.Montant, mise.MontantMaximal ?? 0, mise.MontantMaximal.HasValue))
 				{
@@ -777,7 +774,7 @@ namespace Gamma2024.Server.Services
 			while (continuerMises)
 			{
 				// Vérifier si le temps est écoulé
-				if (DateTime.Now > lot.DateFinDecompteLot)
+				if (lot.DateFinDecompteLot.HasValue && DateTime.Now > lot.DateFinDecompteLot.Value)
 				{
 					break;
 				}

@@ -240,19 +240,6 @@ namespace Gamma2024.Server.Services
         {
             var maintenant = DateTime.Now;
             
-            // Chercher l'encan courant
-            var encanCourant = await _context.Encans
-                .Include(e => e.EncanLots)
-                    .ThenInclude(el => el.Lot)
-                .Where(e => e.DateDebut <= maintenant && e.DateFin >= maintenant)
-                .FirstOrDefaultAsync();
-
-            if (encanCourant != null)
-            {
-                return ("courant", encanCourant);
-            }
-
-            // Si pas d'encan courant, chercher le dernier encan terminé
             var dernierEncan = await _context.Encans
                 .Include(e => e.EncanLots)
                     .ThenInclude(el => el.Lot)
@@ -262,7 +249,36 @@ namespace Gamma2024.Server.Services
 
             if (dernierEncan?.EstEnSoireeCloture() == true)
             {
+                var lotsOrdonnes = dernierEncan.EncanLots
+                    .OrderBy(el => el.Lot.Numero)
+                    .ToList();
+
+                var derniereDateFin = lotsOrdonnes
+                    .Where(el => el.Lot.DateFinDecompteLot.HasValue)
+                    .Max(el => el.Lot.DateFinDecompteLot) ?? maintenant;
+
+                foreach (var encanLot in lotsOrdonnes.Where(el => !el.Lot.DateDebutDecompteLot.HasValue))
+                {
+                    var index = lotsOrdonnes.IndexOf(encanLot);
+                    encanLot.Lot.DateDebutDecompteLot = derniereDateFin;
+                    encanLot.Lot.DateFinDecompteLot = derniereDateFin.AddSeconds(dernierEncan.PasLot * (index + 1));
+                }
+
+                await _context.SaveChangesAsync();
+                
                 return ("soireeCloture", dernierEncan);
+            }
+
+            var encanCourant = await _context.Encans
+                .Include(e => e.EncanLots)
+                    .ThenInclude(el => el.Lot)
+                        .ThenInclude(l => l.Photos)
+                .Where(e => e.DateDebut <= maintenant && e.DateFin >= maintenant)
+                .FirstOrDefaultAsync();
+
+            if (encanCourant != null)
+            {
+                return ("courant", encanCourant);
             }
 
             return ("aucun", null);
