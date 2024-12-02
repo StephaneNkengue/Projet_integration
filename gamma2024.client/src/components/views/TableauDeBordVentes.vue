@@ -14,31 +14,7 @@
                placeholder="Rechercher une vente"
                aria-label="Search" />
 
-        <div class="d-flex flex-row gap-2 justify-content-end my-4">
-            <button class="d-flex align-items-center text-center rounded btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
-                    @click="changerNbVenteParPage(20)"
-                    v-bind:disabled="ventesParPage == 20">
-                20
-            </button>
-            <button class="d-flex align-items-center text-center rounded btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
-                    @click="changerNbVenteParPage(50)"
-                    v-bind:disabled="ventesParPage == 50">
-                50
-            </button>
-            <button class="d-flex align-items-center text-center rounded btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
-                    @click="changerNbVenteParPage(100)"
-                    v-bind:disabled="ventesParPage == 100">
-                100
-            </button>
-            <button class="d-flex align-items-center text-center rounded btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
-                    type="button"
-                    @click="afficherTousVentes"
-                    v-bind:disabled="ventesParPage == nbVentesRecus">
-                Tous
-            </button>
-        </div>
-
-        <div class="d-flex gap-2 justify-content-center" v-if="chargement">
+        <div class="d-flex gap-2 justify-content-center mt-4" v-if="chargement">
             <div class="spinner-border" role="status">
                 <span class="visually-hidden">Chargement des ventes...</span>
             </div>
@@ -46,11 +22,35 @@
         </div>
 
         <div v-if="!chargement" class="w-100">
+            <div class="d-flex flex-row gap-2 justify-content-end my-4">
+                <button class="d-flex align-items-center text-center rounded btn text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
+                        @click="changerNbVenteParPage(20)"
+                        v-bind:disabled="ventesParPage == 20">
+                    20
+                </button>
+                <button class="d-flex align-items-center text-center rounded btn text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
+                        @click="changerNbVenteParPage(50)"
+                        v-bind:disabled="ventesParPage == 50">
+                    50
+                </button>
+                <button class="d-flex align-items-center text-center rounded btn text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
+                        @click="changerNbVenteParPage(100)"
+                        v-bind:disabled="ventesParPage == 100">
+                    100
+                </button>
+                <button class="d-flex align-items-center text-center rounded btn text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
+                        type="button"
+                        @click="afficherTousVentes"
+                        v-bind:disabled="ventesParPage == nbVentesRecus">
+                    Tous
+                </button>
+            </div>
+
             <div class="d-flex justify-content-center" v-if="!filteredVentes.length">
                 <h2>Aucun résultat trouvé</h2>
             </div>
 
-            <div v-else class="mb-5">
+            <div v-else>
                 <div class="accordion" id="accordionEncan">
                     <div class="accordion-item" v-for="encan in numerosEncans" :key="encan">
                         <div v-if="filteredVentes.filter((x) => x.encan == encan.encan) != 0">
@@ -118,7 +118,7 @@
                                                  class="accordion-collapse collapse"
                                                  data-bs-parent="#accordionClient">
                                                 <div class="accordion-body">
-                                                    <table class="table">
+                                                    <table class="table text-center">
                                                         <thead class="table-dark">
                                                             <tr>
                                                                 <th scope="col">Numéro du lot</th>
@@ -142,32 +142,32 @@
                     </div>
                 </div>
             </div>
-        </div>
 
-        <div class="d-flex flex-row justify-content-center gap-1 flex-wrap p-3" v-if="ventesAffiche.length != 0">
-            <button type="button"
-                    class="btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
-                    @click="reculerPage"
-                    v-bind:disabled="pageCourante == 1">
-                <
-            </button>
-
-            <div v-for="item in listePagination" :key="item.id">
+            <div class="d-flex flex-row justify-content-center gap-1 flex-wrap p-3" v-if="ventesAffiche.length != 0">
                 <button type="button"
-                        class="btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
-                        :pageId="item"
-                        @click="changerPage()"
-                        v-bind:disabled="pageCourante == item || item == '...'">
-                    {{ item }}
+                        class="btn text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
+                        @click="reculerPage"
+                        v-bind:disabled="pageCourante == 1">
+                    <
+                </button>
+
+                <div v-for="item in listePagination" :key="item.id">
+                    <button type="button"
+                            class="btn text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
+                            :pageId="item"
+                            @click="changerPage()"
+                            v-bind:disabled="pageCourante == item || item == '...'">
+                        {{ item }}
+                    </button>
+                </div>
+
+                <button type="button"
+                        class="btn text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
+                        @click="avancerPage"
+                        v-bind:disabled="pageCourante == nbPages">
+                    >
                 </button>
             </div>
-
-            <button type="button"
-                    class="btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
-                    @click="avancerPage"
-                    v-bind:disabled="pageCourante == nbPages">
-                >
-            </button>
         </div>
     </div>
 </template>
@@ -352,7 +352,7 @@
     }
 
     td {
-        font-size: 16px;
+        font-size: 14px;
     }
 
     .btnVisuel {
