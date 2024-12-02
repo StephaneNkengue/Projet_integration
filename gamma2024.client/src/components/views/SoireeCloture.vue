@@ -52,24 +52,21 @@ const lots = computed(() => {
 })
 
 const lotsTriesParTemps = computed(() => {
-  console.log("Lots avant tri:", Object.values(lots.value))
-  const lotsTriés = Object.values(lots.value)
+  console.log("Calcul des lots triés");
+  return Object.values(lots.value)
     .filter(lot => {
-      console.log("Vérification lot:", lot)
-      return !lot.estVendu && new Date(lot.dateFinDecompteLot) > new Date()
+      console.log(`Vérification lot ${lot.id}:`, {
+        estVendu: lot.estVendu,
+        tempsRestant: lot.dateFinDecompteLot ? 
+          new Date(lot.dateFinDecompteLot) - new Date() : 'pas de temps'
+      });
+      return !lot.estVendu && 
+             lot.dateFinDecompteLot && 
+             new Date(lot.dateFinDecompteLot) > new Date();
     })
     .sort((a, b) => {
-      const tempsRestantA = new Date(a.dateFinDecompteLot) - new Date()
-      const tempsRestantB = new Date(b.dateFinDecompteLot) - new Date()
-      console.log(`Comparaison temps restant - Lot ${a.id}: ${tempsRestantA}s, Lot ${b.id}: ${tempsRestantB}s`)
-      
-      if (tempsRestantA === tempsRestantB) {
-        return new Date(a.dateDebutDecompteLot) - new Date(b.dateDebutDecompteLot)
-      }
-      return tempsRestantA - tempsRestantB
-    })
-  console.log("Lots après tri:", lotsTriés)
-  return lotsTriés
+      return new Date(a.dateFinDecompteLot) - new Date(b.dateFinDecompteLot);
+    });
 })
 
 const premierQuinzeLots = computed(() => lotsTriesParTemps.value.slice(0, 15))
@@ -108,4 +105,9 @@ watch(() => encan.value, async (newEncan) => {
     }
   }
 }, { immediate: true })
+
+// Forcer la réactivité
+watch(() => store.state.lots, () => {
+  console.log("Changement détecté dans les lots");
+}, { deep: true });
 </script> 

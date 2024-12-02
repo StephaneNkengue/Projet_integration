@@ -34,8 +34,9 @@
 <script setup>
 import AffichageLots from "@/components/views/AffichageLots.vue";
 import SoireeCloture from "@/components/views/SoireeCloture.vue";
-import { onMounted, ref, onUnmounted } from "vue";
+import { onMounted, ref, onUnmounted, watch } from "vue";
 import { useStore } from "vuex";
+import { useRouter } from "vue-router";
 
 let mois = [
   "janvier",
@@ -53,6 +54,7 @@ let mois = [
 ];
 
 const store = useStore();
+const router = useRouter();
 const chargement = ref(true);
 const encan = ref("");
 const soireeDate = ref();
@@ -89,6 +91,18 @@ onUnmounted(() => {
     clearInterval(interval.value);
   }
 });
+
+watch(
+    () => store.state.typeEncanCourant,
+    async (newType, oldType) => {
+        console.log('Type d\'encan changé:', { oldType, newType });
+        if (oldType === 'courant' && newType === 'soireeCloture') {
+            console.log('Transition vers soirée de clôture détectée');
+            await router.replace({ name: 'EncanPresent' });
+        }
+    },
+    { immediate: true }
+);
 
 function formatageDate(dateTexte, siAnnee, siHeure) {
   let sep = dateTexte.split("T");

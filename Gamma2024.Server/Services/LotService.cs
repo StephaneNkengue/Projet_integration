@@ -660,7 +660,6 @@ namespace Gamma2024.Server.Services
 					var encanLot = lot.EncanLots.FirstOrDefault()?.Encan;
 					if (encanLot?.EstEnSoireeCloture() == true)
 					{
-						// Si le temps restant est moins de 60 secondes, ajouter 60 secondes
 						if (lot.DateFinDecompteLot.HasValue)
 						{
 							var tempsRestant = (lot.DateFinDecompteLot.Value - DateTime.Now).TotalSeconds;
@@ -669,12 +668,18 @@ namespace Gamma2024.Server.Services
 								lot.DateFinDecompteLot = lot.DateFinDecompteLot.Value.AddSeconds(60);
 								await _context.SaveChangesAsync();
 
-								// Notifier tous les clients du nouveau temps via le même canal ReceiveNewBid
+								// Notifier tous les clients du nouveau temps
 								await _hubContext.Clients.All.ReceiveNewBid(new
 								{
 									type = "tempsLotMisAJour",
-									lotId = lot.Id,
-									nouveauTemps = lot.DateFinDecompteLot.Value
+										lotId = lot.Id,
+										nouveauTemps = lot.DateFinDecompteLot.Value,
+										// Ajouter l'ordre des lots pour optimiser
+										ordreLotsActuel = await _context.Lots
+											.Where(l => !l.EstVendu)
+											.OrderBy(l => l.DateFinDecompteLot)
+											.Select(l => l.Id)
+											.ToListAsync()
 								});
 							}
 						}

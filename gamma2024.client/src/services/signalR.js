@@ -23,7 +23,7 @@ export const startSignalRConnection = async (baseUrl, token) => {
     return connection;
   } catch (err) {
     console.error("SignalR Connection Error: ", err);
-    return null;
+    setTimeout(startSignalRConnection, 5000);
   }
 };
 

@@ -9,6 +9,7 @@ export const initApi = (getToken) => {
             Accept: "application/json",
             "Content-Type": "application/json",
         },
+        timeout: 30000,
     });
 
     // Intercepteur pour les requêtes

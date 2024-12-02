@@ -328,56 +328,70 @@
 
     // Computed pour le temps restant
     const tempsRestant = computed(() => {
-        const lot = store.getters.getLot(props.lotRecu.id)
-        if (!lot?.dateFinDecompteLot) return 0
+        const lot = store.getters.getLot(props.lotRecu.id);
+        if (!lot?.dateFinDecompteLot) return 0;
         
-        const fin = new Date(lot.dateFinDecompteLot)
-        const maintenant = new Date()
-        return Math.max(0, Math.floor((fin - maintenant) / 1000))
-    })
+        const fin = new Date(lot.dateFinDecompteLot);
+        const maintenant = new Date();
+        return Math.max(0, Math.floor((fin - maintenant) / 1000));
+    });
 
     // Computed pour le format du décompte
     const formatDecompte = computed(() => {
-        const minutes = Math.floor(tempsRestant.value / 60)
-        const secondes = tempsRestant.value % 60
-        return `${minutes.toString().padStart(2, '0')}:${secondes.toString().padStart(2, '0')}`
-    })
+        const minutes = Math.floor(tempsRestant.value / 60);
+        const secondes = tempsRestant.value % 60;
+        return `${minutes.toString().padStart(2, '0')}:${secondes.toString().padStart(2, '0')}`;
+    });
 
     // Mise à jour du temps toutes les secondes
     const { pause, resume } = useIntervalFn(() => {
         if (tempsRestant.value <= 0) {
-            pause()
-            // Notifier le serveur que le lot est vendu
-            if (store.state.connection) {
+            pause();
+            if (store.state.connection?.state === "Connected") {
+                console.log(`Lot ${props.lotRecu.id} temps écoulé, notification au serveur`);
                 store.state.connection.invoke("LotVendu", props.lotRecu.id)
+                    .then(() => {
+                        console.log(`Lot ${props.lotRecu.id} marqué comme vendu`);
+                        store.commit('SET_LOT_VENDU', props.lotRecu.id);
+                    })
+                    .catch(err => console.error('Erreur lors du marquage du lot comme vendu:', err));
             }
         }
-    }, 1000)
+    }, 1000);
 
     // Gestion du cycle de vie
     onMounted(() => {
         if (props.showDecompte) {
-            resume()
+            resume();
         }
-    })
+    });
 
     onUnmounted(() => {
-        pause()
-    })
+        pause();
+    });
 
     // Écouter les mises à jour de temps via SignalR
     onMounted(() => {
         if (store.state.connection) {
-            store.state.connection.on("LotTempsUpdated", (lotId, nouveauTemps) => {
-                if (lotId === props.lotRecu.id) {
+            store.state.connection.on("ReceiveNewBid", (data) => {
+                if (data.type === "tempsLotMisAJour" && data.lotId === props.lotRecu.id) {
                     store.commit('UPDATE_LOT_TEMPS', { 
-                        lotId, 
-                        nouveauTemps: new Date(nouveauTemps) 
-                    })
+                        lotId: data.lotId,
+                        nouveauTemps: new Date(data.nouveauTemps),
+                        ordreLotsActuel: data.ordreLotsActuel
+                    });
                 }
-            })
+            });
         }
-    })
+    });
+
+    // Utiliser nextTick pour les mises à jour visuelles
+    watch(tempsRestant, async (newValue) => {
+        if (newValue <= 0) {
+            await nextTick();
+            // Autres actions...
+        }
+    });
 
 </script>
 

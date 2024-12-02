@@ -259,10 +259,21 @@ const store = createStore({
         SET_SOIREE_CLOTURE(state, soiree) {
             state.soireeCloture = soiree
         },
-        UPDATE_LOT_TEMPS(state, { lotId, nouveauTemps }) {
-            const lot = state.lots[lotId]
+        UPDATE_LOT_TEMPS(state, { lotId, nouveauTemps, ordreLotsActuel }) {
+            const lot = state.lots[lotId];
             if (lot) {
-                lot.dateFinDecompteLot = nouveauTemps
+                lot.dateFinDecompteLot = nouveauTemps;
+                
+                // Si on a reçu l'ordre des lots, réorganiser immédiatement
+                if (ordreLotsActuel) {
+                    const lotsReorganises = {};
+                    ordreLotsActuel.forEach(id => {
+                        if (state.lots[id]) {
+                            lotsReorganises[id] = state.lots[id];
+                        }
+                    });
+                    state.lots = lotsReorganises;
+                }
             }
         },
         SET_LOT_VENDU(state, lotId) {
@@ -273,26 +284,41 @@ const store = createStore({
             }
         },
         REORGANISER_LOTS(state) {
-            // Trier les lots non vendus par temps restant
+            console.log('Réorganisation des lots');
             const lotsNonVendus = Object.values(state.lots)
-              .filter(lot => !lot.estVendu)
-              .sort((a, b) => {
-                const tempsRestantA = new Date(a.dateFinDecompteLot) - new Date();
-                const tempsRestantB = new Date(b.dateFinDecompteLot) - new Date();
-                
-                if (tempsRestantA === tempsRestantB) {
-                  // En cas d'égalité, utiliser DateDebutDecompteLot
-                  return new Date(a.dateDebutDecompteLot) - new Date(b.dateDebutDecompteLot);
-                }
-                
-                return tempsRestantA - tempsRestantB;
-              });
+                .filter(lot => !lot.estVendu)
+                .sort((a, b) => {
+                    // Si pas de date de fin, mettre à la fin
+                    if (!a.dateFinDecompteLot || !b.dateFinDecompteLot) return 0;
+                    
+                    const finA = new Date(a.dateFinDecompteLot);
+                    const finB = new Date(b.dateFinDecompteLot);
+                    
+                    // Si les dates de fin sont égales, comparer les dates de début
+                    if (finA.getTime() === finB.getTime()) {
+                        if (!a.dateDebutDecompteLot || !b.dateDebutDecompteLot) return 0;
+                        return new Date(a.dateDebutDecompteLot) - new Date(b.dateDebutDecompteLot);
+                    }
+                    
+                    return finA - finB;
+                });
 
-            // Mettre à jour l'ordre des lots
-            state.lots = lotsNonVendus.reduce((acc, lot) => {
-              acc[lot.id] = lot;
-              return acc;
-            }, {});
+            console.log('Lots triés:', lotsNonVendus.map(lot => ({
+                id: lot.id,
+                dateFin: lot.dateFinDecompteLot,
+                dateDebut: lot.dateDebutDecompteLot
+            })));
+
+            const lotsReorganises = {};
+            lotsNonVendus.forEach(lot => {
+                lotsReorganises[lot.id] = lot;
+            });
+            
+            state.lots = lotsReorganises;
+        },
+        RESET_ENCAN_STATE(state) {
+            state.encanCourant = null;
+            state.soireeCloture = null;
         }
     },
     actions: {
