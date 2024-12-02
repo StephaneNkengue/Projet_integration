@@ -65,7 +65,9 @@ const verifierEtat = async () => {
   const etatType = await store.dispatch('verifierEtatEncan')
   type.value = etatType
   encan.value = store.state.encanCourant
-  if (encan.value != "") {
+  
+  // Vérifier si encan.value existe avant d'accéder à ses propriétés
+  if (encan.value && encan.value.dateDebutSoireeCloture) {
     soireeDate.value = formatageDate(
       encan.value.dateDebutSoireeCloture,
       true,
