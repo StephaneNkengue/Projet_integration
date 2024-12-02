@@ -634,7 +634,7 @@
     </header>
 </template>
 <script setup>
-import { computed, watch, ref, onMounted } from "vue";
+import { computed, watch, ref, onMounted, onUnmounted } from "vue";
 import { useStore } from "vuex";
 import { RouterLink, useRouter, useRoute } from "vue-router";
 import VueDatePicker from "@vuepic/vue-datepicker";
@@ -1012,6 +1012,50 @@ const deconnecter = async () => {
         listeDesCategories.value = await store.dispatch("obtenirCategories");
         verifierSiQueryDansURL();
     });
+
+// Vérification périodique de l'état de l'encan
+const interval = ref(null);
+const ilYAUnEncanPresent = ref(false);
+
+async function verifierSiEncanPresent() {
+  try {
+    const response = await store.dispatch('verifierEtatEncan');
+    const type = response;
+    
+    if (type === 'courant' || type === 'soireeCloture') {
+      ilYAUnEncanPresent.value = true;
+    } else {
+      ilYAUnEncanPresent.value = false;
+    }
+  } catch (error) {
+    console.error("Erreur lors de la vérification de l'encan:", error);
+    ilYAUnEncanPresent.value = false;
+  }
+}
+
+// Démarrer la vérification périodique
+onMounted(() => {
+  verifierSiEncanPresent();
+  // Vérifier toutes les 30 secondes
+  interval.value = setInterval(verifierSiEncanPresent, 30000);
+});
+
+// Nettoyer l'intervalle quand le composant est détruit
+onUnmounted(() => {
+  if (interval.value) {
+    clearInterval(interval.value);
+  }
+});
+
+// Surveiller les changements de route pour mettre à jour l'état
+watch(
+  () => route.name,
+  async () => {
+    if (route.name === 'EncanPresent') {
+      await verifierSiEncanPresent();
+    }
+  }
+);
 </script>
 <style scoped>
 .ms-7 {
@@ -1132,5 +1176,11 @@ select option[value=""] {
 
 .navbar .navbar-collapse .navbar-nav a.router-link-active {
   color: #fff;
+}
+
+/* Ajouter des styles pour indiquer l'état actif */
+.nav-item.nav-link .router-link-active {
+  color: #fff !important;
+  font-weight: bold;
 }
 </style>

@@ -12,7 +12,7 @@
     </div>
 
     <div v-if="!chargement" class="w-100">
-      <h5 class="text-center" v-if="encan == ''">
+      <h5 class="text-center" v-if="type === 'aucun'">
         Il n'y a présentement aucun encan en cours
       </h5>
 
@@ -20,7 +20,8 @@
         <p class="text-center">
           Date de début de la soirée de clotûre: {{ soireeDate }}
         </p>
-        <AffichageLots :idEncan="encan.id" />
+        <AffichageLots v-if="type === 'courant'" :idEncan="encan.id" />
+        <SoireeCloture v-else-if="type === 'soireeCloture'" :encan="encan" />
       </div>
     </div>
   </div>
@@ -28,7 +29,8 @@
 
 <script setup>
 import AffichageLots from "@/components/views/AffichageLots.vue";
-import { onMounted, ref } from "vue";
+import SoireeCloture from "@/components/views/SoireeCloture.vue";
+import { onMounted, ref, onUnmounted } from "vue";
 import { useStore } from "vuex";
 
 let mois = [
@@ -47,14 +49,18 @@ let mois = [
 ];
 
 const store = useStore();
-
 const chargement = ref(true);
 const encan = ref("");
 const soireeDate = ref();
+const type = ref(null);
 
-onMounted(async () => {
-  const response = await store.dispatch("chercherEncanEnCours");
-  encan.value = response.data;
+// Vérification périodique de l'état
+const interval = ref(null);
+
+const verifierEtat = async () => {
+  const etatType = await store.dispatch('verifierEtatEncan')
+  type.value = etatType
+  encan.value = store.state.encanCourant
   if (encan.value != "") {
     soireeDate.value = formatageDate(
       encan.value.dateDebutSoireeCloture,
@@ -62,8 +68,20 @@ onMounted(async () => {
       true
     );
   }
+}
 
+onMounted(async () => {
+  await verifierEtat();
+  // Démarrer la surveillance des transitions
+  await store.dispatch('surveillerTransitionEncan')
+  interval.value = setInterval(verifierEtat, 30000);
   chargement.value = false;
+});
+
+onUnmounted(() => {
+  if (interval.value) {
+    clearInterval(interval.value);
+  }
 });
 
 function formatageDate(dateTexte, siAnnee, siHeure) {

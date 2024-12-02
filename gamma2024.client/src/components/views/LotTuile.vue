@@ -40,6 +40,9 @@
                 <p class="text-center mb-0 text-muted">
                     {{ nombreOffres }} {{ nombreOffres <= 1 ? 'offre' : 'offres' }}
                 </p>
+                <p v-if="showDecompte" class="text-center mb-0" :class="{'text-danger': tempsRestant < 60}">
+                    {{ formatDecompte }}
+                </p>
 
                 <div class="d-flex justify-content-around pt-2">
                     <button type="button"
@@ -64,11 +67,16 @@
     import ModalMise from '@/components/modals/ModalMise.vue';
     import { toast } from 'vue3-toastify';
     import { useRouter } from 'vue-router';
+    import { useIntervalFn } from '@vueuse/core'
 
     const store = useStore();
     const router = useRouter();
     const props = defineProps({
         lotRecu: Object,
+        showDecompte: {
+            type: Boolean,
+            default: false
+        }
     });
 
     const urlApi = ref("/api");
@@ -317,6 +325,59 @@
     const nombreOffres = computed(() => {
         return store.getters.getUniqueOffersCount(props.lotRecu.id);
     });
+
+    // Computed pour le temps restant
+    const tempsRestant = computed(() => {
+        const lot = store.getters.getLot(props.lotRecu.id)
+        if (!lot?.dateFinDecompteLot) return 0
+        
+        const fin = new Date(lot.dateFinDecompteLot)
+        const maintenant = new Date()
+        return Math.max(0, Math.floor((fin - maintenant) / 1000))
+    })
+
+    // Computed pour le format du décompte
+    const formatDecompte = computed(() => {
+        const minutes = Math.floor(tempsRestant.value / 60)
+        const secondes = tempsRestant.value % 60
+        return `${minutes.toString().padStart(2, '0')}:${secondes.toString().padStart(2, '0')}`
+    })
+
+    // Mise à jour du temps toutes les secondes
+    const { pause, resume } = useIntervalFn(() => {
+        if (tempsRestant.value <= 0) {
+            pause()
+            // Notifier le serveur que le lot est vendu
+            if (store.state.connection) {
+                store.state.connection.invoke("LotVendu", props.lotRecu.id)
+            }
+        }
+    }, 1000)
+
+    // Gestion du cycle de vie
+    onMounted(() => {
+        if (props.showDecompte) {
+            resume()
+        }
+    })
+
+    onUnmounted(() => {
+        pause()
+    })
+
+    // Écouter les mises à jour de temps via SignalR
+    onMounted(() => {
+        if (store.state.connection) {
+            store.state.connection.on("LotTempsUpdated", (lotId, nouveauTemps) => {
+                if (lotId === props.lotRecu.id) {
+                    store.commit('UPDATE_LOT_TEMPS', { 
+                        lotId, 
+                        nouveauTemps: new Date(nouveauTemps) 
+                    })
+                }
+            })
+        }
+    })
 
 </script>
 

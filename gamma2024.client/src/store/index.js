@@ -16,6 +16,8 @@ const store = createStore({
         userOutbidLots: [],
         notifications: [],
         userBidHistory: {}, // Format: { lotId: { userId: montant } }
+        encanCourant: null,
+        soireeCloture: null,
     },
     mutations: {
         ADD_NOTIFICATION(state, message) {
@@ -250,6 +252,47 @@ const store = createStore({
                 state.userBidHistory[lotId] = {};
             }
             state.userBidHistory[lotId][userId] = montant;
+        },
+        SET_ENCAN_COURANT(state, encan) {
+            state.encanCourant = encan
+        },
+        SET_SOIREE_CLOTURE(state, soiree) {
+            state.soireeCloture = soiree
+        },
+        UPDATE_LOT_TEMPS(state, { lotId, nouveauTemps }) {
+            const lot = state.lots[lotId]
+            if (lot) {
+                lot.dateFinDecompteLot = nouveauTemps
+            }
+        },
+        SET_LOT_VENDU(state, lotId) {
+            const lot = state.lots[lotId]
+            if (lot) {
+                lot.estVendu = true
+                this.commit('REORGANISER_LOTS')
+            }
+        },
+        REORGANISER_LOTS(state) {
+            // Trier les lots non vendus par temps restant
+            const lotsNonVendus = Object.values(state.lots)
+              .filter(lot => !lot.estVendu)
+              .sort((a, b) => {
+                const tempsRestantA = new Date(a.dateFinDecompteLot) - new Date();
+                const tempsRestantB = new Date(b.dateFinDecompteLot) - new Date();
+                
+                if (tempsRestantA === tempsRestantB) {
+                  // En cas d'égalité, utiliser DateDebutDecompteLot
+                  return new Date(a.dateDebutDecompteLot) - new Date(b.dateDebutDecompteLot);
+                }
+                
+                return tempsRestantA - tempsRestantB;
+              });
+
+            // Mettre à jour l'ordre des lots
+            state.lots = lotsNonVendus.reduce((acc, lot) => {
+              acc[lot.id] = lot;
+              return acc;
+            }, {});
         }
     },
     actions: {
@@ -1187,6 +1230,53 @@ const store = createStore({
             } catch (error) {
                 return "Erreur, veuillez réessayer";
             }
+        },
+        async verifierEtatEncan({ state, commit }) {
+            const response = await state.api.get('/encan/etat-courant')
+            const { type, encan } = response.data
+            
+            commit('SET_ENCAN_COURANT', encan)
+            if (encan?.encanLots) {
+              commit('SET_LOTS', encan.encanLots.map(el => el.lot))
+            }
+            
+            return type // 'courant' ou 'soireeCloture' ou null
+        },
+        async surveillerTransitionEncan({ dispatch, commit }) {
+            const verifierEtat = async () => {
+                const ancienType = this.state.typeEncanCourant
+                const nouveauType = await dispatch('verifierEtatEncan')
+                
+                if (ancienType !== nouveauType) {
+                    if (ancienType === 'courant' && nouveauType === 'soireeCloture') {
+                        await dispatch('initialiserSoireeCloture')
+                    } else if (nouveauType === 'aucun') {
+                        commit('RESET_ENCAN_STATE')
+                    }
+                }
+            }
+            setInterval(verifierEtat, 5000)
+        },
+
+        async initialiserSoireeCloture({ commit, dispatch }) {
+            try {
+                // Synchroniser les temps avec le serveur
+                if (this.state.connection) {
+                    await this.state.connection.invoke("DemanderSynchronisation");
+                }
+
+                // Démarrer la surveillance des transitions
+                await dispatch('surveillerTransitionEncan');
+            } catch (error) {
+                console.error("Erreur lors de l'initialisation de la soirée de clôture:", error);
+            }
+        },
+
+        async synchroniserTempsLots({ commit }, tempsLots) {
+            Object.entries(tempsLots).forEach(([lotId, temps]) => {
+                commit('UPDATE_LOT_TEMPS', { lotId: parseInt(lotId), nouveauTemps: temps });
+            });
+            commit('REORGANISER_LOTS');
         }
 
     },
