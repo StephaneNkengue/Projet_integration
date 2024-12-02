@@ -13,8 +13,8 @@
                         </h2>
                         <div id="collapseMajoration" class="accordion-collapse collapse" data-bs-parent="#accordionMajoration">
                             <div class="accordion-body">
-                                <table class="table table-striped table-bordered table-sm">
-                                    <thead>
+                                <table class="table table-striped table-bordered table-sm text-center">
+                                    <thead class="table-dark">
                                         <tr>
                                             <th scope="col">Offre (en dollar)</th>
                                             <th scope="col">Pas de l'enchère</th>
