@@ -49,7 +49,7 @@
         </div>
 
         <div v-if="!chargement" class="w-100">
-            <div class="d-flex justify-content-end my-4">
+            <div class="d-flex justify-content-end my-4" v-if="listeEncansFiltree.length">
                 <div class="d-flex flex-row gap-2">
                     <button class="d-flex align-items-center text-center rounded btn text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
                             @click="changerNbEncanParPage(20)"
@@ -75,7 +75,7 @@
                 </div>
             </div>
 
-            <div class="d-flex justify-content-center" v-if="!listeEncansFiltree.length">
+            <div class="d-flex justify-content-center mt-4" v-if="!listeEncansFiltree.length">
                 <h2>Aucun résultat trouvé</h2>
             </div>
 
