@@ -64,25 +64,41 @@ const type = ref(null);
 const interval = ref(null);
 
 const verifierEtat = async () => {
-  const etatType = await store.dispatch('verifierEtatEncan')
-  type.value = etatType
-  encan.value = store.state.encanCourant
-  
-  // Vérifier si encan.value existe avant d'accéder à ses propriétés
-  if (encan.value && encan.value.dateDebutSoireeCloture) {
-    soireeDate.value = formatageDate(
-      encan.value.dateDebutSoireeCloture,
-      true,
-      true
-    );
-  }
-}
+    try {
+        const maintenant = new Date();
+        const etatType = await store.dispatch('verifierEtatEncan');
+        type.value = etatType;
+        encan.value = store.state.encanCourant;
+
+        // Vérifier si encan.value existe avant d'accéder à ses propriétés
+        if (encan.value && encan.value.dateDebutSoireeCloture) {
+            soireeDate.value = formatageDate(
+                encan.value.dateDebutSoireeCloture,
+                true,
+                true
+            );
+
+            // Vérifier si on est exactement à l'heure de début
+            const debutSoiree = new Date(encan.value.dateDebutSoireeCloture);
+            const diffMs = debutSoiree - maintenant;
+            
+            if (diffMs > 0 && diffMs < 1000) { // Si moins d'une seconde avant le début
+                // Programmer la transition exacte
+                setTimeout(async () => {
+                    await router.replace({ name: 'EncanPresent' });
+                }, diffMs);
+            }
+        }
+    } catch (error) {
+        console.error("Erreur lors de la vérification de l'état:", error);
+    }
+};
 
 onMounted(async () => {
   await verifierEtat();
   // Démarrer la surveillance des transitions
   await store.dispatch('surveillerTransitionEncan')
-  interval.value = setInterval(verifierEtat, 30000);
+  interval.value = setInterval(verifierEtat, 1000);
   chargement.value = false;
 });
 

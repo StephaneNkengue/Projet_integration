@@ -335,48 +335,44 @@
         return store.getters.getUniqueOffersCount(props.lotRecu.id);
     });
 
-    // Computed pour le temps restant
+    // Remplacer useIntervalFn par un computed plus réactif
     const tempsRestant = computed(() => {
-        const lot = store.getters.getLot(props.lotRecu.id)
-        if (!lot?.dateFinDecompteLot) return 0
+        const lot = store.getters.getLot(props.lotRecu.id);
+        if (!lot?.dateFinDecompteLot) return 0;
         
-        const fin = new Date(lot.dateFinDecompteLot)
-        const maintenant = new Date()
-        return Math.max(0, Math.floor((fin - maintenant) / 1000))
-    })
+        // Utiliser performance.now() pour une meilleure précision
+        const fin = new Date(lot.dateFinDecompteLot).getTime();
+        const maintenant = Date.now();
+        return Math.max(0, Math.floor((fin - maintenant) / 1000));
+    });
+
+    // Utiliser requestAnimationFrame pour une mise à jour plus fluide
+    let rafId = null;
+
+    const updateTimer = () => {
+        if (tempsRestant.value <= 0) {
+            cancelAnimationFrame(rafId);
+            if (store.state.connection?.state === "Connected") {
+                store.state.connection.invoke("LotVendu", props.lotRecu.id);
+            }
+            return;
+        }
+        rafId = requestAnimationFrame(updateTimer);
+    };
+
+    onMounted(() => {
+        rafId = requestAnimationFrame(updateTimer);
+    });
+
+    onUnmounted(() => {
+        if (rafId) cancelAnimationFrame(rafId);
+    });
 
     // Computed pour le format du décompte
     const formatDecompte = computed(() => {
         const minutes = Math.floor(tempsRestant.value / 60)
         const secondes = tempsRestant.value % 60
         return `${minutes.toString().padStart(2, '0')}:${secondes.toString().padStart(2, '0')}`
-    })
-
-    // Mise à jour du temps toutes les secondes
-    const { pause, resume } = useIntervalFn(() => {
-        if (tempsRestant.value <= 0) {
-            pause();
-            if (store.state.connection?.state === "Connected") {
-                console.log(`Lot ${props.lotRecu.id} temps écoulé, notification au serveur`);
-                store.state.connection.invoke("LotVendu", props.lotRecu.id)
-                    .then(() => {
-                        console.log(`Lot ${props.lotRecu.id} marqué comme vendu`);
-                        store.commit('SET_LOT_VENDU', props.lotRecu.id);
-                    })
-                    .catch(err => console.error('Erreur lors du marquage du lot comme vendu:', err));
-            }
-        }
-    }, 1000);
-
-    // Gestion du cycle de vie
-    onMounted(() => {
-        if (props.showDecompte) {
-            resume()
-        }
-    })
-
-    onUnmounted(() => {
-        pause()
     })
 
     // Écouter les mises à jour de temps via SignalR
