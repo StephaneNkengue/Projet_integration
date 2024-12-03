@@ -18,7 +18,7 @@
                 <button class="rounded btn btnSurvolerBleuMoyenFond"
                         v-if="!siTuile"
                         @click="changerTypeAffichage('tuile')">
-                    <img src="/icons/IconTableau.png"
+                    <img src="/icons/TableauOption.png"
                          alt="Affichage en tableau"
                          height="25" />
                 </button>
