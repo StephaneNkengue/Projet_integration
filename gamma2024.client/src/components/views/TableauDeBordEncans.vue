@@ -130,14 +130,14 @@
                             <td class="align-middle">
                                 <div class="d-flex flex-row justify-content-center">
                                     <button class="btn bleuMarinSecondaireFond px-3 me-3 btnModifierIcone" @click="editerEncan(encan.id)">
-                                        <img src="/public/icons/Edit_icon.png"
+                                        <img src="/icons/ModifierBtn.png"
                                              width="30"
                                              alt="..." />
                                     </button>
                                     <button class="btn btn-danger px-3 btn_delete"
                                             data-bs-toggle="modal"
                                             :data-bs-target="'#' + encan.numeroEncan">
-                                        <img src="/public/icons/Delete_icon.png"
+                                        <img src="/icons/SupprimerBtn.png"
                                              width="30"
                                              alt="..." />
                                     </button>

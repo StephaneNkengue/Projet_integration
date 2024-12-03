@@ -19,15 +19,15 @@
                     <button class="rounded btn btnSurvolerBleuMoyenFond"
                             v-if="!siTuile"
                             @click="changerTypeAffichage('tuile')">
-                        <img src="/icons/IconTableau.png"
+                        <img src="/icons/TableauOption.png"
                              alt="Affichage en tableau"
                              height="25" />
                     </button>
                     <button class="rounded btn btnSurvolerBleuMoyenFond"
                             v-else
                             @click="changerTypeAffichage('liste')">
-                        <img src="/icons/IconListe.png" 
-                             alt="Affichage en liste" 
+                        <img src="/icons/ListeOption.png"
+                             alt="Affichage en liste"
                              height="25" />
                     </button>
                 </div>
@@ -42,8 +42,8 @@
                 </div>
 
                 <div v-else class="d-flex flex-column px-5 w-100">
-                    <div v-for="lot in lotsAvecMises" 
-                         :key="lot.id" 
+                    <div v-for="lot in lotsAvecMises"
+                         :key="lot.id"
                          class="p-2">
                         <LotListe :lotRecu="lot" />
                     </div>
@@ -54,50 +54,50 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed, watch } from 'vue';
-import { useStore } from 'vuex';
-import LotTuile from './LotTuile.vue';
-import LotListe from './LotListe.vue';
+    import { ref, onMounted, computed, watch } from 'vue';
+    import { useStore } from 'vuex';
+    import LotTuile from './LotTuile.vue';
+    import LotListe from './LotListe.vue';
 
-const store = useStore();
-const chargement = ref(true);
-const siTuile = ref(true);
+    const store = useStore();
+    const chargement = ref(true);
+    const siTuile = ref(true);
 
-// Computed property pour filtrer les lots avec mises
-const lotsAvecMises = computed(() => {
-    const userBids = store.state.userBids;
-    return Object.values(store.state.lots)
-        .filter(lot => userBids.includes(lot.id))
-        .map(lot => ({
-            ...lot,
-            userHasBid: true
-        }));
-});
+    // Computed property pour filtrer les lots avec mises
+    const lotsAvecMises = computed(() => {
+        const userBids = store.state.userBids;
+        return Object.values(store.state.lots)
+            .filter(lot => userBids.includes(lot.id))
+            .map(lot => ({
+                ...lot,
+                userHasBid: true
+            }));
+    });
 
-// Watch pour les changements dans le store
-watch(() => store.state.lots, () => {
-    if (store.state.isLoggedIn) {
-        store.dispatch('fetchUserBids');
-    }
-}, { deep: true });
-
-const changerTypeAffichage = (type) => {
-    siTuile.value = type === 'tuile';
-};
-
-onMounted(async () => {
-    try {
+    // Watch pour les changements dans le store
+    watch(() => store.state.lots, () => {
         if (store.state.isLoggedIn) {
-            await store.dispatch('fetchUserBids');
+            store.dispatch('fetchUserBids');
         }
-    } catch (error) {
-        console.error("Erreur lors du chargement des mises:", error);
-    } finally {
-        chargement.value = false;
-    }
-});
+    }, { deep: true });
+
+    const changerTypeAffichage = (type) => {
+        siTuile.value = type === 'tuile';
+    };
+
+    onMounted(async () => {
+        try {
+            if (store.state.isLoggedIn) {
+                await store.dispatch('fetchUserBids');
+            }
+        } catch (error) {
+            console.error("Erreur lors du chargement des mises:", error);
+        } finally {
+            chargement.value = false;
+        }
+    });
 </script>
 
 <style scoped>
-/* Réutiliser les styles d'AffichageLots si nécessaire */
+    /* Réutiliser les styles d'AffichageLots si nécessaire */
 </style> 

@@ -180,7 +180,7 @@ namespace Gamma2024.Server.Migrations
                         {
                             Id = "8e445865-a24d-4543-a6c6-9443d048cdb9",
                             AccessFailedCount = 0,
-                            Avatar = "avatars/default.png",
+                            Avatar = "/Avatars/Defaut.png",
                             ConcurrencyStamp = "f1f3de20-69b9-491d-bc82-b484b44cd47f",
                             Email = "admin@example.com",
                             EmailConfirmed = true,
@@ -201,7 +201,7 @@ namespace Gamma2024.Server.Migrations
                         {
                             Id = "1d8ac862-e54d-4f10-b6f8-638808c02967",
                             AccessFailedCount = 0,
-                            Avatar = "avatars/default.png",
+                            Avatar = "/Avatars/Defaut.png",
                             ConcurrencyStamp = "ff176598-423c-4557-bfc4-48e928f579e9",
                             Email = "client@example.com",
                             EmailConfirmed = true,

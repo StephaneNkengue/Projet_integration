@@ -66,12 +66,12 @@
                                         aria-expanded="true" :aria-controls="'collapse' + encan.encan">
                                     <div class="col">
                                         <img v-if="encan.livraison == true"
-                                             src="/icons/livrable.png" />
+                                             src="/icons/Livrable.png" />
                                         <img v-else-if="encan.livraison == false"
                                              src="/icons/Cueillette.png"
                                              class="imgCueillette" />
                                         <img v-else
-                                             src="/icons/IconeAvertissement.png"
+                                             src="/icons/Avertissement.png"
                                              class="imgAvertissement" />
                                     </div>
 
@@ -90,7 +90,7 @@
                                                 class="btn btn-info"
                                                 data-bs-toggle="modal"
                                                 :data-bs-target="'#modalLivraison'+encan.id">
-                                            <img src="/icons/IconeLivrable.png" class="btnVisuel img-fluid" alt="..." />
+                                            <img src="/icons/Livrable.png" class="btnVisuel img-fluid" alt="..." />
                                         </button>
                                     </div>
 
@@ -98,7 +98,7 @@
                                         <button class="btn btn-info"
                                                 data-bs-toggle="modal"
                                                 :data-bs-target="'#modalFac'+encan.id">
-                                            <img src="/images/ice.png" class="btnVisuel img-fluid" alt="..." />
+                                            <img src="/icons/VoirBtn.png" class="btnVisuel img-fluid" alt="..." />
                                         </button>
                                     </div>
                                 </button>

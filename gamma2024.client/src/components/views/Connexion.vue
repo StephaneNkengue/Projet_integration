@@ -152,23 +152,23 @@
 
                         this.messageSucces = `Connexion réussie en tant que ${rolesString}`;
                         // Redirection immédiate vers la page d'accueil
-                        if(rolesString == 'Administrateur'){
+                        if (rolesString == 'Administrateur') {
                             this.$router.push({ name: 'Accueil' });
                         }
-                        else if(rolesString == 'Client'){
+                        else if (rolesString == 'Client') {
 
                             let response = await this.$store.dispatch("chercherCartesUser");
-                               
-                            if(response.data.length < 1){
+
+                            if (response.data.length < 1) {
                                 this.$router.push({ name: 'EnregistrerCarte' });
                             }
-                            else{
+                            else {
                                 this.$router.push({ name: 'EncanPresent' });
                             }
 
                         }
-                        else{
-                            this.$router.push({name: 'Accueil'})
+                        else {
+                            this.$router.push({ name: 'Accueil' })
                         }
 
 
@@ -202,7 +202,7 @@
     }
 
     .imageDeFondEsquise {
-        background-image: url("/public/images/DessinGris.PNG");
+        background-image: url("/images/DessinGris.png");
         background-size: cover;
         background-position: 0px -100px;
         background-attachment: fixed;

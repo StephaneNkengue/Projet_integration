@@ -203,24 +203,24 @@
                             <td v-if="colonnesVisibles.medium">{{ lot.medium }}</td>
                             <td v-if="colonnesVisibles.vendeur">{{ lot.vendeur }}</td>
                             <td v-if="colonnesVisibles.estVendu">
-                                <img v-if="lot.estVendu" src="/icons/vendu.png" width="40" height="40" />
-                                <img v-else src="/icons/nonvendu.png" width="40" height="40" />
+                                <img v-if="lot.estVendu" src="/icons/Vendu.png" width="40" height="40" />
+                                <img v-else src="/icons/NonVendu.png" width="40" height="40" />
                             </td>
                             <td v-if="colonnesVisibles.livraison">
-                                <img v-if="lot.estLivrable" src="/icons/livrable.png" width="40" height="40" />
-                                <img v-else src="/icons/nonlivrable.png" width="40" height="40" />
+                                <img v-if="lot.estLivrable" src="/icons/Livrable.png" width="40" height="40" />
+                                <img v-else src="/icons/NonLivrable.png" width="40" height="40" />
                             </td>
                             <td>
                                 <div class="d-flex">
                                     <router-link :to="{ name: 'ModificationLot', params: { id: lot.id } }">
                                         <button class="btn btnModifierIcone bleuMarinSecondaireFond px-3 me-3">
-                                            <img src="/public/icons/Edit_icon.png" width="30" height="30" />
+                                            <img src="/icons/ModifierBtn.png" width="30" height="30" />
                                         </button>
                                     </router-link>
 
                                     <button class="btn btn-danger px-3 btn_delete">
                                         <img @click="ouvrirBoiteModale(lot.id)"
-                                             src="/public/icons/Delete_icon.png"
+                                             src="/icons/SupprimerBtn.png"
                                              width="25"
                                              height="30" />
                                     </button>

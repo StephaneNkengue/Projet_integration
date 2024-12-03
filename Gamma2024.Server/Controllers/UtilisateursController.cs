@@ -130,7 +130,7 @@ namespace Gamma2024.Server.Controllers
                 email = user.Email,
                 phoneNumber = user.PhoneNumber,
                 pseudonym = user.UserName,
-                photo = string.IsNullOrEmpty(user.Avatar) ? "/Avatars/default.png" : user.Avatar,
+                photo = string.IsNullOrEmpty(user.Avatar) ? "/Avatars/Defaut.png" : user.Avatar,
                 roles = await _userManager.GetRolesAsync(user),
                 civicNumber = user.Adresses.FirstOrDefault()?.Numero.ToString(),
                 street = user.Adresses.FirstOrDefault()?.Rue,

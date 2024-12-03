@@ -86,12 +86,12 @@
                                                         :aria-controls="'collapseFacture' + facture.id">
                                                     <div class="col">
                                                         <img v-if="facture.livraison == true"
-                                                             src="/icons/livrable.png" />
+                                                             src="/icons/Livrable.png" />
                                                         <img v-else-if="facture.livraison == false"
                                                              src="/icons/Cueillette.png"
                                                              class="imgCueillette" />
                                                         <img v-else
-                                                             src="/icons/Timer.png"
+                                                             src="/icons/Minuteur.png"
                                                              class="imgTimer" />
                                                     </div>
                                                     <div class="col-10">
@@ -102,14 +102,14 @@
                                                                 class="btn btn-info"
                                                                 data-bs-toggle="modal"
                                                                 :data-bs-target="'#modalLivraison'+facture.id">
-                                                            <img src="/icons/IconeLivrable.png" class="btnVisuel img-fluid" alt="..." />
+                                                            <img src="/icons/Livrable.png" class="btnVisuel img-fluid" alt="..." />
                                                         </button>
                                                     </div>
                                                     <div class="col">
                                                         <button class="btn btn-info"
                                                                 data-bs-toggle="modal"
                                                                 :data-bs-target="'#modalFac'+facture.id">
-                                                            <img src="/images/ice.png" class="btnVisuel img-fluid" alt="..." />
+                                                            <img src="/icons/VoirBtn.png" class="btnVisuel img-fluid" alt="..." />
                                                         </button>
                                                     </div>
                                                 </button>
