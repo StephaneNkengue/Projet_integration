@@ -132,7 +132,7 @@
                                    data-bs-toggle="dropdown"
                                    aria-expanded="false"
                                    @click="notification = !notification">
-                                    <img src="/icons/IconeCloche.png"
+                                    <img src="/icons/Cloche.png"
                                          alt="Icon cloche"
                                          height="25" />
                                 </a>

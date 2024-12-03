@@ -22,7 +22,7 @@
         </div>
 
         <div v-if="!chargement" class="w-100">
-            <div class="d-flex flex-row gap-2 justify-content-end my-4">
+            <div class="d-flex flex-row gap-2 justify-content-end my-4" v-if="filteredVentes.length">
                 <button class="d-flex align-items-center text-center rounded btn text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
                         @click="changerNbVenteParPage(20)"
                         v-bind:disabled="ventesParPage == 20">
@@ -46,7 +46,7 @@
                 </button>
             </div>
 
-            <div class="d-flex justify-content-center" v-if="!filteredVentes.length">
+            <div class="d-flex justify-content-center mt-4" v-if="!filteredVentes.length">
                 <h2>Aucun résultat trouvé</h2>
             </div>
 
@@ -86,12 +86,12 @@
                                                         :aria-controls="'collapseFacture' + facture.id">
                                                     <div class="col">
                                                         <img v-if="facture.livraison == true"
-                                                             src="/icons/livrable.png" />
+                                                             src="/icons/Livrable.png" />
                                                         <img v-else-if="facture.livraison == false"
                                                              src="/icons/Cueillette.png"
                                                              class="imgCueillette" />
                                                         <img v-else
-                                                             src="/icons/Timer.png"
+                                                             src="/icons/Minuteur.png"
                                                              class="imgTimer" />
                                                     </div>
                                                     <div class="col-10">
@@ -102,14 +102,14 @@
                                                                 class="btn btn-info"
                                                                 data-bs-toggle="modal"
                                                                 :data-bs-target="'#modalLivraison'+facture.id">
-                                                            <img src="/icons/IconeLivrable.png" class="btnVisuel img-fluid" alt="..." />
+                                                            <img src="/icons/Livrable.png" class="btnVisuel img-fluid" alt="..." />
                                                         </button>
                                                     </div>
                                                     <div class="col">
                                                         <button class="btn btn-info"
                                                                 data-bs-toggle="modal"
                                                                 :data-bs-target="'#modalFac'+facture.id">
-                                                            <img src="/images/ice.png" class="btnVisuel img-fluid" alt="..." />
+                                                            <img src="/icons/VoirBtn.png" class="btnVisuel img-fluid" alt="..." />
                                                         </button>
                                                     </div>
                                                 </button>
@@ -143,7 +143,7 @@
                 </div>
             </div>
 
-            <div class="d-flex flex-row justify-content-center gap-1 flex-wrap p-3" v-if="ventesAffiche.length != 0">
+            <div class="d-flex flex-row justify-content-center gap-1 flex-wrap p-3" v-if="ventesAffiche.length">
                 <button type="button"
                         class="btn text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
                         @click="reculerPage"

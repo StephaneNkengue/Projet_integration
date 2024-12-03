@@ -74,7 +74,7 @@
 
         <div v-if="!chargement" class="w-100">
             <div class="d-flex flex-column flex-md-row justify-content-center justify-content-md-between my-4">
-                <div class="dropdown d-flex justify-content-center mb-2 mb-md-0">
+                <div class="dropdown d-flex justify-content-center mb-2 mb-md-0" v-if="lotsAffiches.length">
                     <button class="btn btnSurvolerBleuMoyenFond boutonPersonnalise text-white dropdown-toggle"
                             type="button"
                             id="dropdownMenuButton"
@@ -110,7 +110,7 @@
                     </ul>
                 </div>
 
-                <div class="d-flex justify-content-center">
+                <div class="d-flex justify-content-center" v-if="lotsAffiches.length">
                     <div class="d-flex flex-row gap-2">
                         <button class="d-flex align-items-center text-center rounded btn text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
                                 type="button"
@@ -203,24 +203,24 @@
                             <td v-if="colonnesVisibles.medium">{{ lot.medium }}</td>
                             <td v-if="colonnesVisibles.vendeur">{{ lot.vendeur }}</td>
                             <td v-if="colonnesVisibles.estVendu">
-                                <img v-if="lot.estVendu" src="/icons/vendu.png" width="40" height="40" />
-                                <img v-else src="/icons/nonvendu.png" width="40" height="40" />
+                                <img v-if="lot.estVendu" src="/icons/Vendu.png" width="40" height="40" />
+                                <img v-else src="/icons/NonVendu.png" width="40" height="40" />
                             </td>
                             <td v-if="colonnesVisibles.livraison">
-                                <img v-if="lot.estLivrable" src="/icons/livrable.png" width="40" height="40" />
-                                <img v-else src="/icons/nonlivrable.png" width="40" height="40" />
+                                <img v-if="lot.estLivrable" src="/icons/Livrable.png" width="40" height="40" />
+                                <img v-else src="/icons/NonLivrable.png" width="40" height="40" />
                             </td>
                             <td>
                                 <div class="d-flex">
                                     <router-link :to="{ name: 'ModificationLot', params: { id: lot.id } }">
                                         <button class="btn btnModifierIcone bleuMarinSecondaireFond px-3 me-3">
-                                            <img src="/public/icons/Edit_icon.png" width="30" height="30" />
+                                            <img src="/icons/ModifierBtn.png" width="30" height="30" />
                                         </button>
                                     </router-link>
 
                                     <button class="btn btn-danger px-3 btn_delete">
                                         <img @click="ouvrirBoiteModale(lot.id)"
-                                             src="/public/icons/Delete_icon.png"
+                                             src="/icons/SupprimerBtn.png"
                                              width="25"
                                              height="30" />
                                     </button>
@@ -231,7 +231,7 @@
                 </table>
             </div>
 
-            <div class="d-flex flex-row justify-content-center gap-1 flex-wrap p-3">
+            <div class="d-flex flex-row justify-content-center gap-1 flex-wrap p-3" v-if="lotsAffiches.length">
                 <button type="button"
                         class="btn text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
                         @click="reculerPage"

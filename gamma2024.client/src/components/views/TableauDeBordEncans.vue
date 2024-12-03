@@ -49,7 +49,7 @@
         </div>
 
         <div v-if="!chargement" class="w-100">
-            <div class="d-flex justify-content-center justify-content-md-end my-4">
+            <div class="d-flex justify-content-center justify-content-md-end my-4" v-if="listeEncansFiltree.length">
                 <div class="d-flex flex-row gap-2">
                     <button class="d-flex align-items-center text-center rounded btn text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
                             @click="changerNbEncanParPage(20)"
@@ -75,7 +75,7 @@
                 </div>
             </div>
 
-            <div class="d-flex justify-content-center" v-if="!listeEncansFiltree.length">
+            <div class="d-flex justify-content-center mt-4" v-if="!listeEncansFiltree.length">
                 <h2>Aucun résultat trouvé</h2>
             </div>
 
@@ -130,14 +130,14 @@
                             <td class="align-middle">
                                 <div class="d-flex flex-row justify-content-center">
                                     <button class="btn bleuMarinSecondaireFond px-3 me-3 btnModifierIcone" @click="editerEncan(encan.id)">
-                                        <img src="/public/icons/Edit_icon.png"
+                                        <img src="/icons/ModifierBtn.png"
                                              width="30"
                                              alt="..." />
                                     </button>
                                     <button class="btn btn-danger px-3 btn_delete"
                                             data-bs-toggle="modal"
                                             :data-bs-target="'#' + encan.numeroEncan">
-                                        <img src="/public/icons/Delete_icon.png"
+                                        <img src="/icons/SupprimerBtn.png"
                                              width="30"
                                              alt="..." />
                                     </button>
@@ -149,7 +149,7 @@
                 </table>
             </div>
 
-            <div class="d-flex flex-row justify-content-center gap-1 flex-wrap p-3" v-if="listeEncansFiltree.length != 0">
+            <div class="d-flex flex-row justify-content-center gap-1 flex-wrap p-3" v-if="listeEncansFiltree.length">
                 <button type="button"
                         class="btn text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
                         @click="reculerPage"

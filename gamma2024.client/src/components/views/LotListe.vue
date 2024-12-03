@@ -43,12 +43,12 @@
                                 v-if="!isAdmin">
                             Miser {{ formatMontant(getMiseMinimale) }}$
                         </button>
-                        <img src="/icons/IconeLivrable.png"
+                        <img src="/icons/Livrable.png"
                              height="50"
                              width="50"
                              alt="Livrable"
                              v-if="lot.estLivrable" />
-                        <img src="/icons/IconeNonLivrable.png"
+                        <img src="/icons/NonLivrable.png"
                              height="50"
                              width="50"
                              alt="Non livrable"
@@ -339,7 +339,7 @@
     const tempsRestant = computed(() => {
         const lot = store.getters.getLot(props.lotRecu.id);
         if (!lot?.dateFinDecompteLot) return 0;
-        
+
         // Utiliser performance.now() pour une meilleure précision
         const fin = new Date(lot.dateFinDecompteLot).getTime();
         const maintenant = Date.now();
@@ -380,7 +380,7 @@
         if (store.state.connection) {
             store.state.connection.on("ReceiveNewBid", (data) => {
                 if (data.type === "tempsLotMisAJour" && data.lotId === props.lotRecu.id) {
-                    store.commit('UPDATE_LOT_TEMPS', { 
+                    store.commit('UPDATE_LOT_TEMPS', {
                         lotId: data.lotId,
                         nouveauTemps: new Date(data.nouveauTemps),
                         ordreLotsActuel: data.ordreLotsActuel

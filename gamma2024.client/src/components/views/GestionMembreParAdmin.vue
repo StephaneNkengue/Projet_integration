@@ -18,7 +18,7 @@
         </div>
 
         <div v-if="!chargement" class="w-100">
-            <div class="d-flex justify-content-end my-4">
+            <div class="d-flex justify-content-end my-4" v-if="membresAffiche.length">
                 <div class="d-flex flex-row gap-2">
                     <button class="d-flex align-items-center text-center rounded btn text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
                             @click="changerNbMembreParPage(20)"
@@ -44,7 +44,7 @@
                 </div>
             </div>
 
-            <div class="d-flex justify-content-center" v-if="!filteredMembres.length">
+            <div class="d-flex justify-content-center mt-4" v-if="!membresAffiche.length">
                 <h2>Aucun résultat trouvé</h2>
             </div>
 
@@ -69,19 +69,19 @@
                             <td class="align-middle">
                                 <span>
                                     <button class="btn btn-info" @click="detailsDuMembre(membre.id)">
-                                        <img src="/images/ice.png" class="img-fluid" alt="..." />
+                                        <img src="/icons/VoirBtn.png" class="img-fluid" alt="..." />
                                     </button>
                                 </span>
                             </td>
                             <td class="align-middle">
                                 <span v-if="membre.estBloque">
                                     <button class="btn btn-danger" @click="debloquerUnMembre(membre)">
-                                        <img src="/images/Locked.png" class="img-fluid" alt="..." />
+                                        <img src="/icons/CadenasFerme.png" class="img-fluid" alt="..." />
                                     </button>
                                 </span>
                                 <span v-else>
                                     <button class="btn btn-success" @click="bloquerUnMembre(membre)">
-                                        <img src="/images/Unlocked.png" class="img-fluid" alt="..." />
+                                        <img src="/icons/CadenasOuvert.png" class="img-fluid" alt="..." />
                                     </button>
                                 </span>
                             </td>
@@ -187,10 +187,6 @@
                 membre.email.toLowerCase().includes(searchLower)
             );
         });
-
-        nbMembresRecus.value = tousLesMembres.value.length;
-        pageCourante.value = 1;
-        AjusterPagination();
     });
 
     const tousLesMembres = computed(() => {
@@ -202,10 +198,12 @@
 
     watch(filteredMembres, () => {
         membresAffiche.value = filteredMembres.value;
+
+        nbMembresRecus.value = filteredMembres.value.length;
+        pageCourante.value = 1;
+        AjusterPagination();
     });
 
-
-    //ici
     const changerNbMembreParPage = ref(function (nouvMembresParPage) {
         membresParPage.value = nouvMembresParPage;
         nbPages.value = recalculerNbPages();
