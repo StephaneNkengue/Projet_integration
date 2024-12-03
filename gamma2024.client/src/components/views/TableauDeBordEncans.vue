@@ -137,7 +137,7 @@
                                     <button class="btn btn-danger px-3 btn_delete"
                                             data-bs-toggle="modal"
                                             :data-bs-target="'#' + encan.numeroEncan">
-                                        <img src="/icons/Delete_icon.png"
+                                        <img src="/icons/SupprimerBtn.png"
                                              width="30"
                                              alt="..." />
                                     </button>

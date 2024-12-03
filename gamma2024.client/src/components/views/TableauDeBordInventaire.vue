@@ -220,7 +220,7 @@
 
                                     <button class="btn btn-danger px-3 btn_delete">
                                         <img @click="ouvrirBoiteModale(lot.id)"
-                                             src="/icons/Delete_icon.png"
+                                             src="/icons/SupprimerBtn.png"
                                              width="25"
                                              height="30" />
                                     </button>
