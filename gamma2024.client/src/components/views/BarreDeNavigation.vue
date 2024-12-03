@@ -215,7 +215,7 @@
                                             Prix estimé
                                         </label>
                                         <div class="row">
-                                            <div class="col-lg-4">
+                                            <div class="col-lg-4 mb-1 mb-lg-0">
                                                 <select class="form-select py-0 selectPourListe"
                                                         v-model="selectValeurEstimee"
                                                         id="selectValeurEstimee"
@@ -328,7 +328,7 @@
                                             Hauteur
                                         </label>
                                         <div class="row">
-                                            <div class="col-lg-4">
+                                            <div class="col-lg-4 mb-1 mb-lg-0">
                                                 <select class="form-select py-0 selectPourListe"
                                                         v-model="selectHauteur"
                                                         id="selectHauteur"
@@ -374,7 +374,7 @@
                                             Largeur
                                         </label>
                                         <div class="row">
-                                            <div class="col-lg-4">
+                                            <div class="col-lg-4 mb-1 mb-lg-0">
                                                 <select class="form-select py-0 selectPourListe"
                                                         v-model="selectLargeur"
                                                         id="selectLargeur"
@@ -460,7 +460,7 @@
                                             Numéro d'encan
                                         </label>
                                         <div class="row">
-                                            <div class="col-lg-4">
+                                            <div class="col-lg-4 mb-1 mb-lg-0">
                                                 <select class="form-select py-0 selectPourListe"
                                                         v-model="selectNumeroEncan"
                                                         id="selectNumeroEncan"
@@ -505,7 +505,7 @@
                                             Date
                                         </label>
                                         <div class="row">
-                                            <div class="col-lg-4 d-flex flex-row align-items-center">
+                                            <div class="col-lg-4 d-flex flex-row align-items-center mb-1 mb-lg-0">
                                                 <select class="form-select py-0 selectPourListe"
                                                         v-model="selectDate"
                                                         id="selectDate"
