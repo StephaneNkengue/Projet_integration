@@ -69,7 +69,7 @@
                             <td class="align-middle">
                                 <span>
                                     <button class="btn btn-info" @click="detailsDuMembre(membre.id)">
-                                        <img src="/images/ice.png" class="img-fluid" alt="..." />
+                                        <img src="/images/VoirBtn.png" class="img-fluid" alt="..." />
                                     </button>
                                 </span>
                             </td>
