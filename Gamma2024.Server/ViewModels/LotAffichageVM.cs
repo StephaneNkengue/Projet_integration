@@ -5,7 +5,7 @@ namespace Gamma2024.Server.ViewModels
 		public int Id { get; set; }
 		public string NumeroEncan { get; set; } = null!; // ENCAN #
 		public string Code { get; set; } = null!; // LOT #
-		public double PrixOuverture { get; set; } // PRIX OUVERTURE
+		public string PrixOuverture { get; set; } = null!; // PRIX OUVERTURE
 		public string? PrixMinPourVente { get; set; } // VALEUR MIN POUR VENDRE
 		public string ValeurEstimeMin { get; set; } = null!; // ESTIMATION MIN
 		public string ValeurEstimeMax { get; set; } = null!; // ESTIMATION MAX
