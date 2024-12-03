@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Gamma2024.Server.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241126190339_AjoutAttributsNullablesAdressesFacturesLivraison")]
-    partial class AjoutAttributsNullablesAdressesFacturesLivraison
+    [Migration("20241203024444_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -438,7 +438,13 @@ namespace Gamma2024.Server.Migrations
                     b.Property<DateTime>("DateCreation")
                         .HasColumnType("datetime2");
 
+                    b.Property<DateTime?>("DateDebutDecompteLot")
+                        .HasColumnType("datetime2");
+
                     b.Property<DateTime>("DateDepot")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DateFinDecompteLot")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("DateFinVente")

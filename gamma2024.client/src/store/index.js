@@ -16,6 +16,8 @@ const store = createStore({
         userOutbidLots: [],
         notifications: [],
         userBidHistory: {}, // Format: { lotId: { userId: montant } }
+        encanCourant: null,
+        soireeCloture: null,
     },
     mutations: {
         ADD_NOTIFICATION(state, message) {
@@ -250,6 +252,73 @@ const store = createStore({
                 state.userBidHistory[lotId] = {};
             }
             state.userBidHistory[lotId][userId] = montant;
+        },
+        SET_ENCAN_COURANT(state, encan) {
+            state.encanCourant = encan
+        },
+        SET_SOIREE_CLOTURE(state, soiree) {
+            state.soireeCloture = soiree
+        },
+        UPDATE_LOT_TEMPS(state, { lotId, nouveauTemps, ordreLotsActuel }) {
+            const lot = state.lots[lotId];
+            if (lot) {
+                lot.dateFinDecompteLot = nouveauTemps;
+                
+                // Si on a reçu l'ordre des lots, réorganiser immédiatement
+                if (ordreLotsActuel) {
+                    const lotsReorganises = {};
+                    ordreLotsActuel.forEach(id => {
+                        if (state.lots[id]) {
+                            lotsReorganises[id] = state.lots[id];
+                        }
+                    });
+                    state.lots = lotsReorganises;
+                }
+            }
+        },
+        SET_LOT_VENDU(state, lotId) {
+            const lot = state.lots[lotId]
+            if (lot) {
+                lot.estVendu = true
+                this.commit('REORGANISER_LOTS')
+            }
+        },
+        REORGANISER_LOTS(state) {
+            console.log('Réorganisation des lots');
+            const lotsNonVendus = Object.values(state.lots)
+                .filter(lot => !lot.estVendu)
+                .sort((a, b) => {
+                    // Si pas de date de fin, mettre à la fin
+                    if (!a.dateFinDecompteLot || !b.dateFinDecompteLot) return 0;
+                    
+                    const finA = new Date(a.dateFinDecompteLot);
+                    const finB = new Date(b.dateFinDecompteLot);
+                    
+                    // Si les dates de fin sont égales, comparer les dates de début
+                    if (finA.getTime() === finB.getTime()) {
+                        if (!a.dateDebutDecompteLot || !b.dateDebutDecompteLot) return 0;
+                        return new Date(a.dateDebutDecompteLot) - new Date(b.dateDebutDecompteLot);
+                    }
+                    
+                    return finA - finB;
+                });
+
+            console.log('Lots triés:', lotsNonVendus.map(lot => ({
+                id: lot.id,
+                dateFin: lot.dateFinDecompteLot,
+                dateDebut: lot.dateDebutDecompteLot
+            })));
+
+            const lotsReorganises = {};
+            lotsNonVendus.forEach(lot => {
+                lotsReorganises[lot.id] = lot;
+            });
+            
+            state.lots = lotsReorganises;
+        },
+        RESET_ENCAN_STATE(state) {
+            state.encanCourant = null;
+            state.soireeCloture = null;
         }
     },
     actions: {
@@ -1187,6 +1256,58 @@ const store = createStore({
             } catch (error) {
                 return "Erreur, veuillez réessayer";
             }
+        },
+        async verifierEtatEncan({ state, commit }) {
+            const response = await state.api.get('/encans/etat-courant')
+            const { type, encan } = response.data
+            
+            commit('SET_ENCAN_COURANT', encan)
+            
+            if (encan?.id) {
+                // Charger les lots séparément pour avoir toutes les informations
+                const lotsResponse = await state.api.get(`/lots/cherchertouslotsparencan/${encan.id}`)
+                if (lotsResponse.data) {
+                    commit('setLots', lotsResponse.data)
+                }
+            }
+            
+            return type // 'courant' ou 'soireeCloture' ou null
+        },
+        async surveillerTransitionEncan({ dispatch, commit }) {
+            const verifierEtat = async () => {
+                const ancienType = this.state.typeEncanCourant
+                const nouveauType = await dispatch('verifierEtatEncan')
+                
+                if (ancienType !== nouveauType) {
+                    if (ancienType === 'courant' && nouveauType === 'soireeCloture') {
+                        await dispatch('initialiserSoireeCloture')
+                    } else if (nouveauType === 'aucun') {
+                        commit('RESET_ENCAN_STATE')
+                    }
+                }
+            }
+            setInterval(verifierEtat, 5000)
+        },
+
+        async initialiserSoireeCloture({ commit, dispatch }) {
+            try {
+                // Synchroniser les temps avec le serveur
+                if (this.state.connection) {
+                    await this.state.connection.invoke("DemanderSynchronisation");
+                }
+
+                // Démarrer la surveillance des transitions
+                await dispatch('surveillerTransitionEncan');
+            } catch (error) {
+                console.error("Erreur lors de l'initialisation de la soirée de clôture:", error);
+            }
+        },
+
+        async synchroniserTempsLots({ commit }, tempsLots) {
+            Object.entries(tempsLots).forEach(([lotId, temps]) => {
+                commit('UPDATE_LOT_TEMPS', { lotId: parseInt(lotId), nouveauTemps: temps });
+            });
+            commit('REORGANISER_LOTS');
         }
 
     },

@@ -18,7 +18,7 @@
         <div v-else>
             <div class="d-flex justify-content-center justify-content-md-start">
                 <router-link :to="{name: 'EnregistrerCarte'}">
-                    <button class="btn btn-outline bleuMoyenFond text-white btnSurvolerBleuMoyenFond my-2 mx-3">
+                    <button class="btn btn-outline text-white btnSurvolerBleuMoyenFond my-2 mx-3">
                         Ajouter une carte
                     </button>
                 </router-link>

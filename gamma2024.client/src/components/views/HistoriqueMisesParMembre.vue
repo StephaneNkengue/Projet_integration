@@ -16,14 +16,14 @@
 
             <div v-else class="d-flex flex-column align-items-center">
                 <div class="d-flex flex-row-reverse w-100 px-4 me-2 gap-2">
-                    <button class="rounded bleuMoyenFond btn btnSurvolerBleuMoyenFond"
+                    <button class="rounded btn btnSurvolerBleuMoyenFond"
                             v-if="!siTuile"
                             @click="changerTypeAffichage('tuile')">
                         <img src="/icons/IconTableau.png"
                              alt="Affichage en tableau"
                              height="25" />
                     </button>
-                    <button class="rounded bleuMoyenFond btn btnSurvolerBleuMoyenFond"
+                    <button class="rounded btn btnSurvolerBleuMoyenFond"
                             v-else
                             @click="changerTypeAffichage('liste')">
                         <img src="/icons/IconListe.png" 
