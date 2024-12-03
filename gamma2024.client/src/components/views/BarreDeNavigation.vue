@@ -445,14 +445,14 @@
                         </button>
                     </div>
                 </nav>
-                <div class="bg-white">
-                    <div class="container collapse card mb-5 bg-white aucunPaddingPourCarteEncans"
+                <div class="bg-white d-flex justify-content-center">
+                    <div class="container collapse card mt-2 mx-2 mx-md-5 mb-md-5 bg-white col col-lg-9 col-xl-8"
                          id="navbarToggleRechercheAvancee">
                         <div class="card-header d-flex justify-content-center">
                             <h2>Recherche avancée d'encans</h2>
                         </div>
                         <div class="card-body">
-                            <div class="row">
+                            <div class="row d-flex flex-row align-items-center">
                                 <div class="col-5">
                                     <div class="col mt-2">
                                         <label class="text-nowrap recherchelabel fw-bold"
@@ -460,7 +460,7 @@
                                             Numéro d'encan
                                         </label>
                                         <div class="row">
-                                            <div class="col-sm-4">
+                                            <div class="col-lg-4">
                                                 <select class="form-select py-0 selectPourListe"
                                                         v-model="selectNumeroEncan"
                                                         id="selectNumeroEncan"
@@ -505,7 +505,7 @@
                                             Date
                                         </label>
                                         <div class="row">
-                                            <div class="col-sm-4">
+                                            <div class="col-lg-4 d-flex flex-row align-items-center">
                                                 <select class="form-select py-0 selectPourListe"
                                                         v-model="selectDate"
                                                         id="selectDate"
@@ -1016,12 +1016,6 @@
     .margesPourTable {
         padding-left: 15px;
         padding-right: 15px;
-    }
-
-    .aucunPaddingPourCarteEncans {
-        padding-left: 0px !important;
-        padding-right: 0px !important;
-        width: 1100px;
     }
 
     .aucuneBarreDeRechercheAnvancee {
