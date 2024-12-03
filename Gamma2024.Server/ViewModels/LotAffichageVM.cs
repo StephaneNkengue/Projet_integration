@@ -5,7 +5,7 @@ namespace Gamma2024.Server.ViewModels
 		public int Id { get; set; }
 		public string NumeroEncan { get; set; } = null!; // ENCAN #
 		public string Code { get; set; } = null!; // LOT #
-		public string PrixOuverture { get; set; } = null!; // PRIX OUVERTURE
+		public double PrixOuverture { get; set; } // PRIX OUVERTURE
 		public string? PrixMinPourVente { get; set; } // VALEUR MIN POUR VENDRE
 		public string ValeurEstimeMin { get; set; } = null!; // ESTIMATION MIN
 		public string ValeurEstimeMax { get; set; } = null!; // ESTIMATION MAX
@@ -24,11 +24,5 @@ namespace Gamma2024.Server.ViewModels
 		public string? IdClientMise { get; set; }
 		public bool? SeraLivree { get; set; }
 		public ICollection<PhotoVM> Photos { get; set; } = new List<PhotoVM>();
-	}
-
-	public class PhotoVM
-	{
-		public int Id { get; set; }
-		public string Url { get; set; } = null!;
 	}
 }
