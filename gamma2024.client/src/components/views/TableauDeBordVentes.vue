@@ -86,7 +86,7 @@
                                                         :aria-controls="'collapseFacture' + facture.id">
                                                     <div class="col">
                                                         <img v-if="facture.livraison == true"
-                                                             src="/icons/livrable.png" />
+                                                             src="/icons/Livrable.png" />
                                                         <img v-else-if="facture.livraison == false"
                                                              src="/icons/Cueillette.png"
                                                              class="imgCueillette" />

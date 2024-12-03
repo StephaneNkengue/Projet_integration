@@ -66,7 +66,7 @@
                                         aria-expanded="true" :aria-controls="'collapse' + encan.encan">
                                     <div class="col">
                                         <img v-if="encan.livraison == true"
-                                             src="/icons/livrable.png" />
+                                             src="/icons/Livrable.png" />
                                         <img v-else-if="encan.livraison == false"
                                              src="/icons/Cueillette.png"
                                              class="imgCueillette" />

@@ -207,7 +207,7 @@
                                 <img v-else src="/icons/NonVendu.png" width="40" height="40" />
                             </td>
                             <td v-if="colonnesVisibles.livraison">
-                                <img v-if="lot.estLivrable" src="/icons/livrable.png" width="40" height="40" />
+                                <img v-if="lot.estLivrable" src="/icons/Livrable.png" width="40" height="40" />
                                 <img v-else src="/icons/NonLivrable.png" width="40" height="40" />
                             </td>
                             <td>
