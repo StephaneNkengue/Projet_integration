@@ -130,7 +130,7 @@
                             <td class="align-middle">
                                 <div class="d-flex flex-row justify-content-center">
                                     <button class="btn bleuMarinSecondaireFond px-3 me-3 btnModifierIcone" @click="editerEncan(encan.id)">
-                                        <img src="/icons/Edit_icon.png"
+                                        <img src="/icons/ModifierBtn.png"
                                              width="30"
                                              alt="..." />
                                     </button>

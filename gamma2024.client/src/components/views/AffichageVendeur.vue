@@ -78,7 +78,7 @@
                                 <button class="btn btnModifierIcone bleuMarinSecondaireFond px-3">
                                     <router-link :to="{name: 'vendeurModification', params: { id: vendeur.id.toString() }}"
                                                  class="text-decoration-none">
-                                        <img src="/icons/Edit_icon.png"
+                                        <img src="/icons/ModifierBtn.png"
                                              width="30"
                                              alt="Editer" />
                                     </router-link>
