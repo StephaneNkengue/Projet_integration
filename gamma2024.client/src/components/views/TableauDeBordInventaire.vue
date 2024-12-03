@@ -73,8 +73,8 @@
         </div>
 
         <div v-if="!chargement" class="w-100">
-            <div class="d-flex justify-content-between my-4">
-                <div class="dropdown d-flex-1">
+            <div class="d-flex flex-column flex-md-row justify-content-center justify-content-md-between my-4">
+                <div class="dropdown d-flex justify-content-center mb-2 mb-md-0">
                     <button class="btn btnSurvolerBleuMoyenFond boutonPersonnalise text-white dropdown-toggle"
                             type="button"
                             id="dropdownMenuButton"
@@ -110,7 +110,7 @@
                     </ul>
                 </div>
 
-                <div class="d-flex-1">
+                <div class="d-flex justify-content-center">
                     <div class="d-flex flex-row gap-2">
                         <button class="d-flex align-items-center text-center rounded btn text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
                                 type="button"
@@ -144,7 +144,7 @@
                 <h2>Aucun résultat trouvé</h2>
             </div>
 
-            <div class="margesPourTable overflow-auto" v-else>
+            <div class="overflow-auto" v-else>
                 <table class="table table-striped text-center">
                     <colgroup id="colgroup">
                         <col id="colEncan">
