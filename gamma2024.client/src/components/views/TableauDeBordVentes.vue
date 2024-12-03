@@ -4,7 +4,7 @@
         <FactureModal v-if="facture.livraison == true" :facturePdfPath="facture.pdfPathLivraison" :idFacture="'Livraison'+facture.id"></FactureModal>
     </span>
     <div class="container">
-        <h1 class="text-center mb-5">Liste des ventes</h1>
+        <h1 class="text-center mb-2 mb-md-5">Liste des ventes</h1>
 
         <h3 class="text-center">Rechercher une vente</h3>
 

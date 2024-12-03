@@ -2,7 +2,7 @@
     <div class="px-3">
         <div class="container">
 
-            <h1 class="text-center mb-5">Liste des lots</h1>
+            <h1 class="text-center mb-2 mb-md-5">Liste des lots</h1>
 
             <div v-if="messageConfirmation" class="alert alert-success py-0">
                 {{ messageConfirmation }}sdsdd
