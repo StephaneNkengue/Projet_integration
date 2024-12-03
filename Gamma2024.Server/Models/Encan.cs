@@ -12,5 +12,11 @@ namespace Gamma2024.Server.Models
         public int PasLot { get; set; }
         public int PasMise { get; set; }
 
+        public bool EstEnSoireeCloture()
+        {
+            var maintenant = DateTime.Now;
+            return maintenant >= DateDebutSoireeCloture && 
+                   EncanLots.Any(el => !el.Lot.EstVendu && el.Lot.DateFinDecompteLot > maintenant);
+        }
     }
 }

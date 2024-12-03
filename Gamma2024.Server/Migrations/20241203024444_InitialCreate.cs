@@ -258,7 +258,7 @@ namespace Gamma2024.Server.Migrations
                     TPS = table.Column<double>(type: "float", nullable: false),
                     TVQ = table.Column<double>(type: "float", nullable: false),
                     Don = table.Column<double>(type: "float", nullable: true),
-                    IdAdresse = table.Column<int>(type: "int", nullable: false),
+                    IdAdresse = table.Column<int>(type: "int", nullable: true),
                     IdCharite = table.Column<int>(type: "int", nullable: true),
                     IdFacture = table.Column<int>(type: "int", nullable: false),
                     EstPaye = table.Column<bool>(type: "bit", nullable: false),
@@ -364,7 +364,9 @@ namespace Gamma2024.Server.Migrations
                     Largeur = table.Column<double>(type: "float", nullable: false),
                     Hauteur = table.Column<double>(type: "float", nullable: false),
                     IdMedium = table.Column<int>(type: "int", nullable: false),
-                    IdFacture = table.Column<int>(type: "int", nullable: true)
+                    IdFacture = table.Column<int>(type: "int", nullable: true),
+                    DateDebutDecompteLot = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DateFinDecompteLot = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {

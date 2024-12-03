@@ -142,6 +142,7 @@ app.UseAuthorization();
 
 app.MapHub<LotMiseHub>("/api/hub/lotMiseHub"); // Permet de mapper les requêtes vers SignalR
 app.MapHub<NotificationHub>("/api/hub/NotificationHub");
+app.MapHub<EncanHub>("/api/hub/EncanHub");
 
 app.MapControllers();
 

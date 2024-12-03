@@ -393,6 +393,8 @@ namespace Gamma2024.Server.Services
 						IdClientMise = l.IdClientMise ?? "",
 						SeraLivree = l.SeraLivree ?? false,
 						NombreMises = l.MisesAutomatiques.Count(),
+						DateDebutDecompteLot = l.DateDebutDecompteLot,
+						DateFinDecompteLot = l.DateFinDecompteLot
 					})
 					.ToList();
 
@@ -575,6 +577,12 @@ namespace Gamma2024.Server.Services
 					return (false, "Ce lot est déjà vendu");
 				}
 
+				// NOUVELLE VÉRIFICATION : Date de fin du décompte
+				if (lot.DateFinDecompteLot.HasValue && DateTime.Now > lot.DateFinDecompteLot.Value)
+				{
+					return (false, "Le temps pour miser sur ce lot est écoulé");
+				}
+
 				// Vérification si l'utilisateur est déjà le plus haut enchérisseur
 				if (lot.IdClientMise == mise.UserId)
 				{
@@ -592,11 +600,6 @@ namespace Gamma2024.Server.Services
 				if (maintenant < encan.DateDebut)
 				{
 					return (false, "L'encan n'a pas encore commencé");
-				}
-
-				if (maintenant > encan.DateFin)
-				{
-					return (false, "L'encan est terminé");
 				}
 
 				// Vérification du pas d'enchère
@@ -651,6 +654,38 @@ namespace Gamma2024.Server.Services
 					timestamp = DateTime.Now
 				});
 
+				// Vérifier si le lot est en soirée de clôture
+				if (lot != null)
+				{
+					var encanLot = lot.EncanLots.FirstOrDefault()?.Encan;
+					if (encanLot?.EstEnSoireeCloture() == true)
+					{
+						if (lot.DateFinDecompteLot.HasValue)
+						{
+							var tempsRestant = (lot.DateFinDecompteLot.Value - DateTime.Now).TotalSeconds;
+							if (tempsRestant < 60)
+							{
+								lot.DateFinDecompteLot = lot.DateFinDecompteLot.Value.AddSeconds(60);
+								await _context.SaveChangesAsync();
+
+								// Notifier tous les clients du nouveau temps
+								await _hubContext.Clients.All.ReceiveNewBid(new
+								{
+									type = "tempsLotMisAJour",
+										lotId = lot.Id,
+										nouveauTemps = lot.DateFinDecompteLot.Value,
+										// Ajouter l'ordre des lots pour optimiser
+										ordreLotsActuel = await _context.Lots
+											.Where(l => !l.EstVendu)
+											.OrderBy(l => l.DateFinDecompteLot)
+											.Select(l => l.Id)
+											.ToListAsync()
+								});
+							}
+						}
+					}
+				}
+
 				return (true, "Mise placée avec succès");
 			}
 			catch (Exception ex)
@@ -662,6 +697,12 @@ namespace Gamma2024.Server.Services
 
 		private bool EstMiseValide(Lot lot, decimal miseActuelle, decimal nouvelleMise, decimal miseMaximale, bool estMiseAutomatique = false)
 		{
+			// Vérifier d'abord si le temps est écoulé
+			if (lot.DateFinDecompteLot.HasValue && DateTime.Now > lot.DateFinDecompteLot.Value)
+			{
+				return false;
+			}
+
 			if (miseActuelle == 0m)
 			{
 				// Si c'est une mise automatique, on vérifie juste que le montant maximal est suffisant
@@ -737,7 +778,8 @@ namespace Gamma2024.Server.Services
 			bool continuerMises = true;
 			while (continuerMises)
 			{
-				if (DateTime.Now > encan.DateFin)
+				// Vérifier si le temps est écoulé
+				if (lot.DateFinDecompteLot.HasValue && DateTime.Now > lot.DateFinDecompteLot.Value)
 				{
 					break;
 				}
@@ -857,6 +899,27 @@ namespace Gamma2024.Server.Services
 				.Where(m => m.LotId == lotId)
 				.CountAsync();
 		}
+
+		public async Task MarquerLotVendu(int lotId)
+		{
+			var lot = await _context.Lots.FindAsync(lotId);
+			if (lot != null && !lot.EstVendu)
+			{
+				lot.EstVendu = true;
+				lot.DateFinVente = DateTime.Now;
+				
+				await _context.SaveChangesAsync();
+				
+				// Notifier tous les clients via SignalR
+				await _hubContext.Clients.All.ReceiveNewBid(new
+				{
+					type = "lotVendu",
+					lotId = lotId,
+					timestamp = DateTime.Now
+				});
+			}
+		}
+
 
 	}
 }
