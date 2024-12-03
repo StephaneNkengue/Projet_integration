@@ -57,8 +57,9 @@ builder.Services.AddScoped<FactureLivraisonService>();
 
 builder.Services.Configure<EmailConfiguration>(
     builder.Configuration.GetSection("EmailConfiguration"));
-
 builder.Services.AddTransient<IEmailSender, EmailService>();
+builder.Services.Configure<InvoiceSettings>(builder.Configuration.GetSection("InvoiceSettings"));
+
 
 // Configuration CORS pour différents environnements
 builder.Services.AddCors(options =>
@@ -111,12 +112,24 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;
 });
 
+var jsReportOptions = builder.Configuration.GetSection("JsReport").Get<JsReportOptions>();
 
-builder.Services.AddJsReport(new LocalReporting()
-    .UseBinary(JsReportBinary.GetBinary())
-    .KillRunningJsReportProcesses()
-    .AsUtility()
-    .Create());
+if (builder.Environment.IsDevelopment())
+{
+    builder.Services.AddJsReport(new LocalReporting()
+        .UseBinary(JsReportBinary.GetBinary())
+        .KillRunningJsReportProcesses()
+        .AsUtility()
+        .Create());
+}
+else
+{
+    builder.Services.AddHttpClient("jsreport", client =>
+    {
+        client.BaseAddress = new Uri(jsReportOptions.ServiceUrl);
+    });
+}
+
 
 var app = builder.Build();
 
