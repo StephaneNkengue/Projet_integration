@@ -32,6 +32,9 @@
                         <p class="text-center mb-0 text-muted">
                             {{ nombreOffres }} {{ nombreOffres <= 1 ? 'offre' : 'offres' }}
                         </p>
+                        <p v-if="showDecompte" class="text-center mb-0" :class="{'text-danger': tempsRestant < 60}">
+                            {{ formatDecompte }}
+                        </p>
                     </div>
                     <div class="d-flex align-self-center gap-1 flex-column flex-md-row align-items-center">
                         <button type="button"
@@ -66,11 +69,16 @@
     import ModalMise from '@/components/modals/ModalMise.vue';
     import { toast } from 'vue3-toastify';
     import { useRouter } from 'vue-router';
+    import { useIntervalFn } from '@vueuse/core'
 
     const store = useStore();
     const router = useRouter();
     const props = defineProps({
         lotRecu: Object,
+        showDecompte: {
+            type: Boolean,
+            default: false
+        }
     });
 
     const urlApi = ref("/api");
@@ -325,6 +333,69 @@
 
     const nombreOffres = computed(() => {
         return store.getters.getUniqueOffersCount(props.lotRecu.id);
+    });
+
+    // Remplacer useIntervalFn par un computed plus réactif
+    const tempsRestant = computed(() => {
+        const lot = store.getters.getLot(props.lotRecu.id);
+        if (!lot?.dateFinDecompteLot) return 0;
+        
+        // Utiliser performance.now() pour une meilleure précision
+        const fin = new Date(lot.dateFinDecompteLot).getTime();
+        const maintenant = Date.now();
+        return Math.max(0, Math.floor((fin - maintenant) / 1000));
+    });
+
+    // Utiliser requestAnimationFrame pour une mise à jour plus fluide
+    let rafId = null;
+
+    const updateTimer = () => {
+        if (tempsRestant.value <= 0) {
+            cancelAnimationFrame(rafId);
+            if (store.state.connection?.state === "Connected") {
+                store.state.connection.invoke("LotVendu", props.lotRecu.id);
+            }
+            return;
+        }
+        rafId = requestAnimationFrame(updateTimer);
+    };
+
+    onMounted(() => {
+        rafId = requestAnimationFrame(updateTimer);
+    });
+
+    onUnmounted(() => {
+        if (rafId) cancelAnimationFrame(rafId);
+    });
+
+    // Computed pour le format du décompte
+    const formatDecompte = computed(() => {
+        const minutes = Math.floor(tempsRestant.value / 60)
+        const secondes = tempsRestant.value % 60
+        return `${minutes.toString().padStart(2, '0')}:${secondes.toString().padStart(2, '0')}`
+    })
+
+    // Écouter les mises à jour de temps via SignalR
+    onMounted(() => {
+        if (store.state.connection) {
+            store.state.connection.on("ReceiveNewBid", (data) => {
+                if (data.type === "tempsLotMisAJour" && data.lotId === props.lotRecu.id) {
+                    store.commit('UPDATE_LOT_TEMPS', { 
+                        lotId: data.lotId,
+                        nouveauTemps: new Date(data.nouveauTemps),
+                        ordreLotsActuel: data.ordreLotsActuel
+                    });
+                }
+            });
+        }
+    })
+
+    // Utiliser nextTick pour les mises à jour visuelles
+    watch(tempsRestant, async (newValue) => {
+        if (newValue <= 0) {
+            await nextTick();
+            // Autres actions...
+        }
     });
 
 </script>

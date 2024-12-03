@@ -188,5 +188,12 @@ namespace Gamma2024.Server.Controllers
                 return null;
             }
         }
+
+        [HttpGet("etat-courant")]
+        public async Task<IActionResult> GetEtatCourant()
+        {
+            var (type, encan) = await _encanService.GetEtatCourant();
+            return Ok(new { type, encan });
+        }
     }
 }

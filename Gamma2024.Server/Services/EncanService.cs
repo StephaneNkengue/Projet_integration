@@ -2,6 +2,7 @@ using Gamma2024.Server.Data;
 using Gamma2024.Server.Models;
 using Gamma2024.Server.Validations;
 using Gamma2024.Server.ViewModels;
+using Microsoft.EntityFrameworkCore;
 
 namespace Gamma2024.Server.Services
 {
@@ -233,6 +234,67 @@ namespace Gamma2024.Server.Services
                 .ToList();
 
             return encans;
+        }
+
+        public async Task<(string type, Encan encan)> GetEtatCourant()
+        {
+            var maintenant = DateTime.Now;
+            
+            var dernierEncan = await _context.Encans
+                .Include(e => e.EncanLots)
+                    .ThenInclude(el => el.Lot)
+                .Where(e => e.DateFin < maintenant)
+                .OrderByDescending(e => e.DateFin)
+                .FirstOrDefaultAsync();
+
+            if (dernierEncan?.EstEnSoireeCloture() == true)
+            {
+                var lotsOrdonnes = dernierEncan.EncanLots
+                    .OrderBy(el => el.Lot.Numero)
+                    .ToList();
+
+                var derniereDateFin = lotsOrdonnes
+                    .Where(el => el.Lot.DateFinDecompteLot.HasValue)
+                    .Max(el => el.Lot.DateFinDecompteLot) ?? maintenant;
+
+                foreach (var encanLot in lotsOrdonnes.Where(el => !el.Lot.DateDebutDecompteLot.HasValue))
+                {
+                    var index = lotsOrdonnes.IndexOf(encanLot);
+                    encanLot.Lot.DateDebutDecompteLot = derniereDateFin;
+                    encanLot.Lot.DateFinDecompteLot = derniereDateFin.AddSeconds(dernierEncan.PasLot * (index + 1));
+                }
+
+                await _context.SaveChangesAsync();
+                
+                return ("soireeCloture", dernierEncan);
+            }
+
+            var encanCourant = await _context.Encans
+                .Include(e => e.EncanLots)
+                    .ThenInclude(el => el.Lot)
+                        .ThenInclude(l => l.Photos)
+                .Where(e => e.DateDebut <= maintenant && e.DateFin >= maintenant)
+                .FirstOrDefaultAsync();
+
+            if (encanCourant != null)
+            {
+                return ("courant", encanCourant);
+            }
+
+            return ("aucun", null);
+        }
+
+        public async Task<bool> EstEnSoireeCloture(int numeroEncan)
+        {
+            var encan = await _context.Encans
+                .Include(e => e.EncanLots)
+                    .ThenInclude(el => el.Lot)
+                .FirstOrDefaultAsync(e => e.NumeroEncan == numeroEncan);
+
+            if (encan == null)
+                return false;
+
+            return encan.EstEnSoireeCloture();
         }
     }
 }
