@@ -26,7 +26,7 @@
                     <button class="rounded btn btnSurvolerBleuMoyenFond"
                             v-else
                             @click="changerTypeAffichage('liste')">
-                        <img src="/icons/IconListe.png"
+                        <img src="/icons/ListeOption.png"
                              alt="Affichage en liste"
                              height="25" />
                     </button>
