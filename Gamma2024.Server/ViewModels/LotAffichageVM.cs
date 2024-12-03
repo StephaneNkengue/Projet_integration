@@ -25,10 +25,4 @@ namespace Gamma2024.Server.ViewModels
 		public bool? SeraLivree { get; set; }
 		public ICollection<PhotoVM> Photos { get; set; } = new List<PhotoVM>();
 	}
-
-	public class PhotoVM
-	{
-		public int Id { get; set; }
-		public string Url { get; set; } = null!;
-	}
 }

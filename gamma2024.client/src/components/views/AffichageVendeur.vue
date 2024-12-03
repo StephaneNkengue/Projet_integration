@@ -25,7 +25,7 @@
         </div>
 
         <div v-if="!chargement" class="w-100">
-            <div class="d-flex justify-content-end my-4">
+            <div class="d-flex justify-content-end my-4" v-if="vendeursAffiche.length">
                 <div class="d-flex flex-row gap-2">
                     <button class="d-flex align-items-center text-center rounded btn text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
                             @click="changerNbVendeurParPage(20)"
@@ -51,7 +51,7 @@
                 </div>
             </div>
 
-            <div class="d-flex justify-content-center" v-if="!vendeursAffichage.length">
+            <div class="d-flex justify-content-center mt-4" v-if="!vendeursAffiche.length">
                 <h2>Aucun résultat trouvé</h2>
             </div>
 
@@ -89,7 +89,7 @@
                 </table>
             </div>
 
-            <div class="d-flex flex-row justify-content-center gap-1 flex-wrap p-3" v-if="vendeursAffiche.length != 0">
+            <div class="d-flex flex-row justify-content-center gap-1 flex-wrap p-3" v-if="vendeursAffiche.length">
                 <button type="button"
                         class="btn text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
                         @click="reculerPage"
@@ -146,7 +146,7 @@
         try {
             vendeurs.value = await store.dispatch("obtenirTousVendeurs");
 
-            nbVendeursRecus.value = vendeursAffichage.value.length;
+            nbVendeursRecus.value = filteredVendeurs.value.length;
             vendeursParPage.value = nbVendeursRecus.value;
             nbPages.value = recalculerNbPages();
 
@@ -169,14 +169,14 @@
                 vendeur.telephone.toLowerCase().includes(searchLower)
             );
         });
-
-        nbVendeursRecus.value = vendeursAffichage.value.length;
-        pageCourante.value = 1;
-        AjusterPagination();
     });
 
     watch(filteredVendeurs, () => {
         vendeursAffiche.value = filteredVendeurs.value;
+
+        nbVendeursRecus.value = filteredVendeurs.value.length;
+        pageCourante.value = 1;
+        AjusterPagination();
     });
 
     const changerNbVendeurParPage = ref(function (nouvVendeursParPage) {
@@ -239,10 +239,10 @@
 
         for (
             let i = positionDebut;
-            i < positionFin && i < vendeursAffichage.value.length;
+            i < positionFin && i < filteredVendeurs.value.length;
             i++
         ) {
-            vendeursAffiche.value.push(vendeursAffichage.value[i]);
+            vendeursAffiche.value.push(filteredVendeurs.value[i]);
         }
     }
 

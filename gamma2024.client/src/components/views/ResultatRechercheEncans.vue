@@ -46,7 +46,9 @@
                     </h5>
 
                     <div v-else class="w-100 px-3 row row-cols-lg-2 row-cols-1">
-                        <div v-for="index in encansFiltres" class="col py-3">
+                        <div v-for="index in encansAffiche"
+                             :key="index.numeroEncan"
+                             class="col py-3">
                             <span @click="voirEncan(index.numeroEncan)">
                                 <AffichageEncanTuile :encan="index" />
                             </span>
@@ -109,24 +111,23 @@
     onMounted(async () => {
         try {
             initialiseData();
-        } catch (error) {
-        }
+        } catch (error) { }
     });
 
     const voirEncan = ref(function (numeroEncanRecu) {
-        console.log(numeroEncanRecu)
+        console.log(numeroEncanRecu);
         if (numeroEncanRecu == numEncanCours.value) {
-            router.push({ name: 'EncanPresent' })
-        }
-        else {
+            router.push({ name: "EncanPresent" });
+        } else {
             router.push({
-                name: 'Encan', params: { numeroEncan: numeroEncanRecu }
-            })
+                name: "Encan",
+                params: { numeroEncan: numeroEncanRecu },
+            });
         }
-    })
+    });
 
-    const queryChangement = computed(() => route.query)
-    watch(queryChangement, initialiseData)
+    const queryChangement = computed(() => route.query);
+    watch(queryChangement, initialiseData);
 
     async function initialiseData() {
         const response = await store.dispatch("chercherTousEncansVisibles");
@@ -149,7 +150,7 @@
         encansFiltres.value = encans.value;
         filtrerLesEncansParNumeroEncan();
         filtrerLesEncansParDate();
-    };
+    }
 
     function filtrerLesEncansParNumeroEncan() {
         var stringquery = JSON.parse(route.query.data);
@@ -157,55 +158,67 @@
             if (stringquery.stringNumeroEncan) {
                 if (stringquery.selectNumeroEncan == 0) {
                     if (encan.numeroEncan.toString() == stringquery.stringNumeroEncan) {
-                        return true
+                        return true;
                     }
-                    return false
+                    return false;
                 }
-                if (stringquery.selectNumeroEncan == 1 && stringquery.stringNumeroEncan2) {
-                    if (encan.numeroEncan.toString() >= stringquery.stringNumeroEncan && encan.numeroEncan.toString() <= stringquery.stringNumeroEncan2) {
-                        return true
+                if (
+                    stringquery.selectNumeroEncan == 1 &&
+                    stringquery.stringNumeroEncan2
+                ) {
+                    if (
+                        encan.numeroEncan.toString() >= stringquery.stringNumeroEncan &&
+                        encan.numeroEncan.toString() <= stringquery.stringNumeroEncan2
+                    ) {
+                        return true;
                     }
-                    return false
+                    return false;
                 }
             }
-            return true
+            return true;
         });
-    };
+    }
 
     function filtrerLesEncansParDate() {
         var stringquery = JSON.parse(route.query.data);
         encansFiltres.value = encansFiltres.value.filter((encan) => {
-            var encanDateDebut = moment(encan.dateDebut).format('yyyy-MM-DD');
-            var encanDateFin = moment(encan.dateFin).format('yyyy-MM-DD');
+            var encanDateDebut = moment(encan.dateDebut).format("yyyy-MM-DD");
+            var encanDateFin = moment(encan.dateFin).format("yyyy-MM-DD");
             if (stringquery.stringDate) {
                 if (stringquery.selectDate == 0) {
-                    if (moment(encanDateDebut).isSameOrBefore(stringquery.stringDate) && moment(encanDateFin).isSameOrAfter(stringquery.stringDate)) {
-                        return true
+                    if (
+                        moment(encanDateDebut).isSameOrBefore(stringquery.stringDate) &&
+                        moment(encanDateFin).isSameOrAfter(stringquery.stringDate)
+                    ) {
+                        return true;
                     }
-                    return false
+                    return false;
                 }
                 if (stringquery.selectDate == 1) {
                     if (moment(encanDateDebut).isSameOrBefore(stringquery.stringDate)) {
-                        return true
+                        return true;
                     }
-                    return false
+                    return false;
                 }
                 if (stringquery.selectDate == 2) {
                     if (moment(encanDateFin).isSameOrAfter(stringquery.stringDate)) {
-                        return true
+                        return true;
                     }
-                    return false
+                    return false;
                 }
                 if (stringquery.selectDate == 3 && stringquery.stringDate2) {
-                    if (moment(encanDateDebut).isSameOrBefore(stringquery.stringDate2) && moment(encanDateFin).isSameOrAfter(stringquery.stringDate)) {
-                        return true
+                    if (
+                        moment(encanDateDebut).isSameOrBefore(stringquery.stringDate2) &&
+                        moment(encanDateFin).isSameOrAfter(stringquery.stringDate)
+                    ) {
+                        return true;
                     }
-                    return false
+                    return false;
                 }
             }
-            return true
+            return true;
         });
-    };
+    }
 
     watch(pageCourante, () => {
         genererListePagination();
