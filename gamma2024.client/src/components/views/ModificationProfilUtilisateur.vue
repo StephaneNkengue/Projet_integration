@@ -120,7 +120,7 @@
                                     <button type="button"
                                             class="btn border border-1 btn_change_password"
                                             @click="changerLaVisibilite">
-                                        <img src="/icons/icon_password.png"
+                                        <img src="/icons/CadenasMotDePasse.png"
                                              class="img-fluid img_password"
                                              alt="icon_password" />
                                         <span class="ms-2">Changer le mot de passe</span>
