@@ -110,8 +110,8 @@
                                  data-bs-parent="#accordionEncan">
                                 <div class="accordion-body">
                                     <div class="accordion" id="accordionClient" v-for="facture in ventesAffiche.filter((x)=> x.encan == encan.encan)" :key="facture.id">
-                                        <table class="table">
-                                            <thead>
+                                        <table class="table text-center">
+                                            <thead class="table-dark">
                                                 <tr>
                                                     <th scope="col">Numéro du lot</th>
                                                     <th scope="col">Prix vendu</th>
