@@ -24,7 +24,7 @@
                         <p>{{lot.categorie}}</p>
                         <p>Valeur estimée: {{(lot.valeurEstimeMin).toFixed(0)}}$ à {{(lot.valeurEstimeMax).toFixed(0)}}$</p>
 
-                        <img v-if="lot.estLivrable" src="/icons/IconeLivrable.png" alt="livrable" height="80" />
+                        <img v-if="lot.estLivrable" src="/icons/Livrable.png" alt="livrable" height="80" />
                         <img v-else src="/icons/NonLivrable.png" alt="livrable" height="80" />
                     </div>
                 </div>

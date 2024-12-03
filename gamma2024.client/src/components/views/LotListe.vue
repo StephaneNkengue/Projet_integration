@@ -43,7 +43,7 @@
                                 v-if="!isAdmin">
                             Miser {{ formatMontant(getMiseMinimale) }}$
                         </button>
-                        <img src="/icons/IconeLivrable.png"
+                        <img src="/icons/Livrable.png"
                              height="50"
                              width="50"
                              alt="Livrable"

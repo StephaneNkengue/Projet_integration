@@ -102,7 +102,7 @@
                                                                 class="btn btn-info"
                                                                 data-bs-toggle="modal"
                                                                 :data-bs-target="'#modalLivraison'+facture.id">
-                                                            <img src="/icons/IconeLivrable.png" class="btnVisuel img-fluid" alt="..." />
+                                                            <img src="/icons/Livrable.png" class="btnVisuel img-fluid" alt="..." />
                                                         </button>
                                                     </div>
                                                     <div class="col">

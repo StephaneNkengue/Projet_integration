@@ -12,7 +12,7 @@
                         Lot {{ lot.numero }} - {{ lot.artiste }} {{ lot.hauteur }}x{{ lot.largeur }}po
                     </p>
 
-                    <img src="/icons/IconeLivrable.png"
+                    <img src="/icons/Livrable.png"
                          height="30"
                          alt="Livrable"
                          v-if="lot.estLivrable" />

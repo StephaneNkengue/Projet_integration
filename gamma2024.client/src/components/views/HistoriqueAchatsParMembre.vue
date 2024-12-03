@@ -90,7 +90,7 @@
                                                 class="btn btn-info"
                                                 data-bs-toggle="modal"
                                                 :data-bs-target="'#modalLivraison'+encan.id">
-                                            <img src="/icons/IconeLivrable.png" class="btnVisuel img-fluid" alt="..." />
+                                            <img src="/icons/Livrable.png" class="btnVisuel img-fluid" alt="..." />
                                         </button>
                                     </div>
 
