@@ -4,21 +4,20 @@
       'user-bid': isUserHighestBidder,
       'user-outbid': isUserOutbid
     }"
-    :to="{ name: 'DetailsLot', params: { idLot: lot.id } }"
-  >
-    <div class="align-self-stretch h-100">
-      <div class="card-body d-flex flex-column justify-content-between h-100">
-        <div class="d-flex align-items-middle justify-content-between">
-          <p class="fs-8 pe-2 mt-1 mb-0 text-truncate">
-            Lot {{ lot.numero }} - {{ lot.artiste }} {{ lot.hauteur }}x{{ lot.largeur }}po
-          </p>
+                 :to="{ name: 'DetailsLot', params: { idLot: lot.id } }">
+        <div class="align-self-stretch h-100">
+            <div class="card-body d-flex flex-column justify-content-between h-100">
+                <div class="d-flex align-items-middle justify-content-between">
+                    <p class="fs-8 pe-2 mt-1 mb-0 text-truncate">
+                        Lot {{ lot.numero }} - {{ lot.artiste }} {{ lot.hauteur }}x{{ lot.largeur }}po
+                    </p>
 
                     <img src="/icons/IconeLivrable.png"
                          height="30"
                          alt="Livrable"
                          v-if="lot.estLivrable" />
 
-                    <img src="/icons/IconeNonLivrable.png"
+                    <img src="/icons/NonLivrable.png"
                          height="30"
                          alt="Non livrable"
                          v-else />
@@ -329,7 +328,7 @@
     const tempsRestant = computed(() => {
         const lot = store.getters.getLot(props.lotRecu.id);
         if (!lot?.dateFinDecompteLot) return 0;
-        
+
         // Utiliser performance.now() pour une meilleure précision
         const fin = new Date(lot.dateFinDecompteLot).getTime();
         const maintenant = Date.now();
@@ -370,7 +369,7 @@
         if (store.state.connection) {
             store.state.connection.on("ReceiveNewBid", (data) => {
                 if (data.type === "tempsLotMisAJour" && data.lotId === props.lotRecu.id) {
-                    store.commit('UPDATE_LOT_TEMPS', { 
+                    store.commit('UPDATE_LOT_TEMPS', {
                         lotId: data.lotId,
                         nouveauTemps: new Date(data.nouveauTemps),
                         ordreLotsActuel: data.ordreLotsActuel
