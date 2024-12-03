@@ -144,7 +144,7 @@
                 <h2>Aucun résultat trouvé</h2>
             </div>
 
-            <div class="margesPourTable" v-else>
+            <div class="margesPourTable overflow-auto" v-else>
                 <table class="table table-striped text-center">
                     <colgroup id="colgroup">
                         <col id="colEncan">
