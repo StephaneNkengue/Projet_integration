@@ -18,6 +18,7 @@
           <router-link
             :to="{ name: 'Encan', params: { numeroEncan: index.numeroEncan } }"
             class="text-decoration-none text-black card_encan"
+            @click.prevent="verifierEtRediriger(index)"
           >
             <AffichageEncanTuile :encan="index" />
           </router-link>
@@ -37,10 +38,32 @@
 import AffichageEncanTuile from "@/components/views/AffichageEncanTuile.vue";
 import { onMounted, ref } from "vue";
 import { useStore } from "vuex";
+import { useRouter } from "vue-router";
 
 const store = useStore();
+const router = useRouter();
 const encans = ref([]);
 const chargement = ref(true);
+
+const verifierEtRediriger = async (encan) => {
+  const maintenant = new Date();
+  const dateDebutSoiree = new Date(encan.dateDebutSoireeCloture);
+  
+  // Vérifier si l'encan est en soirée de clôture
+  const response = await store.dispatch('verifierEtatEncan');
+  const type = response;
+  
+  if (type === 'soireeCloture' && encan.numeroEncan === store.state.encanCourant?.numeroEncan) {
+    // Rediriger vers la soirée de clôture
+    router.push({ name: 'EncanPresent' });
+  } else {
+    // Rediriger vers l'encan normal
+    router.push({ 
+      name: 'Encan', 
+      params: { numeroEncan: encan.numeroEncan } 
+    });
+  }
+};
 
 onMounted(async () => {
   const response = await store.dispatch("chercherEncansPasses");

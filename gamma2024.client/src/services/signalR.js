@@ -12,7 +12,7 @@ export const startSignalRConnection = async (baseUrl, token) => {
     const cleanBaseUrl = baseUrl.endsWith('/') ? baseUrl.slice(0, -1) : baseUrl;
     
     connection = new signalR.HubConnectionBuilder()
-      .withUrl(`${cleanBaseUrl}/api/lotMiseHub`, {
+      .withUrl(`${cleanBaseUrl}/api/hub/lotMiseHub`, {
         accessTokenFactory: () => token
       })
       .withAutomaticReconnect()
@@ -23,7 +23,7 @@ export const startSignalRConnection = async (baseUrl, token) => {
     return connection;
   } catch (err) {
     console.error("SignalR Connection Error: ", err);
-    return null;
+    setTimeout(startSignalRConnection, 5000);
   }
 };
 

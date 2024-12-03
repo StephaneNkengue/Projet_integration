@@ -1,9 +1,5 @@
 <template>
   <div class="d-flex flex-column align-items-center pb-3">
-    <h1>
-      Encan en cours <span v-if="encan != ''">({{ encan.numeroEncan }})</span>
-    </h1>
-
     <div class="d-flex gap-2" v-if="chargement">
       <div class="spinner-border" role="status">
         <span class="visually-hidden">Chargement des encans...</span>
@@ -12,15 +8,24 @@
     </div>
 
     <div v-if="!chargement" class="w-100">
-      <h5 class="text-center" v-if="encan == ''">
-        Il n'y a présentement aucun encan en cours
-      </h5>
+      <div v-if="type === 'aucun'">
+        <h5 class="text-center">
+          Il n'y a présentement aucun encan en cours
+        </h5>
+      </div>
 
-      <div v-else>
+      <div v-else-if="type === 'courant'">
+        <h1>
+          Encan en cours <span v-if="encan != ''">({{ encan.numeroEncan }})</span>
+        </h1>
         <p class="text-center">
           Date de début de la soirée de clotûre: {{ soireeDate }}
         </p>
         <AffichageLots :idEncan="encan.id" />
+      </div>
+
+      <div v-else-if="type === 'soireeCloture'">
+        <SoireeCloture :encan="encan" />
       </div>
     </div>
   </div>
@@ -28,8 +33,10 @@
 
 <script setup>
 import AffichageLots from "@/components/views/AffichageLots.vue";
-import { onMounted, ref } from "vue";
+import SoireeCloture from "@/components/views/SoireeCloture.vue";
+import { onMounted, ref, onUnmounted, watch } from "vue";
 import { useStore } from "vuex";
+import { useRouter } from "vue-router";
 
 let mois = [
   "janvier",
@@ -47,24 +54,71 @@ let mois = [
 ];
 
 const store = useStore();
-
+const router = useRouter();
 const chargement = ref(true);
 const encan = ref("");
 const soireeDate = ref();
+const type = ref(null);
+
+// Vérification périodique de l'état
+const interval = ref(null);
+
+const verifierEtat = async () => {
+    try {
+        const maintenant = new Date();
+        const etatType = await store.dispatch('verifierEtatEncan');
+        type.value = etatType;
+        encan.value = store.state.encanCourant;
+
+        // Vérifier si encan.value existe avant d'accéder à ses propriétés
+        if (encan.value && encan.value.dateDebutSoireeCloture) {
+            soireeDate.value = formatageDate(
+                encan.value.dateDebutSoireeCloture,
+                true,
+                true
+            );
+
+            // Vérifier si on est exactement à l'heure de début
+            const debutSoiree = new Date(encan.value.dateDebutSoireeCloture);
+            const diffMs = debutSoiree - maintenant;
+            
+            if (diffMs > 0 && diffMs < 1000) { // Si moins d'une seconde avant le début
+                // Programmer la transition exacte
+                setTimeout(async () => {
+                    await router.replace({ name: 'EncanPresent' });
+                }, diffMs);
+            }
+        }
+    } catch (error) {
+        console.error("Erreur lors de la vérification de l'état:", error);
+    }
+};
 
 onMounted(async () => {
-  const response = await store.dispatch("chercherEncanEnCours");
-  encan.value = response.data;
-  if (encan.value != "") {
-    soireeDate.value = formatageDate(
-      encan.value.dateDebutSoireeCloture,
-      true,
-      true
-    );
-  }
-
+  await verifierEtat();
+  // Démarrer la surveillance des transitions
+  await store.dispatch('surveillerTransitionEncan')
+  interval.value = setInterval(verifierEtat, 1000);
   chargement.value = false;
 });
+
+onUnmounted(() => {
+  if (interval.value) {
+    clearInterval(interval.value);
+  }
+});
+
+watch(
+    () => store.state.typeEncanCourant,
+    async (newType, oldType) => {
+        console.log('Type d\'encan changé:', { oldType, newType });
+        if (oldType === 'courant' && newType === 'soireeCloture') {
+            console.log('Transition vers soirée de clôture détectée');
+            await router.replace({ name: 'EncanPresent' });
+        }
+    },
+    { immediate: true }
+);
 
 function formatageDate(dateTexte, siAnnee, siHeure) {
   let sep = dateTexte.split("T");

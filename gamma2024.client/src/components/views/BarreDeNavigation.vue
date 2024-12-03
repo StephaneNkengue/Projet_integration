@@ -634,7 +634,7 @@
     </header>
 </template>
 <script setup>
-import { computed, watch, ref, onMounted } from "vue";
+import { computed, watch, ref, onMounted, onUnmounted } from "vue";
 import { useStore } from "vuex";
 import { RouterLink, useRouter, useRoute } from "vue-router";
 import VueDatePicker from "@vuepic/vue-datepicker";
@@ -658,8 +658,8 @@ const listeDesArtistes = ref([]);
 const listeDesCategories = ref([]);
 const listeDesMediums = ref([]);
 
-    const ilYAUnEncanPresent = ref(false);
-    const titreBarreDeRechercheDeLots = ref("");
+const ilYAUnEncanPresent = ref(false);
+const titreBarreDeRechercheDeLots = ref("");
     var rechercheNumeroEncan = ref();
     const selectValeurEstimee = ref(0);
     const rechercheLotsValeurEstimee = ref();
@@ -679,6 +679,8 @@ const listeDesMediums = ref([]);
     const selectDate = ref(0);
     const rechercheEncansDate1 = ref();
     const rechercheEncansDate2 = ref();
+    const interval = ref(null);
+
 
 watch(
   () => store.state.user,
@@ -714,11 +716,18 @@ watch(
 var numeroEncanPresent = null;
 
 async function verifierSiEncanPresent() {
-  numeroEncanPresent = null;
-  var response = await store.dispatch("chercherEncanEnCours");
-  if (response.status == 200) {
-    numeroEncanPresent = response.data.numeroEncan.toString();
-    ilYAUnEncanPresent.value = true;
+  try {
+    const response = await store.dispatch('verifierEtatEncan');
+    const type = response;
+    
+    if (type === 'courant' || type === 'soireeCloture') {
+      ilYAUnEncanPresent.value = true;
+    } else {
+      ilYAUnEncanPresent.value = false;
+    }
+  } catch (error) {
+    console.error("Erreur lors de la vérification de l'encan:", error);
+    ilYAUnEncanPresent.value = false;
   }
 }
 
@@ -1012,6 +1021,16 @@ const deconnecter = async () => {
         listeDesCategories.value = await store.dispatch("obtenirCategories");
         verifierSiQueryDansURL();
     });
+
+// Surveiller les changements de route pour mettre à jour l'état
+watch(
+  () => route.name,
+  async () => {
+    if (route.name === 'EncanPresent') {
+      await verifierSiEncanPresent();
+    }
+  }
+);
 </script>
 <style scoped>
 .ms-7 {
@@ -1132,5 +1151,11 @@ select option[value=""] {
 
 .navbar .navbar-collapse .navbar-nav a.router-link-active {
   color: #fff;
+}
+
+/* Ajouter des styles pour indiquer l'état actif */
+.nav-item.nav-link .router-link-active {
+  color: #fff !important;
+  font-weight: bold;
 }
 </style>

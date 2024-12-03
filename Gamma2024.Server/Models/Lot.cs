@@ -31,6 +31,8 @@ namespace Gamma2024.Server.Models
         public Medium Medium { get; set; } = null!;
         public int? IdFacture { get; set; }
         public Facture? Facture { get; set; } = default!;
+        public DateTime? DateDebutDecompteLot { get; set; }
+        public DateTime? DateFinDecompteLot { get; set; }
         public virtual ICollection<MiseAutomatique> MisesAutomatiques { get; set; } = new List<MiseAutomatique>();
     }
 }
