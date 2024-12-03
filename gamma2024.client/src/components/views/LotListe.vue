@@ -40,7 +40,7 @@
                         <button type="button"
                                 class="btn text-white btnSurvolerBleuMoyenFond"
                                 @click.stop.prevent="handleMiseClick"
-                                v-if="!isAdmin">
+                                v-if="!isAdmin && peutMiser">
                             Miser {{ formatMontant(getMiseMinimale) }}$
                         </button>
                         <img src="/icons/IconeLivrable.png"
@@ -396,6 +396,21 @@
             await nextTick();
             // Autres actions...
         }
+    });
+
+    // Computed pour vérifier si on peut miser
+    const peutMiser = computed(() => {
+        const lot = store.getters.getLot(props.lotRecu.id);
+        if (!lot) return false;
+
+        // Vérifier si le lot a une date de fin de décompte
+        if (!lot.dateFinDecompteLot) return false;
+
+        // Vérifier si le temps est écoulé
+        const maintenant = new Date();
+        const finDecompte = new Date(lot.dateFinDecompteLot);
+        
+        return !lot.estVendu && finDecompte > maintenant;
     });
 
 </script>
