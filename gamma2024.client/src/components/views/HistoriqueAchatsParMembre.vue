@@ -71,7 +71,7 @@
                                              src="/icons/Cueillette.png"
                                              class="imgCueillette" />
                                         <img v-else
-                                             src="/icons/IconeAvertissement.png"
+                                             src="/icons/Avertissement.png"
                                              class="imgAvertissement" />
                                     </div>
 
