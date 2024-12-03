@@ -204,7 +204,7 @@
                             <td v-if="colonnesVisibles.vendeur">{{ lot.vendeur }}</td>
                             <td v-if="colonnesVisibles.estVendu">
                                 <img v-if="lot.estVendu" src="/icons/Vendu.png" width="40" height="40" />
-                                <img v-else src="/icons/nonvendu.png" width="40" height="40" />
+                                <img v-else src="/icons/NonVendu.png" width="40" height="40" />
                             </td>
                             <td v-if="colonnesVisibles.livraison">
                                 <img v-if="lot.estLivrable" src="/icons/livrable.png" width="40" height="40" />
