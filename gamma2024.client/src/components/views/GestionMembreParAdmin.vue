@@ -76,7 +76,7 @@
                             <td class="align-middle">
                                 <span v-if="membre.estBloque">
                                     <button class="btn btn-danger" @click="debloquerUnMembre(membre)">
-                                        <img src="/images/Locked.png" class="img-fluid" alt="..." />
+                                        <img src="/images/CadenasFerme.png" class="img-fluid" alt="..." />
                                     </button>
                                 </span>
                                 <span v-else>
