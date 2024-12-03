@@ -109,7 +109,7 @@
                                                         <button class="btn btn-info"
                                                                 data-bs-toggle="modal"
                                                                 :data-bs-target="'#modalFac'+facture.id">
-                                                            <img src="/images/VoirBtn.png" class="btnVisuel img-fluid" alt="..." />
+                                                            <img src="/icons/VoirBtn.png" class="btnVisuel img-fluid" alt="..." />
                                                         </button>
                                                     </div>
                                                 </button>

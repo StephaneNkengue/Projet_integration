@@ -69,19 +69,19 @@
                             <td class="align-middle">
                                 <span>
                                     <button class="btn btn-info" @click="detailsDuMembre(membre.id)">
-                                        <img src="/images/VoirBtn.png" class="img-fluid" alt="..." />
+                                        <img src="/icons/VoirBtn.png" class="img-fluid" alt="..." />
                                     </button>
                                 </span>
                             </td>
                             <td class="align-middle">
                                 <span v-if="membre.estBloque">
                                     <button class="btn btn-danger" @click="debloquerUnMembre(membre)">
-                                        <img src="/images/CadenasFerme.png" class="img-fluid" alt="..." />
+                                        <img src="/icons/CadenasFerme.png" class="img-fluid" alt="..." />
                                     </button>
                                 </span>
                                 <span v-else>
                                     <button class="btn btn-success" @click="bloquerUnMembre(membre)">
-                                        <img src="/images/CadenasOuvert.png" class="img-fluid" alt="..." />
+                                        <img src="/icons/CadenasOuvert.png" class="img-fluid" alt="..." />
                                     </button>
                                 </span>
                             </td>

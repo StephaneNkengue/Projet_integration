@@ -296,7 +296,7 @@
               ]"
                                 :disabled="!isFormValid || !formDataChanged">
                             <div class="d-flex flex-row align-items-center justify-content-center">
-                                <img src="/images/EnregistrerBtn.png"
+                                <img src="/icons/EnregistrerBtn.png"
                                      class="img-fluid img_password"
                                      alt="icon_save" />
                                 <span class="ms-2">Enregistrer</span>
