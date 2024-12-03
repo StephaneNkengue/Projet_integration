@@ -91,7 +91,7 @@
                                                              src="/icons/Cueillette.png"
                                                              class="imgCueillette" />
                                                         <img v-else
-                                                             src="/icons/Timer.png"
+                                                             src="/icons/Minuteur.png"
                                                              class="imgTimer" />
                                                     </div>
                                                     <div class="col-10">
