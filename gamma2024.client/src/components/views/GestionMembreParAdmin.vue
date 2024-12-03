@@ -18,7 +18,7 @@
         </div>
 
         <div v-if="!chargement" class="w-100">
-            <div class="d-flex justify-content-end my-4" v-if="membresAffiche.length">
+            <div class="d-flex justify-content-center justify-content-md-end my-4" v-if="membresAffiche.length">
                 <div class="d-flex flex-row gap-2">
                     <button class="d-flex align-items-center text-center rounded btn text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
                             @click="changerNbMembreParPage(20)"
