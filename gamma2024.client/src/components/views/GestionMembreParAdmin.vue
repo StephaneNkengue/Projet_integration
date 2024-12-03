@@ -81,7 +81,7 @@
                                 </span>
                                 <span v-else>
                                     <button class="btn btn-success" @click="bloquerUnMembre(membre)">
-                                        <img src="/images/Unlocked.png" class="img-fluid" alt="..." />
+                                        <img src="/images/CadenasOuvert.png" class="img-fluid" alt="..." />
                                     </button>
                                 </span>
                             </td>
