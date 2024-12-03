@@ -22,7 +22,7 @@
         </div>
 
         <div v-if="!chargement" class="w-100">
-            <div class="d-flex flex-row gap-2 justify-content-end my-4" v-if="filteredVentes.length">
+            <div class="d-flex flex-row gap-2 justify-content-center justify-content-md-end my-4" v-if="filteredVentes.length">
                 <button class="d-flex align-items-center text-center rounded btn text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
                         @click="changerNbVenteParPage(20)"
                         v-bind:disabled="ventesParPage == 20">
