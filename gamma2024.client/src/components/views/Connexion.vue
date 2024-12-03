@@ -202,7 +202,7 @@
     }
 
     .imageDeFondEsquise {
-        background-image: url("/images/DessinGris.PNG");
+        background-image: url("/images/DessinGris.png");
         background-size: cover;
         background-position: 0px -100px;
         background-attachment: fixed;
