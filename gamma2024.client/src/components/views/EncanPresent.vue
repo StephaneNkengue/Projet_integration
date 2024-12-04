@@ -15,12 +15,21 @@
       </div>
 
       <div v-else-if="type === 'courant'">
-        <h1>
+        <h1 class="text-center">
           Encan en cours <span v-if="encan != ''">({{ encan.numeroEncan }})</span>
         </h1>
         <p class="text-center">
           Date de début de la soirée de clotûre: {{ soireeDate }}
         </p>
+        
+        <p v-if="remainingTime" class="text-center mb-5 fs-1 fw-bolder textCount">
+          Début de la soirée de clotûre dans
+          <span v-if="remainingTime.days > 0">{{ remainingTime.days }} jour{{ remainingTime.days > 1 ? 's' : '' }}</span>
+          {{ remainingTime.hours }}h
+          {{ remainingTime.minutes }}m 
+          {{ remainingTime.seconds }}s
+        </p>
+
         <AffichageLots :idEncan="encan.id" />
       </div>
 
@@ -63,6 +72,47 @@ const type = ref(null);
 // Vérification périodique de l'état
 const interval = ref(null);
 
+const remainingTime = ref(null);
+let countdownInterval = null;
+
+const updateCountdown = () => {
+  if (!encan.value?.dateDebutSoireeCloture) return;
+
+  const now = new Date();
+  const targetDate = new Date(encan.value.dateDebutSoireeCloture);
+  let difference = targetDate - now;
+
+  if (difference <= 0) {
+    remainingTime.value = {
+      days: 0,
+      hours: 0,
+      minutes: 0,
+      seconds: 0
+    };
+    if (countdownInterval) {
+      clearInterval(countdownInterval);
+    }
+    return;
+  }
+
+  const secondsInMinute = 60;
+  const secondsInHour = 60 * secondsInMinute;
+  const secondsInDay = 24 * secondsInHour;
+
+  const days = Math.floor(difference / (secondsInDay * 1000));
+  difference %= secondsInDay * 1000;
+
+  const hours = Math.floor(difference / (secondsInHour * 1000));
+  difference %= secondsInHour * 1000;
+
+  const minutes = Math.floor(difference / (secondsInMinute * 1000));
+  difference %= secondsInMinute * 1000;
+
+  const seconds = Math.floor(difference / 1000);
+
+  remainingTime.value = { days, hours, minutes, seconds };
+};
+
 const verifierEtat = async () => {
     try {
         const maintenant = new Date();
@@ -98,13 +148,21 @@ onMounted(async () => {
   await verifierEtat();
   // Démarrer la surveillance des transitions
   await store.dispatch('surveillerTransitionEncan')
-  interval.value = setInterval(verifierEtat, 1000);
+  interval.value = setInterval(verifierEtat, 2000);
+  
+  // Ajouter le countdown
+  updateCountdown();
+  countdownInterval = setInterval(updateCountdown, 1000);
+  
   chargement.value = false;
 });
 
 onUnmounted(() => {
   if (interval.value) {
     clearInterval(interval.value);
+  }
+  if (countdownInterval) {
+    clearInterval(countdownInterval);
   }
 });
 
@@ -137,4 +195,4 @@ function formatageDate(dateTexte, siAnnee, siHeure) {
 }
 </script>
 
-<style scoped></style>
+
