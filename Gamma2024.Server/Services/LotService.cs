@@ -14,14 +14,16 @@ namespace Gamma2024.Server.Services
 		private readonly IWebHostEnvironment _environment;
 		private readonly IHubContext<LotMiseHub, ILotMiseHub> _hubContext;
 		private readonly ILogger<LotService> _logger;
+		private readonly EncanService _encanService;
 
 
-		public LotService(ApplicationDbContext context, IWebHostEnvironment environment, IHubContext<LotMiseHub, ILotMiseHub> hubContext, ILogger<LotService> logger)
+		public LotService(ApplicationDbContext context, IWebHostEnvironment environment, IHubContext<LotMiseHub, ILotMiseHub> hubContext, ILogger<LotService> logger, EncanService encanService)
 		{
 			_context = context;
 			_environment = environment;
 			_hubContext = hubContext;
 			_logger = logger;
+			_encanService = encanService;
 		}
 
 		public async Task<IEnumerable<LotAffichageVM>> ObtenirTousLots()
@@ -132,6 +134,36 @@ namespace Gamma2024.Server.Services
 					return (false, errorMessage, null);
 				}
 
+				var encan = await _context.Encans
+					.Include(e => e.EncanLots)
+						.ThenInclude(el => el.Lot)
+					.FirstOrDefaultAsync(e => e.Id == lotVM.IdEncan);
+
+				if (encan == null)
+					return (false, "L'encan spécifié n'existe pas", null);
+
+				// Définir les dates du lot
+				var dateDebutDecompte = encan.DateDebutSoireeCloture;
+				DateTime dateFinDecompte;
+
+				// Chercher le dernier lot de l'encan
+				var dernierLot = encan.EncanLots
+					.Select(el => el.Lot)
+					.Where(l => l.DateFinDecompteLot.HasValue)
+					.OrderByDescending(l => l.DateFinDecompteLot)
+					.FirstOrDefault();
+
+				if (dernierLot != null)
+				{
+					// Ajouter le pas lot après la dernière date de fin
+					dateFinDecompte = dernierLot.DateFinDecompteLot.Value.AddSeconds(encan.PasLot);
+				}
+				else
+				{
+					// Premier lot : date début + 30 secondes
+					dateFinDecompte = dateDebutDecompte.AddSeconds(30);
+				}
+
 				var lot = new Lot
 				{
 					Numero = lotVM.Numero,
@@ -146,19 +178,15 @@ namespace Gamma2024.Server.Services
 					EstLivrable = lotVM.EstLivrable,
 					Largeur = lotVM.Largeur,
 					Hauteur = lotVM.Hauteur,
-					IdMedium = lotVM.IdMedium
+					IdMedium = lotVM.IdMedium,
+					DateDebutDecompteLot = dateDebutDecompte,
+					DateFinDecompteLot = dateFinDecompte
 				};
 
 				_context.Lots.Add(lot);
 				await _context.SaveChangesAsync();
 
 				// Associer le lot à l'encan spécifié
-				var encan = await _context.Encans.FindAsync(lotVM.IdEncan);
-				if (encan == null)
-				{
-					return (false, "L'encan spécifié n'existe pas", null);
-				}
-
 				var encanLot = new EncanLot
 				{
 					IdEncan = encan.Id,
@@ -665,7 +693,7 @@ namespace Gamma2024.Server.Services
 							var tempsRestant = (lot.DateFinDecompteLot.Value - DateTime.Now).TotalSeconds;
 							if (tempsRestant < 60)
 							{
-								lot.DateFinDecompteLot = lot.DateFinDecompteLot.Value.AddSeconds(60);
+								lot.DateFinDecompteLot = lot.DateFinDecompteLot.Value.AddSeconds(encanLot.PasMise);
 								await _context.SaveChangesAsync();
 
 								// Notifier tous les clients du nouveau temps
@@ -902,15 +930,25 @@ namespace Gamma2024.Server.Services
 
 		public async Task MarquerLotVendu(int lotId)
 		{
-			var lot = await _context.Lots.FindAsync(lotId);
+			var lot = await _context.Lots
+				.Include(l => l.EncanLots)
+					.ThenInclude(el => el.Encan)
+				.FirstOrDefaultAsync(l => l.Id == lotId);
+
 			if (lot != null && !lot.EstVendu)
 			{
 				lot.EstVendu = true;
 				lot.DateFinVente = DateTime.Now;
 				
 				await _context.SaveChangesAsync();
+
+				// Vérifier si c'était le dernier lot de la soirée
+				var encan = lot.EncanLots.FirstOrDefault()?.Encan;
+				if (encan != null)
+				{
+					await _encanService.VerifierFinSoireeCloture(encan.NumeroEncan);
+				}
 				
-				// Notifier tous les clients via SignalR
 				await _hubContext.Clients.All.ReceiveNewBid(new
 				{
 					type = "lotVendu",

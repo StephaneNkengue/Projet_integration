@@ -1,18 +1,28 @@
 using Gamma2024.Server.Data;
 using Gamma2024.Server.Models;
-using Gamma2024.Server.Validations;
-using Gamma2024.Server.ViewModels;
+using Gamma2024.Server.Hub;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.SignalR;
+using Gamma2024.Server.ViewModels;
+using System.Net.Http;
+using Gamma2024.Server.Validations;
 
 namespace Gamma2024.Server.Services
 {
     public class EncanService
     {
         private readonly ApplicationDbContext _context;
+        private readonly ILogger<EncanService> _logger;
+        private readonly IHubContext<LotMiseHub, ILotMiseHub> _hubContext;
+        private readonly HttpClient _httpClient;
 
-        public EncanService(ApplicationDbContext context)
+        public EncanService(ApplicationDbContext context, ILogger<EncanService> logger, IHubContext<LotMiseHub, ILotMiseHub> hubContext, HttpClient httpClient)
         {
             _context = context;
+            _logger = logger;
+            _hubContext = hubContext;
+            _httpClient = httpClient;
         }
 
         public ICollection<EncanAffichageAdminVM> ChercherTousEncans()
@@ -295,6 +305,61 @@ namespace Gamma2024.Server.Services
                 return false;
 
             return encan.EstEnSoireeCloture();
+        }
+
+        public async Task VerifierFinSoireeCloture(int numeroEncan)
+        {
+            var encan = await _context.Encans
+                .Include(e => e.EncanLots)
+                    .ThenInclude(el => el.Lot)
+                .FirstOrDefaultAsync(e => e.NumeroEncan == numeroEncan);
+
+            if (encan != null)
+            {
+                var maintenant = DateTime.Now;
+                
+                // Vérifier que tous les lots sont vendus ET que leur temps est écoulé
+                var tousLotsTermines = encan.EncanLots.All(el => 
+                    el.Lot.EstVendu && 
+                    (!el.Lot.DateFinDecompteLot.HasValue || el.Lot.DateFinDecompteLot <= maintenant)
+                );
+
+                if (tousLotsTermines)
+                {
+                    using var transaction = await _context.Database.BeginTransactionAsync();
+                    try
+                    {
+                        // 1. Appeler le endpoint du FactureController
+                        var factureResponse = await _httpClient.PostAsync(
+                            $"/api/factures/CreerFacturesParEncan/{numeroEncan}", 
+                            null
+                        );
+                        factureResponse.EnsureSuccessStatusCode();
+
+                        // 2. Appeler le endpoint du PaiementController
+                        var paiementResponse = await _httpClient.PostAsync(
+                            $"/api/paiement/ChargerClients/{numeroEncan}", 
+                            null
+                        );
+                        paiementResponse.EnsureSuccessStatusCode();
+
+                        await transaction.CommitAsync();
+                        
+                        // Notifier les clients via SignalR
+                        await _hubContext.Clients.All.ReceiveNewBid(new
+                        {
+                            type = "soireeTerminee",
+                            numeroEncan = numeroEncan
+                        });
+                    }
+                    catch (Exception ex)
+                    {
+                        await transaction.RollbackAsync();
+                        _logger.LogError(ex, "Erreur lors de la finalisation de la soirée de clôture");
+                        throw;
+                    }
+                }
+            }
         }
     }
 }

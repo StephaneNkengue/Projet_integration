@@ -110,4 +110,11 @@ watch(() => encan.value, async (newEncan) => {
 watch(() => store.state.lots, () => {
   console.log("Changement détecté dans les lots");
 }, { deep: true });
+
+// Ajouter un watch sur les lots restants
+watch(lotsTriesParTemps, async (newLots) => {
+    if (newLots.length === 0 && encan.value) {
+        console.log('Plus de lots à vendre');
+    }
+}, { deep: true });
 </script> 
