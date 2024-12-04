@@ -69,19 +69,19 @@
                             <td class="align-middle">
                                 <span>
                                     <button class="btn btn-info" @click="detailsDuMembre(membre.id)">
-                                        <img src="/icons/VoirBtn.png" class="img-fluid" alt="..." />
+                                        <img src="/icons/VoirBtn.png" height="40" width="40" alt="..." />
                                     </button>
                                 </span>
                             </td>
                             <td class="align-middle">
                                 <span v-if="membre.estBloque">
                                     <button class="btn btn-danger" @click="debloquerUnMembre(membre)">
-                                        <img src="/icons/CadenasFerme.png" class="img-fluid" alt="..." />
+                                        <img src="/icons/CadenasFerme.png" height="40" width="40" alt="..." />
                                     </button>
                                 </span>
                                 <span v-else>
                                     <button class="btn btn-success" @click="bloquerUnMembre(membre)">
-                                        <img src="/icons/CadenasOuvert.png" class="img-fluid" alt="..." />
+                                        <img src="/icons/CadenasOuvert.png" height="40" width="40" alt="..." />
                                     </button>
                                 </span>
                             </td>
@@ -284,10 +284,6 @@
 </script>
 
 <style scoped>
-    img {
-        width: 25px;
-        height: 30px;
-    }
 
     table,
     input {

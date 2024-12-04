@@ -86,13 +86,16 @@
                                                         :aria-controls="'collapseFacture' + facture.id">
                                                     <div class="col">
                                                         <img v-if="facture.livraison == true"
-                                                             src="/icons/Livrable.png" />
+                                                             src="/icons/Livrable.png"
+                                                             height="30" width="30" />
                                                         <img v-else-if="facture.livraison == false"
                                                              src="/icons/Cueillette.png"
-                                                             class="imgCueillette" />
+                                                             class="imgCueillette"
+                                                             height="30" width="30" />
                                                         <img v-else
                                                              src="/icons/Minuteur.png"
-                                                             class="imgTimer" />
+                                                             class="imgTimer"
+                                                             height="30" width="30" />
                                                     </div>
                                                     <div class="col-10">
                                                         {{ facture.prenom }} {{ facture.nom }} ({{facture.pseudonyme}})<br />{{ facture.courriel }}<br />{{facture.telephone}}
@@ -102,14 +105,14 @@
                                                                 class="btn btn-info"
                                                                 data-bs-toggle="modal"
                                                                 :data-bs-target="'#modalLivraison'+facture.id">
-                                                            <img src="/icons/Livrable.png" class="btnVisuel img-fluid" alt="..." />
+                                                            <img src="/icons/Livrable.png" class="btnVisuel" height="30" width="30" alt="..." />
                                                         </button>
                                                     </div>
                                                     <div class="col">
                                                         <button class="btn btn-info"
                                                                 data-bs-toggle="modal"
                                                                 :data-bs-target="'#modalFac'+facture.id">
-                                                            <img src="/icons/VoirBtn.png" class="btnVisuel img-fluid" alt="..." />
+                                                            <img src="/icons/VoirBtn.png" class="btnVisuel" height="30" width="30" alt="..." />
                                                         </button>
                                                     </div>
                                                 </button>
@@ -329,18 +332,6 @@
 </script>
 
 <style scoped>
-    img {
-        width: 25px;
-        height: 30px;
-    }
-
-    .imgTimer {
-        height: 25px;
-    }
-
-    .imgCueillette {
-        height: 28px;
-    }
 
     table,
     input {

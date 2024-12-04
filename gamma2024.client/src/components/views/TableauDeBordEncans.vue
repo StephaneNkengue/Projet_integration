@@ -132,6 +132,7 @@
                                     <button class="btn bleuMarinSecondaireFond px-3 me-3 btnModifierIcone" @click="editerEncan(encan.id)">
                                         <img src="/icons/ModifierBtn.png"
                                              width="30"
+                                             height="30"
                                              alt="..." />
                                     </button>
                                     <button class="btn btn-danger px-3 btn_delete"
@@ -139,6 +140,7 @@
                                             :data-bs-target="'#' + encan.numeroEncan">
                                         <img src="/icons/SupprimerBtn.png"
                                              width="30"
+                                             height="30"
                                              alt="..." />
                                     </button>
                                 </div>
@@ -408,11 +410,6 @@
         .btn_delete:hover {
             background-color: rgb(235, 6, 6);
         }
-
-    img {
-        width: 25px;
-        height: 30px;
-    }
 
     .fade-enter-active,
     .fade-leave-active {
