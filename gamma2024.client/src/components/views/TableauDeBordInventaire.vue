@@ -2,7 +2,7 @@
     <div class="px-3">
         <div class="container">
 
-            <h1 class="text-center mb-5">Liste des lots</h1>
+            <h1 class="text-center mb-2 mb-md-5">Liste des lots</h1>
 
             <div v-if="messageConfirmation" class="alert alert-success py-0">
                 {{ messageConfirmation }}sdsdd
@@ -75,8 +75,8 @@
         </div>
 
         <div v-if="!chargement" class="w-100">
-            <div class="d-flex justify-content-between my-4">
-                <div class="dropdown d-flex-1" v-if="lotsAffiches.length">
+            <div class="d-flex flex-column flex-md-row justify-content-center justify-content-md-between my-4">
+                <div class="dropdown d-flex justify-content-center mb-2 mb-md-0" v-if="lotsAffiches.length">
                     <button class="btn btnSurvolerBleuMoyenFond boutonPersonnalise text-white dropdown-toggle"
                             type="button"
                             id="dropdownMenuButton"
@@ -112,7 +112,7 @@
                     </ul>
                 </div>
 
-                <div class="d-flex-1" v-if="lotsAffiches.length">
+                <div class="d-flex justify-content-center" v-if="lotsAffiches.length">
                     <div class="d-flex flex-row gap-2">
                         <button class="d-flex align-items-center text-center rounded btn text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
                                 type="button"
@@ -146,7 +146,7 @@
                 <h2>Aucun résultat trouvé</h2>
             </div>
 
-            <div class="margesPourTable" v-else>
+            <div class="overflow-auto" v-else>
                 <table class="table table-striped text-center">
                     <colgroup id="colgroup">
                         <col id="colEncan">

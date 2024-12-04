@@ -1,6 +1,6 @@
 <template>
     <div class="container">
-        <h1 class="text-center mb-5">Liste des vendeurs</h1>
+        <h1 class="text-center mb-2 mb-md-5">Liste des vendeurs</h1>
 
         <h3 class="text-center">Rechercher un vendeur</h3>
 
@@ -25,7 +25,7 @@
         </div>
 
         <div v-if="!chargement" class="w-100">
-            <div class="d-flex justify-content-end my-4" v-if="vendeursAffiche.length">
+            <div class="d-flex justify-content-center justify-content-md-end my-4" v-if="vendeursAffiche.length">
                 <div class="d-flex flex-row gap-2">
                     <button class="d-flex align-items-center text-center rounded btn text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
                             @click="changerNbVendeurParPage(20)"
