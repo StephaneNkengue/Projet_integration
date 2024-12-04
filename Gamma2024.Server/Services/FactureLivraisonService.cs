@@ -134,7 +134,7 @@ namespace Gamma2024.Server.Services
                 Don = 0
             };
 
-            if (adresseTemp != null)
+            if (adresseTemp.NumeroCivique != null)
             {
                 factureLivraisonGen.Client.AdresseLigne1 = $"{adresseTemp.NumeroCivique} {adresseTemp.Rue}";
                 factureLivraisonGen.Client.AdresseLigne2 = $"{adresseTemp.Appartement}";
