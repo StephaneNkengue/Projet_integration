@@ -1308,6 +1308,18 @@ const store = createStore({
                 commit('UPDATE_LOT_TEMPS', { lotId: parseInt(lotId), nouveauTemps: temps });
             });
             commit('REORGANISER_LOTS');
+        },
+
+        async surveillerFinSoireeCloture({ state, commit, dispatch, router }) {
+            if (state.connection) {
+                state.connection.on("ReceiveNewBid", (data) => {
+                    if (data.type === "soireeTerminee") {
+                        console.log('Soirée terminée, réinitialisation de l\'état');
+                        commit('RESET_ENCAN_STATE');
+                        router.push({ name: 'Accueil' });
+                    }
+                });
+            }
         }
 
     },

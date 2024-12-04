@@ -14,14 +14,16 @@ namespace Gamma2024.Server.Services
 		private readonly IWebHostEnvironment _environment;
 		private readonly IHubContext<LotMiseHub, ILotMiseHub> _hubContext;
 		private readonly ILogger<LotService> _logger;
+		private readonly EncanService _encanService;
 
 
-		public LotService(ApplicationDbContext context, IWebHostEnvironment environment, IHubContext<LotMiseHub, ILotMiseHub> hubContext, ILogger<LotService> logger)
+		public LotService(ApplicationDbContext context, IWebHostEnvironment environment, IHubContext<LotMiseHub, ILotMiseHub> hubContext, ILogger<LotService> logger, EncanService encanService)
 		{
 			_context = context;
 			_environment = environment;
 			_hubContext = hubContext;
 			_logger = logger;
+			_encanService = encanService;
 		}
 
 		public async Task<IEnumerable<LotAffichageVM>> ObtenirTousLots()
@@ -902,15 +904,25 @@ namespace Gamma2024.Server.Services
 
 		public async Task MarquerLotVendu(int lotId)
 		{
-			var lot = await _context.Lots.FindAsync(lotId);
+			var lot = await _context.Lots
+				.Include(l => l.EncanLots)
+					.ThenInclude(el => el.Encan)
+				.FirstOrDefaultAsync(l => l.Id == lotId);
+
 			if (lot != null && !lot.EstVendu)
 			{
 				lot.EstVendu = true;
 				lot.DateFinVente = DateTime.Now;
 				
 				await _context.SaveChangesAsync();
+
+				// Vérifier si c'était le dernier lot de la soirée
+				var encan = lot.EncanLots.FirstOrDefault()?.Encan;
+				if (encan != null)
+				{
+					await _encanService.VerifierFinSoireeCloture(encan.NumeroEncan);
+				}
 				
-				// Notifier tous les clients via SignalR
 				await _hubContext.Clients.All.ReceiveNewBid(new
 				{
 					type = "lotVendu",
