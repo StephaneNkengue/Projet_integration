@@ -31,18 +31,20 @@
                                 Tous Sélectionner
                             </label>
                         </li>
-                        <li v-for="(visible, colonne) in colonnesVisibles"
+                        <li v-for="(visible, colonne, index) in colonnesVisibles"
                             :key="colonne"
                             class="d-flex justify-content-start dropdown-item">
-                            <input class="checkboxSeulRecherche d-flex-1"
-                                   type="checkbox"
-                                   :id="`lot${ colonne.charAt(0).toUpperCase() + colonne.slice(1) } CheckboxRecherche`"
-                                   checked
-                                   disabled />
-                            <label class="d-flex-1"
-                                   :for="`lot${colonne.charAt(0).toUpperCase() + colonne.slice(1)}CheckboxRecherche`">
-                                {{(colonne.charAt(0).toUpperCase() + colonne.slice(1)).replace(/([A-Z])/g," $1")}}
-                            </label>
+                            <div v-if="index <=12">
+                                <input class="checkboxSeulRecherche d-flex-1"
+                                       type="checkbox"
+                                       :id="`lot${ colonne.charAt(0).toUpperCase() + colonne.slice(1) } CheckboxRecherche`"
+                                       checked
+                                       disabled />
+                                <label class="d-flex-1"
+                                       :for="`lot${colonne.charAt(0).toUpperCase() + colonne.slice(1)}CheckboxRecherche`">
+                                    {{(colonne.charAt(0).toUpperCase() + colonne.slice(1)).replace(/([A-Z])/g," $1")}}
+                                </label>
+                            </div>
                         </li>
                     </ul>
                 </div>
@@ -104,7 +106,7 @@
                                    :disabled="tousSelectionne"
                                    @change="toggleColonne(colonne)" />
                             <label class="d-flex-1" :for="`lot${colonne.charAt(0).toUpperCase() + colonne.slice(1)}Checkbox`">
-                                {{ colonne.charAt(0).toUpperCase() + colonne.slice(1) }}
+                                {{ (colonne.charAt(0).toUpperCase() + colonne.slice(1)).replace(/([A-Z])/g," $1") }}
                             </label>
                         </li>
                     </ul>
@@ -537,8 +539,15 @@
                     lot.vendeur.toString().toLowerCase().startsWith(rechercheEnMinuscule)
                 ) {
                     return true;
-                }
-                return false;
+                } else if (
+                    listeDesCheckboxesRecherche[12].checked &&
+                    lot.mise
+                        .toString()
+                        .toLowerCase()
+                        .startsWith(rechercheEnMinuscule)
+                ) {
+                    return true;
+                } return false;
             });
         };
 
