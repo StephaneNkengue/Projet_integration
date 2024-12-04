@@ -8,6 +8,13 @@
         <div class="col-md-8 col-lg-7">
             <ul class="nav justify-content-end d-flex align-items-center flex-column flex-md-row">
                 <li>
+                    <router-link :to="{ name: 'ManuelUtilisateur' }" class="text-decoration-none">
+                        <a class="nav-link text-white">
+                            Manuel de l'utilisateur
+                        </a>
+                    </router-link>
+                </li>
+                <li>
                     <router-link :to="{ name: 'ConditionsCompagnie' }" class="text-decoration-none">
                         <a class="nav-link text-white">
                             Conditions de la compagnie
