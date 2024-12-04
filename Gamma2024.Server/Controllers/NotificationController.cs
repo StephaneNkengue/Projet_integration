@@ -1,0 +1,47 @@
+using Gamma2024.Server.Models;
+using Gamma2024.Server.Services;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+
+namespace Gamma2024.Server.Controllers
+{
+    [ApiController]
+    [Route("api/[controller]")]
+    public class NotificationController : ControllerBase
+    {
+        private readonly NotificationService _notificationService;
+
+        public NotificationController(NotificationService notificationService)
+        {
+            _notificationService = notificationService;
+        }
+
+
+        [Authorize(Roles = ApplicationRoles.CLIENT)]
+        [HttpGet("obtenirNotificationNonLu")]
+        public async Task<IActionResult> GetNotifications(string userId)
+        {
+            var notifications = await _notificationService.GetUnreadNotification(userId);
+            if (notifications == null)
+            {
+                return NotFound("Aucune notification non lu trouvée");
+            }
+
+            return Ok(notifications);
+        }
+
+
+        [Authorize(Roles = ApplicationRoles.CLIENT)]
+        [HttpPost("marquerLu/{id}")]
+        public async Task<IActionResult> MarkAsRead(int id)
+        {
+
+            (bool success, string message) = await _notificationService.marquerNotificationLu(id);
+            if (success)
+            {
+                return Ok(message);
+            }
+            return BadRequest("Erreur lors de la modification de la notification");
+        }
+    }
+}
