@@ -21,7 +21,7 @@
 
         <h1 class="text-center mt-5">Liste des achats</h1>
 
-        <div class="d-flex flex-row gap-2 justify-content-end mb-3">
+        <div class="d-flex flex-row gap-2 justify-content-md-end justify-content-center mb-3">
             <button class="d-flex align-items-center text-center rounded btn text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
                     @click="changerNbVenteParPage(20)"
                     v-bind:disabled="ventesParPage == 20">
