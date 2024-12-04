@@ -78,42 +78,45 @@
                                     <div class="accordion" id="accordionClient" v-for="facture in ventesAffiche.filter((x)=> x.encan == encan.encan)" :key="facture.id">
                                         <div class="accordion-item">
                                             <h2 class="accordion-header px-0">
-                                                <button class="accordion-button d-flex"
+                                                <button class="accordion-button d-flex flex-wrap"
                                                         type="button"
                                                         data-bs-toggle="collapse"
                                                         :data-bs-target="'#collapseFacture' + facture.id"
                                                         aria-expanded="true"
                                                         :aria-controls="'collapseFacture' + facture.id">
-                                                    <div class="col">
-                                                        <img v-if="facture.livraison == true"
-                                                             src="/icons/Livrable.png"
-                                                             height="30" width="30" />
-                                                        <img v-else-if="facture.livraison == false"
-                                                             src="/icons/Cueillette.png"
-                                                             class="imgCueillette"
-                                                             height="30" width="30" />
-                                                        <img v-else
-                                                             src="/icons/Minuteur.png"
-                                                             class="imgTimer"
-                                                             height="30" width="30" />
+                                                    <div class="d-flex col-8 align-items-center">
+                                                        <div class="me-2">
+                                                            <img v-if="facture.livraison == true"
+                                                                 src="/icons/Livrable.png"
+                                                                 height="30" width="30" />
+                                                            <img v-else-if="facture.livraison == false"
+                                                                 src="/icons/Cueillette.png"
+                                                                 height="30" width="30" />
+                                                            <img v-else
+                                                                 src="/icons/Minuteur.png"
+                                                                 height="30" width="30" />
+                                                        </div>
+                                                        <div>
+                                                            {{ facture.prenom }} {{ facture.nom }} ({{facture.pseudonyme}})<br />{{ facture.courriel }}<br />{{facture.telephone}}
+                                                        </div>
+
                                                     </div>
-                                                    <div class="col-10">
-                                                        {{ facture.prenom }} {{ facture.nom }} ({{facture.pseudonyme}})<br />{{ facture.courriel }}<br />{{facture.telephone}}
-                                                    </div>
-                                                    <div class="col">
-                                                        <button v-if="facture.livraison == true"
-                                                                class="btn btn-info"
-                                                                data-bs-toggle="modal"
-                                                                :data-bs-target="'#modalLivraison'+facture.id">
-                                                            <img src="/icons/Livrable.png" class="btnVisuel" height="30" width="30" alt="..." />
-                                                        </button>
-                                                    </div>
-                                                    <div class="col">
-                                                        <button class="btn btn-info"
-                                                                data-bs-toggle="modal"
-                                                                :data-bs-target="'#modalFac'+facture.id">
-                                                            <img src="/icons/VoirBtn.png" class="btnVisuel" height="30" width="30" alt="..." />
-                                                        </button>
+                                                    <div class="d-flex flex-column flex-md-row col-3 justify-content-md-end">
+                                                        <div v-if="facture.livraison == true" class="mb-2 mb-md-0 me-md-2">
+                                                            <button class="btn btn-info"
+                                                                    data-bs-toggle="modal"
+                                                                    :data-bs-target="'#modalLivraison'+facture.id">
+                                                                <img src="/icons/Livrable.png" class="btnVisuel" height="30" width="30" alt="..." />
+                                                            </button>
+                                                        </div>
+                                                        <div class="me-md-2">
+                                                            <button class="btn btn-info"
+                                                                    data-bs-toggle="modal"
+                                                                    :data-bs-target="'#modalFac'+facture.id">
+                                                                <img src="/icons/VoirBtn.png" class="btnVisuel" height="30" width="30" alt="..." />
+                                                            </button>
+                                                        </div>
+
                                                     </div>
                                                 </button>
                                             </h2>
