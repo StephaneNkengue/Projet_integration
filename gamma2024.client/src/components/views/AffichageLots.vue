@@ -18,14 +18,14 @@
                 <button class="rounded btn btnSurvolerBleuMoyenFond"
                         v-if="!siTuile"
                         @click="changerTypeAffichage('tuile')">
-                    <img src="/icons/IconTableau.png"
+                    <img src="/icons/TableauOption.png"
                          alt="Affichage en tableau"
                          height="25" />
                 </button>
                 <button class="rounded btn btnSurvolerBleuMoyenFond"
                         v-else
                         @click="changerTypeAffichage('liste')">
-                    <img src="/icons/IconListe.png" alt="Affichage en liste" height="25" />
+                    <img src="/icons/ListeOption.png" alt="Affichage en liste" height="25" />
                 </button>
                 <button class="d-flex align-items-center text-center rounded btn text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
                         type="button"

@@ -69,7 +69,7 @@ namespace Gamma2024.Server.Services
                     FirstName = model.GeneralInfo.Prenom,
                     PhoneNumber = model.GeneralInfo.Telephone,
                     PhoneNumberConfirmed = true,
-                    Avatar = "/Avatars/default.png",
+                    Avatar = "/Avatars/Defaut.png",
                     StripeCustomer = customer.Id
                 };
 
