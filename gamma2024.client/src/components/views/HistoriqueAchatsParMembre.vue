@@ -1,7 +1,7 @@
 <template>
     <span v-for="encan in numerosEncans">
-        <FactureModal :facturePdfPath="encan.pdfPath" :idFacture="'Fac'+encan.id"></FactureModal>
-        <FactureModal v-if="encan.livraison == true" :facturePdfPath="encan.pdfPathLivraison" :idFacture="'Livraison'+encan.id"></FactureModal>
+        <FactureModal :idFacture="encan.id"></FactureModal>
+        <FactureLivraisonModal v-if="encan.livraison == true" :idFacture="encan.idFactureLivraison"></FactureLivraisonModal>
     </span>
     <div class="container mt-5">
         <router-link class="text-decoration-none" :to="{ name: 'ChoixLivraison', params: {idFacture:facture.id} }" v-for="facture in listeFacturesChoixAFaire" :key="facture.id">
@@ -96,14 +96,14 @@
                                         <button v-if="encan.livraison == true"
                                                 class="btn btn-info mb-2 mb-md-0 me-md-2"
                                                 data-bs-toggle="modal"
-                                                :data-bs-target="'#modalLivraison'+encan.id">
+                                                :data-bs-target="'#modalFactureLivraison'+encan.idFactureLivraison">
                                             <img src="/icons/Livrable.png"
                                                  height="30"
                                                  width="30" alt="..." />
                                         </button>
                                         <button class="btn btn-info"
                                                 data-bs-toggle="modal"
-                                                :data-bs-target="'#modalFac'+encan.id">
+                                                :data-bs-target="'#modalFacture'+encan.id">
                                             <img src="/icons/VoirBtn.png"
                                                  height="30"
                                                  width="30" alt="..." />
@@ -173,6 +173,7 @@
     import { computed, watch, onMounted, ref } from "vue";
     import { useStore } from "vuex";
     import FactureModal from "@/components/modals/VoirFactureModal.vue";
+    import FactureLivraisonModal from "@/components/modals/VoirFactureLivraisonModal.vue";
 
     const store = useStore();
     const listeFacturesMembre = ref([]);

@@ -1,7 +1,7 @@
 <template>
     <span v-for="facture in ventesAffiche" :key="facture.id">
-        <FactureModal :facturePdfPath="facture.pdfPath" :idFacture="'Fac' + facture.id"></FactureModal>
-        <FactureModal v-if="facture.livraison == true" :facturePdfPath="facture.pdfPathLivraison" :idFacture="'Livraison'+facture.id"></FactureModal>
+        <FactureModal :idFacture="facture.id"></FactureModal>
+        <FactureLivraisonModal v-if="facture.livraison == true" :idFacture="facture.idFactureLivraison"></FactureLivraisonModal>
     </span>
     <div class="container">
         <h1 class="text-center mb-2 mb-md-5">Liste des ventes</h1>
@@ -105,14 +105,14 @@
                                                         <div v-if="facture.livraison == true" class="mb-2 mb-md-0 me-md-2">
                                                             <button class="btn btn-info"
                                                                     data-bs-toggle="modal"
-                                                                    :data-bs-target="'#modalLivraison'+facture.id">
+                                                                    :data-bs-target="'#modalFactureLivraison'+facture.idFactureLivraison">
                                                                 <img src="/icons/Livrable.png" class="btnVisuel" height="30" width="30" alt="..." />
                                                             </button>
                                                         </div>
                                                         <div class="me-md-2">
                                                             <button class="btn btn-info"
                                                                     data-bs-toggle="modal"
-                                                                    :data-bs-target="'#modalFac'+facture.id">
+                                                                    :data-bs-target="'#modalFacture'+facture.id">
                                                                 <img src="/icons/VoirBtn.png" class="btnVisuel" height="30" width="30" alt="..." />
                                                             </button>
                                                         </div>
@@ -182,6 +182,7 @@
     import { computed, watch, onMounted, ref } from "vue";
     import { useStore } from "vuex";
     import FactureModal from "@/components/modals/VoirFactureModal.vue";
+    import FactureLivraisonModal from "@/components/modals/VoirFactureLivraisonModal.vue";
 
     const store = useStore();
     const listeFactures = ref([]);
