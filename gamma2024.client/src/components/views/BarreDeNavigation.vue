@@ -132,9 +132,9 @@
                                         data-bs-toggle="dropdown"
                                         aria-expanded="false">
                                     <img src="/icons/Cloche.png" alt="Icon cloche" height="25" />
-                                    <span v-if="unreadCount > 0"
+                                    <span v-if="nombreNotificationsNonLues > 0"
                                           class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                                        {{ unreadCount }}
+                                        {{ nombreNotificationsNonLues }}
                                         <span class="visually-hidden">unread notifications</span>
                                     </span>
                                 </button>
@@ -157,9 +157,9 @@
                                     </li>
                                     <li>
                                         <button type="button"
-                                                :disabled="unreadCount < 1"
+                                                :disabled="nombreNotificationsNonLues < 1"
                                                 class="dropdown-item text-center btn btn-danger"
-                                                @click="markAsRead">
+                                                @click="marqueCommeLu">
                                             Marquer toutes comme lues
                                         </button>
                                     </li>
@@ -170,7 +170,7 @@
                                    role="button"
                                    data-bs-toggle="dropdown"
                                    aria-expanded="false">
-                                    <p class="m-0 me-1">{{ username }}</p>
+                                    <p class="m-0 me-1">{{ utilisateur }}</p>
                                     <img :src="avatarUrl"
                                          alt="Avatar"
                                          class="imgProfile rounded-circle" />
@@ -581,9 +581,9 @@
     </header>
 </template>
 <script setup>
-    import { computed, watch, ref, onMounted, onUnmounted } from "vue";
+    import { computed, watch, ref, onMounted } from "vue";
     import { useStore } from "vuex";
-    import { RouterLink, useRouter, useRoute } from "vue-router";
+    import { useRouter, useRoute } from "vue-router";
     import VueDatePicker from "@vuepic/vue-datepicker";
     import "@vuepic/vue-datepicker/dist/main.css";
     import { fr } from "date-fns/locale";
@@ -596,10 +596,10 @@
     const estConnecte = computed(() => store.state.isLoggedIn);
     const estAdmin = computed(() => store.getters.isAdmin);
     const estClient = computed(() => store.getters.isClient);
-    const username = computed(() => store.getters.username);
+    const utilisateur = computed(() => store.getters.username);
     const avatarUrl = computed(() => store.getters.avatarUrl);
 
-    const currentUser = ref(null);
+    const utilisateurPresent = ref(null);
 
     const listeDesArtistes = ref([]);
     const listeDesCategories = ref([]);
@@ -626,18 +626,17 @@
     const selectDate = ref(0);
     const rechercheEncansDate1 = ref();
     const rechercheEncansDate2 = ref();
-    const interval = ref(null);
 
     watch(
         () => store.state.user,
-        (newUser) => {
-            currentUser.value = newUser;
+        (nouvelUtilisateur) => {
+            utilisateurPresent.value = nouvelUtilisateur;
         },
         { deep: true, immediate: true }
     );
 
-    const refreshUserInfo = async () => {
-        if (store.state.isLoggedIn) {
+    const rafraichirInfoUtilisateur = async () => {
+        if (estConnecte) {
             try {
                 await store.dispatch("fetchClientInfo");
             } catch (error) {
@@ -649,12 +648,12 @@
         }
     };
 
-    // Appelez refreshUserInfo lorsque l'utilisateur se connecte
+    // Appelez rafraichirInfoUtilisateur lorsque l'utilisateur se connecte
     watch(
-        () => store.state.isLoggedIn,
-        (newValue) => {
-            if (newValue) {
-                refreshUserInfo();
+        () => estConnecte,
+        (nouvelleValeur) => {
+            if (nouvelleValeur) {
+                rafraichirInfoUtilisateur();
             }
         }
     );
@@ -663,8 +662,8 @@
 
     async function verifierSiEncanPresent() {
         try {
-            const response = await store.dispatch("verifierEtatEncan");
-            const type = response;
+            const reponse = await store.dispatch("verifierEtatEncan");
+            const type = reponse;
 
             if (type === "courant" || type === "soireeCloture") {
                 ilYAUnEncanPresent.value = true;
@@ -978,9 +977,9 @@
         listeDesCategories.value = await store.dispatch("obtenirCategories");
         verifierSiQueryDansURL();
 
-        const userId = computed(() => store.state.user?.id);
-        if (userId.value) {
-            await store.dispatch("obtenirNotification", userId.value);
+        const utilisateurId = computed(() => store.state.user?.id);
+        if (utilisateurId.value) {
+            await store.dispatch("obtenirNotification", utilisateurId.value);
         }
     });
 
@@ -995,9 +994,9 @@
     );
 
     const notifications = computed(() => store.getters.allNotifications);
-    const unreadCount = computed(() => store.getters.unreadNotifications);
+    const nombreNotificationsNonLues = computed(() => store.getters.unreadNotifications);
 
-    const markAsRead = async function () {
+    const marqueCommeLu = async function () {
         await store.dispatch("marquerToutesNotifLues");
     };
 </script>

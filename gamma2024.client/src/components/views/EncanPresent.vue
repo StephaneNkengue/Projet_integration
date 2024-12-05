@@ -22,12 +22,12 @@
                     Date de début de la soirée de clotûre: {{ soireeDate }}
                 </p>
 
-                <p v-if="remainingTime" class="text-center mb-5 fs-1 fw-bolder textCount">
+                <p v-if="tempsRestant" class="text-center mb-5 fs-1 fw-bolder textCount">
                     Début de la soirée de clotûre dans
-                    <span v-if="remainingTime.days > 0">{{ remainingTime.days }} jour{{ remainingTime.days > 1 ? 's' : '' }}</span>
-                    {{ remainingTime.hours }}h
-                    {{ remainingTime.minutes }}m
-                    {{ remainingTime.seconds }}s
+                    <span v-if="tempsRestant.days > 0">{{ tempsRestant.days }} jour{{ tempsRestant.days > 1 ? 's' : '' }}</span>
+                    {{ tempsRestant.hours }}h
+                    {{ tempsRestant.minutes }}m
+                    {{ tempsRestant.seconds }}s
                 </p>
 
                 <AffichageLots :idEncan="encan.id" />
@@ -70,12 +70,12 @@
     const type = ref(null);
 
     // Vérification périodique de l'état
-    const interval = ref(null);
+    const intervalle = ref(null);
 
-    const remainingTime = ref(null);
-    let countdownInterval = null;
+    const tempsRestant = ref(null);
+    let intervalleDeDecompte = null;
 
-    const updateCountdown = () => {
+    const remettreAJourDecompte = () => {
         if (!encan.value?.dateDebutSoireeCloture) return;
 
         const now = new Date();
@@ -83,14 +83,14 @@
         let difference = targetDate - now;
 
         if (difference <= 0) {
-            remainingTime.value = {
+            tempsRestant.value = {
                 days: 0,
                 hours: 0,
                 minutes: 0,
                 seconds: 0
             };
-            if (countdownInterval) {
-                clearInterval(countdownInterval);
+            if (intervalleDeDecompte) {
+                clearInterval(intervalleDeDecompte);
             }
             return;
         }
@@ -110,7 +110,7 @@
 
         const seconds = Math.floor(difference / 1000);
 
-        remainingTime.value = { days, hours, minutes, seconds };
+        tempsRestant.value = { days, hours, minutes, seconds };
     };
 
     const verifierEtat = async () => {
@@ -148,21 +148,21 @@
         await verifierEtat();
         // Démarrer la surveillance des transitions
         await store.dispatch('surveillerTransitionEncan')
-        interval.value = setInterval(verifierEtat, 2000);
+        intervalle.value = setInterval(verifierEtat, 2000);
 
         // Ajouter le countdown
-        updateCountdown();
-        countdownInterval = setInterval(updateCountdown, 1000);
+        remettreAJourDecompte();
+        intervalleDeDecompte = setInterval(remettreAJourDecompte, 1000);
 
         chargement.value = false;
     });
 
     onUnmounted(() => {
-        if (interval.value) {
-            clearInterval(interval.value);
+        if (intervalle.value) {
+            clearInterval(intervalle.value);
         }
-        if (countdownInterval) {
-            clearInterval(countdownInterval);
+        if (intervalleDeDecompte) {
+            clearInterval(intervalleDeDecompte);
         }
     });
 
