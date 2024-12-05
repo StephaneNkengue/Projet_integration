@@ -81,5 +81,12 @@ namespace Gamma2024.Server.Controllers
 
             return Ok(factures);
         }
+
+        [HttpGet("chercherDetailsFacture/{idFacture}")]
+        public IActionResult ChercherDetailsFacture(int idFacture)
+        {
+            var facture = _factureService.ChercherDetailsFacture(idFacture);
+            return Ok(facture);
+        }
     }
 }
