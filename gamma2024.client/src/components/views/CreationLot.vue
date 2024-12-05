@@ -158,26 +158,26 @@
             vendeurs.value = await store.dispatch('obtenirVendeurs');
             mediums.value = await store.dispatch('obtenirMediums');
             encans.value = await store.dispatch('obtenirEncans');
-        } catch (error) {
-            console.error("Erreur lors de la récupération des données:", error);
+        } catch (erreur) {
+            console.error("Erreur lors de la récupération des données:", erreur);
         }
     });
 
-    const ajouterNouvellesPhotos = (event) => {
-        const files = event.target.files;
+    const ajouterNouvellesPhotos = (evenement) => {
+        const fichiers = evenement.target.files;
         erreurPhotos.value = '';
 
-        if (nouvellesPhotos.value.length + files.length > 5) {
+        if (nouvellesPhotos.value.length + fichiers.length > 5) {
             erreurPhotos.value = "Vous ne pouvez pas ajouter plus de 5 photos par lot.";
-            event.target.value = '';
+            evenement.target.value = '';
             return;
         }
 
-        for (let i = 0; i < files.length; i++) {
-            const file = files[i];
-            if (file.type.startsWith('image/')) {
-                const preview = URL.createObjectURL(file);
-                nouvellesPhotos.value.push({ file, preview });
+        for (let i = 0; i < fichiers.length; i++) {
+            const fichier = fichiers[i];
+            if (fichier.type.startsWith('image/')) {
+                const preview = URL.createObjectURL(fichier);
+                nouvellesPhotos.value.push({ fichier, preview });
             }
         }
     };
@@ -204,26 +204,26 @@
             formData.append('Hauteur', lot.value.hauteur);
             formData.append('Largeur', lot.value.largeur);
 
-            nouvellesPhotos.value.forEach(({ file }) => {
-                formData.append('Photos', file);
+            nouvellesPhotos.value.forEach(({ fichier }) => {
+                formData.append('Photos', fichier);
             });
 
-            const response = await store.dispatch('creerLot', formData);
-            if (response.success) {
+            const reponse = await store.dispatch('creerLot', formData);
+            if (reponse.success) {
                 message.value = "Le lot a été créé avec succès.";
                 erreur.value = '';
                 setTimeout(() => {
                     router.push({ name: 'TableauDeBordInventaire' });
                 }, 2000);
             } else {
-                erreur.value = "Erreur lors de la création du lot: " + response.data;
+                erreur.value = "Erreur lors de la création du lot: " + reponse.data;
                 message.value = '';
             }
-        } catch (error) {
-            if (error.response && error.response.data) {
-                erreur.value = "Erreur lors de la création du lot: " + error.response.data;
+        } catch (erreur) {
+            if (erreur.reponse && erreur.reponse.data) {
+                erreur.value = "Erreur lors de la création du lot: " + erreur.reponse.data;
             } else {
-                erreur.value = "Erreur lors de la création du lot: " + error.message;
+                erreur.value = "Erreur lors de la création du lot: " + erreur.message;
             }
             message.value = '';
         }

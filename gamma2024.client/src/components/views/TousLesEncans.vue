@@ -50,12 +50,12 @@
     })
 
     onMounted(async () => {
-        const response = await store.dispatch("chercherTousEncansVisibles");
-        encans.value = response.data
+        const reponse = await store.dispatch("chercherTousEncansVisibles");
+        encans.value = reponse.data
 
-        const responseNumEncanCourrant = await store.dispatch("chercherNumeroEncanEnCours");
-        if (responseNumEncanCourrant.data != '') {
-            numEncanCours.value = responseNumEncanCourrant.data
+        const reponseNumEncanCourrant = await store.dispatch("chercherNumeroEncanEnCours");
+        if (reponseNumEncanCourrant.data != '') {
+            numEncanCours.value = reponseNumEncanCourrant.data
         }
         chargement.value = false
     })

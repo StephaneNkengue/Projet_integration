@@ -1,5 +1,5 @@
 <template>
-    <div v-if="isLoading">Chargement...</div>
+    <div v-if="enChargement">Chargement...</div>
     <div class="pt-md-5 container">
         <div class="container d-flex flex-column justify-content-start align-items-stretch card p-md-5 mb-5">
             <div class="card-header mt-3 mx-3">
@@ -9,15 +9,15 @@
                         <img :src="avatarUrl"
                              alt="Avatar"
                              class="avatar-image mb-2"
-                             @click="triggerFileInput"
-                             @error="handleImageError" />
+                             @click="declencherInsertionFichier"
+                             @error="gererImageErreur" />
                     </div>
-                    <button @click="triggerFileInput" class="btn btnSurvolerBleuMoyenFond text-white mt-3">
+                    <button @click="declencherInsertionFichier" class="btn btnSurvolerBleuMoyenFond text-white mt-3">
                         Modifier l'avatar
                     </button>
                     <input type="file"
-                           ref="fileInput"
-                           @change="handleFileChange"
+                           ref="insertionFichier"
+                           @change="gererChangerFichier"
                            accept="image/*"
                            style="display: none" />
                 </div>
@@ -41,7 +41,7 @@
             </div>
 
             <div class="mt-md-3 card-body">
-                <form @submit.prevent="submitForm">
+                <form @submit.prevent="soumettreFormulaire">
                     <!-- Informations générales -->
                     <div class="card mb-5">
                         <div class="card-header">Informations générales</div>
@@ -53,12 +53,12 @@
                                            id="nom"
                                            :class="[
                       'form-control',
-                      { 'is-invalid': v.generalInfo.nom.$error },
+                      { 'is-invalid': vuelidate.generalInfo.nom.$error },
                     ]"
                                            v-model="formData.generalInfo.nom"
-                                           @blur="v.generalInfo.nom.$touch()" />
-                                    <div class="invalid-feedback" v-if="v.generalInfo.nom.$error">
-                                        {{ v.generalInfo.nom.$errors[0].$message }}
+                                           @blur="vuelidate.generalInfo.nom.$touch()" />
+                                    <div class="invalid-feedback" v-if="vuelidate.generalInfo.nom.$error">
+                                        {{ vuelidate.generalInfo.nom.$errors[0].$message }}
                                     </div>
                                 </div>
                                 <div class="col-md-6">
@@ -67,13 +67,13 @@
                                            id="prenom"
                                            :class="[
                       'form-control',
-                      { 'is-invalid': v.generalInfo.prenom.$error },
+                      { 'is-invalid': vuelidate.generalInfo.prenom.$error },
                     ]"
                                            v-model="formData.generalInfo.prenom"
-                                           @blur="v.generalInfo.prenom.$touch()" />
+                                           @blur="vuelidate.generalInfo.prenom.$touch()" />
                                     <div class="invalid-feedback"
-                                         v-if="v.generalInfo.prenom.$error">
-                                        {{ v.generalInfo.prenom.$errors[0].$message }}
+                                         v-if="vuelidate.generalInfo.prenom.$error">
+                                        {{ vuelidate.generalInfo.prenom.$errors[0].$message }}
                                     </div>
                                 </div>
                             </div>
@@ -84,10 +84,10 @@
                                            id="pseudonyme"
                                            :class="[
                       'form-control',
-                      { 'is-invalid': v.generalInfo.pseudo.$error },
+                      { 'is-invalid': vuelidate.generalInfo.pseudo.$error },
                     ]"
                                            v-model="formData.generalInfo.pseudo"
-                                           @blur="v.generalInfo.pseudo.$touch()" />
+                                           @blur="vuelidate.generalInfo.pseudo.$touch()" />
                                 </div>
                                 <div class="col-md-6">
                                     <label for="telephone">Téléphone</label>
@@ -96,14 +96,14 @@
                                                    mask="(999) 999-9999"
                                                    :class="[
                         'form-control',
-                        { 'is-invalid': v.generalInfo.telephone.$error },
+                        { 'is-invalid': vuelidate.generalInfo.telephone.$error },
                       ]"
                                                    id="telephone"
                                                    v-model="formData.generalInfo.telephone"
-                                                   @blur="v.generalInfo.telephone.$touch()" />
+                                                   @blur="vuelidate.generalInfo.telephone.$touch()" />
                                         <div class="invalid-feedback"
-                                             v-if="v.generalInfo.telephone.$error">
-                                            {{ v.generalInfo.telephone.$errors[0].$message }}
+                                             v-if="vuelidate.generalInfo.telephone.$error">
+                                            {{ vuelidate.generalInfo.telephone.$errors[0].$message }}
                                         </div>
                                     </div>
                                 </div>
@@ -135,7 +135,7 @@
                                            v-model="formData.generalInfo.currentPassword"
                                            id="currentPassword"
                                            class="form-control"
-                                           @input="validatePasswordFields" />
+                                           @input="validerMotDePasseInseres" />
                                 </div>
                                 <div class="form-group"
                                      v-if="formData.generalInfo.currentPassword">
@@ -144,10 +144,10 @@
                                            v-model="formData.generalInfo.newPassword"
                                            id="newPassword"
                                            class="form-control"
-                                           :class="{ 'is-invalid': v.generalInfo.newPassword.$error }"
-                                           @input="validatePasswordFields" />
+                                           :class="{ 'is-invalid': vuelidate.generalInfo.newPassword.$error }"
+                                           @input="validerMotDePasseInseres" />
                                     <div class="invalid-feedback"
-                                         v-if="v.generalInfo.newPassword.$error">
+                                         v-if="vuelidate.generalInfo.newPassword.$error">
                                         Le nouveau mot de passe est requis et doit avoir au moins 8
                                         caractères.
                                     </div>
@@ -160,11 +160,11 @@
                                            id="confirmNewPassword"
                                            class="form-control"
                                            :class="{
-                      'is-invalid': v.generalInfo.confirmNewPassword.$error,
+                      'is-invalid': vuelidate.generalInfo.confirmNewPassword.$error,
                     }"
-                                           @input="validatePasswordFields" />
+                                           @input="validerMotDePasseInseres" />
                                     <div class="invalid-feedback"
-                                         v-if="v.generalInfo.confirmNewPassword.$error">
+                                         v-if="vuelidate.generalInfo.confirmNewPassword.$error">
                                         La confirmation du mot de passe est requise et doit
                                         correspondre au nouveau mot de passe.
                                     </div>
@@ -184,13 +184,13 @@
                                            v-model="formData.adresse.numeroCivique"
                                            :class="[
                       'form-control',
-                      { 'is-invalid': v.adresse.numeroCivique.$error },
+                      { 'is-invalid': vuelidate.adresse.numeroCivique.$error },
                     ]"
                                            id="numeroCivique"
-                                           @blur="v.adresse.numeroCivique.$touch()" />
+                                           @blur="vuelidate.adresse.numeroCivique.$touch()" />
                                     <div class="invalid-feedback"
-                                         v-if="v.adresse.numeroCivique.$error">
-                                        {{ v.adresse.numeroCivique.$errors[0].$message }}
+                                         v-if="vuelidate.adresse.numeroCivique.$error">
+                                        {{ vuelidate.adresse.numeroCivique.$errors[0].$message }}
                                     </div>
                                 </div>
                                 <div class="col-md-6">
@@ -199,12 +199,12 @@
                                            v-model="formData.adresse.rue"
                                            :class="[
                       'form-control',
-                      { 'is-invalid': v.adresse.rue.$error },
+                      { 'is-invalid': vuelidate.adresse.rue.$error },
                     ]"
                                            id="rue"
-                                           @blur="v.adresse.rue.$touch()" />
-                                    <div class="invalid-feedback" v-if="v.adresse.rue.$error">
-                                        {{ v.adresse.rue.$errors[0].$message }}
+                                           @blur="vuelidate.adresse.rue.$touch()" />
+                                    <div class="invalid-feedback" v-if="vuelidate.adresse.rue.$error">
+                                        {{ vuelidate.adresse.rue.$errors[0].$message }}
                                     </div>
                                 </div>
                             </div>
@@ -222,12 +222,12 @@
                                            v-model="formData.adresse.ville"
                                            :class="[
                       'form-control',
-                      { 'is-invalid': v.adresse.ville.$error },
+                      { 'is-invalid': vuelidate.adresse.ville.$error },
                     ]"
                                            id="ville"
-                                           @blur="v.adresse.ville.$touch()" />
-                                    <div class="invalid-feedback" v-if="v.adresse.ville.$error">
-                                        {{ v.adresse.ville.$errors[0].$message }}
+                                           @blur="vuelidate.adresse.ville.$touch()" />
+                                    <div class="invalid-feedback" v-if="vuelidate.adresse.ville.$error">
+                                        {{ vuelidate.adresse.ville.$errors[0].$message }}
                                     </div>
                                 </div>
                             </div>
@@ -239,9 +239,9 @@
                                             v-model="formData.adresse.province"
                                             :class="[
                       'form-control',
-                      { 'is-invalid': v.adresse.province.$error },
+                      { 'is-invalid': vuelidate.adresse.province.$error },
                     ]"
-                                            @blur="v.adresse.province.$touch()">
+                                            @blur="vuelidate.adresse.province.$touch()">
                                         <option value="" disabled selected>
                                             Sélectionner une province
                                         </option>
@@ -267,15 +267,15 @@
                                                    id="postalCode"
                                                    :class="[
                         'form-control',
-                        { 'is-invalid': v.adresse.codePostal.$error },
+                        { 'is-invalid': vuelidate.adresse.codePostal.$error },
                       ]"
                                                    mask="a9a 9a9"
                                                    v-model="formData.adresse.codePostal"
-                                                   @blur="v.adresse.codePostal.$touch()" />
+                                                   @blur="vuelidate.adresse.codePostal.$touch()" />
                                     </div>
                                     <div class="invalid-feedback"
-                                         v-if="v.adresse.codePostal.$error">
-                                        {{ v.adresse.codePostal.$errors[0].$message }}
+                                         v-if="vuelidate.adresse.codePostal.$error">
+                                        {{ vuelidate.adresse.codePostal.$errors[0].$message }}
                                     </div>
                                 </div>
                             </div>
@@ -284,17 +284,17 @@
 
                     <div class="d-flex justify-content-start justify-content-md-end gap-2 py-3 card-footer flex-column flex-md-row px-3">
                         <button class="btn btn-secondary rounded-pill px-4"
-                                :disabled="!formDataChanged"
+                                :disabled="!formulaireChange"
                                 type="button"
-                                @click="resetForm">
+                                @click="effacerFormulaire">
                             Réinitialiser
                         </button>
                         <button type="submit"
                                 :class="[
-                isFormValid && formDataChanged ? 'bleuValide' : 'bleuNonValide',
+                formulaireEstValide && formulaireChange ? 'bleuValide' : 'bleuNonValide',
                 'btn rounded-pill px-4',
               ]"
-                                :disabled="!isFormValid || !formDataChanged">
+                                :disabled="!formulaireEstValide || !formulaireChange">
                             <div class="d-flex flex-row align-items-center justify-content-center">
                                 <img src="/icons/EnregistrerBtn.png"
                                      class="img-fluid img_password"
@@ -323,7 +323,7 @@
 
     const store = useStore();
     const message = ref(null);
-    const fileInput = ref(null);
+    const insertionFichier = ref(null);
     const messageRequis = helpers.withMessage("Ce champ est requis", required);
     const messageCourriel = helpers.withMessage(
         "Veuillez entrer un courriel valide",
@@ -369,7 +369,7 @@
         changeVisible.value = !changeVisible.value;
     };
 
-    let formDataChanged = ref(false);
+    let formulaireChange = ref(false);
     // objet qui contient tous les champs remplis correctement
     let formData = reactive({
         generalInfo: {
@@ -393,9 +393,9 @@
         },
     });
 
-    let initialFormData = ref({});
+    let formulaireInitial = ref({});
 
-    let rules = computed(() => {
+    let regles = computed(() => {
         return {
             generalInfo: {
                 nom: { required: messageRequis },
@@ -437,7 +437,7 @@
     });
 
     const mapProvince = (province) => {
-        const provinceMap = {
+        const listeDeProvinces = {
             Québec: "QC",
             Ontario: "ON",
             Alberta: "AB",
@@ -452,16 +452,16 @@
             Nunavut: "NU",
             Yukon: "YT",
         };
-        return provinceMap[province] || province;
+        return listeDeProvinces[province] || province;
     };
 
-    const v = useVuelidate(rules, formData);
+    const vuelidate = useVuelidate(regles, formData);
 
-    const errorMessage = ref("");
-    const isLoading = ref(true);
+    const messageErreur = ref("");
+    const enChargement = ref(true);
 
     // Fonction pour mettre à jour formData avec les données du client
-    const updateFormData = () => {
+    const mettreAJourFormulaire = () => {
         if (clientInfo.value) {
             // Informations générales
             formData.generalInfo.nom = clientInfo.value.name || "";
@@ -495,10 +495,10 @@
             }
 
             // Mise à jour de l'état initial du formulaire pour la comparaison ultérieure
-            initialFormData.value = JSON.parse(JSON.stringify(formData));
+            formulaireInitial.value = JSON.parse(JSON.stringify(formData));
 
             // Réinitialisation de l'indicateur de changement du formulaire
-            formDataChanged.value = false;
+            formulaireChange.value = false;
         }
     };
 
@@ -507,34 +507,34 @@
     onMounted(async () => {
         try {
             await store.dispatch("fetchClientInfo");
-            isLoading.value = false;
-        } catch (error) {
-            console.error("Erreur lors du chargement des informations client:", error);
-            isLoading.value = false;
+            enChargement.value = false;
+        } catch (erreur) {
+            console.error("Erreur lors du chargement des informations client:", erreur);
+            enChargement.value = false;
         }
     });
 
     // Ou utilisez un watcher pour mettre à jour le formulaire lorsque clientInfo change
-    watch(clientInfo, updateFormData, { immediate: true });
+    watch(clientInfo, mettreAJourFormulaire, { immediate: true });
 
     watch(
         () => JSON.parse(JSON.stringify(formData)), // Deep clone copy to avoid same ref type.
         () => {
             // Comparaison entre l'état initial et l'état actuel
-            if (JSON.stringify(formData) !== JSON.stringify(initialFormData.value)) {
-                formDataChanged.value = true;
+            if (JSON.stringify(formData) !== JSON.stringify(formulaireInitial.value)) {
+                formulaireChange.value = true;
             } else {
-                formDataChanged.value = false;
+                formulaireChange.value = false;
             }
         },
         { deep: true }
     );
 
-    const triggerFileInput = () => {
-        fileInput.value.click();
+    const declencherInsertionFichier = () => {
+        insertionFichier.value.click();
     };
 
-    const handleImageError = () => {
+    const gererImageErreur = () => {
         setTimeout(() => {
             if (!avatarUrl.value.includes("Avatar.png")) {
                 avatarUrl.value = "/icons/Avatar.png";
@@ -542,8 +542,8 @@
         }, 1000);
     };
 
-    const handleFileChange = async (event) => {
-        const file = event.target.files[0];
+    const gererChangerFichier = async (evenement) => {
+        const file = evenement.target.files[0];
         if (file) {
             try {
                 const fData = new FormData();
@@ -553,16 +553,16 @@
                 // Utiliser l'URL complète retournée par l'action du store
                 avatarUrl.value = response.data.avatarUrl;
 
-                formDataChanged.value = true;
-            } catch (error) {
-                errorMessage.value =
+                formulaireChange.value = true;
+            } catch (erreur) {
+                messageErreur.value =
                     "Erreur lors de la mise à jour de l'avatar: " +
-                    (error.response?.data?.message || error.message);
+                    (erreur.response?.data?.message || erreur.message);
             }
         }
     };
 
-    const isFormValid = computed(() => {
+    const formulaireEstValide = computed(() => {
         const passwordFieldsEmpty =
             !formData.generalInfo.currentPassword &&
             !formData.generalInfo.newPassword &&
@@ -576,37 +576,37 @@
         const passwordFieldsValid =
             passwordFieldsEmpty ||
             (passwordFieldsFilled &&
-                !v.value.generalInfo.currentPassword.$invalid &&
-                !v.value.generalInfo.newPassword.$invalid &&
-                !v.value.generalInfo.confirmNewPassword.$invalid);
+                !vuelidate.value.generalInfo.currentPassword.$invalid &&
+                !vuelidate.value.generalInfo.newPassword.$invalid &&
+                !vuelidate.value.generalInfo.confirmNewPassword.$invalid);
 
         const otherFieldsValid =
-            !v.value.generalInfo.nom.$invalid &&
-            !v.value.generalInfo.prenom.$invalid &&
-            !v.value.generalInfo.courriel.$invalid &&
-            !v.value.generalInfo.telephone.$invalid &&
-            !v.value.generalInfo.pseudo.$invalid &&
-            !v.value.adresse.$invalid;
+            !vuelidate.value.generalInfo.nom.$invalid &&
+            !vuelidate.value.generalInfo.prenom.$invalid &&
+            !vuelidate.value.generalInfo.courriel.$invalid &&
+            !vuelidate.value.generalInfo.telephone.$invalid &&
+            !vuelidate.value.generalInfo.pseudo.$invalid &&
+            !vuelidate.value.adresse.$invalid;
 
-        return otherFieldsValid && passwordFieldsValid && formDataChanged.value;
+        return otherFieldsValid && passwordFieldsValid && formulaireChange.value;
     });
 
     // Ajoutez cette fonction pour gérer la validation des champs de mot de passe
-    const validatePasswordFields = () => {
+    const validerMotDePasseInseres = () => {
         if (formData.generalInfo.currentPassword) {
-            v.value.generalInfo.newPassword.$touch();
-            v.value.generalInfo.confirmNewPassword.$touch();
+            vuelidate.value.generalInfo.newPassword.$touch();
+            vuelidate.value.generalInfo.confirmNewPassword.$touch();
         } else {
-            v.value.generalInfo.newPassword.$reset();
-            v.value.generalInfo.confirmNewPassword.$reset();
+            vuelidate.value.generalInfo.newPassword.$reset();
+            vuelidate.value.generalInfo.confirmNewPassword.$reset();
         }
     };
 
     watch(
         () => formData.generalInfo.currentPassword,
-        (newValue) => {
-            if (newValue) {
-                validatePasswordFields();
+        (nouvelleValeur) => {
+            if (nouvelleValeur) {
+                validerMotDePasseInseres();
             }
         }
     );
@@ -618,7 +618,7 @@
             formData.generalInfo.confirmNewPassword,
         ],
         () => {
-            validatePasswordFields();
+            validerMotDePasseInseres();
         }
     );
 
@@ -627,17 +627,17 @@
         (newPhotoUrl) => {
             if (newPhotoUrl) {
                 avatarUrl.value = newPhotoUrl;
-                formDataChanged.value = false;
+                formulaireChange.value = false;
             }
         },
         { deep: true }
     );
 
-    const submitForm = async () => {
-        const result = await v.value.$validate();
-        if (result) {
+    const soumettreFormulaire = async () => {
+        const resultat = await vuelidate.value.$validate();
+        if (resultat) {
             try {
-                const mappedData = {
+                const donneesMap = {
                     Name: formData.generalInfo.nom,
                     FirstName: formData.generalInfo.prenom,
                     Email: formData.generalInfo.courriel,
@@ -659,16 +659,16 @@
 
                 // Ne pas envoyer les champs de mot de passe s'ils sont tous vides
                 if (
-                    !mappedData.CurrentPassword &&
-                    !mappedData.NewPassword &&
-                    !mappedData.ConfirmNewPassword
+                    !donneesMap.CurrentPassword &&
+                    !donneesMap.NewPassword &&
+                    !donneesMap.ConfirmNewPassword
                 ) {
-                    delete mappedData.CurrentPassword;
-                    delete mappedData.NewPassword;
-                    delete mappedData.ConfirmNewPassword;
+                    delete donneesMap.CurrentPassword;
+                    delete donneesMap.NewPassword;
+                    delete donneesMap.ConfirmNewPassword;
                 }
 
-                await store.dispatch("updateClientInfo", mappedData);
+                await store.dispatch("updateClientInfo", donneesMap);
                 toast.success(
                     h(ToastContent, {
                         title: "Informations mises à jour avec succès !",
@@ -696,12 +696,12 @@
                 setTimeout(() => {
                     router.push("/");
                 }, 2000);
-            } catch (error) {
+            } catch (erreur) {
                 message.value = {
                     type: "error",
                     text:
                         "Erreur lors de la mise à jour des informations: " +
-                        (error.response?.data?.message || error.message),
+                        (erreur.response?.data?.message || erreur.message),
                 };
             }
         } else {
@@ -712,10 +712,10 @@
         }
     };
 
-    const resetForm = () => {
-        Object.assign(formData, JSON.parse(JSON.stringify(initialFormData.value)));
-        v.value.$reset();
-        formDataChanged.value = false;
+    const effacerFormulaire = () => {
+        Object.assign(formData, JSON.parse(JSON.stringify(formulaireInitial.value)));
+        vuelidate.value.$reset();
+        formulaireChange.value = false;
     };
 </script>
 

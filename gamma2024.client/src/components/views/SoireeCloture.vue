@@ -66,8 +66,8 @@
     )
 
     // Si tous les lots sont vendus, rediriger vers EncanPresent
-    watch(lotsRestants, async (newLots) => {
-        if (newLots.length === 0) {
+    watch(lotsRestants, async (nouveauxLots) => {
+        if (nouveauxLots.length === 0) {
             await router.push({ name: 'EncanPresent' })
         }
     })
@@ -81,8 +81,8 @@
     })
 
     // Ajouter un watch pour s'assurer que les lots sont chargés
-    watch(() => encan.value, async (newEncan) => {
-        if (newEncan && newEncan.id) {
+    watch(() => encan.value, async (nouvelEncan) => {
+        if (nouvelEncan && nouvelEncan.id) {
             if (Object.keys(lots.value).length === 0) {
                 await store.dispatch('verifierEtatEncan')
             }
@@ -95,8 +95,8 @@
     }, { deep: true });
 
     // Ajouter un watch sur les lots restants
-    watch(lotsTriesParTemps, async (newLots) => {
-        if (newLots.length === 0 && encan.value) {
+    watch(lotsTriesParTemps, async (nouveauxLots) => {
+        if (nouveauxLots.length === 0 && encan.value) {
 
         }
     }, { deep: true });

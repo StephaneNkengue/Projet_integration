@@ -1,5 +1,5 @@
 <template>
-    <span v-for="facture in ventesAffiche" :key="facture.id">
+    <span v-for="facture in ventesAffiches" :key="facture.id">
         <FactureModal :idFacture="facture.id"></FactureModal>
         <FactureLivraisonModal v-if="facture.livraison == true" :idFacture="facture.idFactureLivraison"></FactureLivraisonModal>
     </span>
@@ -8,7 +8,7 @@
 
         <h3 class="text-center">Rechercher une vente</h3>
 
-        <input v-model="searchQuery"
+        <input v-model="requeteRecherche"
                class="form-control row col-10 ms-1"
                type="search"
                placeholder="Rechercher une vente"
@@ -22,7 +22,7 @@
         </div>
 
         <div v-if="!chargement" class="w-100">
-            <div class="d-flex flex-row gap-2 justify-content-center justify-content-md-end my-4" v-if="filteredVentes.length">
+            <div class="d-flex flex-row gap-2 justify-content-center justify-content-md-end my-4" v-if="ventesFiltrees.length">
                 <button class="d-flex align-items-center text-center rounded btn text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
                         @click="changerNbVenteParPage(20)"
                         v-bind:disabled="ventesParPage == 20">
@@ -46,15 +46,15 @@
                 </button>
             </div>
 
-            <div class="d-flex justify-content-center mt-4" v-if="!filteredVentes.length">
+            <div class="d-flex justify-content-center mt-4" v-if="!ventesFiltrees.length">
                 <h2>Aucun résultat trouvé</h2>
             </div>
 
             <div v-else>
                 <div class="accordion" id="accordionEncan">
                     <div class="accordion-item" v-for="encan in numerosEncans" :key="encan">
-                        <div v-if="filteredVentes.filter((x) => x.encan == encan.encan) != 0">
-                            <h2 class="accordion-header px-0" :style="{border: styleBorder}">
+                        <div v-if="ventesFiltrees.filter((x) => x.encan == encan.encan) != 0">
+                            <h2 class="accordion-header px-0" :style="{border: styleDeBordure}">
                                 <button class="accordion-button d-flex flex-column flex-md-row align-items-start"
                                         type="button"
                                         data-bs-toggle="collapse"
@@ -75,7 +75,7 @@
                                  :class="{ show: encan == numerosEncans[0] }"
                                  data-bs-parent="#accordionEncan">
                                 <div class="accordion-body">
-                                    <div class="accordion" id="accordionClient" v-for="facture in ventesAffiche.filter((x)=> x.encan == encan.encan)" :key="facture.id">
+                                    <div class="accordion" id="accordionClient" v-for="facture in ventesAffichees.filter((x)=> x.encan == encan.encan)" :key="facture.id">
                                         <div class="accordion-item">
                                             <h2 class="accordion-header px-0">
                                                 <button class="accordion-button d-flex flex-wrap"
@@ -149,7 +149,7 @@
                 </div>
             </div>
 
-            <div class="d-flex flex-row justify-content-center gap-1 flex-wrap p-3" v-if="ventesAffiche.length">
+            <div class="d-flex flex-row justify-content-center gap-1 flex-wrap p-3" v-if="ventesAffichees.length">
                 <button type="button"
                         class="btn text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
                         @click="reculerPage"
@@ -186,9 +186,9 @@
 
     const store = useStore();
     const listeFactures = ref([]);
-    const searchQuery = ref("");
+    const requeteRecherche = ref("");
     const numerosEncans = ref([]);
-    const styleBorder = ref('');
+    const styleDeBordure = ref('');
     const chargement = ref(true);
 
     const pageCourante = ref(1);
@@ -196,7 +196,7 @@
     const nbVentesRecus = ref();
     const nbPages = ref();
     const listePagination = ref([]);
-    const ventesAffiche = ref([]);
+    const ventesAffichees = ref([]);
 
     onMounted(async () => {
         try {
@@ -208,7 +208,7 @@
                 }
             });
 
-            nbVentesRecus.value = filteredVentes.value.length;
+            nbVentesRecus.value = ventesFiltrees.value.length;
             ventesParPage.value = nbVentesRecus.value;
             nbPages.value = recalculerNbPages();
 
@@ -216,8 +216,8 @@
             chercherVentesAAfficher();
 
             chargement.value = false;
-        } catch (error) {
-            console.error("Erreur factures" + error);
+        } catch (erreur) {
+            console.error("Erreur factures" + erreur);
         }
     });
 
@@ -228,30 +228,30 @@
         return [];
     });
 
-    const filteredVentes = computed(() => {
+    const ventesFiltrees = computed(() => {
         return tousLesVentes.value.filter((vente) => {
-            const searchLower = searchQuery.value.toLowerCase();
+            const rechercheEnMinuscule = requeteRecherche.value.toLowerCase();
             return (
-                vente.encan.toString().startsWith(searchLower) ||
-                vente.dateAchat.toLowerCase().startsWith(searchLower) ||
-                vente.prenom.toLowerCase().startsWith(searchLower) ||
-                vente.nom.toLowerCase().startsWith(searchLower) ||
-                vente.pseudonyme.toLowerCase().startsWith(searchLower) ||
-                vente.courriel.toLowerCase().startsWith(searchLower) ||
-                vente.telephone.toLowerCase().startsWith(searchLower)
+                vente.encan.toString().startsWith(rechercheEnMinuscule) ||
+                vente.dateAchat.toLowerCase().startsWith(rechercheEnMinuscule) ||
+                vente.prenom.toLowerCase().startsWith(rechercheEnMinuscule) ||
+                vente.nom.toLowerCase().startsWith(rechercheEnMinuscule) ||
+                vente.pseudonyme.toLowerCase().startsWith(rechercheEnMinuscule) ||
+                vente.courriel.toLowerCase().startsWith(rechercheEnMinuscule) ||
+                vente.telephone.toLowerCase().startsWith(rechercheEnMinuscule)
             );
         });
     });
 
-    watch(filteredVentes, () => {
-        if (listeFactures.value.length == filteredVentes.value.length) {
-            styleBorder.value = 'none';
+    watch(ventesFiltrees, () => {
+        if (listeFactures.value.length == ventesFiltrees.value.length) {
+            styleDeBordure.value = 'none';
         }
         else {
-            styleBorder.value = '2px solid green'
+            styleDeBordure.value = '2px solid green'
         }
 
-        nbVentesRecus.value = filteredVentes.value.length;
+        nbVentesRecus.value = ventesFiltrees.value.length;
         pageCourante.value = 1;
         AjusterPagination();
     });
@@ -320,17 +320,17 @@
     }
 
     function chercherVentesAAfficher() {
-        ventesAffiche.value = [];
+        ventesAffichees.value = [];
 
         let positionDebut = (pageCourante.value - 1) * ventesParPage.value;
         let positionFin = pageCourante.value * ventesParPage.value;
 
         for (
             let i = positionDebut;
-            i < positionFin && i < filteredVentes.value.length;
+            i < positionFin && i < ventesFiltrees.value.length;
             i++
         ) {
-            ventesAffiche.value.push(filteredVentes.value[i]);
+            ventesAffichees.value.push(ventesFiltrees.value[i]);
         }
     }
 </script>

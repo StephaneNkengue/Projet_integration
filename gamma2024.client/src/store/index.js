@@ -305,7 +305,6 @@ const store = createStore({
 
                     return finA - finB;
                 });
-            ;
 
             const lotsReorganises = {};
             lotsNonVendus.forEach((lot) => {

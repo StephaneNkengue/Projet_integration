@@ -89,8 +89,8 @@
 
     onMounted(async () => {
         const id = props.idLot;
-        const response = await store.dispatch("chercherDetailsLotParId", id);
-        lot.value = response.data
+        const reponse = await store.dispatch("chercherDetailsLotParId", id);
+        lot.value = reponse.data
         urlApi.value = await store.state.api.defaults.baseURL.replace("\api", "")
 
         chargement.value = false;
