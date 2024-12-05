@@ -1192,6 +1192,17 @@ const store = createStore({
             }
         },
 
+        async chercherDetailsFacture({ state }, idFacture) {
+            try {
+                const response = await state.api.get(
+                    "/factures/chercherDetailsFacture/" + idFacture
+                );
+                return response;
+            } catch (error) {
+                return "Erreur, veuillez réessayer";
+            }
+        },
+
         async supprimerCarte({ state }, pmId) {
             try {
                 const response = await state.api.post(
