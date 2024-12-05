@@ -59,7 +59,6 @@
 
 	<ItemGroup>
 		<Folder Include="jsreport\" />
-		<Folder Include="wwwroot\Factures\NewFolder\" />
 	</ItemGroup>
 
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
