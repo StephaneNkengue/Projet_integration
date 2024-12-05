@@ -249,7 +249,38 @@ namespace Gamma2024.Server.Services
             return "";
         }
 
-        private async Task<string> GenerateInvoice(FactureLivraisonGenererVM model)
+        private FactureLivraisonDetailsVM DetailsFactureLivraison(int idFactureLivraison)
+        {
+            var facture = _context.FactureLivraisons.Include(fl => fl.Facture.Client).Include(fl => fl.Facture.Lots).Include(fl => fl.Charite).Include(fl => fl.Adresse).First(f => f.IdFacture == idFactureLivraison);
+            var adresse = facture.Adresse;
+
+            return new FactureLivraisonDetailsVM
+            {
+                DateAchat = facture.DateAchat,
+                Client = new ClientFactureVM
+                {
+                    AdresseLigne1 = $"{adresse.Numero} {adresse.Rue}",
+                    AdresseLigne3 = $"{adresse.Ville}, {adresse.Province}, {adresse.Pays}",
+                    AdresseLigne2 = $"{adresse.Appartement}",
+                    CodePostal = adresse.CodePostal,
+                    Courriel = facture.Facture.Client.Email,
+                    Nom = $"{facture.Facture.Client.FirstName} {facture.Facture.Client.Name}",
+                    Telephone = facture.Facture.Client.PhoneNumber,
+                    ClientId = facture.Facture.Client.Id,
+                },
+                Don = facture.Don,
+                FraisLivraison = facture.SousTotal,
+                SousTotal = facture.SousTotal,
+                Id = facture.Id,
+                NumeroEncan = facture.Facture.NumeroEncan,
+                PrixFinal = facture.PrixFinal,
+                TPS = facture.TPS,
+                TVQ = facture.TVQ,
+                Charite = facture.Charite.NomOrganisme,
+            };
+        }
+
+        private async Task<string> GenerateInvoice(FactureLivraisonDetailsVM model)
         {
             //var report = await _jsReportService.RenderAsync(new RenderRequest
             //{
