@@ -2,6 +2,7 @@ using Gamma2024.Server.Data;
 using Gamma2024.Server.Hub;
 using Gamma2024.Server.Models;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.EntityFrameworkCore;
 
 namespace Gamma2024.Server.Services
 {
@@ -23,7 +24,7 @@ namespace Gamma2024.Server.Services
             {
                 ApplicationUserId = userId,
                 Message = message,
-                CreatedAt = DateTime.Now,
+                CreeA = DateTime.Now,
                 estLu = false
             };
 
@@ -38,19 +39,29 @@ namespace Gamma2024.Server.Services
         {
             var notifications = _context.Notifications
                                               .Where(n => n.ApplicationUserId == userId && !n.estLu)
+                                              .OrderByDescending(n => n.CreeA)
                                               .ToList();
-            return notifications;
+            if (notifications.Any())
+            {
+                return notifications;
+            }
+            return null;
         }
 
-        public async Task<(bool Success, string Message)> marquerNotificationLu(int id)
+        public async Task<(bool Success, string Message)> MarquerNotificationLu()
         {
-            var notification = await _context.Notifications.FindAsync(id);
-            if (notification == null)
+            var notifications = await _context.Notifications.ToListAsync();
+            if (notifications == null)
             {
                 return (false, "Aucune notification trouvé");
             }
 
-            notification.estLu = true;
+            foreach (var notif in notifications)
+            {
+                notif.estLu = true;
+            }
+
+            _context.Notifications.UpdateRange(notifications);
             await _context.SaveChangesAsync();
 
             return (true, "Notification lu avec succès");

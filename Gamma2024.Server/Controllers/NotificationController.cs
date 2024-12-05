@@ -18,7 +18,7 @@ namespace Gamma2024.Server.Controllers
 
 
         [Authorize(Roles = ApplicationRoles.CLIENT)]
-        [HttpGet("obtenirNotificationNonLu")]
+        [HttpGet("obtenirNotificationNonLu/{userId}")]
         public async Task<IActionResult> GetNotifications(string userId)
         {
             var notifications = await _notificationService.GetUnreadNotification(userId);
@@ -32,11 +32,11 @@ namespace Gamma2024.Server.Controllers
 
 
         [Authorize(Roles = ApplicationRoles.CLIENT)]
-        [HttpPost("marquerLu/{id}")]
-        public async Task<IActionResult> MarkAsRead(int id)
+        [HttpPost("marquerLues")]
+        public async Task<IActionResult> MarkAsRead()
         {
 
-            (bool success, string message) = await _notificationService.marquerNotificationLu(id);
+            (bool success, string message) = await _notificationService.MarquerNotificationLu();
             if (success)
             {
                 return Ok(message);
