@@ -115,7 +115,6 @@
     });
 
     const voirEncan = ref(function (numeroEncanRecu) {
-        console.log(numeroEncanRecu);
         if (numeroEncanRecu == numEncanCours.value) {
             router.push({ name: "EncanPresent" });
         } else {
@@ -143,7 +142,6 @@
 
         chercherEncansAAfficher();
         chargement.value = false;
-        console.log(encansFiltres.value);
     }
 
     function genererListeDEncansFiltree() {

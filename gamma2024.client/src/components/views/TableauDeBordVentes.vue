@@ -55,7 +55,7 @@
                     <div class="accordion-item" v-for="encan in numerosEncans" :key="encan">
                         <div v-if="filteredVentes.filter((x) => x.encan == encan.encan) != 0">
                             <h2 class="accordion-header px-0" :style="{border: styleBorder}">
-                                <button class="accordion-button"
+                                <button class="accordion-button d-flex flex-column flex-md-row align-items-start"
                                         type="button"
                                         data-bs-toggle="collapse"
                                         :data-bs-target="'#collapse' + encan.encan"
@@ -101,7 +101,7 @@
                                                         </div>
 
                                                     </div>
-                                                    <div class="d-flex flex-column flex-md-row col-3 justify-content-md-end">
+                                                    <div class="d-flex flex-column flex-md-row col-3 justify-content-md-end align-items-end align-items-md-center">
                                                         <div v-if="facture.livraison == true" class="mb-2 mb-md-0 me-md-2">
                                                             <button class="btn btn-info"
                                                                     data-bs-toggle="modal"
@@ -216,7 +216,7 @@
 
             chargement.value = false;
         } catch (error) {
-            console.log("Erreur factures" + error);
+            console.error("Erreur factures" + error);
         }
     });
 

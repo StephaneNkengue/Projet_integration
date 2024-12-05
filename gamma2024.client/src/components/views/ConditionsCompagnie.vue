@@ -131,7 +131,7 @@
                                 <div class="col">
                                     <h2 class="ps-0 pe-4">Artistes</h2>
                                 </div>
-                                <div class="fs-7" v-show="isExpand">
+                                <div class="fs-7" v-show="estOuvert">
                                     Serge Lemoyne, Charles Daudelin, John Little, Jean-Paul Jérome, Yves Trudeau, Yves Gaucher, Claude Tousignant, Jacques Hurtubise, Jean-Paul Lemieux, Jean-Philippe Dallaire, René Richard, Lorne Bouchard, Vasarely, Normand Hudon, Dali, Albini Leblanc, Vladimir Horik, Stefan Horik, Umberto Bruni, Alfred Laliberté, Jean-Paul Riopelle, Roger Cantin, Bruno Côté, Paul Tex Lecor, Frère Jérome, Stanley Cosgrove, Alleyn ...
                                 </div>
                             </button>
@@ -151,17 +151,17 @@
 
 <script setup>
     import { ref } from 'vue'
-    const isExpand = ref("false")
+    const estOuvert = ref("false")
 
     const expand = ref(() => {
         const btn = document.querySelector("#btnAccordionArtiste")
 
 
         if (btn.classList.contains('collapsed') == true) {
-            isExpand.value = true;
+            estOuvert.value = true;
         }
         else {
-            isExpand.value = false;
+            estOuvert.value = false;
         }
     });
 

@@ -453,7 +453,6 @@
             lotsFiltres.value = [];
 
             let rechercheEnMinuscule = rechercheDansListeDeLot.value.toLowerCase();
-            console.log(rechercheEnMinuscule);
             lotsFiltres.value = lotsAFiltres.filter((lot) => {
                 let dimensions = lot.dimension.split(" x ");
                 if (
