@@ -683,7 +683,8 @@ namespace Gamma2024.Server.Services
 
                 if (avantDerniereMise.LastOrDefault() != null && avantDerniereMise.Count == 2)
                 {
-                    var messageMise = $"Nouvelle mise sur le lot {mise.LotId}";
+                    var lelot = await _context.Lots.FindAsync(mise.LotId);
+                    var messageMise = $"Nouvelle mise sur le lot {lelot.Numero}";
                     await _notificationService.SendBidNotification(mise.LotId, avantDerniereMise.LastOrDefault().UserId, messageMise);
                 }
 
