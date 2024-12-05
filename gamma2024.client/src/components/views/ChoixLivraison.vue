@@ -1,5 +1,7 @@
 <template>
-    <FactureLivraisonModal v-if="idfactureLivraisonCreee != ''" :idFacture="idFactureLivraisonCreee"></FactureLivraisonModal>
+    <span v-if="idFactureLivraisonCreee != ''">
+        <FactureLivraisonModal :idFacture="idFactureLivraisonCreee"></FactureLivraisonModal>
+    </span>
 
     <div class="container d-flex flex-column align-items-center">
         <h1>Choix de livraison</h1>
