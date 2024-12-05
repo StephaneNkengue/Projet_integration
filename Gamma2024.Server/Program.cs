@@ -44,8 +44,8 @@ builder.Services.AddControllers()
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddSignalR();
-
+builder.Services.AddSignalR(builder => builder.EnableDetailedErrors = true);
+builder.Services.AddSingleton<NotificationHub>();
 builder.Services.AddScoped<ClientInscriptionService>();
 builder.Services.AddScoped<ClientModificationService>();
 builder.Services.AddScoped<EncanService>();
@@ -139,19 +139,28 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
-    app.UseCors("Development");
 }
 else
 {
     app.UseExceptionHandler("/Error");
     //app.UseDeveloperExceptionPage();
     app.UseHsts();
-    app.UseCors("Production");
 }
 
 app.UseHttpsRedirection();
-app.UseRouting();
 StripeConfiguration.ApiKey = builder.Configuration["Stripe:SecretKey"];
+app.UseRouting();
+
+if (app.Environment.IsDevelopment())
+{
+    app.UseCors("Development");
+
+}
+else
+{
+    app.UseCors("Production");
+
+}
 app.UseAuthentication();
 app.UseAuthorization();
 

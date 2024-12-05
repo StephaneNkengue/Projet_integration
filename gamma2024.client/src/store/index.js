@@ -1,5 +1,6 @@
 import { createStore } from "vuex";
 import { initApi } from "@/services/api";
+import { reactive } from "vue";
 import {
   startSignalRConnection,
   stopSignalRConnection,
@@ -18,7 +19,7 @@ const store = createStore({
     lots: {},
     userBids: [],
     userOutbidLots: [],
-    notifications: [],
+    notifications: reactive([]),
     userBidHistory: {}, // Format: { lotId: { userId: montant } }
     encanCourant: null,
     soireeCloture: null,

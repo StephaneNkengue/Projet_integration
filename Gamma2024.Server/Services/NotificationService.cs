@@ -1,17 +1,17 @@
 using Gamma2024.Server.Data;
 using Gamma2024.Server.Hub;
 using Gamma2024.Server.Models;
-using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 
 namespace Gamma2024.Server.Services
 {
     public class NotificationService
     {
-        private readonly IHubContext<NotificationHub> _hubContext;
+        private readonly NotificationHub _hubContext;
         private readonly ApplicationDbContext _context;
 
-        public NotificationService(IHubContext<NotificationHub> hubContext, ApplicationDbContext context)
+
+        public NotificationService(NotificationHub hubContext, ApplicationDbContext context)
         {
             _hubContext = hubContext;
             _context = context;
@@ -32,7 +32,7 @@ namespace Gamma2024.Server.Services
             await _context.SaveChangesAsync();
 
             // Envoyer la notification en temps réel via SignalR
-            await _hubContext.Clients.User(userId.ToString()).SendAsync("ReceiveNotification", message);
+            await _hubContext.SendToUser(userId, notification);
         }
 
         public async Task<ICollection<Notification>> GetUnreadNotification(string userId)
@@ -67,4 +67,5 @@ namespace Gamma2024.Server.Services
             return (true, "Notification lu avec succès");
         }
     }
+
 }

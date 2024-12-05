@@ -1158,7 +1158,7 @@ watch(
   }
 );
 
-const notifications = computed(() => store.getters.allNotifications);
+const notifications = store.getters.allNotifications;
 const unreadCount = computed(() => store.getters.unreadNotifications);
 
 const markAsRead = async function () {
