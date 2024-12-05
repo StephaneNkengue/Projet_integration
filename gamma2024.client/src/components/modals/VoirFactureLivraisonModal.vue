@@ -1,6 +1,6 @@
 <template lang="">
     <div class="modal fade"
-         :id="'modalFacture' + props.idFacture"
+         :id="'modalFactureLivraison' + props.idFacture"
          data-bs-backdrop="static"
          data-bs-keyboard="false"
          tabindex="-1"
@@ -17,7 +17,7 @@
                 <div class="modal-body d-flex justify-content-center h-100">
                     <div class="container my-2" v-if="facture != ''">
                         <div class="d-flex align-items-center">
-                            <h5 class="col-9">Les Encans de Nantes au Québec - FACTURE</h5>
+                            <h5 class="col-9">Les Encans de Nantes au Québec - FACTURE LIVRAISON</h5>
                             <div class="col-3">
                                 <img class="img-fluid" src="https://sqlinfocg.cegepgranby.qc.ca/2162067/images/Logo.png" />
                             </div>
@@ -46,14 +46,10 @@
                         <br />
                         <div class="d-flex w-100">
                             <table class="table">
-                                <tbody>
-                                    <tr v-for="lot in facture.lots">
-                                        <th scope="col" class="text-start">{{lot.description}}</th>
-                                        <td scope="col" class="text-end">{{lot.prix.toFixed(2)}} $</td>
-                                    </tr>
+                                <tbody id="tableProduits">
                                     <tr>
-                                        <th scope="col" class="text-start">Frais d'encanteur</th>
-                                        <td scope="col" class="text-end">{{facture.fraisEncanteur.toFixed(2)}} $</td>
+                                        <th scope="col" class="text-start">Frais de livraison</th>
+                                        <td scope="col" class="text-end">{{facture.fraisLivraison.toFixed(2)}} $</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -73,6 +69,10 @@
                                     <tr>
                                         <th scope="col" class="text-start">TVQ</th>
                                         <td scope="col" class="text-end">{{facture.tvq.toFixed(2)}} $</td>
+                                    </tr>
+                                    <tr v-if="facture.don != null">
+                                        <th scope="col" class="text-start">Don</th>
+                                        <td scope="col" class="text-end">{{facture.don.toFixed(2)}} $</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -103,7 +103,7 @@
     const facture = ref("")
 
     onMounted(async () => {
-        const reponse = await store.dispatch("chercherDetailsFacture", props.idFacture)
+        const reponse = await store.dispatch("chercherDetailsFactureLivraison", props.idFacture)
         facture.value = reponse.data
     });
 </script>
