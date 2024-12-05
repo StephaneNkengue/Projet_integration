@@ -12,6 +12,6 @@ namespace Gamma2024.Server.ViewModels
         public double? Don { get; set; } = 0;
         public ClientFactureVM Client { get; set; } = null!;
         public int NumeroEncan { get; set; }
-        public string Charite { get; set; } = default!;
+        public string? Charite { get; set; } = default!;
     }
 }
