@@ -206,7 +206,7 @@
                     class="dropdown-item"
                   >
                     {{ notification.message }}
-                    <small class="text-muted d-block">
+                    <small class="text-muted fs-6 d-block">
                       {{ new Date(notification.creeA).toLocaleString() }}
                     </small>
                   </li>
@@ -215,7 +215,9 @@
                   </li>
                   <li>
                     <button
-                      class="dropdown-item text-center text-primary"
+                      type="button"
+                      :disabled="unreadCount < 1"
+                      class="dropdown-item text-center btn btn-danger"
                       @click="markAsRead"
                     >
                       Marquer toutes comme lues
@@ -1285,5 +1287,9 @@ select option[value=""] {
 /* Ajuster la taille du badge */
 .badge {
   font-size: 0.8rem;
+}
+
+.btn-link {
+  padding: 0;
 }
 </style>
