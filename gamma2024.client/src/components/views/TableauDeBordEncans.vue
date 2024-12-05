@@ -124,7 +124,7 @@
                             <td class="align-middle">{{ encan.dateFin.split("T")[0] }}</td>
                             <td class="align-middle">
                                 {{ encan.dateDebut.split("T")[0] }}
-                                {{ encan.dateDebutSoireeCloture.split("T")[1] }}
+                                {{ encan.dateDebutSoireeCloture.split("T")[1].split(".")[0] }}
                             </td>
                             <td class="align-middle">{{ encan.nbLots }}</td>
                             <td class="align-middle">
