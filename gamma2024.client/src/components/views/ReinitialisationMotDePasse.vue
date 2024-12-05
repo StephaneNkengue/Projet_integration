@@ -1,13 +1,16 @@
 <template>
-    <div class="bg-image pt-5 imageDeFondEsquise">
+    <div class="bg-image p-2 pt-md-5 imageDeFondEsquise">
         <transition name="fade" class="transit">
-            <div v-if="message"
-                 :class="[
-          'alert',
+            <div class="w-100 d-flex justify-content-center">
+                <div v-if="message"
+                     :class="[
+          'alert col-12 col-md-6',
           message.type === 'success' ? 'alert-success' : 'alert-danger',
         ]">
-                {{ message.text }}
+                    {{ message.text }}
+                </div>
             </div>
+
         </transition>
         <div class="container d-flex flex-column justify-content-start align-items-stretch bg-white bg-opacity-75 cadreBlanc">
             <h2 class="fs-1 text-center fw-bold pt-4">
@@ -182,7 +185,6 @@
     .cadreBlanc {
         border-radius: 15px;
         min-height: 450px;
-        width: 550px;
     }
 
     .w-80 {
@@ -221,7 +223,6 @@
 
     .transit {
         margin: auto;
-        width: 600px;
         margin-bottom: 15px;
     }
 
