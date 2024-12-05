@@ -35,8 +35,8 @@ namespace Gamma2024.Server.Services
                     DateAchat = f.DateAchat,
                     Lots = f.Lots,
                     Encan = f.NumeroEncan,
-                    PdfPathLivraison = "",
-                    Livraison = f.ChoixLivraison
+                    Livraison = f.ChoixLivraison,
+                    IdFactureLivraison = f.IdFactureLivraison,
                 };
                 return factureAffichage;
             }).ToList();
@@ -71,8 +71,8 @@ namespace Gamma2024.Server.Services
                     DateAchat = f.DateAchat,
                     Lots = f.Lots,
                     Encan = f.NumeroEncan,
-                    PdfPathLivraison = "",
-                    Livraison = f.ChoixLivraison
+                    Livraison = f.ChoixLivraison,
+                    IdFactureLivraison = f.IdFactureLivraison
                 };
                 return factureAffichage;
             }
@@ -285,6 +285,46 @@ namespace Gamma2024.Server.Services
                 return null;
             }
             return facture;
+        }
+
+        public FactureDetailsVM ChercherDetailsFacture(int idFacture)
+        {
+            var facture = _context.Factures.Include(f => f.Client.Adresses).Include(f => f.Lots).First(f => f.Id == idFacture);
+            var adresse = facture.Client.Adresses.First();
+            var lots = new List<LotFactureVM>();
+
+            foreach (var lot in facture.Lots)
+            {
+                lots.Add(new LotFactureVM
+                {
+                    Description = lot.Description,
+                    Prix = lot.Mise.Value
+                });
+            }
+
+            return new FactureDetailsVM
+            {
+                Id = facture.Id,
+                Client = new ClientFactureVM
+                {
+                    AdresseLigne1 = $"{adresse.Numero} {adresse.Rue}",
+                    AdresseLigne3 = $"{adresse.Ville}, {adresse.Province}, {adresse.Pays}",
+                    AdresseLigne2 = adresse.Appartement,
+                    ClientId = facture.Client.Id,
+                    CodePostal = adresse.CodePostal,
+                    Courriel = facture.Client.Email,
+                    Nom = $"{facture.Client.FirstName} {facture.Client.Name}",
+                    Telephone = facture.Client.PhoneNumber
+                },
+                DateAchat = facture.DateAchat,
+                FraisEncanteur = facture.FraisEncanteur,
+                Lots = lots,
+                NumeroEncan = facture.NumeroEncan,
+                PrixFinal = facture.PrixFinal,
+                SousTotal = facture.SousTotal,
+                TPS = facture.TPS,
+                TVQ = facture.TVQ,
+            };
         }
     }
 }
