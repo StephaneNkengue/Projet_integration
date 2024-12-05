@@ -51,9 +51,9 @@ namespace Gamma2024.Server.Controllers
         }
 
         [HttpGet("ChercherDetailsFactureLivraison/{idFactureLivraison}")]
-        public IActionResult ChercherFactureLivraison(int idFactureLivraison)
+        public IActionResult ChercherDetailsFactureLivraison(int idFactureLivraison)
         {
-            var factureLivraison = _factureLivraisonService.ChercherFactureLivraison(idFactureLivraison);
+            var factureLivraison = _factureLivraisonService.ChercherDetailsFactureLivraison(idFactureLivraison);
             return Ok(factureLivraison);
         }
     }
