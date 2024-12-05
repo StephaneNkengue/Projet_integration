@@ -211,7 +211,7 @@
         try {
             initializeData();
         } catch (erreur) {
-            console.log("Erreur encans" + erreur);
+            console.error("Erreur encans" + erreur);
         }
     });
 

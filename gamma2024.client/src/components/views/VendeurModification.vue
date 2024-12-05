@@ -304,7 +304,6 @@
                     router.push("/affichagevendeurs");
                 }, 2000);
             } else {
-                console.log("test 3");
                 message.value = { type: "danger", text: result.error };
             }
         } catch (error) {
