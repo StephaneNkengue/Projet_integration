@@ -1,15 +1,17 @@
 <template>
-    <FactureModal v-if="factureLivraisonCreee != ''" :facturePdfPath="factureLivraisonCreee.pathFactureLivraison" :idFacture="'Livraison'+factureLivraisonCreee.idFacture"></FactureModal>
+    <span v-if="idFactureLivraisonCreee != ''">
+        <FactureLivraisonModal :idFacture="idFactureLivraisonCreee"></FactureLivraisonModal>
+    </span>
 
     <div class="container d-flex flex-column align-items-center">
         <h1>Choix de livraison</h1>
 
         <p id="message" v-show="siMessage"></p>
 
-        <div v-if="factureLivraisonCreee != ''" class="d-flex flex-column gap-2">
+        <div v-if="idFactureLivraisonCreee != ''" class="d-flex flex-column gap-2">
             <button class="btn btnSurvolerBleuMoyenFond text-white"
                     data-bs-toggle="modal"
-                    :data-bs-target="'#modalLivraison'+factureLivraisonCreee.idFacture">
+                    :data-bs-target="'#modalFactureLivraison'+idFactureLivraisonCreee">
                 Voir la facture de livraison
             </button>
 
@@ -276,7 +278,7 @@
     import { onMounted, ref } from "vue";
     import { useStore } from "vuex";
     import { useRouter } from "vue-router";
-    import FactureModal from "@/components/modals/VoirFactureModal.vue";
+    import FactureLivraisonModal from "@/components/modals/VoirFactureLivraisonModal.vue";
 
     const router = useRouter();
 
@@ -330,7 +332,7 @@
         { text: "Nunavut", value: "NU" },
         { text: "Yukon", value: "YT" },
     ]);
-    const factureLivraisonCreee = ref("");
+    const idFactureLivraisonCreee = ref("");
 
     onMounted(async () => {
         try {
@@ -424,12 +426,12 @@
             if (valide) {
 
                 const reponse = await store.dispatch("enregistrerChoixLivraison", choixLivraison)
-                factureLivraisonCreee.value = reponse.data;
+                idFactureLivraisonCreee.value = reponse.data;
 
                 siMessage.value = true
                 document.getElementById("message").innerText = "Choix de livraison sauvegardé et payé."
 
-                if (factureLivraisonCreee.value == '') {
+                if (idFactureLivraisonCreee.value == '0') {
                     siMessage.value = true
                     document.getElementById("message").innerText = "Choix de livraison sauvegardé."
 
