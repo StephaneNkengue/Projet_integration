@@ -1,12 +1,10 @@
 using Gamma2024.Server.Data;
-using Gamma2024.Server.Models;
 using Gamma2024.Server.Hub;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using Microsoft.AspNetCore.SignalR;
-using Gamma2024.Server.ViewModels;
-using System.Net.Http;
+using Gamma2024.Server.Models;
 using Gamma2024.Server.Validations;
+using Gamma2024.Server.ViewModels;
+using Microsoft.AspNetCore.SignalR;
+using Microsoft.EntityFrameworkCore;
 
 namespace Gamma2024.Server.Services
 {
@@ -79,15 +77,14 @@ namespace Gamma2024.Server.Services
             {
                 Id = 0,
                 NumeroEncan = estVide ? 1 : listeEncan.LastOrDefault().NumeroEncan + 1,
-                DateDebut = vm.DateDebut,
-                DateFin = vm.DateFin,
-                DateDebutSoireeCloture = vm.DateFin,
+                DateDebut = vm.DateDebut.ToLocalTime(),
+                DateFin = vm.DateFin.ToLocalTime(),
+                DateDebutSoireeCloture = vm.DateFin.ToLocalTime(),
                 EncanLots = [],
                 EstPublie = false,
                 PasLot = vm.PasLot,
                 PasMise = vm.PasMise
             };
-
             _context.Encans.Add(encan);
             _context.SaveChanges();
             return (true, encan.Id.ToString());
@@ -136,8 +133,9 @@ namespace Gamma2024.Server.Services
 
             try
             {
-                encan.DateDebut = model.DateDebut;
-                encan.DateFin = model.DateFin;
+                encan.DateDebut = model.DateDebut.ToLocalTime();
+                encan.DateFin = model.DateFin.ToLocalTime();
+                encan.DateDebutSoireeCloture = model.DateFin.ToLocalTime();
 
 
                 await _context.SaveChangesAsync();
@@ -249,7 +247,7 @@ namespace Gamma2024.Server.Services
         public async Task<(string type, Encan encan)> GetEtatCourant()
         {
             var maintenant = DateTime.Now;
-            
+
             var dernierEncan = await _context.Encans
                 .Include(e => e.EncanLots)
                     .ThenInclude(el => el.Lot)
@@ -275,7 +273,7 @@ namespace Gamma2024.Server.Services
                 }
 
                 await _context.SaveChangesAsync();
-                
+
                 return ("soireeCloture", dernierEncan);
             }
 
@@ -302,7 +300,9 @@ namespace Gamma2024.Server.Services
                 .FirstOrDefaultAsync(e => e.NumeroEncan == numeroEncan);
 
             if (encan == null)
+            {
                 return false;
+            }
 
             return encan.EstEnSoireeCloture();
         }
@@ -317,10 +317,10 @@ namespace Gamma2024.Server.Services
             if (encan != null)
             {
                 var maintenant = DateTime.Now;
-                
+
                 // Vérifier que tous les lots sont vendus ET que leur temps est écoulé
-                var tousLotsTermines = encan.EncanLots.All(el => 
-                    el.Lot.EstVendu && 
+                var tousLotsTermines = encan.EncanLots.All(el =>
+                    el.Lot.EstVendu &&
                     (!el.Lot.DateFinDecompteLot.HasValue || el.Lot.DateFinDecompteLot <= maintenant)
                 );
 
@@ -331,20 +331,20 @@ namespace Gamma2024.Server.Services
                     {
                         // 1. Appeler le endpoint du FactureController
                         var factureResponse = await _httpClient.PostAsync(
-                            $"/api/factures/CreerFacturesParEncan/{numeroEncan}", 
+                            $"/api/factures/CreerFacturesParEncan/{numeroEncan}",
                             null
                         );
                         factureResponse.EnsureSuccessStatusCode();
 
                         // 2. Appeler le endpoint du PaiementController
                         var paiementResponse = await _httpClient.PostAsync(
-                            $"/api/paiement/ChargerClients/{numeroEncan}", 
+                            $"/api/paiement/ChargerClients/{numeroEncan}",
                             null
                         );
                         paiementResponse.EnsureSuccessStatusCode();
 
                         await transaction.CommitAsync();
-                        
+
                         // Notifier les clients via SignalR
                         await _hubContext.Clients.All.ReceiveNewBid(new
                         {
