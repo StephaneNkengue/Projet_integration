@@ -4,9 +4,6 @@ using Gamma2024.Server.Interface;
 using Gamma2024.Server.Models;
 using Gamma2024.Server.Services;
 using Gamma2024.Server.Services.Email;
-using jsreport.AspNetCore;
-using jsreport.Binary;
-using jsreport.Local;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -114,23 +111,6 @@ builder.Services.AddSession(options =>
 });
 
 var jsReportOptions = builder.Configuration.GetSection("JsReport").Get<JsReportOptions>();
-
-if (builder.Environment.IsDevelopment())
-{
-    builder.Services.AddJsReport(new LocalReporting()
-        .UseBinary(JsReportBinary.GetBinary())
-        .KillRunningJsReportProcesses()
-        .AsUtility()
-        .Create());
-}
-else
-{
-    builder.Services.AddHttpClient("jsreport", client =>
-    {
-        client.BaseAddress = new Uri(jsReportOptions.ServiceUrl);
-    });
-}
-
 
 var app = builder.Build();
 
