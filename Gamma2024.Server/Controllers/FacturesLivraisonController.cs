@@ -49,5 +49,12 @@ namespace Gamma2024.Server.Controllers
             var factureLivraison = await _factureLivraisonService.AjouterFactureLivraison(choixLivraison);
             return Ok(factureLivraison);
         }
+
+        [HttpGet("ChercherDetailsFactureLivraison/{idFactureLivraison}")]
+        public IActionResult ChercherFactureLivraison(int idFactureLivraison)
+        {
+            var factureLivraison = _factureLivraisonService.ChercherFactureLivraison(idFactureLivraison);
+            return Ok(factureLivraison);
+        }
     }
 }
