@@ -129,7 +129,7 @@
                             <td class="align-middle">{{ encan.nbLots }}</td>
                             <td class="align-middle">
                                 <div class="d-flex flex-row justify-content-center">
-                                    <button class="btn bleuMarinSecondaireFond px-3 me-3 btnModifierIcone" @click="editerEncan(encan.id)">
+                                    <button v-if="VerifEstPasse(encan.dateDebut)" class="btn bleuMarinSecondaireFond px-3 me-3 btnModifierIcone" @click="editerEncan(encan.id)">
                                         <img src="/icons/ModifierBtn.png"
                                              width="30"
                                              height="30"
@@ -391,6 +391,19 @@
         nbPages.value = recalculerNbPages();
         genererListePagination();
         chercherEncansAAfficher();
+    }
+
+    function VerifEstPasse(dDebut){
+        const maintenant = new Date();
+
+        const debut = new Date(dDebut);
+
+        if (debut >= maintenant) {
+            return true;
+        }
+        else {
+            return false;
+        }
     }
 </script>
 
