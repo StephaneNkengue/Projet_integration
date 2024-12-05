@@ -2,7 +2,7 @@
     <div class="px-3">
         <div class="container">
 
-            <h1 class="text-center mb-5">Liste des lots</h1>
+            <h1 class="text-center mb-2 mb-md-5">Liste des lots</h1>
 
             <div v-if="messageConfirmation" class="alert alert-success py-0">
                 {{ messageConfirmation }}sdsdd
@@ -31,18 +31,20 @@
                                 Tous Sélectionner
                             </label>
                         </li>
-                        <li v-for="(visible, colonne) in colonnesVisibles"
+                        <li v-for="(visible, colonne, index) in colonnesVisibles"
                             :key="colonne"
                             class="d-flex justify-content-start dropdown-item">
-                            <input class="checkboxSeulRecherche d-flex-1"
-                                   type="checkbox"
-                                   :id="`lot${ colonne.charAt(0).toUpperCase() + colonne.slice(1) } CheckboxRecherche`"
-                                   checked
-                                   disabled />
-                            <label class="d-flex-1"
-                                   :for="`lot${colonne.charAt(0).toUpperCase() + colonne.slice(1)}CheckboxRecherche`">
-                                {{(colonne.charAt(0).toUpperCase() + colonne.slice(1)).replace(/([A-Z])/g," $1")}}
-                            </label>
+                            <div v-if="index <=12">
+                                <input class="checkboxSeulRecherche d-flex-1"
+                                       type="checkbox"
+                                       :id="`lot${ colonne.charAt(0).toUpperCase() + colonne.slice(1) } CheckboxRecherche`"
+                                       checked
+                                       disabled />
+                                <label class="d-flex-1"
+                                       :for="`lot${colonne.charAt(0).toUpperCase() + colonne.slice(1)}CheckboxRecherche`">
+                                    {{(colonne.charAt(0).toUpperCase() + colonne.slice(1)).replace(/([A-Z])/g," $1")}}
+                                </label>
+                            </div>
                         </li>
                     </ul>
                 </div>
@@ -73,8 +75,8 @@
         </div>
 
         <div v-if="!chargement" class="w-100">
-            <div class="d-flex justify-content-between my-4">
-                <div class="dropdown d-flex-1" v-if="lotsAffiches.length">
+            <div class="d-flex flex-column flex-md-row justify-content-center justify-content-md-between my-4">
+                <div class="dropdown d-flex justify-content-center mb-2 mb-md-0" v-if="lotsAffiches.length">
                     <button class="btn btnSurvolerBleuMoyenFond boutonPersonnalise text-white dropdown-toggle"
                             type="button"
                             id="dropdownMenuButton"
@@ -104,13 +106,13 @@
                                    :disabled="tousSelectionne"
                                    @change="toggleColonne(colonne)" />
                             <label class="d-flex-1" :for="`lot${colonne.charAt(0).toUpperCase() + colonne.slice(1)}Checkbox`">
-                                {{ colonne.charAt(0).toUpperCase() + colonne.slice(1) }}
+                                {{ (colonne.charAt(0).toUpperCase() + colonne.slice(1)).replace(/([A-Z])/g," $1") }}
                             </label>
                         </li>
                     </ul>
                 </div>
 
-                <div class="d-flex-1" v-if="lotsAffiches.length">
+                <div class="d-flex justify-content-center" v-if="lotsAffiches.length">
                     <div class="d-flex flex-row gap-2">
                         <button class="d-flex align-items-center text-center rounded btn text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
                                 type="button"
@@ -144,7 +146,7 @@
                 <h2>Aucun résultat trouvé</h2>
             </div>
 
-            <div class="margesPourTable" v-else>
+            <div class="overflow-auto" v-else>
                 <table class="table table-striped text-center">
                     <colgroup id="colgroup">
                         <col id="colEncan">
@@ -203,7 +205,7 @@
                             <td v-if="colonnesVisibles.medium">{{ lot.medium }}</td>
                             <td v-if="colonnesVisibles.vendeur">{{ lot.vendeur }}</td>
                             <td v-if="colonnesVisibles.estVendu">
-                                <img v-if="lot.estVendu" src="/icons/Vendu.png" width="40" height="40" />
+                                <p v-if="lot.estVendu">{{ lot.mise }}$</p>
                                 <img v-else src="/icons/NonVendu.png" width="40" height="40" />
                             </td>
                             <td v-if="colonnesVisibles.livraison">
@@ -537,8 +539,15 @@
                     lot.vendeur.toString().toLowerCase().startsWith(rechercheEnMinuscule)
                 ) {
                     return true;
-                }
-                return false;
+                } else if (
+                    listeDesCheckboxesRecherche[12].checked &&
+                    lot.mise
+                        .toString()
+                        .toLowerCase()
+                        .startsWith(rechercheEnMinuscule)
+                ) {
+                    return true;
+                } return false;
             });
         };
 

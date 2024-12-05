@@ -1,6 +1,6 @@
 <template>
     <div class="container">
-        <h1 class="text-center mb-5">Liste des encans</h1>
+        <h1 class="text-center mb-2 mb-md-5">Liste des encans</h1>
 
         <h3 class="text-center" for="Recherche">Rechercher un encan </h3>
 
@@ -49,7 +49,7 @@
         </div>
 
         <div v-if="!chargement" class="w-100">
-            <div class="d-flex justify-content-end my-4" v-if="listeEncansFiltree.length">
+            <div class="d-flex justify-content-center justify-content-md-end my-4" v-if="listeEncansFiltree.length">
                 <div class="d-flex flex-row gap-2">
                     <button class="d-flex align-items-center text-center rounded btn text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
                             @click="changerNbEncanParPage(20)"
@@ -132,6 +132,7 @@
                                     <button class="btn bleuMarinSecondaireFond px-3 me-3 btnModifierIcone" @click="editerEncan(encan.id)">
                                         <img src="/icons/ModifierBtn.png"
                                              width="30"
+                                             height="30"
                                              alt="..." />
                                     </button>
                                     <button class="btn btn-danger px-3 btn_delete"
@@ -139,6 +140,7 @@
                                             :data-bs-target="'#' + encan.numeroEncan">
                                         <img src="/icons/SupprimerBtn.png"
                                              width="30"
+                                             height="30"
                                              alt="..." />
                                     </button>
                                 </div>
@@ -408,11 +410,6 @@
         .btn_delete:hover {
             background-color: rgb(235, 6, 6);
         }
-
-    img {
-        width: 25px;
-        height: 30px;
-    }
 
     .fade-enter-active,
     .fade-leave-active {

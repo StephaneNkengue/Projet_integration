@@ -274,257 +274,211 @@
           ($route.name == 'EncanPresent' && ilYAUnEncanPresent == true) ||
           $route.name == 'Encan' ||
           $route.name == 'ResultatRechercheLots'
-        "
-      >
-        <nav class="navbar bg-white navbarRechercheAvancee">
-          <div class="container-fluid d-flex justify-content-end">
-            <button
-              class="navbar-toggler loupetoggler"
-              type="button"
-              data-bs-toggle="collapse"
-              data-bs-target="#navbarToggleRechercheAvancee"
-              aria-controls="navbarToggleRechercheAvancee"
-              aria-expanded="false"
-              aria-label="Toggle navigation"
-            >
-              <span class="navbar-toggler-icon iconeloupe"></span>
-            </button>
-          </div>
-        </nav>
-        <div class="bg-white">
-          <div
-            class="container collapse card mb-5 bg-white aucunPaddingPourCarteLots"
-            id="navbarToggleRechercheAvancee"
-          >
-            <div class="card-header d-flex justify-content-center">
-              <h2>{{ titreBarreDeRechercheDeLots }}</h2>
-            </div>
-            <div class="card-body">
-              <div class="row">
-                <div class="col-6">
-                  <div class="col">
-                    <label
-                      class="text-nowrap recherchelabel fw-bold"
-                      for="rechercheLotsValeurEstimee"
-                    >
-                      Prix estimé
-                    </label>
-                    <div class="row">
-                      <div class="col-sm-4">
-                        <select
-                          class="form-select py-0 selectPourListe"
-                          v-model="selectValeurEstimee"
-                          id="selectValeurEstimee"
-                          aria-label="Default select example"
-                        >
-                          <option class="py-0" value="0" selected>
-                            Égale à
-                          </option>
-                          <option class="py-0" value="1">Inférieure à</option>
-                          <option class="py-0" value="2">Supérieure à</option>
-                          <option class="py-0" value="3">Entre</option>
-                        </select>
-                      </div>
+        ">
+                <nav class="navbar bg-white navbarRechercheAvancee">
+                    <div class="container-fluid d-flex justify-content-end">
+                        <button class="navbar-toggler loupetoggler"
+                                type="button"
+                                data-bs-toggle="collapse"
+                                data-bs-target="#navbarToggleRechercheAvancee"
+                                aria-controls="navbarToggleRechercheAvancee"
+                                aria-expanded="false"
+                                aria-label="Toggle navigation">
+                            <span class="navbar-toggler-icon iconeloupe"></span>
+                        </button>
+                    </div>
+                </nav>
+                <div class="bg-white d-flex justify-content-center">
+                    <div class="collapse card mt-2 mx-2 mx-md-5 mb-md-5 bg-white col col-lg-9 col-xl-7"
+                         id="navbarToggleRechercheAvancee">
+                        <div class="card-header d-flex justify-content-center">
+                            <h2>{{titreBarreDeRechercheDeLots}}</h2>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="col">
+                                        <label class="text-nowrap recherchelabel fw-bold"
+                                               for="rechercheLotsValeurEstimee">
+                                            Prix estimé
+                                        </label>
+                                        <div class="row">
+                                            <div class="col-lg-4 mb-1 mb-lg-0">
+                                                <select class="form-select py-0 selectPourListe"
+                                                        v-model="selectValeurEstimee"
+                                                        id="selectValeurEstimee"
+                                                        aria-label="Default select example">
+                                                    <option class="py-0" value="0" selected>
+                                                        Égale à
+                                                    </option>
+                                                    <option class="py-0" value="1">Inférieure à</option>
+                                                    <option class="py-0" value="2">Supérieure à</option>
+                                                    <option class="py-0"
+                                                            value="3">
+                                                        Entre
+                                                    </option>
+                                                </select>
+                                            </div>
 
-                      <div class="col-sm">
-                        <input
-                          type="number"
-                          maxlength="10"
-                          class="form-control rechercheinput align-self-end"
-                          v-model="rechercheLotsValeurEstimee"
-                          id="rechercheLotsValeurEstimee"
-                        />
-                      </div>
-                      <div
-                        v-if="selectValeurEstimee == 3"
-                        class="col-sm-auto align-items-center inputAAfficher"
-                      >
-                        <label class="fs-6">et</label>
-                      </div>
-                      <div v-if="selectValeurEstimee == 3" class="col-sm">
-                        <input
-                          type="number"
-                          maxlength="10"
-                          class="form-control rechercheinput align-self-end"
-                          v-model="rechercheLotsValeurEstimee2"
-                          id="rechercheLotsValeurEstimee2"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-6">
-                  <label
-                    class="text-nowrap recherchelabel fw-bold"
-                    for="rechercheLotsArtiste"
-                  >
-                    Artiste
-                  </label>
-                  <select
-                    class="form-select py-0 align-self-center selectPourListeQuiOntBesoinDeInvalide"
-                    v-model="selectArtiste"
-                    id="selectArtiste"
-                    aria-label="Default select example"
-                    required
-                  >
-                    <option class="py-0 pasDeChoix" value="" selected>
-                      Pas de choix
-                    </option>
-                    <option
-                      v-for="artiste in listeDesArtistes"
-                      :key="artiste.nomArtiste"
-                      class="py-0"
-                      :value="artiste.nomArtiste"
-                    >
-                      {{ artiste.nomArtiste }}
-                    </option>
-                  </select>
-                </div>
-              </div>
-              <div class="row mt-2">
-                <div class="col-md-6">
-                  <label
-                    class="text-nowrap recherchelabel fw-bold"
-                    for="rechercheLotsCategorie"
-                  >
-                    Catégorie
-                  </label>
-                  <select
-                    class="form-select py-0 align-self-center selectPourListeQuiOntBesoinDeInvalide"
-                    v-model="selectCategorie"
-                    id="selectCategorie"
-                    aria-label="Default select example"
-                    required
-                  >
-                    <option class="py-0 pasDeChoix" value="" selected>
-                      Pas de choix
-                    </option>
-                    <option
-                      v-for="categorie in listeDesCategories"
-                      :key="categorie.id"
-                      class="py-0"
-                      :value="categorie.id"
-                    >
-                      {{ categorie.nom }}
-                    </option>
-                  </select>
-                </div>
-                <div class="col-md-6">
-                  <label
-                    class="text-nowrap recherchelabel fw-bold"
-                    for="rechercheLotsMedium"
-                  >
-                    Medium
-                  </label>
-                  <select
-                    class="form-select py-0 align-self-center selectPourListeQuiOntBesoinDeInvalide"
-                    v-model="selectMedium"
-                    id="selectMedium"
-                    aria-label="Default select example"
-                    required
-                  >
-                    <option class="py-0 pasDeChoix" value="" selected>
-                      Pas de choix
-                    </option>
-                    <option
-                      v-for="medium in listeDesMediums"
-                      :key="medium.id"
-                      class="py-0"
-                      :value="medium.id"
-                    >
-                      {{ medium.type }}
-                    </option>
-                  </select>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-6">
-                  <div class="col mt-2">
-                    <label
-                      class="text-nowrap recherchelabel fw-bold"
-                      for="rechercheLotsHauteur"
-                    >
-                      Hauteur
-                    </label>
-                    <div class="row">
-                      <div class="col-sm-4">
-                        <select
-                          class="form-select py-0 selectPourListe"
-                          v-model="selectHauteur"
-                          id="selectHauteur"
-                          aria-label="Default select example"
-                        >
-                          <option class="py-0" value="0" selected>
-                            Égale à
-                          </option>
-                          <option class="py-0" value="1">Inférieure à</option>
-                          <option class="py-0" value="2">Supérieure à</option>
-                          <option
-                            class="py-0"
-                            value="3"
-                            id="selectHauteurEntre"
-                          >
-                            Entre
-                          </option>
-                        </select>
-                      </div>
-                      <div class="col-sm">
-                        <input
-                          type="number"
-                          maxlength="10"
-                          class="form-control rechercheinput align-self-end"
-                          v-model="rechercheLotsHauteur"
-                          id="rechercheLotsHauteur"
-                        />
-                      </div>
-                      <div
-                        v-if="selectHauteur == 3"
-                        class="col-sm-auto align-items-center inputAAfficher"
-                      >
-                        <label class="fs-6">et</label>
-                      </div>
-                      <div v-if="selectHauteur == 3" class="col-sm">
-                        <input
-                          type="number"
-                          maxlength="10"
-                          class="form-control rechercheinput align-self-end"
-                          v-model="rechercheLotsHauteur2"
-                          id="rechercheLotsHauteur2"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-6">
-                  <div class="col mt-2">
-                    <label
-                      class="text-nowrap recherchelabel fw-bold"
-                      for="rechercheLotsLargeur"
-                    >
-                      Largeur
-                    </label>
-                    <div class="row">
-                      <div class="col-sm-4">
-                        <select
-                          class="form-select py-0 selectPourListe"
-                          v-model="selectLargeur"
-                          id="selectLargeur"
-                          aria-label="Default select example"
-                        >
-                          <option class="py-0" value="0" selected>
-                            Égale à
-                          </option>
-                          <option class="py-0" value="1">Inférieure à</option>
-                          <option class="py-0" value="2">Supérieure à</option>
-                          <option
-                            class="py-0"
-                            value="3"
-                            id="selectLargeurEntre"
-                          >
-                            Entre
-                          </option>
-                        </select>
-                      </div>
+                                            <div class="col-sm">
+                                                <input type="number"
+                                                       maxlength="10"
+                                                       class="form-control rechercheinput align-self-end"
+                                                       v-model="rechercheLotsValeurEstimee"
+                                                       id="rechercheLotsValeurEstimee" />
+                                            </div>
+                                            <div v-if="selectValeurEstimee == 3"
+                                                 class="col-sm-auto align-items-center inputAAfficher">
+                                                <label class="fs-6">et</label>
+                                            </div>
+                                            <div v-if="selectValeurEstimee == 3"
+                                                 class="col-sm">
+                                                <input type="number"
+                                                       maxlength="10"
+                                                       class="form-control rechercheinput align-self-end"
+                                                       v-model="rechercheLotsValeurEstimee2"
+                                                       id="rechercheLotsValeurEstimee2" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <label class="text-nowrap recherchelabel fw-bold"
+                                           for="rechercheLotsArtiste">
+                                        Artiste
+                                    </label>
+                                    <select class="form-select py-0 align-self-center selectPourListeQuiOntBesoinDeInvalide"
+                                            v-model="selectArtiste"
+                                            id="selectArtiste"
+                                            aria-label="Default select example"
+                                            required>
+                                        <option class="py-0 pasDeChoix" value="" selected>
+                                            Pas de choix
+                                        </option>
+                                        <option v-for="artiste in listeDesArtistes"
+                                                :key="artiste.nomArtiste"
+                                                class="py-0"
+                                                :value="artiste.nomArtiste">
+                                            {{ artiste.nomArtiste }}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row mt-2">
+                                <div class="col-md-6">
+                                    <label class="text-nowrap recherchelabel fw-bold"
+                                           for="rechercheLotsCategorie">
+                                        Catégorie
+                                    </label>
+                                    <select class="form-select py-0 align-self-center selectPourListeQuiOntBesoinDeInvalide"
+                                            v-model="selectCategorie"
+                                            id="selectCategorie"
+                                            aria-label="Default select example"
+                                            required>
+                                        <option class="py-0 pasDeChoix" value="" selected>
+                                            Pas de choix
+                                        </option>
+                                        <option v-for="categorie in listeDesCategories"
+                                                :key="categorie.id"
+                                                class="py-0"
+                                                :value="categorie.id">
+                                            {{ categorie.nom }}
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="text-nowrap recherchelabel fw-bold"
+                                           for="rechercheLotsMedium">
+                                        Medium
+                                    </label>
+                                    <select class="form-select py-0 align-self-center selectPourListeQuiOntBesoinDeInvalide"
+                                            v-model="selectMedium"
+                                            id="selectMedium"
+                                            aria-label="Default select example"
+                                            required>
+                                        <option class="py-0 pasDeChoix" value="" selected>
+                                            Pas de choix
+                                        </option>
+                                        <option v-for="medium in listeDesMediums"
+                                                :key="medium.id"
+                                                class="py-0"
+                                                :value="medium.id">
+                                            {{ medium.type }}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="col mt-2">
+                                        <label class="text-nowrap recherchelabel fw-bold"
+                                               for="rechercheLotsHauteur">
+                                            Hauteur
+                                        </label>
+                                        <div class="row">
+                                            <div class="col-lg-4 mb-1 mb-lg-0">
+                                                <select class="form-select py-0 selectPourListe"
+                                                        v-model="selectHauteur"
+                                                        id="selectHauteur"
+                                                        aria-label="Default select example">
+                                                    <option class="py-0" value="0" selected>
+                                                        Égale à
+                                                    </option>
+                                                    <option class="py-0" value="1">Inférieure à</option>
+                                                    <option class="py-0" value="2">Supérieure à</option>
+                                                    <option class="py-0"
+                                                            value="3"
+                                                            id="selectHauteurEntre">
+                                                        Entre
+                                                    </option>
+                                                </select>
+                                            </div>
+                                            <div class="col-sm">
+                                                <input type="number"
+                                                       maxlength="10"
+                                                       class="form-control rechercheinput align-self-end"
+                                                       v-model="rechercheLotsHauteur"
+                                                       id="rechercheLotsHauteur" />
+                                            </div>
+                                            <div v-if="selectHauteur == 3"
+                                                 class="col-sm-auto align-items-center inputAAfficher">
+                                                <label class="fs-6">et</label>
+                                            </div>
+                                            <div v-if="selectHauteur == 3"
+                                                 class="col-sm">
+                                                <input type="number"
+                                                       maxlength="10"
+                                                       class="form-control rechercheinput align-self-end"
+                                                       v-model="rechercheLotsHauteur2"
+                                                       id="rechercheLotsHauteur2" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="col mt-2">
+                                        <label class="text-nowrap recherchelabel fw-bold"
+                                               for="rechercheLotsLargeur">
+                                            Largeur
+                                        </label>
+                                        <div class="row">
+                                            <div class="col-lg-4 mb-1 mb-lg-0">
+                                                <select class="form-select py-0 selectPourListe"
+                                                        v-model="selectLargeur"
+                                                        id="selectLargeur"
+                                                        aria-label="Default select example">
+                                                    <option class="py-0" value="0" selected>
+                                                        Égale à
+                                                    </option>
+                                                    <option class="py-0" value="1">Inférieure à</option>
+                                                    <option class="py-0" value="2">Supérieure à</option>
+                                                    <option class="py-0"
+                                                            value="3"
+                                                            id="selectLargeurEntre">
+                                                        Entre
+                                                    </option>
+                                                </select>
+                                            </div>
 
                       <div class="col-sm">
                         <input
@@ -573,172 +527,144 @@
           $route.name == 'EncansFuturs' ||
           $route.name == 'TousLesEncans' ||
           $route.name == 'ResultatRechercheEncans'
-        "
-      >
-        <nav class="navbar bg-white navbarRechercheAvancee">
-          <div class="container-fluid d-flex justify-content-end">
-            <button
-              class="navbar-toggler loupetoggler"
-              type="button"
-              data-bs-toggle="collapse"
-              data-bs-target="#navbarToggleRechercheAvancee"
-              aria-controls="navbarToggleRechercheAvancee"
-              aria-expanded="false"
-              aria-label="Toggle navigation"
-            >
-              <span class="navbar-toggler-icon iconeloupe"></span>
-            </button>
-          </div>
-        </nav>
-        <div class="bg-white">
-          <div
-            class="container collapse card mb-5 bg-white aucunPaddingPourCarteEncans"
-            id="navbarToggleRechercheAvancee"
-          >
-            <div class="card-header d-flex justify-content-center">
-              <h2>Recherche avancée d'encans</h2>
-            </div>
-            <div class="card-body">
-              <div class="row">
-                <div class="col-5">
-                  <div class="col mt-2">
-                    <label
-                      class="text-nowrap recherchelabel fw-bold"
-                      for="rechercheEncansNumeroEncan"
-                    >
-                      Numéro d'encan
-                    </label>
-                    <div class="row">
-                      <div class="col-sm-4">
-                        <select
-                          class="form-select py-0 selectPourListe"
-                          v-model="selectNumeroEncan"
-                          id="selectNumeroEncan"
-                          aria-label="Default select example"
-                        >
-                          <option class="py-0" value="0" selected>
-                            Égal à
-                          </option>
-                          <option
-                            class="py-0"
-                            id="selectNumeroEncanEntre"
-                            value="1"
-                          >
-                            Entre
-                          </option>
-                        </select>
-                      </div>
+        ">
+                <nav class="navbar bg-white navbarRechercheAvancee">
+                    <div class="container-fluid d-flex justify-content-end">
+                        <button class="navbar-toggler loupetoggler"
+                                type="button"
+                                data-bs-toggle="collapse"
+                                data-bs-target="#navbarToggleRechercheAvancee"
+                                aria-controls="navbarToggleRechercheAvancee"
+                                aria-expanded="false"
+                                aria-label="Toggle navigation">
+                            <span class="navbar-toggler-icon iconeloupe"></span>
+                        </button>
+                    </div>
+                </nav>
+                <div class="bg-white d-flex justify-content-center">
+                    <div class="container collapse card mt-2 mx-2 mx-md-5 mb-md-5 bg-white col col-lg-9 col-xl-8"
+                         id="navbarToggleRechercheAvancee">
+                        <div class="card-header d-flex justify-content-center">
+                            <h2>Recherche avancée d'encans</h2>
+                        </div>
+                        <div class="card-body">
+                            <div class="row d-flex flex-row align-items-center">
+                                <div class="col-5">
+                                    <div class="col mt-2">
+                                        <label class="text-nowrap recherchelabel fw-bold"
+                                               for="rechercheEncansNumeroEncan">
+                                            Numéro d'encan
+                                        </label>
+                                        <div class="row">
+                                            <div class="col-lg-4 mb-1 mb-lg-0">
+                                                <select class="form-select py-0 selectPourListe"
+                                                        v-model="selectNumeroEncan"
+                                                        id="selectNumeroEncan"
+                                                        aria-label="Default select example">
+                                                    <option class="py-0" value="0" selected>
+                                                        Égal à
+                                                    </option>
+                                                    <option class="py-0"
+                                                            id="selectNumeroEncanEntre"
+                                                            value="1">
+                                                        Entre
+                                                    </option>
+                                                </select>
+                                            </div>
 
-                      <div class="col-sm">
-                        <input
-                          type="number"
-                          maxlength="10"
-                          class="form-control rechercheinput align-self-end"
-                          v-model="rechercheEncansNumeroEncan"
-                          id="rechercheEncansNumeroEncan"
-                        />
-                      </div>
-                      <div
-                        v-if="selectNumeroEncan == 1"
-                        class="col-sm-auto align-items-center inputAAfficher"
-                      >
-                        <label class="fs-6">et</label>
-                      </div>
-                      <div v-if="selectNumeroEncan == 1" class="col-sm">
-                        <input
-                          type="number"
-                          maxlength="10"
-                          class="form-control rechercheinput align-self-end"
-                          v-model="rechercheEncansNumeroEncan2"
-                          id="rechercheEncansNumeroEncan2"
-                        />
-                      </div>
+                                            <div class="col-sm">
+                                                <input type="number"
+                                                       maxlength="10"
+                                                       class="form-control rechercheinput align-self-end"
+                                                       v-model="rechercheEncansNumeroEncan"
+                                                       id="rechercheEncansNumeroEncan" />
+                                            </div>
+                                            <div v-if="selectNumeroEncan == 1"
+                                                 class="col-sm-auto align-items-center inputAAfficher">
+                                                <label class="fs-6">et</label>
+                                            </div>
+                                            <div v-if="selectNumeroEncan == 1"
+                                                 class="col-sm">
+                                                <input type="number"
+                                                       maxlength="10"
+                                                       class="form-control rechercheinput align-self-end"
+                                                       v-model="rechercheEncansNumeroEncan2"
+                                                       id="rechercheEncansNumeroEncan2" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-7">
+                                    <div class="col mt-2">
+                                        <label class="text-nowrap recherchelabel fw-bold"
+                                               for="rechercheEncansDate">
+                                            Date
+                                        </label>
+                                        <div class="row">
+                                            <div class="col-lg-4 d-flex flex-row align-items-center mb-1 mb-lg-0">
+                                                <select class="form-select py-0 selectPourListe"
+                                                        v-model="selectDate"
+                                                        id="selectDate"
+                                                        aria-label="Default select example">
+                                                    <option class="py-0" value="0" selected>
+                                                        Égale à
+                                                    </option>
+                                                    <option class="py-0" value="1">Inférieure à</option>
+                                                    <option class="py-0" value="2">Supérieure à</option>
+                                                    <option class="py-0" value="3" id="selectDateEntre">
+                                                        Entre
+                                                    </option>
+                                                </select>
+                                            </div>
+                                            <VueDatePicker type="date"
+                                                           v-model="rechercheEncansDate1"
+                                                           id="rechercheEncansDate1"
+                                                           class="col-sm"
+                                                           :max-date="desacDateDebutEntre"
+                                                           :enable-time-picker="false"
+                                                           select-text="Choisir"
+                                                           cancel-text="Annuler"
+                                                           now-button-label="Aujourd'hui"
+                                                           :clearable="true"
+                                                           :action-row="{ showNow: true }"
+                                                           :format-locale="fr"
+                                                           :year-range="[2000, new Date().getFullYear() +10]" />
+                                            <div v-if="selectDate == 3"
+                                                 class="col-sm-auto align-items-center inputAAfficher">
+                                                <label class="fs-6">et</label>
+                                            </div>
+                                            <VueDatePicker v-if="selectDate == 3"
+                                                           type="date"
+                                                           v-model="rechercheEncansDate2"
+                                                           id="rechercheEncansDate2"
+                                                           class="col-sm"
+                                                           :min-date="desacDateFinEntre"
+                                                           :enable-time-picker="false"
+                                                           select-text="Choisir"
+                                                           cancel-text="Annuler"
+                                                           now-button-label="Aujourd'hui"
+                                                           :clearable="true"
+                                                           :action-row="{ showNow: true }"
+                                                           :format-locale="fr"
+                                                           :year-range="[2000, new Date().getFullYear() + 10]" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col mt-2 mb-2 d-flex justify-content-center">
+                            <button class="d-flex align-items-center text-center rounded btn text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
+                                    type="button"
+                                    @click="rechercheAvanceeEncans">
+                                Lancer la rechercher
+                            </button>
+                        </div>
                     </div>
-                  </div>
                 </div>
-                <div class="col-7">
-                  <div class="col mt-2">
-                    <label
-                      class="text-nowrap recherchelabel fw-bold"
-                      for="rechercheEncansDate"
-                    >
-                      Date
-                    </label>
-                    <div class="row">
-                      <div class="col-sm-4">
-                        <select
-                          class="form-select py-0 selectPourListe"
-                          v-model="selectDate"
-                          id="selectDate"
-                          aria-label="Default select example"
-                        >
-                          <option class="py-0" value="0" selected>
-                            Égale à
-                          </option>
-                          <option class="py-0" value="1">Inférieure à</option>
-                          <option class="py-0" value="2">Supérieure à</option>
-                          <option class="py-0" value="3" id="selectDateEntre">
-                            Entre
-                          </option>
-                        </select>
-                      </div>
-                      <VueDatePicker
-                        type="date"
-                        v-model="rechercheEncansDate1"
-                        id="rechercheEncansDate1"
-                        class="col-sm"
-                        :max-date="desacDateDebutEntre"
-                        :enable-time-picker="false"
-                        select-text="Choisir"
-                        cancel-text="Annuler"
-                        now-button-label="Aujourd'hui"
-                        :clearable="true"
-                        :action-row="{ showNow: true }"
-                        :format-locale="fr"
-                        :year-range="[2000, new Date().getFullYear() + 10]"
-                      />
-                      <div
-                        v-if="selectDate == 3"
-                        class="col-sm-auto align-items-center inputAAfficher"
-                      >
-                        <label class="fs-6">et</label>
-                      </div>
-                      <VueDatePicker
-                        v-if="selectDate == 3"
-                        type="date"
-                        v-model="rechercheEncansDate2"
-                        id="rechercheEncansDate2"
-                        class="col-sm"
-                        :min-date="desacDateFinEntre"
-                        :enable-time-picker="false"
-                        select-text="Choisir"
-                        cancel-text="Annuler"
-                        now-button-label="Aujourd'hui"
-                        :clearable="true"
-                        :action-row="{ showNow: true }"
-                        :format-locale="fr"
-                        :year-range="[2000, new Date().getFullYear() + 10]"
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
             </div>
-            <div class="col mt-2 mb-2 d-flex justify-content-center">
-              <button
-                class="d-flex align-items-center text-center rounded btn text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
-                type="button"
-                @click="rechercheAvanceeEncans"
-              >
-                Lancer la rechercher
-              </button>
-            </div>
-          </div>
+            <div v-else class="bg-white aucuneBarreDeRechercheAnvancee"></div>
         </div>
-      </div>
-      <div v-else class="bg-white aucuneBarreDeRechercheAnvancee"></div>
-    </div>
-  </header>
+    </header>
 </template>
 <script setup>
 import { computed, watch, ref, onMounted, onUnmounted } from "vue";
@@ -1201,21 +1127,9 @@ recherchelabel {
   padding-right: 15px;
 }
 
-.aucunPaddingPourCarteLots {
-  padding-left: 0px !important;
-  padding-right: 0px !important;
-  width: 1000px;
-}
-
-.aucunPaddingPourCarteEncans {
-  padding-left: 0px !important;
-  padding-right: 0px !important;
-  width: 1100px;
-}
-
-.aucuneBarreDeRechercheAnvancee {
-  min-height: 30px;
-}
+    .aucuneBarreDeRechercheAnvancee {
+        min-height: 30px;
+    }
 
 .selectwidth {
   width: 160px;

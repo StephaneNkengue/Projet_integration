@@ -1,5 +1,5 @@
 <template>
-    <div class="bg-image pt-5 imageDeFondEsquise h-100">
+    <div class="bg-image p-2 pt-md-5 imageDeFondEsquise h-100">
         <transition name="fade">
             <div v-if="messageLockout"
                  class="container lockMessage alert alert-warning"
