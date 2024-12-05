@@ -56,55 +56,78 @@ namespace Gamma2024.Server.Services
 
         public async Task<int> AjouterFactureLivraison(FactureLivraisonAjoutVM choix)
         {
-            var factureLivraison = new FactureLivraison();
-            AdresseVM adresseTemp = new();
-            if (choix.IdAdresse == null)
+            try
             {
+                var factureLivraison = new FactureLivraison();
                 var facture = _context.Factures.FirstOrDefault(f => f.Id == choix.IdFacture);
-                facture.ChoixLivraison = false;
-                _context.Factures.Update(facture);
+                if (choix.IdAdresse == null)
+                {
+                    facture.ChoixLivraison = false;
+                    _context.Factures.Update(facture);
+                    _context.SaveChanges();
+
+                    return 0;
+                }
+                else if (choix.IdAdresse == 0)
+                {
+                    var adresse = new Adresse
+                    {
+                        Appartement = choix.Adresse.Appartement,
+                        CodePostal = choix.Adresse.CodePostal.Replace(" ", string.Empty),
+                        EstDomicile = false,
+                        Numero = Int32.Parse(choix.Adresse.NumeroCivique),
+                        Pays = choix.Adresse.Pays,
+                        Province = choix.Adresse.Province,
+                        Ville = choix.Adresse.Ville,
+                        Rue = choix.Adresse.Rue,
+                        IdApplicationUser = facture.IdClient,
+                    };
+
+                    _context.Adresses.Add(adresse);
+                    _context.SaveChanges();
+
+                    factureLivraison = new FactureLivraison
+                    {
+                        IdFacture = choix.IdFacture,
+                        Facture = _context.Factures.Include(f => f.Lots).Include(f => f.Client.Adresses).First(f => f.Id == choix.IdFacture),
+                        IdCharite = choix.IdCharite,
+                        DateAchat = DateTime.Now,
+                        IdAdresse = adresse.Id,
+                        Adresse = adresse
+                    };
+                }
+                else
+                {
+                    factureLivraison = new FactureLivraison
+                    {
+                        IdFacture = choix.IdFacture,
+                        Facture = _context.Factures.Include(f => f.Lots).Include(f => f.Client.Adresses).First(f => f.Id == choix.IdFacture),
+                        IdAdresse = choix.IdAdresse.Value,
+                        IdCharite = choix.IdCharite,
+                        DateAchat = DateTime.Now,
+                    };
+                }
+
+                _context.FactureLivraisons.Add(factureLivraison);
                 _context.SaveChanges();
 
+                factureLivraison.CalculerFacture();
+
+                _context.FactureLivraisons.Update(factureLivraison);
+                _context.SaveChanges();
+
+                factureLivraison.Facture.ChoixLivraison = true;
+                _context.Factures.Update(factureLivraison.Facture);
+                _context.SaveChanges();
+
+                ChargerFactureLivraison(factureLivraison, choix.PmId);
+
+                return factureLivraison.Id;
+            }
+            catch (Exception)
+            {
                 return 0;
             }
-            else if (choix.IdAdresse == 0)
-            {
-                factureLivraison = new FactureLivraison
-                {
-                    IdFacture = choix.IdFacture,
-                    Facture = _context.Factures.Include(f => f.Lots).Include(f => f.Client.Adresses).First(f => f.Id == choix.IdFacture),
-                    IdCharite = choix.IdCharite,
-                    DateAchat = DateTime.Now,
-                };
-                adresseTemp = choix.Adresse;
-            }
-            else
-            {
-                factureLivraison = new FactureLivraison
-                {
-                    IdFacture = choix.IdFacture,
-                    Facture = _context.Factures.Include(f => f.Lots).Include(f => f.Client.Adresses).First(f => f.Id == choix.IdFacture),
-                    IdAdresse = choix.IdAdresse.Value,
-                    IdCharite = choix.IdCharite,
-                    DateAchat = DateTime.Now,
-                };
-            }
-
-            _context.FactureLivraisons.Add(factureLivraison);
-            _context.SaveChanges();
-
-            factureLivraison.CalculerFacture();
-
-            _context.FactureLivraisons.Update(factureLivraison);
-            _context.SaveChanges();
-
-            factureLivraison.Facture.ChoixLivraison = true;
-            _context.Factures.Update(factureLivraison.Facture);
-            _context.SaveChanges();
-
-            ChargerFactureLivraison(factureLivraison, choix.PmId);
-
-            return factureLivraison.Id;
         }
 
         public FactureLivraison ChercherFactureLivraison(int idFactureLivraison)
@@ -247,9 +270,9 @@ namespace Gamma2024.Server.Services
             return "";
         }
 
-        private FactureLivraisonDetailsVM DetailsFactureLivraison(int idFactureLivraison)
+        public FactureLivraisonDetailsVM ChercherDetailsFactureLivraison(int idFactureLivraison)
         {
-            var facture = _context.FactureLivraisons.Include(fl => fl.Facture.Client).Include(fl => fl.Facture.Lots).Include(fl => fl.Charite).Include(fl => fl.Adresse).First(f => f.IdFacture == idFactureLivraison);
+            var facture = _context.FactureLivraisons.Include(fl => fl.Facture.Client).Include(fl => fl.Facture.Lots).Include(fl => fl.Charite).Include(fl => fl.Adresse).First(f => f.Id == idFactureLivraison);
             var adresse = facture.Adresse;
 
             return new FactureLivraisonDetailsVM
@@ -274,7 +297,7 @@ namespace Gamma2024.Server.Services
                 PrixFinal = facture.PrixFinal,
                 TPS = facture.TPS,
                 TVQ = facture.TVQ,
-                Charite = facture.Charite.NomOrganisme,
+                Charite = facture.Charite?.NomOrganisme,
             };
         }
 
