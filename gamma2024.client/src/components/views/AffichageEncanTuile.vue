@@ -2,18 +2,13 @@
     <div class="contourDiv p-2 align-items-center d-flex flex-column" role="button">
         <h2>Encan {{props.encan.numeroEncan}}</h2>
         <div class="d-flex w-100 mt-3 flex-row">
-            <div class="col-7 d-flex align-items-center justify-content-center flex-column text-center">
+            <div class="col-12 d-flex align-items-center justify-content-center flex-column text-center">
                 <div class="row justify-content-start w-100">
                     <p>{{dateDebut}} - {{dateFin}}</p>
                 </div>
                 <div class="row justify-content-start w-100">
                     <p>Soirée de clôture le {{soireeDate}}</p>
                 </div>
-            </div>
-            <div class="col d-flex justify-content-center align-items-center">
-                <img v-bind:src="lot.photos[0].lien"
-                     class="img-fluid"
-                     alt="Image d'un lot" />
             </div>
         </div>
     </div>
@@ -48,19 +43,6 @@
         formatageDate(props.encan.dateDebutSoireeCloture, affiche2Annees(), true)
     );
 
-    let lotRecu = {
-        photos: [
-            {
-                lien: "https://placehold.co/9000",
-            },
-            {
-                lien: "https://placehold.co/6000",
-            },
-        ],
-    };
-
-    const lot = ref(lotRecu);
-
     function affiche2Annees() {
         let anneeFin = props.encan.dateFin.split("-")[0];
         let anneeDebut = props.encan.dateDebut.split("-")[0];
@@ -87,9 +69,3 @@
         return resultat;
     }
 </script>
-
-<style scoped>
-    img {
-        height: 200px;
-    }
-</style>
