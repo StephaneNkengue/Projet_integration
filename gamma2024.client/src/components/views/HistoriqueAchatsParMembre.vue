@@ -212,7 +212,7 @@
 
             chargement.value = false;
         } catch (error) {
-            console.log("Erreur factures" + error);
+            console.error("Erreur factures" + error);
         }
     });
 

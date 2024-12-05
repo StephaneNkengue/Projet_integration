@@ -43,7 +43,6 @@ const store = createStore({
             }
         },
         setUser(state, user) {
-            console.log("Données reçues dans setUser:", user);
             if (user) {
                 state.user = {
                     id: user.id,
@@ -72,7 +71,6 @@ const store = createStore({
             sessionStorage.setItem("user", JSON.stringify(state.user));
         },
         setRoles(state, roles) {
-            console.log("Roles reçus dans setRoles:", roles);
             if (roles && roles) {
                 state.roles = roles;
             } else if (Array.isArray(roles)) {
@@ -80,7 +78,6 @@ const store = createStore({
             } else {
                 state.roles = [roles];
             }
-            console.log("Roles après traitement:", state.roles);
             sessionStorage.setItem("roles", JSON.stringify(state.roles));
         },
         setToken(state, token) {
@@ -115,13 +112,6 @@ const store = createStore({
             state.userDataVersion = (state.userDataVersion || 0) + 1;
         },
         updateLotMise(state, { idLot, montant, userId, userLastBid, nombreMises }) {
-            console.log("Store - Mise à jour du lot:", {
-                idLot,
-                montant,
-                userId,
-                userActuel: state.user?.id
-            });
-
             const newLots = { ...state.lots };
             if (!newLots[idLot]) {
                 newLots[idLot] = {
@@ -263,7 +253,7 @@ const store = createStore({
             const lot = state.lots[lotId];
             if (lot) {
                 lot.dateFinDecompteLot = nouveauTemps;
-                
+
                 // Si on a reçu l'ordre des lots, réorganiser immédiatement
                 if (ordreLotsActuel) {
                     const lotsReorganises = {};
@@ -284,36 +274,29 @@ const store = createStore({
             }
         },
         REORGANISER_LOTS(state) {
-            console.log('Réorganisation des lots');
             const lotsNonVendus = Object.values(state.lots)
                 .filter(lot => !lot.estVendu)
                 .sort((a, b) => {
                     // Si pas de date de fin, mettre à la fin
                     if (!a.dateFinDecompteLot || !b.dateFinDecompteLot) return 0;
-                    
+
                     const finA = new Date(a.dateFinDecompteLot);
                     const finB = new Date(b.dateFinDecompteLot);
-                    
+
                     // Si les dates de fin sont égales, comparer les dates de début
                     if (finA.getTime() === finB.getTime()) {
                         if (!a.dateDebutDecompteLot || !b.dateDebutDecompteLot) return 0;
                         return new Date(a.dateDebutDecompteLot) - new Date(b.dateDebutDecompteLot);
                     }
-                    
+
                     return finA - finB;
                 });
-
-            console.log('Lots triés:', lotsNonVendus.map(lot => ({
-                id: lot.id,
-                dateFin: lot.dateFinDecompteLot,
-                dateDebut: lot.dateDebutDecompteLot
-            })));
 
             const lotsReorganises = {};
             lotsNonVendus.forEach(lot => {
                 lotsReorganises[lot.id] = lot;
             });
-            
+
             state.lots = lotsReorganises;
         },
         RESET_ENCAN_STATE(state) {
@@ -355,7 +338,6 @@ const store = createStore({
                     };
                 }
             } catch (error) {
-                console.log("catch");
                 return {
                     success: false,
                     element: error.response.data?.element,
@@ -409,7 +391,6 @@ const store = createStore({
 
         async updateAvatar({ commit, state }, formData) {
             try {
-                console.log("FormData reçu dans updateAvatar:", formData);
                 const response = await state.api.put("/utilisateurs/avatar", formData, {
                     headers: {
                         "Content-Type": "multipart/form-data",
@@ -428,8 +409,6 @@ const store = createStore({
                 // Mettre à jour l'utilisateur avec la nouvelle URL de l'avatar
                 const updatedUser = { ...state.user, photo: avatarPath };
                 commit("setUser", updatedUser);
-
-                console.log("Avatar mis à jour dans le store:", fullAvatarUrl);
 
                 return {
                     ...response,
@@ -566,7 +545,6 @@ const store = createStore({
         async obtenirTousLots({ state }) {
             try {
                 const response = await state.api.get("/lots/tous");
-                console.log("Données brutes:", response.data);
                 return response.data || [];
             } catch (error) {
                 console.error(
@@ -580,7 +558,6 @@ const store = createStore({
         async obtenirLot({ state }, id) {
             try {
                 const response = await state.api.get(`/lots/${id}`);
-                console.log("Lot reçu:", response.data);
                 return response.data;
             } catch (error) {
                 console.error("Erreur lors de la récupération du lot:", error);
@@ -665,9 +642,7 @@ const store = createStore({
         },
         async checkAuthStatus({ commit, state, dispatch }) {
             const token = state.token || sessionStorage.getItem("token");
-            console.log("Token trouvé :", token ? "Oui" : "Non");
             if (!token) {
-                console.log("Aucun token trouvé, déconnexion de l'utilisateur");
                 commit("setLoggedIn", false);
                 commit("setUser", null);
                 commit("setRoles", []);
@@ -680,12 +655,7 @@ const store = createStore({
             }
 
             try {
-                console.log(
-                    "URL de la requête :",
-                    `${state.api.defaults.baseURL}/home/check-auth`
-                );
                 const response = await state.api.get("/home/check-auth");
-                console.log("Réponse complète de check-auth:", response.data);
                 if (response.data.isAuthenticated) {
                     commit("setLoggedIn", true);
                     commit("setUser", response.data.user);
@@ -715,7 +685,6 @@ const store = createStore({
                 commit("SET_CONNECTION", null);
                 // Appel à l'API pour invalider le token côté serveur
                 const response = await state.api.post("/home/logout");
-                console.log("Réponse de la déconnexion:", response);
 
             } catch (error) {
                 console.error("Erreur lors de la déconnexion:", error);
@@ -747,7 +716,6 @@ const store = createStore({
         async fetchListeDeLotsPourAdministrateur({ commit, state }) {
             try {
                 const response = await state.api.get("/lots/chercherTousLots");
-                console.log("Données reçues de l'API:", response.data); // Pour le débogage
                 // let dataResponse = await response.json();
                 return response.data;
             } catch (error) {
@@ -757,7 +725,6 @@ const store = createStore({
         },
 
         async initializeStore({ commit, dispatch }) {
-            console.log("=== Initialisation du Store ===");
 
             // Récupérer les données de session
             const token = sessionStorage.getItem("token");
@@ -828,7 +795,6 @@ const store = createStore({
         async fetchEncanInfo({ commit, state }) {
             try {
                 const response = await state.api.get("/encans/cherchertousencans");
-                console.log("Données reçues de l'API:", response.data); // Pour le débogage
 
                 return response.data;
             } catch (error) {
@@ -926,8 +892,6 @@ const store = createStore({
         async chercherTousLotsRecherche({ state }) {
             try {
                 const response = await state.api.get(`/lots/cherchertouslotsrecherche`);
-
-                console.log("Réponse reçue:", response);
                 return response;
             } catch (error) {
                 console.error("Erreur détaillée:", {
@@ -944,8 +908,6 @@ const store = createStore({
                 const response = await state.api.get(
                     `/lots/cherchertouslotsparencan/${idEncan}`
                 );
-
-                console.log("Réponse reçue:", response);
                 return response;
             } catch (error) {
                 console.error("Erreur détaillée:", {
@@ -991,7 +953,6 @@ const store = createStore({
 
         async placerMise({ state, commit, dispatch }, miseData) {
             try {
-                console.log('Store - Début placerMise:', miseData);
 
                 const response = await state.api.post("/lots/placerMise", {
                     LotId: miseData.lotId,
@@ -1000,15 +961,9 @@ const store = createStore({
                     MontantMaximal: miseData.montantMaximal
                 });
 
-                console.log('Store - Réponse placerMise:', response.data);
                 return response.data;
             } catch (error) {
                 console.error("Store - Erreur lors de la mise:", error);
-                console.log('Store - Détails de l\'erreur:', {
-                    status: error.response?.status,
-                    data: error.response?.data,
-                    message: error.message
-                });
                 return {
                     success: false,
                     message: error.response?.data?.message || "Erreur lors de la mise"
@@ -1038,7 +993,6 @@ const store = createStore({
         async initializeSignalR({ commit, state }) {
             // Vérifier si une connexion existe déjà
             if (state.connection) {
-                console.log("SignalR connection already exists");
                 return;
             }
 
@@ -1119,7 +1073,6 @@ const store = createStore({
         async fetchFactureInfoMembre({ commit, state }) {
             try {
                 const response = await state.api.get("/factures/chercherFacturesMembre");
-                console.log("Données reçues de l'API:", response.data);
                 return response.data;
             } catch (error) {
                 console.error("Erreur détaillée:", error.response || error);
@@ -1152,7 +1105,6 @@ const store = createStore({
         async fetchFactureInfo({ commit, state }) {
             try {
                 const response = await state.api.get("/factures/chercherFactures");
-                console.log("Données reçues de l'API:", response.data); // Pour le débogage
 
                 return response.data;
             } catch (error) {
@@ -1217,7 +1169,7 @@ const store = createStore({
         async getUserBidForLot({ state, commit }, lotId) {
             // Ne faire l'appel que si l'utilisateur est connecté
             if (!state.isLoggedIn) return 0;
-            
+
             try {
                 const response = await state.api.get(`/lots/userLastBid/${lotId}`);
                 if (response.data > 0) {
@@ -1260,9 +1212,9 @@ const store = createStore({
         async verifierEtatEncan({ state, commit }) {
             const response = await state.api.get('/encans/etat-courant')
             const { type, encan } = response.data
-            
+
             commit('SET_ENCAN_COURANT', encan)
-            
+
             if (encan?.id) {
                 // Charger les lots séparément pour avoir toutes les informations
                 const lotsResponse = await state.api.get(`/lots/cherchertouslotsparencan/${encan.id}`)
@@ -1270,14 +1222,14 @@ const store = createStore({
                     commit('setLots', lotsResponse.data)
                 }
             }
-            
+
             return type // 'courant' ou 'soireeCloture' ou null
         },
         async surveillerTransitionEncan({ dispatch, commit }) {
             const verifierEtat = async () => {
                 const ancienType = this.state.typeEncanCourant
                 const nouveauType = await dispatch('verifierEtatEncan')
-                
+
                 if (ancienType !== nouveauType) {
                     if (ancienType === 'courant' && nouveauType === 'soireeCloture') {
                         await dispatch('initialiserSoireeCloture')
@@ -1314,7 +1266,6 @@ const store = createStore({
             if (state.connection) {
                 state.connection.on("ReceiveNewBid", (data) => {
                     if (data.type === "soireeTerminee") {
-                        console.log('Soirée terminée, réinitialisation de l\'état');
                         commit('RESET_ENCAN_STATE');
                         router.push({ name: 'Accueil' });
                     }
@@ -1325,10 +1276,8 @@ const store = createStore({
     },
     getters: {
         isAdmin: (state) => {
-            // console.log("Rôles dans le getter isAdmin:", state.roles);
             const result =
                 Array.isArray(state.roles) && state.roles.includes("Administrateur");
-            // console.log("L'utilisateur est-il admin ?", result);
             return result;
         },
         isClient: (state) =>
@@ -1337,14 +1286,12 @@ const store = createStore({
         username: (state) =>
             state.user ? state.user.pseudonym || state.user.username : "USERNAME",
         avatarUrl: (state) => {
-            console.log("Photo de l'utilisateur brute:", state.user.photo);
             if (state.user && state.user.photo) {
                 if (state.user.photo.startsWith("http")) {
                     return state.user.photo;
                 } else {
                     const baseUrl = state.api.defaults.avatarURL;
                     const fullUrl = baseUrl + "/" + state.user.photo;
-                    console.log("URL complète de l'avatar:", fullUrl);
                     return fullUrl;
                 }
             }

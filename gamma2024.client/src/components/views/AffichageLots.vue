@@ -52,7 +52,7 @@
 
             <div v-if="siTuile"
                  class="row row-cols-lg-5 row-cols-md-3 row-cols-sm-2 row-cols-1 w-100 px-3">
-                <div v-for="index in lotsAffiche"
+                <div v-for="index in lotsAffiches"
                      :key="index.id"
                      class="col p-2 d-flex">
                     <LotTuile :lotRecu="index" />
@@ -60,7 +60,7 @@
             </div>
 
             <div v-else class="d-flex flex-column px-5 w-100">
-                <div v-for="index in lotsAffiche" :key="index.id" class="p-2">
+                <div v-for="index in lotsAffiches" :key="index.id" class="p-2">
                     <LotListe :lotRecu="index" />
                 </div>
             </div>
@@ -114,7 +114,7 @@
     const listePagination = ref([]);
     const pageCourante = ref(1);
     const siTuile = ref(true);
-    const lotsAffiche = ref();
+    const lotsAffiches = ref();
     const nbPages = ref();
     const chargement = ref(true);
 
@@ -132,15 +132,13 @@
 
     onMounted(async () => {
         try {
-            console.log("ID Encan envoyé:", props.idEncan);
-            const response = await store.dispatch(
+            const reponse = await store.dispatch(
                 "chercherTousLotsParEncan",
                 props.idEncan
             );
-            console.log("Réponse complète:", response);
 
-            if (response && response.data) {
-                listeLots.value = response.data;
+            if (reponse && reponse.data) {
+                listeLots.value = reponse.data;
                 nbLotsRecus.value = listeLots.value.length;
                 lotsParPage.value = nbLotsRecus.value;
                 nbPages.value = recalculerNbPages();
@@ -148,7 +146,7 @@
                 genererListePagination();
                 chercherLotsAAfficher();
             } else {
-                console.error("Réponse invalide:", response);
+                console.error("Réponse invalide:", reponse);
             }
         } catch (error) {
             console.error("Erreur lors du chargement des lots:", error);
@@ -228,7 +226,7 @@
     }
 
     function chercherLotsAAfficher() {
-        lotsAffiche.value = [];
+        lotsAffiches.value = [];
 
         let positionDebut = (pageCourante.value - 1) * lotsParPage.value;
         let positionFin = pageCourante.value * lotsParPage.value;
@@ -238,18 +236,17 @@
             i < positionFin && i < listeLots.value.length;
             i++
         ) {
-            lotsAffiche.value.push(listeLots.value[i]);
+            lotsAffiches.value.push(listeLots.value[i]);
         }
     }
 
     const chargerLots = async () => {
         try {
-            const response = await store.dispatch("chercherTousLotsParEncan", props.idEncan);
-            if (response?.data) {
-                console.log('Lots reçus:', response.data);
-                store.commit('setLots', response.data);
-                listeLots.value = response.data;
-                nbLotsRecus.value = response.data.length;
+            const reponse = await store.dispatch("chercherTousLotsParEncan", props.idEncan);
+            if (reponse?.data) {
+                store.commit('setLots', reponse.data);
+                listeLots.value = reponse.data;
+                nbLotsRecus.value = reponse.data.length;
 
                 // Charger les mises de l'utilisateur si connecté
                 if (store.state.isLoggedIn) {

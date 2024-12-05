@@ -39,7 +39,6 @@
     const numEncanCours = ref(0)
 
     const voirEncan = ref(function (numeroEncanRecu) {
-        console.log(numeroEncanRecu)
         if (numeroEncanRecu == numEncanCours.value) {
             router.push({ name: 'EncanPresent' })
         }
@@ -53,7 +52,6 @@
     onMounted(async () => {
         const response = await store.dispatch("chercherTousEncansVisibles");
         encans.value = response.data
-        console.log(encans.value);
 
         const responseNumEncanCourrant = await store.dispatch("chercherNumeroEncanEnCours");
         if (responseNumEncanCourrant.data != '') {
