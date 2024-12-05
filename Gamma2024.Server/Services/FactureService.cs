@@ -37,14 +37,9 @@ namespace Gamma2024.Server.Services
                     DateAchat = f.DateAchat,
                     Lots = f.Lots,
                     Encan = f.NumeroEncan,
-                    PdfPath = f.FacturePDFPath,
                     PdfPathLivraison = "",
                     Livraison = f.ChoixLivraison
                 };
-                if (f.IdFactureLivraison.HasValue)
-                {
-                    factureAffichage.PdfPathLivraison = f.FactureLivraison.FacturePDFPath;
-                }
                 return factureAffichage;
             }).ToList();
 
@@ -78,14 +73,9 @@ namespace Gamma2024.Server.Services
                     DateAchat = f.DateAchat,
                     Lots = f.Lots,
                     Encan = f.NumeroEncan,
-                    PdfPath = f.FacturePDFPath,
                     PdfPathLivraison = "",
                     Livraison = f.ChoixLivraison
                 };
-                if (f.IdFactureLivraison.HasValue)
-                {
-                    factureAffichage.PdfPathLivraison = f.FactureLivraison.FacturePDFPath;
-                }
                 return factureAffichage;
             }
             ).ToList();
@@ -121,8 +111,7 @@ namespace Gamma2024.Server.Services
                             DateAchat = lot.DateFinVente.Value,
                             Lots = [lot],
                             Client = lot.ClientMise,
-                            NumeroEncan = numeroEncan,
-                            FacturePDFPath = ""
+                            NumeroEncan = numeroEncan
                         });
                     }
                 }
@@ -138,41 +127,7 @@ namespace Gamma2024.Server.Services
                 {
                     ChargerFacture(f);
                 }
-
-                if (f.FacturePDFPath.IsNullOrEmpty())
-                {
-                    var factureGenerer = new FactureGenererVM
-                    {
-                        DateAchat = f.DateAchat,
-                        FraisEncanteur = f.FraisEncanteur,
-                        NumeroEncan = numeroEncan,
-                        Id = f.Id,
-                        TPS = f.TPS,
-                        TVQ = f.TVQ,
-                        Lots = f.Lots.Select(l => new LotFactureVM
-                        {
-                            Description = l.Description,
-                            Prix = l.Mise.Value.ToString(),
-                        }).ToList(),
-                        Client = new ClientFactureVM
-                        {
-                            AdresseLigne1 = $"{f.Client.Adresses.First().Numero} {f.Client.Adresses.First().Rue}",
-                            AdresseLigne2 = $"{f.Client.Adresses.First().Appartement}",
-                            AdresseLigne3 = $"{f.Client.Adresses.First().Ville}, {f.Client.Adresses.First().Province}, {f.Client.Adresses.First().Pays}",
-                            CodePostal = f.Client.Adresses.First().CodePostal,
-                            Courriel = f.Client.Email,
-                            Nom = $"{f.Client.FirstName} {f.Client.Name}",
-                            Telephone = f.Client.PhoneNumber,
-                            ClientId = f.Client.Id,
-                        },
-                        PrixFinal = f.PrixFinal,
-                        SousTotal = f.SousTotal
-                    };
-
-                    var invoiceGen = await GenerateInvoice(factureGenerer);
-                    SauvegarderPDFFacture(f.Id, invoiceGen);
                 }
-            }
             return factures;
         }
 
