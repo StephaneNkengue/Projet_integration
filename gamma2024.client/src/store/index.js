@@ -800,7 +800,6 @@ const store = createStore({
         // Initialiser SignalR après la connexion
         await dispatch("initializeSignalR");
         await dispatch("initNotificationConnection");
-        await dispatch("obtenirNotification", savedUser.id);
       }
     },
 
