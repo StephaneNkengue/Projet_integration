@@ -153,7 +153,7 @@
                                    role="button"
                                    data-bs-toggle="dropdown"
                                    aria-expanded="false">
-                                    <p class="m-0 me-1">{{ username }}</p>
+                                    <p class="m-0 me-1">{{ nomUtilisateur }}</p>
                                     <img :src="avatarUrl"
                                          alt="Avatar"
                                          class="imgProfile rounded-circle" />
@@ -571,9 +571,9 @@
     </header>
 </template>
 <script setup>
-    import { computed, watch, ref, onMounted, onUnmounted } from "vue";
+    import { computed, watch, ref, onMounted } from "vue";
     import { useStore } from "vuex";
-    import { RouterLink, useRouter, useRoute } from "vue-router";
+    import { useRouter, useRoute } from "vue-router";
     import VueDatePicker from "@vuepic/vue-datepicker";
     import "@vuepic/vue-datepicker/dist/main.css";
     import { fr } from "date-fns/locale";
@@ -586,10 +586,10 @@
     const estConnecte = computed(() => store.state.isLoggedIn);
     const estAdmin = computed(() => store.getters.isAdmin);
     const estClient = computed(() => store.getters.isClient);
-    const username = computed(() => store.getters.username);
+    const nomUtilisateur = computed(() => store.getters.username);
     const avatarUrl = computed(() => store.getters.avatarUrl);
 
-    const currentUser = ref(null);
+    const utilisateur = ref(null);
 
     const listeDesArtistes = ref([]);
     const listeDesCategories = ref([]);
@@ -616,13 +616,11 @@
     const selectDate = ref(0);
     const rechercheEncansDate1 = ref();
     const rechercheEncansDate2 = ref();
-    const interval = ref(null);
-
 
     watch(
         () => store.state.user,
-        (newUser) => {
-            currentUser.value = newUser;
+        (nouvelUtilisateur) => {
+            utilisateur.value = nouvelUtilisateur;
         },
         { deep: true, immediate: true }
     );
@@ -631,10 +629,10 @@
         if (store.state.isLoggedIn) {
             try {
                 await store.dispatch("fetchClientInfo");
-            } catch (error) {
+            } catch (erreur) {
                 console.error(
                     "Erreur lors de la récupération des informations client:",
-                    error
+                    erreur
                 );
             }
         }
@@ -654,16 +652,16 @@
 
     async function verifierSiEncanPresent() {
         try {
-            const response = await store.dispatch('verifierEtatEncan');
-            const type = response;
+            const reponse = await store.dispatch('verifierEtatEncan');
+            const type = reponse;
 
             if (type === 'courant' || type === 'soireeCloture') {
                 ilYAUnEncanPresent.value = true;
             } else {
                 ilYAUnEncanPresent.value = false;
             }
-        } catch (error) {
-            console.error("Erreur lors de la vérification de l'encan:", error);
+        } catch (erreur) {
+            console.error("Erreur lors de la vérification de l'encan:", erreur);
             ilYAUnEncanPresent.value = false;
         }
     }
@@ -970,13 +968,6 @@
     );
 </script>
 <style scoped>
-    .ms-7 {
-        margin-left: 7.9rem;
-    }
-
-    .start-79 {
-        left: 79%;
-    }
 
     .imgProfile {
         width: 40px;
@@ -1013,17 +1004,8 @@
         margin-right: 10px !important;
     }
 
-    .margesPourTable {
-        padding-left: 15px;
-        padding-right: 15px;
-    }
-
     .aucuneBarreDeRechercheAnvancee {
         min-height: 30px;
-    }
-
-    .selectwidth {
-        width: 160px;
     }
 
     .inputAAfficher {
