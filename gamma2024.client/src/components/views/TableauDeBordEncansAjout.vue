@@ -146,7 +146,7 @@
             element.disabled = stateFinal.value;
         }
         catch (erreur) {
-            console.log("Erreur encan ajout" + erreur);
+            console.error("Erreur encan ajout" + erreur);
         }
     });
 

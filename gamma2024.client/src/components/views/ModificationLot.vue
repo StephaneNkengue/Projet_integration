@@ -179,7 +179,6 @@
     onMounted(async () => {
         try {
             lot.value = await store.dispatch('obtenirLot', route.params.id);
-            console.log('Photos du lot:', lot.value.photos);
             categories.value = await store.dispatch('obtenirCategories');
             vendeurs.value = await store.dispatch('obtenirVendeurs');
             mediums.value = await store.dispatch('obtenirMediums');

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Gamma2024.Server.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241205163228_EnleverPdfsDesFactures")]
-    partial class EnleverPdfsDesFactures
+    [Migration("20241205192154_InitialiserBD")]
+    partial class InitialiserBD
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -563,6 +563,35 @@ namespace Gamma2024.Server.Migrations
                     b.ToTable("MiseAutomatiques");
                 });
 
+            modelBuilder.Entity("Gamma2024.Server.Models.Notification", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ApplicationUserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("CreeA")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("estLu")
+                        .HasColumnType("bit");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ApplicationUserId");
+
+                    b.ToTable("Notifications");
+                });
+
             modelBuilder.Entity("Gamma2024.Server.Models.Photo", b =>
                 {
                     b.Property<int>("Id")
@@ -908,6 +937,17 @@ namespace Gamma2024.Server.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Gamma2024.Server.Models.Notification", b =>
+                {
+                    b.HasOne("Gamma2024.Server.Models.ApplicationUser", "ApplicationUser")
+                        .WithMany("Notifications")
+                        .HasForeignKey("ApplicationUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ApplicationUser");
+                });
+
             modelBuilder.Entity("Gamma2024.Server.Models.Photo", b =>
                 {
                     b.HasOne("Gamma2024.Server.Models.Lot", "Lot")
@@ -989,6 +1029,8 @@ namespace Gamma2024.Server.Migrations
             modelBuilder.Entity("Gamma2024.Server.Models.ApplicationUser", b =>
                 {
                     b.Navigation("Adresses");
+
+                    b.Navigation("Notifications");
                 });
 
             modelBuilder.Entity("Gamma2024.Server.Models.Categorie", b =>

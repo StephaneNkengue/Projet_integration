@@ -1,6 +1,10 @@
 import { createStore } from "vuex";
 import { initApi } from "@/services/api";
-import { startSignalRConnection, stopSignalRConnection } from '@/services/signalR';
+import {
+    startSignalRConnection,
+    stopSignalRConnection,
+} from "@/services/signalR";
+import * as signalR from "@microsoft/signalr";
 
 const store = createStore({
     state: {
@@ -18,16 +22,21 @@ const store = createStore({
         userBidHistory: {}, // Format: { lotId: { userId: montant } }
         encanCourant: null,
         soireeCloture: null,
+        unreadCount: 0,
     },
     mutations: {
-        ADD_NOTIFICATION(state, message) {
-            state.userNotifications.push({ id: Date.now(), message, read: false });
+        SET_NOTIFICATIONS(state, notifications) {
+            state.notifications = notifications;
+            state.unreadCount = notifications.filter((n) => !n.estLu).length;
+        },
+        ADD_NOTIFICATION(state, notification) {
+            state.notifications.push(notification);
+            state.unreadCount++;
         },
 
-        MARK_ALL_AS_READ(state) {
-            state.userNotifications.forEach((notification) => {
-                notification.read = true;
-            });
+        MARK_AS_READ(state) {
+            state.notifications = [];
+            state.unreadCount = 0;
         },
 
         setLoggedIn(state, value) {
@@ -43,7 +52,6 @@ const store = createStore({
             }
         },
         setUser(state, user) {
-            console.log("Données reçues dans setUser:", user);
             if (user) {
                 state.user = {
                     id: user.id,
@@ -72,7 +80,6 @@ const store = createStore({
             sessionStorage.setItem("user", JSON.stringify(state.user));
         },
         setRoles(state, roles) {
-            console.log("Roles reçus dans setRoles:", roles);
             if (roles && roles) {
                 state.roles = roles;
             } else if (Array.isArray(roles)) {
@@ -80,7 +87,6 @@ const store = createStore({
             } else {
                 state.roles = [roles];
             }
-            console.log("Roles après traitement:", state.roles);
             sessionStorage.setItem("roles", JSON.stringify(state.roles));
         },
         setToken(state, token) {
@@ -104,7 +110,7 @@ const store = createStore({
             // Configurer le token s'il existe
             const token = sessionStorage.getItem("token");
             if (token) {
-                state.api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+                state.api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
             }
         },
         SET_CLIENT_INFO(state, clientInfo) {
@@ -115,12 +121,6 @@ const store = createStore({
             state.userDataVersion = (state.userDataVersion || 0) + 1;
         },
         updateLotMise(state, { idLot, montant, userId, userLastBid, nombreMises }) {
-            console.log("Store - Mise à jour du lot:", {
-                idLot,
-                montant,
-                userId,
-                userActuel: state.user?.id
-            });
 
             const newLots = { ...state.lots };
             if (!newLots[idLot]) {
@@ -128,14 +128,14 @@ const store = createStore({
                     id: idLot,
                     mise: montant,
                     idClientMise: userId,
-                    nombreMises: nombreMises
+                    nombreMises: nombreMises,
                 };
             } else {
                 newLots[idLot] = {
                     ...newLots[idLot],
                     mise: montant,
                     idClientMise: userId,
-                    nombreMises: nombreMises
+                    nombreMises: nombreMises,
                 };
             }
             state.lots = newLots;
@@ -174,15 +174,15 @@ const store = createStore({
         },
         setUserBids(state, bids) {
             // Stocke les IDs des lots sur lesquels l'utilisateur a misé
-            state.userBids = bids.map(bid => bid.lotId);
+            state.userBids = bids.map((bid) => bid.lotId);
 
             // Met à jour chaque lot avec son statut
-            bids.forEach(bid => {
+            bids.forEach((bid) => {
                 if (state.lots[bid.lotId]) {
                     state.lots[bid.lotId] = {
                         ...state.lots[bid.lotId],
-                        userHasBid: true,              // L'utilisateur a misé sur ce lot
-                        isOutbid: !bid.isLastBidder    // L'utilisateur n'est plus le dernier enchérisseur
+                        userHasBid: true, // L'utilisateur a misé sur ce lot
+                        isOutbid: !bid.isLastBidder, // L'utilisateur n'est plus le dernier enchérisseur
                     };
                 }
             });
@@ -235,7 +235,8 @@ const store = createStore({
         setLotOutbid(state, lotId) {
             state.outbidLots.push(lotId);
         },
-        setSignalRConnection(state, connection) {  // Ajouter cette mutation manquante
+        setSignalRConnection(state, connection) {
+            // Ajouter cette mutation manquante
             state.connection = connection;
         },
         updateUserBid(state, { lotId, userId, montant }) {
@@ -246,7 +247,7 @@ const store = createStore({
         },
         UPDATE_USER_LAST_BID(state, { lotId, userId, montant }) {
             if (!state.userBidHistory) {
-                state.userBidHistory = {};  // Initialiser l'objet s'il n'existe pas
+                state.userBidHistory = {}; // Initialiser l'objet s'il n'existe pas
             }
             if (!state.userBidHistory[lotId]) {
                 state.userBidHistory[lotId] = {};
@@ -254,20 +255,20 @@ const store = createStore({
             state.userBidHistory[lotId][userId] = montant;
         },
         SET_ENCAN_COURANT(state, encan) {
-            state.encanCourant = encan
+            state.encanCourant = encan;
         },
         SET_SOIREE_CLOTURE(state, soiree) {
-            state.soireeCloture = soiree
+            state.soireeCloture = soiree;
         },
         UPDATE_LOT_TEMPS(state, { lotId, nouveauTemps, ordreLotsActuel }) {
             const lot = state.lots[lotId];
             if (lot) {
                 lot.dateFinDecompteLot = nouveauTemps;
-                
+
                 // Si on a reçu l'ordre des lots, réorganiser immédiatement
                 if (ordreLotsActuel) {
                     const lotsReorganises = {};
-                    ordreLotsActuel.forEach(id => {
+                    ordreLotsActuel.forEach((id) => {
                         if (state.lots[id]) {
                             lotsReorganises[id] = state.lots[id];
                         }
@@ -277,49 +278,46 @@ const store = createStore({
             }
         },
         SET_LOT_VENDU(state, lotId) {
-            const lot = state.lots[lotId]
+            const lot = state.lots[lotId];
             if (lot) {
-                lot.estVendu = true
-                this.commit('REORGANISER_LOTS')
+                lot.estVendu = true;
+                this.commit("REORGANISER_LOTS");
             }
         },
         REORGANISER_LOTS(state) {
-            console.log('Réorganisation des lots');
             const lotsNonVendus = Object.values(state.lots)
-                .filter(lot => !lot.estVendu)
+                .filter((lot) => !lot.estVendu)
                 .sort((a, b) => {
                     // Si pas de date de fin, mettre à la fin
                     if (!a.dateFinDecompteLot || !b.dateFinDecompteLot) return 0;
-                    
+
                     const finA = new Date(a.dateFinDecompteLot);
                     const finB = new Date(b.dateFinDecompteLot);
-                    
+
                     // Si les dates de fin sont égales, comparer les dates de début
                     if (finA.getTime() === finB.getTime()) {
                         if (!a.dateDebutDecompteLot || !b.dateDebutDecompteLot) return 0;
-                        return new Date(a.dateDebutDecompteLot) - new Date(b.dateDebutDecompteLot);
+                        return (
+                            new Date(a.dateDebutDecompteLot) -
+                            new Date(b.dateDebutDecompteLot)
+                        );
                     }
-                    
+
                     return finA - finB;
                 });
-
-            console.log('Lots triés:', lotsNonVendus.map(lot => ({
-                id: lot.id,
-                dateFin: lot.dateFinDecompteLot,
-                dateDebut: lot.dateDebutDecompteLot
-            })));
+            ;
 
             const lotsReorganises = {};
-            lotsNonVendus.forEach(lot => {
+            lotsNonVendus.forEach((lot) => {
                 lotsReorganises[lot.id] = lot;
             });
-            
+
             state.lots = lotsReorganises;
         },
         RESET_ENCAN_STATE(state) {
             state.encanCourant = null;
             state.soireeCloture = null;
-        }
+        },
     },
     actions: {
         async login({ commit, state, dispatch }, userData) {
@@ -346,6 +344,8 @@ const store = createStore({
                             "Authorization"
                         ] = `Bearer ${response.data.token}`;
                         await dispatch("initializeSignalR");
+                        await dispatch("obtenirNotification", response.data.userId);
+                        await dispatch("initNotificationConnection");
                     }
                     return { success: true, roles: response.data.roles };
                 } else {
@@ -355,7 +355,6 @@ const store = createStore({
                     };
                 }
             } catch (error) {
-                console.log("catch");
                 return {
                     success: false,
                     element: error.response.data?.element,
@@ -409,7 +408,6 @@ const store = createStore({
 
         async updateAvatar({ commit, state }, formData) {
             try {
-                console.log("FormData reçu dans updateAvatar:", formData);
                 const response = await state.api.put("/utilisateurs/avatar", formData, {
                     headers: {
                         "Content-Type": "multipart/form-data",
@@ -428,8 +426,6 @@ const store = createStore({
                 // Mettre à jour l'utilisateur avec la nouvelle URL de l'avatar
                 const updatedUser = { ...state.user, photo: avatarPath };
                 commit("setUser", updatedUser);
-
-                console.log("Avatar mis à jour dans le store:", fullAvatarUrl);
 
                 return {
                     ...response,
@@ -566,7 +562,6 @@ const store = createStore({
         async obtenirTousLots({ state }) {
             try {
                 const response = await state.api.get("/lots/tous");
-                console.log("Données brutes:", response.data);
                 return response.data || [];
             } catch (error) {
                 console.error(
@@ -580,7 +575,6 @@ const store = createStore({
         async obtenirLot({ state }, id) {
             try {
                 const response = await state.api.get(`/lots/${id}`);
-                console.log("Lot reçu:", response.data);
                 return response.data;
             } catch (error) {
                 console.error("Erreur lors de la récupération du lot:", error);
@@ -665,9 +659,7 @@ const store = createStore({
         },
         async checkAuthStatus({ commit, state, dispatch }) {
             const token = state.token || sessionStorage.getItem("token");
-            console.log("Token trouvé :", token ? "Oui" : "Non");
             if (!token) {
-                console.log("Aucun token trouvé, déconnexion de l'utilisateur");
                 commit("setLoggedIn", false);
                 commit("setUser", null);
                 commit("setRoles", []);
@@ -680,12 +672,7 @@ const store = createStore({
             }
 
             try {
-                console.log(
-                    "URL de la requête :",
-                    `${state.api.defaults.baseURL}/home/check-auth`
-                );
                 const response = await state.api.get("/home/check-auth");
-                console.log("Réponse complète de check-auth:", response.data);
                 if (response.data.isAuthenticated) {
                     commit("setLoggedIn", true);
                     commit("setUser", response.data.user);
@@ -715,8 +702,6 @@ const store = createStore({
                 commit("SET_CONNECTION", null);
                 // Appel à l'API pour invalider le token côté serveur
                 const response = await state.api.post("/home/logout");
-                console.log("Réponse de la déconnexion:", response);
-
             } catch (error) {
                 console.error("Erreur lors de la déconnexion:", error);
             } finally {
@@ -737,7 +722,7 @@ const store = createStore({
                 commit("updateLotMise", {
                     idLot: null,
                     montant: null,
-                    userId: null
+                    userId: null,
                 });
                 state.userBids = [];
                 state.lots = {};
@@ -747,7 +732,6 @@ const store = createStore({
         async fetchListeDeLotsPourAdministrateur({ commit, state }) {
             try {
                 const response = await state.api.get("/lots/chercherTousLots");
-                console.log("Données reçues de l'API:", response.data); // Pour le débogage
                 // let dataResponse = await response.json();
                 return response.data;
             } catch (error) {
@@ -757,7 +741,6 @@ const store = createStore({
         },
 
         async initializeStore({ commit, dispatch }) {
-            console.log("=== Initialisation du Store ===");
 
             // Récupérer les données de session
             const token = sessionStorage.getItem("token");
@@ -768,7 +751,7 @@ const store = createStore({
             // Initialiser l'API avec le token
             const api = initApi(() => token);
             if (token) {
-                api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+                api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
             }
             commit("SET_API", api);
 
@@ -782,6 +765,7 @@ const store = createStore({
                 await dispatch("fetchUserBids");
                 // Initialiser SignalR après la connexion
                 await dispatch("initializeSignalR");
+                await dispatch("initNotificationConnection");
             }
         },
 
@@ -828,7 +812,6 @@ const store = createStore({
         async fetchEncanInfo({ commit, state }) {
             try {
                 const response = await state.api.get("/encans/cherchertousencans");
-                console.log("Données reçues de l'API:", response.data); // Pour le débogage
 
                 return response.data;
             } catch (error) {
@@ -926,8 +909,6 @@ const store = createStore({
         async chercherTousLotsRecherche({ state }) {
             try {
                 const response = await state.api.get(`/lots/cherchertouslotsrecherche`);
-
-                console.log("Réponse reçue:", response);
                 return response;
             } catch (error) {
                 console.error("Erreur détaillée:", {
@@ -945,7 +926,6 @@ const store = createStore({
                     `/lots/cherchertouslotsparencan/${idEncan}`
                 );
 
-                console.log("Réponse reçue:", response);
                 return response;
             } catch (error) {
                 console.error("Erreur détaillée:", {
@@ -991,27 +971,20 @@ const store = createStore({
 
         async placerMise({ state, commit, dispatch }, miseData) {
             try {
-                console.log('Store - Début placerMise:', miseData);
 
                 const response = await state.api.post("/lots/placerMise", {
                     LotId: miseData.lotId,
                     Montant: parseFloat(miseData.montant),
                     UserId: state.user?.id,
-                    MontantMaximal: miseData.montantMaximal
+                    MontantMaximal: miseData.montantMaximal,
                 });
 
-                console.log('Store - Réponse placerMise:', response.data);
                 return response.data;
             } catch (error) {
                 console.error("Store - Erreur lors de la mise:", error);
-                console.log('Store - Détails de l\'erreur:', {
-                    status: error.response?.status,
-                    data: error.response?.data,
-                    message: error.message
-                });
                 return {
                     success: false,
-                    message: error.response?.data?.message || "Erreur lors de la mise"
+                    message: error.response?.data?.message || "Erreur lors de la mise",
                 };
             }
         },
@@ -1020,11 +993,14 @@ const store = createStore({
             if (!state.user?.id || !state.token) return;
 
             try {
-                const response = await state.api.get(`/lots/userBids/${state.user.id}`, {
-                    headers: {
-                        'Authorization': `Bearer ${state.token}`
+                const response = await state.api.get(
+                    `/lots/userBids/${state.user.id}`,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${state.token}`,
+                        },
                     }
-                });
+                );
                 commit("setUserBids", response.data);
             } catch (error) {
                 console.error("Erreur lors du chargement des mises:", error);
@@ -1038,14 +1014,13 @@ const store = createStore({
         async initializeSignalR({ commit, state }) {
             // Vérifier si une connexion existe déjà
             if (state.connection) {
-                console.log("SignalR connection already exists");
                 return;
             }
 
             if (!state.isLoggedIn) return;
 
             try {
-                const baseUrl = state.api.defaults.baseURL.replace('/api', '');
+                const baseUrl = state.api.defaults.baseURL.replace("/api", "");
                 const connection = await startSignalRConnection(baseUrl, state.token);
 
                 if (connection) {
@@ -1053,14 +1028,14 @@ const store = createStore({
                         commit("updateLotMise", {
                             idLot: data.idLot,
                             montant: data.montant,
-                            userId: data.userId
+                            userId: data.userId,
                         });
 
                         if (data.userLastBid?.userId === state.user?.id) {
                             commit("UPDATE_USER_LAST_BID", {
                                 lotId: data.idLot,
                                 userId: data.userLastBid.userId,
-                                montant: data.userLastBid.montant
+                                montant: data.userLastBid.montant,
                             });
                         }
                     });
@@ -1118,8 +1093,9 @@ const store = createStore({
         },
         async fetchFactureInfoMembre({ commit, state }) {
             try {
-                const response = await state.api.get("/factures/chercherFacturesMembre");
-                console.log("Données reçues de l'API:", response.data);
+                const response = await state.api.get(
+                    "/factures/chercherFacturesMembre"
+                );
                 return response.data;
             } catch (error) {
                 console.error("Erreur détaillée:", error.response || error);
@@ -1152,7 +1128,6 @@ const store = createStore({
         async fetchFactureInfo({ commit, state }) {
             try {
                 const response = await state.api.get("/factures/chercherFactures");
-                console.log("Données reçues de l'API:", response.data); // Pour le débogage
 
                 return response.data;
             } catch (error) {
@@ -1173,7 +1148,9 @@ const store = createStore({
         },
         async chercherPrevisualisationLivraison({ state }, idFacture) {
             try {
-                const response = await state.api.get("/facturesLivraison/GenererFactureLivraison/" + idFacture);
+                const response = await state.api.get(
+                    "/facturesLivraison/GenererFactureLivraison/" + idFacture
+                );
                 return response;
             } catch (error) {
                 console.error("Erreur détaillée:", error.response || error);
@@ -1195,7 +1172,8 @@ const store = createStore({
         async enregistrerChoixLivraison({ state }, choixLivraison) {
             try {
                 const response = await state.api.post(
-                    "/facturesLivraison/enregistrerChoixLivraison", choixLivraison
+                    "/facturesLivraison/enregistrerChoixLivraison",
+                    choixLivraison
                 );
                 return response;
             } catch (error) {
@@ -1217,25 +1195,30 @@ const store = createStore({
         async getUserBidForLot({ state, commit }, lotId) {
             // Ne faire l'appel que si l'utilisateur est connecté
             if (!state.isLoggedIn) return 0;
-            
+
             try {
                 const response = await state.api.get(`/lots/userLastBid/${lotId}`);
                 if (response.data > 0) {
-                    commit('UPDATE_USER_LAST_BID', {
+                    commit("UPDATE_USER_LAST_BID", {
                         lotId,
                         userId: state.user?.id,
-                        montant: response.data
+                        montant: response.data,
                     });
                 }
                 return response.data;
             } catch (error) {
-                console.error("Erreur lors de la récupération de la dernière mise:", error);
+                console.error(
+                    "Erreur lors de la récupération de la dernière mise:",
+                    error
+                );
                 return 0;
             }
         },
         async chargerClientsFinEncan({ state }, numeroEncan) {
             try {
-                const response = await state.api.post("/factures/CreerFacturesParEncan/" + 232);
+                const response = await state.api.post(
+                    "/factures/CreerFacturesParEncan/" + 232
+                );
                 return response;
             } catch (error) {
                 return "Erreur, veuillez réessayer";
@@ -1243,7 +1226,9 @@ const store = createStore({
         },
         async chercherFacturesParEncan({ state }, numeroEncan) {
             try {
-                const response = await state.api.get("/factures/chercherFacturesParEncan/" + 232);
+                const response = await state.api.get(
+                    "/factures/chercherFacturesParEncan/" + 232
+                );
                 return response;
             } catch (error) {
                 return "Erreur, veuillez réessayer";
@@ -1251,42 +1236,46 @@ const store = createStore({
         },
         async chercherFacturesChoixAFaire({ state }) {
             try {
-                const response = await state.api.get("/factures/chercherFacturesChoixAFaire");
+                const response = await state.api.get(
+                    "/factures/chercherFacturesChoixAFaire"
+                );
                 return response;
             } catch (error) {
                 return "Erreur, veuillez réessayer";
             }
         },
         async verifierEtatEncan({ state, commit }) {
-            const response = await state.api.get('/encans/etat-courant')
-            const { type, encan } = response.data
-            
-            commit('SET_ENCAN_COURANT', encan)
-            
+            const response = await state.api.get("/encans/etat-courant");
+            const { type, encan } = response.data;
+
+            commit("SET_ENCAN_COURANT", encan);
+
             if (encan?.id) {
                 // Charger les lots séparément pour avoir toutes les informations
-                const lotsResponse = await state.api.get(`/lots/cherchertouslotsparencan/${encan.id}`)
+                const lotsResponse = await state.api.get(
+                    `/lots/cherchertouslotsparencan/${encan.id}`
+                );
                 if (lotsResponse.data) {
-                    commit('setLots', lotsResponse.data)
+                    commit("setLots", lotsResponse.data);
                 }
             }
-            
-            return type // 'courant' ou 'soireeCloture' ou null
+
+            return type; // 'courant' ou 'soireeCloture' ou null
         },
         async surveillerTransitionEncan({ dispatch, commit }) {
             const verifierEtat = async () => {
-                const ancienType = this.state.typeEncanCourant
-                const nouveauType = await dispatch('verifierEtatEncan')
-                
+                const ancienType = this.state.typeEncanCourant;
+                const nouveauType = await dispatch("verifierEtatEncan");
+
                 if (ancienType !== nouveauType) {
-                    if (ancienType === 'courant' && nouveauType === 'soireeCloture') {
-                        await dispatch('initialiserSoireeCloture')
-                    } else if (nouveauType === 'aucun') {
-                        commit('RESET_ENCAN_STATE')
+                    if (ancienType === "courant" && nouveauType === "soireeCloture") {
+                        await dispatch("initialiserSoireeCloture");
+                    } else if (nouveauType === "aucun") {
+                        commit("RESET_ENCAN_STATE");
                     }
                 }
-            }
-            setInterval(verifierEtat, 5000)
+            };
+            setInterval(verifierEtat, 5000);
         },
 
         async initialiserSoireeCloture({ commit, dispatch }) {
@@ -1297,38 +1286,111 @@ const store = createStore({
                 }
 
                 // Démarrer la surveillance des transitions
-                await dispatch('surveillerTransitionEncan');
+                await dispatch("surveillerTransitionEncan");
             } catch (error) {
-                console.error("Erreur lors de l'initialisation de la soirée de clôture:", error);
+                console.error(
+                    "Erreur lors de l'initialisation de la soirée de clôture:",
+                    error
+                );
             }
         },
 
         async synchroniserTempsLots({ commit }, tempsLots) {
             Object.entries(tempsLots).forEach(([lotId, temps]) => {
-                commit('UPDATE_LOT_TEMPS', { lotId: parseInt(lotId), nouveauTemps: temps });
+                commit("UPDATE_LOT_TEMPS", {
+                    lotId: parseInt(lotId),
+                    nouveauTemps: temps,
+                });
             });
-            commit('REORGANISER_LOTS');
+            commit("REORGANISER_LOTS");
         },
 
         async surveillerFinSoireeCloture({ state, commit, dispatch, router }) {
             if (state.connection) {
                 state.connection.on("ReceiveNewBid", (data) => {
                     if (data.type === "soireeTerminee") {
-                        console.log('Soirée terminée, réinitialisation de l\'état');
-                        commit('RESET_ENCAN_STATE');
-                        router.push({ name: 'Accueil' });
+                        commit("RESET_ENCAN_STATE");
+                        router.push({ name: "Accueil" });
                     }
                 });
             }
-        }
+        },
 
+        async obtenirNotification({ state, commit }, userId) {
+            try {
+                const response = await state.api.get(
+                    `Notification/obtenirNotificationNonLu/${userId}`
+                );
+                if (response) {
+                    commit("SET_NOTIFICATIONS", response.data);
+                }
+            } catch (error) {
+                console.error(
+                    "Erreur lors de la récupération des notifications:",
+                    error
+                );
+            }
+        },
+
+        async marquerToutesNotifLues({ state, commit }) {
+            try {
+                const response = await state.api.post("notification/marquerLues");
+                if (response.data) {
+                    commit("MARK_AS_READ");
+                }
+            } catch (error) {
+                console.error("Error fetching notifications:", error);
+            }
+        },
+
+        async initNotificationConnection({ commit, state }) {
+            const baseUrl = state.api.defaults.baseURL.replace("/api", "");
+            const cleanBaseUrl = baseUrl.endsWith("/")
+                ? baseUrl.slice(0, -1)
+                : baseUrl;
+
+            const connection = new signalR.HubConnectionBuilder()
+                .withUrl(`${cleanBaseUrl}/api/hub/NotificationHub`, {
+                    accessTokenFactory: () => state.token,
+                }) // Ajuste l'URL si nécessaire
+                .withAutomaticReconnect()
+                .build();
+
+            // Écoute les événements SignalR
+            connection.on("ReceiveNotification", (notification) => {
+                commit("SET_NOTIFICATIONS", notification); // Ajouter au store
+            });
+
+            connection.onclose(() => {
+                console.warn("SignalR connection closed.");
+            });
+
+            try {
+                await connection.start();
+                commit("SET_NOTIFICATION_CONNECTION", connection);
+            } catch (err) {
+                console.error("Error starting SignalR connection:", err);
+            }
+        },
+
+        async sendNotification({ state }, { userId, message }) {
+            if (state.notificationConnection) {
+                try {
+                    await state.notificationConnection.invoke(
+                        "SendNotification",
+                        userId,
+                        message
+                    );
+                } catch (err) {
+                    console.error("Error sending notification:", err);
+                }
+            }
+        },
     },
     getters: {
         isAdmin: (state) => {
-            // console.log("Rôles dans le getter isAdmin:", state.roles);
             const result =
                 Array.isArray(state.roles) && state.roles.includes("Administrateur");
-            // console.log("L'utilisateur est-il admin ?", result);
             return result;
         },
         isClient: (state) =>
@@ -1337,14 +1399,12 @@ const store = createStore({
         username: (state) =>
             state.user ? state.user.pseudonym || state.user.username : "USERNAME",
         avatarUrl: (state) => {
-            console.log("Photo de l'utilisateur brute:", state.user.photo);
             if (state.user && state.user.photo) {
                 if (state.user.photo.startsWith("http")) {
                     return state.user.photo;
                 } else {
                     const baseUrl = state.api.defaults.avatarURL;
                     const fullUrl = baseUrl + "/" + state.user.photo;
-                    console.log("URL complète de l'avatar:", fullUrl);
                     return fullUrl;
                 }
             }
@@ -1362,7 +1422,9 @@ const store = createStore({
         getUniqueOffersCount: (state) => (lotId) => {
             const lot = state.lots[lotId];
             return lot?.nombreMises || 0;
-        }
+        },
+        allNotifications: (state) => state.notifications,
+        unreadNotifications: (state) => state.unreadCount,
     },
 });
 

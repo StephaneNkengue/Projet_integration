@@ -91,7 +91,6 @@
         const id = props.idLot;
         const response = await store.dispatch("chercherDetailsLotParId", id);
         lot.value = response.data
-        console.log(lot.value)
         urlApi.value = await store.state.api.defaults.baseURL.replace("\api", "")
 
         chargement.value = false;

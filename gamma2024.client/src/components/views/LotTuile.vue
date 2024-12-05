@@ -192,11 +192,6 @@
     });
 
     const handleNewBid = async (data) => {
-        console.log('SignalR Received:', {
-            data,
-            currentUserId: store.state.user?.id,
-            userLastBid: userLastBid.value
-        });
 
         if (data.idLot === props.lotRecu.id) {
             store.commit('updateLotMise', {
@@ -208,16 +203,10 @@
             });
 
             if (data.userLastBid && data.userLastBid.userId === store.state.user?.id) {
-                console.log('Updating userLastBid:', data.userLastBid.montant);
                 userLastBid.value = data.userLastBid.montant;
             }
 
             nextTick(() => {
-                console.log('After nextTick:', {
-                    isHighestBidder: isUserHighestBidder.value,
-                    isOutbid: isUserOutbid.value,
-                    userLastBid: userLastBid.value
-                });
             });
         }
     };
@@ -229,7 +218,6 @@
         if (lotActuel) {
             lot.value = { ...lotActuel };
         }
-        console.log("Ouverture modal pour lot:", lotPourModal.value);
         modalMise.value.show();
     };
 
@@ -398,7 +386,7 @@
         // Vérifier si le temps est écoulé
         const maintenant = new Date();
         const finDecompte = new Date(lot.dateFinDecompteLot);
-        
+
         return !lot.estVendu && finDecompte > maintenant;
     });
 

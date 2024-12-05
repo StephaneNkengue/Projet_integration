@@ -25,37 +25,36 @@ namespace Gamma2024.Server.Controllers
             _lotService = lotService;
             _context = context;
             _hubContext = hubContext;
-
         }
 
-		[Authorize(Roles = ApplicationRoles.ADMINISTRATEUR)]
-		[HttpGet("tous")]
-		public async Task<ActionResult<IEnumerable<LotAffichageVM>>> ObtenirTousLots()
-		{
-			var lots = await _lotService.ObtenirTousLots();
-			return Ok(lots.ToList());
-		}
+        [Authorize(Roles = ApplicationRoles.ADMINISTRATEUR)]
+        [HttpGet("tous")]
+        public async Task<ActionResult<IEnumerable<LotAffichageVM>>> ObtenirTousLots()
+        {
+            var lots = await _lotService.ObtenirTousLots();
+            return Ok(lots.ToList());
+        }
 
-		[Authorize(Roles = ApplicationRoles.ADMINISTRATEUR)]
-		[HttpGet("{id}")]
-		public async Task<ActionResult<LotAffichageVM>> ObtenirLot(int id)
-		{
-			var lot = await _lotService.ObtenirLot(id);
-			if (lot == null)
-			{
-				return NotFound();
-			}
-			return Ok(lot);
-		}
+        [Authorize(Roles = ApplicationRoles.ADMINISTRATEUR)]
+        [HttpGet("{id}")]
+        public async Task<ActionResult<LotAffichageVM>> ObtenirLot(int id)
+        {
+            var lot = await _lotService.ObtenirLot(id);
+            if (lot == null)
+            {
+                return NotFound();
+            }
+            return Ok(lot);
+        }
 
-		[Authorize(Roles = ApplicationRoles.ADMINISTRATEUR)]
-		[HttpPost("creer")]
-		public async Task<ActionResult<LotAffichageVM>> CreerLot([FromForm] LotCreationVM lotVM)
-		{
-			if (Request.Form.Files.Count > 0)
-			{
-				lotVM.Photos = Request.Form.Files.ToList();
-			}
+        [Authorize(Roles = ApplicationRoles.ADMINISTRATEUR)]
+        [HttpPost("creer")]
+        public async Task<ActionResult<LotAffichageVM>> CreerLot([FromForm] LotCreationVM lotVM)
+        {
+            if (Request.Form.Files.Count > 0)
+            {
+                lotVM.Photos = Request.Form.Files.ToList();
+            }
 
             var resultat = await _lotService.CreerLot(lotVM);
             if (!resultat.Success)
@@ -65,73 +64,73 @@ namespace Gamma2024.Server.Controllers
             return Ok(new { success = true, message = "Lot crée avec succès" });
         }
 
-		[Authorize(Roles = ApplicationRoles.ADMINISTRATEUR)]
-		[HttpPut("modifier/{id}")]
-		public async Task<IActionResult> ModifierLot(int id, LotModificationVM lotVM)
-		{
-			var resultat = await _lotService.ModifierLot(id, lotVM);
-			if (!resultat.Success)
-			{
-				return BadRequest(resultat.Message);
-			}
-			return Ok(new { success = true, message = "Lot modifié avec succès" });
-		}
+        [Authorize(Roles = ApplicationRoles.ADMINISTRATEUR)]
+        [HttpPut("modifier/{id}")]
+        public async Task<IActionResult> ModifierLot(int id, LotModificationVM lotVM)
+        {
+            var resultat = await _lotService.ModifierLot(id, lotVM);
+            if (!resultat.Success)
+            {
+                return BadRequest(resultat.Message);
+            }
+            return Ok(new { success = true, message = "Lot modifié avec succès" });
+        }
 
-		[Authorize(Roles = ApplicationRoles.ADMINISTRATEUR)]
-		[HttpDelete("supprimer/{id}")]
-		public async Task<IActionResult> SupprimerLot(int id)
-		{
-			var resultat = await _lotService.SupprimerLot(id);
-			if (!resultat.Success)
-			{
-				return BadRequest(resultat.Message);
-			}
-			return Ok(new { success = true, message = "Lot supprimé avec succès" });
-		}
+        [Authorize(Roles = ApplicationRoles.ADMINISTRATEUR)]
+        [HttpDelete("supprimer/{id}")]
+        public async Task<IActionResult> SupprimerLot(int id)
+        {
+            var resultat = await _lotService.SupprimerLot(id);
+            if (!resultat.Success)
+            {
+                return BadRequest(resultat.Message);
+            }
+            return Ok(new { success = true, message = "Lot supprimé avec succès" });
+        }
 
-		[HttpGet("artistes")]
-		public async Task<ActionResult<ICollection<ArtisteVM>>> ObtenirTousArtistes()
-		{
-			try
-			{
-				var artistes = _lotService.ObtenirTousArtistes();
-				return Ok(artistes);
-			}
-			catch (Exception ex)
-			{
-				return BadRequest($"Erreur d'obtenir tous les artistes: {ex.Message}");
-			}
-		}
+        [HttpGet("artistes")]
+        public async Task<ActionResult<ICollection<ArtisteVM>>> ObtenirTousArtistes()
+        {
+            try
+            {
+                var artistes = _lotService.ObtenirTousArtistes();
+                return Ok(artistes);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Erreur d'obtenir tous les artistes: {ex.Message}");
+            }
+        }
 
-		[HttpGet("categories")]
-		public async Task<ActionResult<IEnumerable<Categorie>>> ObtenirCategories()
-		{
-			var categories = await _context.Categories.ToListAsync();
-			return Ok(categories);
-		}
+        [HttpGet("categories")]
+        public async Task<ActionResult<IEnumerable<Categorie>>> ObtenirCategories()
+        {
+            var categories = await _context.Categories.ToListAsync();
+            return Ok(categories);
+        }
 
-		[Authorize(Roles = ApplicationRoles.ADMINISTRATEUR)]
-		[HttpGet("vendeurs")]
-		public async Task<ActionResult<IEnumerable<Vendeur>>> ObtenirVendeurs()
-		{
-			var vendeurs = await _context.Vendeurs.ToListAsync();
-			return Ok(vendeurs);
-		}
+        [Authorize(Roles = ApplicationRoles.ADMINISTRATEUR)]
+        [HttpGet("vendeurs")]
+        public async Task<ActionResult<IEnumerable<Vendeur>>> ObtenirVendeurs()
+        {
+            var vendeurs = await _context.Vendeurs.ToListAsync();
+            return Ok(vendeurs);
+        }
 
-		[HttpGet("mediums")]
-		public async Task<ActionResult<IEnumerable<Medium>>> ObtenirMediums()
-		{
-			var mediums = await _context.Mediums.ToListAsync();
-			return Ok(mediums);
-		}
+        [HttpGet("mediums")]
+        public async Task<ActionResult<IEnumerable<Medium>>> ObtenirMediums()
+        {
+            var mediums = await _context.Mediums.ToListAsync();
+            return Ok(mediums);
+        }
 
-		[Authorize(Roles = ApplicationRoles.ADMINISTRATEUR)]
-		[HttpGet("encans")]
-		public async Task<ActionResult<IEnumerable<Encan>>> ObtenirEncans()
-		{
-			var encans = await _context.Encans.ToListAsync();
-			return Ok(encans);
-		}
+        [Authorize(Roles = ApplicationRoles.ADMINISTRATEUR)]
+        [HttpGet("encans")]
+        public async Task<ActionResult<IEnumerable<Encan>>> ObtenirEncans()
+        {
+            var encans = await _context.Encans.ToListAsync();
+            return Ok(encans);
+        }
 
         [HttpGet("cherchertouslotsrecherche")]
         [AllowAnonymous]
@@ -164,29 +163,29 @@ namespace Gamma2024.Server.Controllers
             }
         }
 
-		[AllowAnonymous]
-		[HttpGet("chercherTousLots")]
-		public ICollection<LotAffichageAdministrateurVM> ChercherTousLots()
-		{
-			ICollection<LotAffichageAdministrateurVM> lots = _lotService.ChercherTousLots();
-			return lots;
-		}
+        [AllowAnonymous]
+        [HttpGet("chercherTousLots")]
+        public ICollection<LotAffichageAdministrateurVM> ChercherTousLots()
+        {
+            ICollection<LotAffichageAdministrateurVM> lots = _lotService.ChercherTousLots();
+            return lots;
+        }
 
-		[AllowAnonymous]
-		[HttpGet("chercherDetailsLotParId/{idLot}")]
-		public LotDetailsVM ChercherDetailsLotParId(string idLot)
-		{
-			try
-			{
-				var idLotInt = int.Parse(idLot);
-				LotDetailsVM lot = _lotService.ChercherDetailsLotParId(idLotInt);
-				return lot;
-			}
-			catch
-			{
-				return null;
-			}
-		}
+        [AllowAnonymous]
+        [HttpGet("chercherDetailsLotParId/{idLot}")]
+        public LotDetailsVM ChercherDetailsLotParId(string idLot)
+        {
+            try
+            {
+                var idLotInt = int.Parse(idLot);
+                LotDetailsVM lot = _lotService.ChercherDetailsLotParId(idLotInt);
+                return lot;
+            }
+            catch
+            {
+                return null;
+            }
+        }
 
         [Authorize(Roles = ApplicationRoles.CLIENT)]
         [HttpPost("placerMise")]
@@ -204,37 +203,40 @@ namespace Gamma2024.Server.Controllers
             }
 
             (bool isSuccess, string resultMessage) = await _lotService.PlacerMise(mise);
-            
+
             if (isSuccess)
             {
                 var lastUserBid = await _lotService.GetUserLastBid(mise.LotId, mise.UserId);
-                return Ok(new { 
-                    success = true, 
+
+                return Ok(new
+                {
+                    success = true,
                     message = resultMessage,
                     userLastBid = lastUserBid
                 });
             }
             else
             {
-                return BadRequest(new { 
-                    success = false, 
+                return BadRequest(new
+                {
+                    success = false,
                     message = resultMessage
                 });
             }
         }
 
-		[Authorize(Roles = ApplicationRoles.CLIENT)]
-		[HttpGet("userBids/{userId}")]
-		public async Task<IActionResult> GetUserBids(string userId)
-		{
-			if (userId != User.FindFirst(ClaimTypes.NameIdentifier)?.Value)
-			{
-				return Unauthorized();
-			}
+        [Authorize(Roles = ApplicationRoles.CLIENT)]
+        [HttpGet("userBids/{userId}")]
+        public async Task<IActionResult> GetUserBids(string userId)
+        {
+            if (userId != User.FindFirst(ClaimTypes.NameIdentifier)?.Value)
+            {
+                return Unauthorized();
+            }
 
-			var userBids = await _lotService.GetUserBids(userId);
-			return Ok(userBids);
-		}
+            var userBids = await _lotService.GetUserBids(userId);
+            return Ok(userBids);
+        }
 
         [Authorize]
         [HttpGet("userLastBid/{lotId}")]

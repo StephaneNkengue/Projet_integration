@@ -127,24 +127,41 @@
 
                             <div class="dropdown text-white align-self-stretch justify-content-center align-items-center d-flex"
                                  v-if="estConnecte && !estAdmin">
-                                <a class="nav-link d-flex align-items-center justify-content-center"
-                                   role="button"
-                                   data-bs-toggle="dropdown"
-                                   aria-expanded="false"
-                                   @click="notification = !notification">
-                                    <img src="/icons/Cloche.png"
-                                         alt="Icon cloche"
-                                         height="25" />
-                                </a>
-                                <ul class="dropdown-menu bleuMarinFond text-center">
-                                    <li v-for="index in 5" :key="index">
-                                        <router-link :to="{ name: 'Accueil' }"
-                                                     class="text-decoration-none text-white d-flex align-items-center gap-3">
-                                            <a class="dropdown-item text-white btnSurvolerBleuMoyenFond"
-                                               @click="notification = false">
-                                                test
-                                            </a>
-                                        </router-link>
+                                <button class="btn btn-link position-relative"
+                                        id="dropdownNotification"
+                                        data-bs-toggle="dropdown"
+                                        aria-expanded="false">
+                                    <img src="/icons/Cloche.png" alt="Icon cloche" height="25" />
+                                    <span v-if="unreadCount > 0"
+                                          class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                        {{ unreadCount }}
+                                        <span class="visually-hidden">unread notifications</span>
+                                    </span>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end"
+                                    aria-labelledby="dropdownNotification">
+                                    <li v-if="notifications.length === 0"
+                                        class="dropdown-item text-muted">
+                                        Aucune notification
+                                    </li>
+                                    <li v-for="notification in notifications"
+                                        :key="notification.id"
+                                        class="dropdown-item">
+                                        {{ notification.message }}
+                                        <small class="text-muted fs-6 d-block">
+                                            {{ new Date(notification.creeA).toLocaleString() }}
+                                        </small>
+                                    </li>
+                                    <li>
+                                        <hr class="dropdown-divider" />
+                                    </li>
+                                    <li>
+                                        <button type="button"
+                                                :disabled="unreadCount < 1"
+                                                class="dropdown-item text-center btn btn-danger"
+                                                @click="markAsRead">
+                                            Marquer toutes comme lues
+                                        </button>
                                     </li>
                                 </ul>
                             </div>
@@ -204,7 +221,7 @@
                     <div class="collapse card mt-2 mx-2 mx-md-5 mb-md-5 bg-white col col-lg-9 col-xl-7"
                          id="navbarToggleRechercheAvancee">
                         <div class="card-header d-flex justify-content-center">
-                            <h2>{{titreBarreDeRechercheDeLots}}</h2>
+                            <h2>{{ titreBarreDeRechercheDeLots }}</h2>
                         </div>
                         <div class="card-body">
                             <div class="row">
@@ -225,10 +242,7 @@
                                                     </option>
                                                     <option class="py-0" value="1">Inférieure à</option>
                                                     <option class="py-0" value="2">Supérieure à</option>
-                                                    <option class="py-0"
-                                                            value="3">
-                                                        Entre
-                                                    </option>
+                                                    <option class="py-0" value="3">Entre</option>
                                                 </select>
                                             </div>
 
@@ -243,8 +257,7 @@
                                                  class="col-sm-auto align-items-center inputAAfficher">
                                                 <label class="fs-6">et</label>
                                             </div>
-                                            <div v-if="selectValeurEstimee == 3"
-                                                 class="col-sm">
+                                            <div v-if="selectValeurEstimee == 3" class="col-sm">
                                                 <input type="number"
                                                        maxlength="10"
                                                        class="form-control rechercheinput align-self-end"
@@ -356,8 +369,7 @@
                                                  class="col-sm-auto align-items-center inputAAfficher">
                                                 <label class="fs-6">et</label>
                                             </div>
-                                            <div v-if="selectHauteur == 3"
-                                                 class="col-sm">
+                                            <div v-if="selectHauteur == 3" class="col-sm">
                                                 <input type="number"
                                                        maxlength="10"
                                                        class="form-control rechercheinput align-self-end"
@@ -403,8 +415,7 @@
                                                  class="col-sm-auto align-items-center inputAAfficher">
                                                 <label class="fs-6">et</label>
                                             </div>
-                                            <div v-if="selectLargeur == 3"
-                                                 class="col-sm">
+                                            <div v-if="selectLargeur == 3" class="col-sm">
                                                 <input type="number"
                                                        maxlength="10"
                                                        class="form-control rechercheinput align-self-end"
@@ -487,8 +498,7 @@
                                                  class="col-sm-auto align-items-center inputAAfficher">
                                                 <label class="fs-6">et</label>
                                             </div>
-                                            <div v-if="selectNumeroEncan == 1"
-                                                 class="col-sm">
+                                            <div v-if="selectNumeroEncan == 1" class="col-sm">
                                                 <input type="number"
                                                        maxlength="10"
                                                        class="form-control rechercheinput align-self-end"
@@ -532,7 +542,7 @@
                                                            :clearable="true"
                                                            :action-row="{ showNow: true }"
                                                            :format-locale="fr"
-                                                           :year-range="[2000, new Date().getFullYear() +10]" />
+                                                           :year-range="[2000, new Date().getFullYear() + 10]" />
                                             <div v-if="selectDate == 3"
                                                  class="col-sm-auto align-items-center inputAAfficher">
                                                 <label class="fs-6">et</label>
@@ -618,7 +628,6 @@
     const rechercheEncansDate2 = ref();
     const interval = ref(null);
 
-
     watch(
         () => store.state.user,
         (newUser) => {
@@ -654,10 +663,10 @@
 
     async function verifierSiEncanPresent() {
         try {
-            const response = await store.dispatch('verifierEtatEncan');
+            const response = await store.dispatch("verifierEtatEncan");
             const type = response;
 
-            if (type === 'courant' || type === 'soireeCloture') {
+            if (type === "courant" || type === "soireeCloture") {
                 ilYAUnEncanPresent.value = true;
             } else {
                 ilYAUnEncanPresent.value = false;
@@ -681,7 +690,8 @@
             }
         }
         if (titreBarreDeRechercheDeLots) {
-            titreBarreDeRechercheDeLots.value = "Recherche avancée de lots dans l'Encan " + rechercheNumeroEncan;
+            titreBarreDeRechercheDeLots.value =
+                "Recherche avancée de lots dans l'Encan " + rechercheNumeroEncan;
         }
         verifierSiQueryDansURL();
     }
@@ -889,20 +899,27 @@
             if (stringquery.numeroEncan) {
                 rechercheNumeroEncan = stringquery.numeroEncan;
                 if (titreBarreDeRechercheDeLots) {
-                    titreBarreDeRechercheDeLots.value = "Recherche avancée de lots dans l'Encan " + rechercheNumeroEncan;
+                    titreBarreDeRechercheDeLots.value =
+                        "Recherche avancée de lots dans l'Encan " + rechercheNumeroEncan;
                 }
             }
             if (stringquery.stringValeurEstimee) {
                 selectValeurEstimee.value = stringquery.selectValeurEstimee;
                 rechercheLotsValeurEstimee.value = stringquery.stringValeurEstimee;
-                if (stringquery.selectValeurEstimee == 3 && stringquery.stringValeurEstimee2) {
+                if (
+                    stringquery.selectValeurEstimee == 3 &&
+                    stringquery.stringValeurEstimee2
+                ) {
                     rechercheLotsValeurEstimee2.value = stringquery.stringValeurEstimee2;
                 }
             }
             if (stringquery.selectArtiste != 0 && stringquery.selectArtiste != null) {
                 selectArtiste.value = stringquery.selectArtiste;
             }
-            if (stringquery.selectCategorie != 0 && stringquery.selectCategorie != null) {
+            if (
+                stringquery.selectCategorie != 0 &&
+                stringquery.selectCategorie != null
+            ) {
                 selectCategorie.value = stringquery.selectCategorie;
             }
             if (stringquery.selectMedium != 0 && stringquery.selectMedium != null) {
@@ -925,7 +942,10 @@
             if (stringquery.stringNumeroEncan) {
                 selectNumeroEncan.value = stringquery.selectNumeroEncan;
                 rechercheEncansNumeroEncan.value = stringquery.stringNumeroEncan;
-                if (stringquery.selectNumeroEncan == 1 && stringquery.stringNumeroEncan2) {
+                if (
+                    stringquery.selectNumeroEncan == 1 &&
+                    stringquery.stringNumeroEncan2
+                ) {
                     rechercheEncansNumeroEncan2.value = stringquery.stringNumeroEncan2;
                 }
             }
@@ -957,26 +977,31 @@
         listeDesMediums.value = await store.dispatch("obtenirMediums");
         listeDesCategories.value = await store.dispatch("obtenirCategories");
         verifierSiQueryDansURL();
+
+        const userId = computed(() => store.state.user?.id);
+        if (userId.value) {
+            await store.dispatch("obtenirNotification", userId.value);
+        }
     });
 
     // Surveiller les changements de route pour mettre à jour l'état
     watch(
         () => route.name,
         async () => {
-            if (route.name === 'EncanPresent') {
+            if (route.name === "EncanPresent") {
                 await verifierSiEncanPresent();
             }
         }
     );
+
+    const notifications = computed(() => store.getters.allNotifications);
+    const unreadCount = computed(() => store.getters.unreadNotifications);
+
+    const markAsRead = async function () {
+        await store.dispatch("marquerToutesNotifLues");
+    };
 </script>
 <style scoped>
-    .ms-7 {
-        margin-left: 7.9rem;
-    }
-
-    .start-79 {
-        left: 79%;
-    }
 
     .imgProfile {
         width: 40px;
@@ -1011,11 +1036,6 @@
 
     .rechercheinput {
         margin-right: 10px !important;
-    }
-
-    .margesPourTable {
-        padding-left: 15px;
-        padding-right: 15px;
     }
 
     .aucuneBarreDeRechercheAnvancee {
@@ -1082,5 +1102,18 @@
     .nav-item.nav-link .router-link-active {
         color: #fff !important;
         font-weight: bold;
+    }
+
+    .dropdown-item {
+        white-space: normal;
+    }
+
+    /* Ajuster la taille du badge */
+    .badge {
+        font-size: 0.8rem;
+    }
+
+    .btn-link {
+        padding: 0;
     }
 </style>

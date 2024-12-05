@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Gamma2024.Server.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class InitialiserBD : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -247,6 +247,28 @@ namespace Gamma2024.Server.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Notifications",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Message = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    estLu = table.Column<bool>(type: "bit", nullable: false),
+                    CreeA = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ApplicationUserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Notifications", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Notifications_AspNetUsers_ApplicationUserId",
+                        column: x => x.ApplicationUserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "FactureLivraisons",
                 columns: table => new
                 {
@@ -261,8 +283,7 @@ namespace Gamma2024.Server.Migrations
                     IdAdresse = table.Column<int>(type: "int", nullable: true),
                     IdCharite = table.Column<int>(type: "int", nullable: true),
                     IdFacture = table.Column<int>(type: "int", nullable: false),
-                    EstPaye = table.Column<bool>(type: "bit", nullable: false),
-                    FacturePDFPath = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    EstPaye = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -320,8 +341,7 @@ namespace Gamma2024.Server.Migrations
                     NumeroEncan = table.Column<int>(type: "int", nullable: false),
                     Livrable = table.Column<bool>(type: "bit", nullable: false),
                     ChoixLivraison = table.Column<bool>(type: "bit", nullable: true),
-                    IdFactureLivraison = table.Column<int>(type: "int", nullable: true),
-                    FacturePDFPath = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    IdFactureLivraison = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -486,8 +506,8 @@ namespace Gamma2024.Server.Migrations
                 columns: new[] { "Id", "AccessFailedCount", "Avatar", "ConcurrencyStamp", "Email", "EmailConfirmed", "FirstName", "LockoutEnabled", "LockoutEnd", "Name", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "StripeCustomer", "TwoFactorEnabled", "UserName" },
                 values: new object[,]
                 {
-                    { "1d8ac862-e54d-4f10-b6f8-638808c02967", 0, "avatars/default.png", "ff176598-423c-4557-bfc4-48e928f579e9", "client@example.com", true, "Jean", false, null, "Dupont", "CLIENT@EXAMPLE.COM", "CLIENT@EXAMPLE.COM", "AQAAAAIAAYagAAAAEBCLhDAVClAVnNnHmZ3ahe6KYsdJa/tTtcmHC64QlZsy07wt7VRMIl+nfrP0UJ8oKw==", "455-555-5555", false, "860b65a9-156b-473d-b11b-be6f787cf1e4", "", false, "client@example.com" },
-                    { "8e445865-a24d-4543-a6c6-9443d048cdb9", 0, "avatars/default.png", "f1f3de20-69b9-491d-bc82-b484b44cd47f", "admin@example.com", true, "Super", false, null, "Admin", "ADMIN@EXAMPLE.COM", "ADMIN@EXAMPLE.COM", "AQAAAAIAAYagAAAAEImrQqIdpN3WKyTx0Ys/9QQXVKT5jTAyfxsPYj6ljA7MwE8U/IWotqFi5RT5o5V7VQ==", "466-666-6666", false, "87162d4b-fc3b-4d65-8341-2f4a480982d1", "", false, "admin@example.com" }
+                    { "1d8ac862-e54d-4f10-b6f8-638808c02967", 0, "/Avatars/Defaut.png", "ff176598-423c-4557-bfc4-48e928f579e9", "client@example.com", true, "Jean", false, null, "Dupont", "CLIENT@EXAMPLE.COM", "CLIENT@EXAMPLE.COM", "AQAAAAIAAYagAAAAEBCLhDAVClAVnNnHmZ3ahe6KYsdJa/tTtcmHC64QlZsy07wt7VRMIl+nfrP0UJ8oKw==", "455-555-5555", false, "860b65a9-156b-473d-b11b-be6f787cf1e4", "", false, "client@example.com" },
+                    { "8e445865-a24d-4543-a6c6-9443d048cdb9", 0, "/Avatars/Defaut.png", "f1f3de20-69b9-491d-bc82-b484b44cd47f", "admin@example.com", true, "Super", false, null, "Admin", "ADMIN@EXAMPLE.COM", "ADMIN@EXAMPLE.COM", "AQAAAAIAAYagAAAAEImrQqIdpN3WKyTx0Ys/9QQXVKT5jTAyfxsPYj6ljA7MwE8U/IWotqFi5RT5o5V7VQ==", "466-666-6666", false, "87162d4b-fc3b-4d65-8341-2f4a480982d1", "", false, "admin@example.com" }
                 });
 
             migrationBuilder.InsertData(
@@ -621,6 +641,11 @@ namespace Gamma2024.Server.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Notifications_ApplicationUserId",
+                table: "Notifications",
+                column: "ApplicationUserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Photos_IdLot",
                 table: "Photos",
                 column: "IdLot");
@@ -654,6 +679,9 @@ namespace Gamma2024.Server.Migrations
 
             migrationBuilder.DropTable(
                 name: "MiseAutomatiques");
+
+            migrationBuilder.DropTable(
+                name: "Notifications");
 
             migrationBuilder.DropTable(
                 name: "Photos");
