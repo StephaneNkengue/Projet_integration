@@ -1383,7 +1383,7 @@ const store = createStore({
 
     async marquerToutesNotifLues({ state, commit }) {
       try {
-        const response = await state.api.get("notification/marquerLues");
+        const response = await state.api.post("notification/marquerLues");
         if (response.data) {
           commit("MARK_AS_READ");
         }

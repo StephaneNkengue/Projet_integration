@@ -679,12 +679,12 @@ namespace Gamma2024.Server.Services
                     .Where(m => m.LotId == lot.Id)
                     .OrderByDescending(m => m.DateMise)
                     .Take(2)
-                    .LastOrDefaultAsync();
+                    .ToListAsync();
 
-                if (avantDerniereMise != null)
+                if (avantDerniereMise.LastOrDefault() != null && avantDerniereMise.Count == 2)
                 {
-                    var messageMise = $"Nouvelle mise sur le lot{mise.LotId}";
-                    await _notificationService.SendBidNotification(mise.LotId, avantDerniereMise.UserId, messageMise);
+                    var messageMise = $"Nouvelle mise sur le lot {mise.LotId}";
+                    await _notificationService.SendBidNotification(mise.LotId, avantDerniereMise.LastOrDefault().UserId, messageMise);
                 }
 
                 await _hubContext.Clients.All.ReceiveNewBid(new
