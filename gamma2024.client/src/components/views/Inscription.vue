@@ -36,7 +36,7 @@
                             { 'is-invalid': vuelidate.generalInfo.nom.$error },
                           ]"
                                                        id="nom"
-                                                       placeholder="John"
+                                                       placeholder="Doe"
                                                        @blur="vuelidate.generalInfo.nom.$touch()" />
                                                 <div class="retroaction-invalide"
                                                      v-if="vuelidate.generalInfo.nom.$error">
@@ -55,7 +55,7 @@
                             { 'is-invalid': vuelidate.generalInfo.prenom.$error },
                           ]"
                                                        id="prenom"
-                                                       placeholder="Doe"
+                                                       placeholder="John"
                                                        @blur="vuelidate.generalInfo.prenom.$touch()" />
                                                 <div class="retroaction-invalide"
                                                      v-if="vuelidate.generalInfo.prenom.$error">
