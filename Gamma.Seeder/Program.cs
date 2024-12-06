@@ -18,6 +18,35 @@ builder.Configuration
 
 StripeConfiguration.ApiKey = builder.Configuration["Stripe:SecretKey"];
 
+Console.WriteLine("Voulez vous vider la BD? Entrez 1 pour oui et autre pour non");
+var choix = Console.ReadLine();
+
+if (choix == "1")
+{
+    Console.WriteLine("Vider les données BD...");
+    context.Encans.RemoveRange(context.Encans);
+    context.Lots.RemoveRange(context.Lots);
+    context.EncanLots.RemoveRange(context.EncanLots);
+    context.Categories.RemoveRange(context.Categories);
+    context.Mediums.RemoveRange(context.Mediums);
+    context.Photos.RemoveRange(context.Photos);
+    context.FactureLivraisons.RemoveRange(context.FactureLivraisons);
+    context.Factures.RemoveRange(context.Factures);
+    context.Charites.RemoveRange(context.Charites);
+    context.Adresses.RemoveRange(context.Adresses);
+    context.Vendeurs.RemoveRange(context.Vendeurs);
+    context.Users.RemoveRange(context.Users.Where(c => c.Id != "8e445865-a24d-4543-a6c6-9443d048cdb9" && c.Id != "1d8ac862-e54d-4f10-b6f8-638808c02967"));
+    context.Notifications.RemoveRange(context.Notifications);
+    context.MiseAutomatiques.RemoveRange(context.MiseAutomatiques);
+
+    context.SaveChanges();
+}
+else
+{
+    Console.WriteLine("Garder les données du BD");
+}
+
+
 var customerService = new CustomerService();
 var options = new CustomerListOptions { Limit = 100 };
 StripeList<Customer> customersTemp = customerService.List(options);
