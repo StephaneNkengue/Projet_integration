@@ -16,10 +16,10 @@ namespace Gamma2024.Server.Services
 		private readonly IWebHostEnvironment _environment;
 		private readonly IHubContext<LotMiseHub, ILotMiseHub> _hubContext;
 		private readonly ILogger<LotService> _logger;
-		private readonly IEncanService _encanService;
+		private readonly EncanService _encanService;
 		private readonly IHttpClientFactory _httpClientFactory;
 
-		public LotService(ApplicationDbContext context, IWebHostEnvironment environment, IHubContext<LotMiseHub, ILotMiseHub> hubContext, ILogger<LotService> logger, IEncanService encanService, IHttpClientFactory httpClientFactory)
+		public LotService(ApplicationDbContext context, IWebHostEnvironment environment, IHubContext<LotMiseHub, ILotMiseHub> hubContext, ILogger<LotService> logger, EncanService encanService, IHttpClientFactory httpClientFactory)
 		{
 			_context = context;
 			_environment = environment;

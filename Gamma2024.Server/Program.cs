@@ -48,10 +48,9 @@ builder.Services.AddSignalR();
 
 builder.Services.AddScoped<ClientInscriptionService>();
 builder.Services.AddScoped<ClientModificationService>();
-builder.Services.AddScoped<IEncanService, EncanService>();
-builder.Services.AddHttpClient<EncanService>();
 builder.Services.AddScoped<VendeurService>();
 builder.Services.AddScoped<AdministrateurService>();
+builder.Services.AddScoped<EncanService>();
 builder.Services.AddScoped<LotService>();
 builder.Services.AddScoped<FactureService>();
 builder.Services.AddScoped<FactureLivraisonService>();

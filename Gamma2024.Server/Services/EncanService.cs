@@ -10,7 +10,7 @@ using Gamma2024.Server.Validations;
 
 namespace Gamma2024.Server.Services
 {
-    public class EncanService : IEncanService
+    public class EncanService
     {
         private readonly ApplicationDbContext _context;
         private readonly ILogger<EncanService> _logger;
