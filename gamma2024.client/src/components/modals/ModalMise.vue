@@ -83,7 +83,7 @@
     const modalInstance = ref(null);
     const montantMise = ref(0);
     const montantInitial = ref(0);
-    const userLastBid = ref(0);
+    const utilisateurDerniereMise = ref(0);
     const miseAutomatique = ref(false);
 
     const props = defineProps({
@@ -196,9 +196,9 @@
                 montantMaximal: montantMaximal
             };
 
-            const response = await store.dispatch("placerMise", miseData);
+            const reponse = await store.dispatch("placerMise", miseData);
 
-            if (response.success) {
+            if (reponse.success) {
                 modalInstance.value.hide();
                 emit("miseConfirmee", montantMise.value);
 
@@ -215,7 +215,7 @@
                 toast.error(
                     h(ToastContent, {
                         title: "Erreur",
-                        description: response.message
+                        description: reponse.message
                     })
                 );
             }
@@ -242,7 +242,7 @@
                 });
             }
             if (props.lot?.id) {
-                userLastBid.value = await store.dispatch('getUserBidForLot', props.lot.id);
+                utilisateurDerniereMise.value = await store.dispatch('getUserBidForLot', props.lot.id);
             }
         });
     });
@@ -262,7 +262,7 @@
     };
 
     // Méthodes du modal
-    const show = () => {
+    const presenterModal = () => {
         if (modalInstance.value) {
             const lot = store.getters.getLot(props.lot?.id);
             montantMise.value = miseAutomatique.value ?
@@ -273,7 +273,7 @@
         }
     };
 
-    const hide = () => {
+    const cacherModal = () => {
         if (modalInstance.value) {
             modalInstance.value.hide();
         }
@@ -281,10 +281,10 @@
 
     // Computed properties
     const affichageMiseActuelle = computed(() => {
-        if (userLastBid.value > 0) {
+        if (utilisateurDerniereMise.value > 0) {
             const lot = store.getters.getLot(props.lot?.id);
             const estPlusHautEncherisseur = lot?.idClientMise === store.state.user?.id;
-            return `${userLastBid.value}$ ${estPlusHautEncherisseur ? '(meilleure offre)' : '(dépassée)'}`;
+            return `${utilisateurDerniereMise.value}$ ${estPlusHautEncherisseur ? '(meilleure offre)' : '(dépassée)'}`;
         }
         return "aucune mise";
     });
@@ -295,8 +295,8 @@
 
     // Expose les méthodes nécessaires
     defineExpose({
-        show,
-        hide,
+        presenterModal,
+        cacherModal,
     });
 
     // Définir les émissions
@@ -308,7 +308,7 @@
         async (newMise) => {
             if (newMise) {
                 montantMise.value = newMise;
-                userLastBid.value = await store.dispatch('getUserBidForLot', props.lot.id);
+                utilisateurDerniereMise.value = await store.dispatch('getUserBidForLot', props.lot.id);
             }
         }
     );
