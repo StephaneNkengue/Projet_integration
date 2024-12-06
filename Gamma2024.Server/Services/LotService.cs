@@ -5,6 +5,8 @@ using Gamma2024.Server.Validations;
 using Gamma2024.Server.ViewModels;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using System.Net.Http;
 
 namespace Gamma2024.Server.Services
 {
@@ -14,16 +16,22 @@ namespace Gamma2024.Server.Services
 		private readonly IWebHostEnvironment _environment;
 		private readonly IHubContext<LotMiseHub, ILotMiseHub> _hubContext;
 		private readonly ILogger<LotService> _logger;
-		private readonly EncanService _encanService;
+		private readonly IEncanService _encanService;
+		private readonly HttpClient _httpClient;
+		private readonly IConfiguration _configuration;
 
-
-		public LotService(ApplicationDbContext context, IWebHostEnvironment environment, IHubContext<LotMiseHub, ILotMiseHub> hubContext, ILogger<LotService> logger, EncanService encanService)
+		public LotService(ApplicationDbContext context, IWebHostEnvironment environment, IHubContext<LotMiseHub, ILotMiseHub> hubContext, ILogger<LotService> logger, IEncanService encanService, HttpClient httpClient, IConfiguration configuration)
 		{
 			_context = context;
 			_environment = environment;
 			_hubContext = hubContext;
 			_logger = logger;
 			_encanService = encanService;
+			_httpClient = httpClient;
+			_configuration = configuration;
+
+			// Configurer l'URL de base pour les appels API
+			_httpClient.BaseAddress = new Uri(_configuration["ApiBaseUrl"]);
 		}
 
 		public async Task<IEnumerable<LotAffichageVM>> ObtenirTousLots()
@@ -850,6 +858,31 @@ namespace Gamma2024.Server.Services
 					_context.Lots.Update(lot);
 
 					await _context.SaveChangesAsync();
+
+					// Vérifier si le temps est écoulé et gérer le pas de mise
+					if (lot.DateFinDecompteLot.HasValue)
+					{
+						var tempsRestant = (lot.DateFinDecompteLot.Value - DateTime.Now).TotalSeconds;
+						if (tempsRestant <= -60)
+						{
+							// Ajouter le pas de mise
+							lot.DateFinDecompteLot = lot.DateFinDecompteLot.Value.AddSeconds(encan.PasMise);
+							await _context.SaveChangesAsync();
+
+							// Notifier les clients du nouveau temps
+							await _hubContext.Clients.All.ReceiveNewBid(new
+							{
+								type = "tempsLotMisAJour",
+								lotId = lot.Id,
+								nouveauTemps = lot.DateFinDecompteLot.Value,
+								ordreLotsActuel = await _context.Lots
+									.Where(l => !l.EstVendu)
+									.OrderBy(l => l.DateFinDecompteLot)
+									.Select(l => l.Id)
+									.ToListAsync()
+							});
+						}
+            }
 				}
 				else
 				{
@@ -930,34 +963,163 @@ namespace Gamma2024.Server.Services
 
 		public async Task MarquerLotVendu(int lotId)
 		{
-			var lot = await _context.Lots
-				.Include(l => l.EncanLots)
-					.ThenInclude(el => el.Encan)
-				.FirstOrDefaultAsync(l => l.Id == lotId);
-
-			if (lot != null && !lot.EstVendu)
+			using var transaction = await _context.Database.BeginTransactionAsync();
+			try
 			{
-				lot.EstVendu = true;
-				lot.DateFinVente = DateTime.Now;
-				
-				await _context.SaveChangesAsync();
+				var lot = await _context.Lots
+					.Include(l => l.EncanLots)
+						.ThenInclude(el => el.Encan)
+					.FirstOrDefaultAsync(l => l.Id == lotId);
 
-				// Vérifier si c'était le dernier lot de la soirée
-				var encan = lot.EncanLots.FirstOrDefault()?.Encan;
-				if (encan != null)
+				if (lot != null && !lot.EstVendu)
 				{
-					await _encanService.VerifierFinSoireeCloture(encan.NumeroEncan);
+					// Vérifier si le temps est vraiment écoulé
+					if (lot.DateFinDecompteLot.HasValue && DateTime.Now >= lot.DateFinDecompteLot.Value)
+					{
+						lot.EstVendu = true;
+						lot.DateFinVente = DateTime.Now;
+						
+						await _context.SaveChangesAsync();
+
+						// Notifier tous les clients
+						await _hubContext.Clients.All.ReceiveNewBid(new
+						{
+							type = "lotVendu",
+							lotId = lotId,
+							timestamp = DateTime.Now
+						});
+
+						// Vérifier si c'était le dernier lot de la soirée
+						var encan = lot.EncanLots.FirstOrDefault()?.Encan;
+						if (encan != null)
+						{
+							var lotsRestants = await _context.Lots
+								.Where(l => l.EncanLots.Any(el => el.IdEncan == encan.Id))
+								.Where(l => !l.EstVendu)
+								.CountAsync();
+
+							if (lotsRestants == 0)
+							{
+								// C'était le dernier lot
+								await _encanService.FinaliserSoireeCloture(encan.NumeroEncan);
+							}
+						}
+
+						await transaction.CommitAsync();
+					}
 				}
-				
-				await _hubContext.Clients.All.ReceiveNewBid(new
-				{
-					type = "lotVendu",
-					lotId = lotId,
-					timestamp = DateTime.Now
-				});
+			}
+			catch (Exception ex)
+			{
+				await transaction.RollbackAsync();
+				_logger.LogError(ex, "Erreur lors du marquage du lot comme vendu");
+				throw;
 			}
 		}
 
+		public async Task VerifierEtFinaliserLotsExpires(int idEncan)
+		{
+			using var transaction = await _context.Database.BeginTransactionAsync();
+			try
+			{
+				var encan = await _context.Encans
+					.Include(e => e.EncanLots)
+						.ThenInclude(el => el.Lot)
+					.FirstOrDefaultAsync(e => e.Id == idEncan);
+
+				if (encan == null || encan.EstTermine) return;
+
+				var maintenant = DateTime.Now;
+				var lotsExpires = encan.EncanLots
+					.Where(el => !el.Lot.EstVendu && 
+							   el.Lot.DateFinDecompteLot.HasValue && 
+							   el.Lot.DateFinDecompteLot.Value <= maintenant)
+					.Select(el => el.Lot)
+					.ToList();
+
+				if (!lotsExpires.Any()) return;
+
+				foreach (var lot in lotsExpires)
+				{
+					lot.EstVendu = true;
+					lot.DateFinVente = maintenant;
+				}
+
+				await _context.SaveChangesAsync();
+
+				// Vérifier s'il reste des lots non vendus
+				var lotsRestants = encan.EncanLots
+					.Count(el => !el.Lot.EstVendu);
+
+				// Si c'était les derniers lots et qu'il y a eu des mises
+				if (lotsRestants == 0 && encan.EncanLots.Any(el => el.Lot.Mise > 0))
+				{
+					await FinaliserEncan(encan.NumeroEncan);
+				}
+
+				await transaction.CommitAsync();
+
+				// Notifier les clients
+				foreach (var lot in lotsExpires)
+				{
+					await _hubContext.Clients.All.ReceiveNewBid(new
+					{
+						type = "lotVendu",
+						lotId = lot.Id,
+						timestamp = maintenant
+					});
+				}
+			}
+			catch (Exception ex)
+			{
+				await transaction.RollbackAsync();
+				_logger.LogError(ex, $"Erreur lors de la vérification des lots pour l'encan {idEncan}");
+				throw;
+			}
+		}
+
+		private async Task FinaliserEncan(int numeroEncan)
+		{
+			try
+			{
+				// Appels API en parallèle
+				var tasks = new[]
+				{
+					_httpClient.PostAsync($"/api/factures/CreerFacturesParEncan/{numeroEncan}", null),
+					_httpClient.PostAsync($"/api/paiement/ChargerClients/{numeroEncan}", null)
+				};
+
+				await Task.WhenAll(tasks);
+
+				// Vérifier les résultats
+				foreach (var response in tasks)
+				{
+					response.Result.EnsureSuccessStatusCode();
+				}
+
+				// Marquer l'encan comme terminé
+				var encan = await _context.Encans
+					.FirstOrDefaultAsync(e => e.NumeroEncan == numeroEncan);
+				if (encan != null)
+				{
+					encan.EstTermine = true;
+					await _context.SaveChangesAsync();
+				}
+
+				// Notifier les clients
+				await _hubContext.Clients.All.ReceiveNewBid(new
+				{
+					type = "encanTermine",
+					numeroEncan = numeroEncan,
+					message = "L'encan est terminé et les factures ont été générées."
+				});
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError(ex, $"Erreur lors de la finalisation de l'encan {numeroEncan}");
+				throw;
+			}
+		}
 
 	}
 }

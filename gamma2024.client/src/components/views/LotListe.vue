@@ -352,8 +352,22 @@
     const updateTimer = () => {
         if (tempsRestant.value <= 0) {
             cancelAnimationFrame(rafId);
-            if (store.state.connection?.state === "Connected") {
-                store.state.connection.invoke("LotVendu", props.lotRecu.id);
+            
+            // Vérifier si le lot n'est pas déjà vendu
+            const lot = store.getters.getLot(props.lotRecu.id);
+            if (lot && !lot.estVendu && store.state.connection?.state === "Connected") {
+                // Utiliser la connexion du store
+                store.state.connection.invoke("LotVendu", props.lotRecu.id)
+                    .catch(err => {
+                        console.error("Erreur lors du marquage du lot comme vendu:", err);
+                        // Optionnel : afficher un toast d'erreur
+                        toast.error(
+                            h(ToastContent, {
+                                title: "Erreur",
+                                description: "Impossible de marquer le lot comme vendu"
+                            })
+                        );
+                    });
             }
             return;
         }
@@ -411,6 +425,31 @@
         const finDecompte = new Date(lot.dateFinDecompteLot);
         
         return !lot.estVendu && finDecompte > maintenant;
+    });
+
+    const verifierEtatLot = async () => {
+        const lot = store.getters.getLot(props.lotRecu.id);
+        if (lot && !lot.estVendu) {
+            const maintenant = new Date();
+            const finDecompte = new Date(lot.dateFinDecompteLot);
+            
+            if (maintenant >= finDecompte) {
+                try {
+                    await store.state.connection.invoke("LotVendu", lot.id);
+                } catch (err) {
+                    console.error("Erreur lors du marquage du lot comme vendu:", err);
+                }
+            }
+        }
+    };
+
+    // Ajouter une vérification périodique
+    onMounted(() => {
+        const intervalId = setInterval(verifierEtatLot, 3000); // Vérifier toutes les 3 secondes
+        
+        onUnmounted(() => {
+            clearInterval(intervalId);
+        });
     });
 
 </script>

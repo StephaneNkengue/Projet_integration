@@ -1,6 +1,9 @@
 import { createStore } from "vuex";
 import { initApi } from "@/services/api";
 import { startSignalRConnection, stopSignalRConnection } from '@/services/signalR';
+import { toast } from 'vue3-toastify';
+import { h } from 'vue';
+import ToastContent from "@/components/Toast/toastConfirm.vue";
 
 const store = createStore({
     state: {
@@ -319,6 +322,12 @@ const store = createStore({
         RESET_ENCAN_STATE(state) {
             state.encanCourant = null;
             state.soireeCloture = null;
+        },
+        HANDLE_SOIREE_TERMINEE(state, router) {
+            state.encanCourant = null;
+            state.lots = {};
+            state.userBids = [];
+            router.push('/'); // Rediriger vers la page d'accueil
         }
     },
     actions: {
@@ -1036,7 +1045,6 @@ const store = createStore({
         },
 
         async initializeSignalR({ commit, state }) {
-            // Vérifier si une connexion existe déjà
             if (state.connection) {
                 console.log("SignalR connection already exists");
                 return;
@@ -1049,20 +1057,51 @@ const store = createStore({
                 const connection = await startSignalRConnection(baseUrl, state.token);
 
                 if (connection) {
+                    // Gestion des mises normales
                     connection.on("ReceiveNewBid", (data) => {
-                        commit("updateLotMise", {
-                            idLot: data.idLot,
-                            montant: data.montant,
-                            userId: data.userId
-                        });
+                        // Si c'est une mise normale
+                        if (!data.type) {
+                            commit("updateLotMise", {
+                                idLot: data.idLot,
+                                montant: data.montant,
+                                userId: data.userId,
+                            });
 
-                        if (data.userLastBid?.userId === state.user?.id) {
-                            commit("UPDATE_USER_LAST_BID", {
-                                lotId: data.idLot,
-                                userId: data.userLastBid.userId,
-                                montant: data.userLastBid.montant
+                            if (data.userLastBid?.userId === state.user?.id) {
+                                commit("UPDATE_USER_LAST_BID", {
+                                    lotId: data.idLot,
+                                    userId: data.userLastBid.userId,
+                                    montant: data.userLastBid.montant
+                                });
+                            }
+                        }
+                        // Si c'est un lot vendu
+                        else if (data.type === "lotVendu") {
+                            commit('SET_LOT_VENDU', data.lotId);
+                        }
+                        // Si c'est la fin de la soirée
+                        else if (data.type === "soireeTerminee") {
+                            toast.success(
+                                h(ToastContent, {
+                                    title: "Soirée terminée",
+                                    description: data.message
+                                })
+                            );
+                            commit('HANDLE_SOIREE_TERMINEE');
+                        }
+                        // Si c'est une mise à jour du temps
+                        else if (data.type === "tempsLotMisAJour") {
+                            commit('UPDATE_LOT_TEMPS', {
+                                lotId: data.lotId,
+                                nouveauTemps: data.nouveauTemps,
+                                ordreLotsActuel: data.ordreLotsActuel
                             });
                         }
+                    });
+
+                    // Garder aussi l'événement LotVendu séparé pour compatibilité
+                    connection.on("LotVendu", (lotId) => {
+                        commit('SET_LOT_VENDU', lotId);
                     });
 
                     commit("SET_CONNECTION", connection);
@@ -1310,15 +1349,29 @@ const store = createStore({
             commit('REORGANISER_LOTS');
         },
 
-        async surveillerFinSoireeCloture({ state, commit, dispatch, router }) {
+        async surveillerFinSoireeCloture({ commit, state }) {
             if (state.connection) {
                 state.connection.on("ReceiveNewBid", (data) => {
                     if (data.type === "soireeTerminee") {
-                        console.log('Soirée terminée, réinitialisation de l\'état');
-                        commit('RESET_ENCAN_STATE');
-                        router.push({ name: 'Accueil' });
+                        toast.success(
+                            h(ToastContent, {
+                                title: "Soirée terminée",
+                                description: "La soirée de clôture est terminée. Les factures ont été générées."
+                            })
+                        );
+                        commit('HANDLE_SOIREE_TERMINEE');
                     }
                 });
+            }
+        },
+
+        async verifierEtatLotsEncan({ state, dispatch }) {
+            if (state.encanCourant) {
+                try {
+                    await state.api.post(`/encans/verifier-lots/${state.encanCourant.numeroEncan}`);
+                } catch (error) {
+                    console.error("Erreur lors de la vérification des lots:", error);
+                }
             }
         }
 
