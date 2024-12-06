@@ -5,10 +5,10 @@ namespace Gamma2024.Server.ViewModels
 		public int Id { get; set; }
 		public string NumeroEncan { get; set; } = null!; // ENCAN #
 		public string Code { get; set; } = null!; // LOT #
-		public string PrixOuverture { get; set; } = null!; // PRIX OUVERTURE
-		public string? PrixMinPourVente { get; set; } // VALEUR MIN POUR VENDRE
-		public string ValeurEstimeMin { get; set; } = null!; // ESTIMATION MIN
-		public string ValeurEstimeMax { get; set; } = null!; // ESTIMATION MAX
+		public double PrixOuverture { get; set; } // PRIX OUVERTURE
+		public double? PrixMinPourVente { get; set; } // VALEUR MIN POUR VENDRE
+		public double ValeurEstimeMin { get; set; } // ESTIMATION MIN
+		public double ValeurEstimeMax { get; set; } // ESTIMATION MAX
 		public string Categorie { get; set; } = null!; // GROUPE-CATÉGORIE
 		public string Artiste { get; set; } = null!; // ARTISTE
 		public string Dimension { get; set; } = null!; // DIMENSION (en po), sera formaté comme "Hauteur x Largeur"

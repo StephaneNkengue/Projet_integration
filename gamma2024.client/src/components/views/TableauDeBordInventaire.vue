@@ -191,13 +191,13 @@
                         <tr v-for="lot in lotsAffiches" :key="lot.id" class="align-middle">
                             <td v-if="colonnesVisibles.encan">{{ lot.numeroEncan }}</td>
                             <td v-if="colonnesVisibles.numero">{{ lot.code }}</td>
-                            <td v-if="colonnesVisibles.prixOuverture">{{ lot.prixOuverture }}</td>
+                            <td v-if="colonnesVisibles.prixOuverture">{{ lot.prixOuverture }} $</td>
                             <td v-if="colonnesVisibles.valeurMinPourVente">
-                                <span v-if="lot.prixMinPourVente=='0 $'"></span>
-                                <span v-else>{{ lot.prixMinPourVente }}</span>
+                                <span v-if="lot.prixMinPourVente==0"></span>
+                                <span v-else>{{ lot.prixMinPourVente }} $</span>
                             </td>
-                            <td v-if="colonnesVisibles.estimationMin">{{ lot.valeurEstimeMin }}</td>
-                            <td v-if="colonnesVisibles.estimationMax">{{ lot.valeurEstimeMax }}</td>
+                            <td v-if="colonnesVisibles.estimationMin">{{ lot.valeurEstimeMin }} $</td>
+                            <td v-if="colonnesVisibles.estimationMax">{{ lot.valeurEstimeMax }} $</td>
                             <td v-if="colonnesVisibles.categorie">{{ lot.categorie }}</td>
                             <td v-if="colonnesVisibles.artiste">{{ lot.artiste }}</td>
                             <td v-if="colonnesVisibles.dimension">{{ lot.dimension }}</td>
@@ -205,7 +205,7 @@
                             <td v-if="colonnesVisibles.medium">{{ lot.medium }}</td>
                             <td v-if="colonnesVisibles.vendeur">{{ lot.vendeur }}</td>
                             <td v-if="colonnesVisibles.estVendu">
-                                <p v-if="lot.estVendu">{{ lot.mise }}$</p>
+                                <span v-if="lot.estVendu">{{ lot.mise }}$</span>
                                 <img v-else src="/icons/NonVendu.png" width="40" height="40" />
                             </td>
                             <td v-if="colonnesVisibles.livraison">
