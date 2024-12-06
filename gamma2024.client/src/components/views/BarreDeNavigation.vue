@@ -205,9 +205,9 @@
                     :key="notification.id"
                     class="dropdown-item"
                   >
-                    {{ notification.message }}
+                    {{ notification.Message }}
                     <small class="text-muted fs-6 d-block">
-                      {{ new Date(notification.creeA).toLocaleString() }}
+                      {{ new Date(notification.CreeA).toLocaleString() }}
                     </small>
                   </li>
                   <li>

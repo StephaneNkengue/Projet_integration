@@ -25,7 +25,7 @@ namespace Gamma2024.Server.Services
                 ApplicationUserId = userId,
                 Message = message,
                 CreeA = DateTime.Now,
-                estLu = false
+                EstLu = false
             };
 
             _context.Notifications.Add(notification);
@@ -38,7 +38,7 @@ namespace Gamma2024.Server.Services
         public async Task<ICollection<Notification>> GetUnreadNotification(string userId)
         {
             var notifications = _context.Notifications
-                                              .Where(n => n.ApplicationUserId == userId && !n.estLu)
+                                              .Where(n => n.ApplicationUserId == userId && !n.EstLu)
                                               .OrderByDescending(n => n.CreeA)
                                               .ToList();
             if (notifications.Any())
@@ -58,7 +58,7 @@ namespace Gamma2024.Server.Services
 
             foreach (var notif in notifications)
             {
-                notif.estLu = true;
+                notif.EstLu = true;
             }
 
             _context.Notifications.UpdateRange(notifications);
