@@ -161,7 +161,7 @@
 
     const ouvrirModalMise = (evenement) => {
         evenement.stopPropagation();
-        modalMise.value.show();
+        modalMise.value.presenterModal();
     };
 
     const surMiseConfirmee = async (montant) => {

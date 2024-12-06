@@ -218,7 +218,7 @@
         if (lotActuel) {
             lot.value = { ...lotActuel };
         }
-        modalMise.value.show();
+        modalMise.value.presenterModal();
     };
 
     const onMiseConfirmee = async (montant) => {
