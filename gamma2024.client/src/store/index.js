@@ -728,17 +728,6 @@ const store = createStore({
             }
         },
 
-        async fetchListeDeLotsPourAdministrateur({ commit, state }) {
-            try {
-                const reponse = await state.api.get("/lots/chercherTousLots");
-                // let datareponse = await reponse.json();
-                return reponse.data;
-            } catch (error) {
-                console.error("Erreur détaillée:", error.reponse || error);
-                throw error;
-            }
-        },
-
         async initializeStore({ commit, dispatch }) {
 
             // Récupérer les données de session
