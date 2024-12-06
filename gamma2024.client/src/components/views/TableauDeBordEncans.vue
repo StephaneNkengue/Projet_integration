@@ -367,15 +367,15 @@
                     estPublie: encan.value.estPublie,
                 });
 
-                const response = await store.dispatch("mettreAJourEncanPublie", formData);
-                if (response.success) {
+                const reponse = await store.dispatch("mettreAJourEncanPublie", formData);
+                if (reponse.success) {
                     messageSucces.value = "Statut encan modifié!";
                     messageErreur.value = "";
                     setTimeout(() => {
                         messageSucces.value = "";
                     }, 5000);
                 } else {
-                    messageErreur.value = response.error;
+                    messageErreur.value = reponse.error;
                     messageSucces.value = "";
                     setTimeout(() => {
                         messageErreur.value = "";

@@ -36,7 +36,7 @@
                             { 'is-invalid': vuelidate.generalInfo.nom.$error },
                           ]"
                                                        id="nom"
-                                                       placeholder="John"
+                                                       placeholder="Doe"
                                                        @blur="vuelidate.generalInfo.nom.$touch()" />
                                                 <div class="retroaction-invalide"
                                                      v-if="vuelidate.generalInfo.nom.$error">
@@ -55,7 +55,7 @@
                             { 'is-invalid': vuelidate.generalInfo.prenom.$error },
                           ]"
                                                        id="prenom"
-                                                       placeholder="Doe"
+                                                       placeholder="John"
                                                        @blur="vuelidate.generalInfo.prenom.$touch()" />
                                                 <div class="retroaction-invalide"
                                                      v-if="vuelidate.generalInfo.prenom.$error">
@@ -596,8 +596,8 @@
         }
 
         try {
-            const response = await store.dispatch("creerCompteUtilisateur", formData);
-            if (response.success) {
+            const reponse = await store.dispatch("creerCompteUtilisateur", formData);
+            if (reponse.success) {
                 messageSucces.value = "Compte crée avec succès !";
                 toast.success(
                     h(ToastContent, {
@@ -622,7 +622,7 @@
                 }, 4000);
             } else {
                 messageErreur.value =
-                    response.message ||
+                    reponse.message ||
                     "Une erreur est survenue lors de la création du compte.";
             }
         } catch (error) {
