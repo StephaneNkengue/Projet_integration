@@ -7,7 +7,7 @@
 
         <div class="alert alert-danger mx-3" role="alert" id="message" v-show="siMessage">
         </div>
-        <div class="alert alert-success mx-3" role="alert" id="messageSuccess" v-show="siMessageSuccess">
+        <div class="alert alert-success mx-3" role="alert" id="messageSuccess" v-show="siMessageSucces">
         </div>
 
         <div v-if="chargement" class=text-center>
@@ -47,12 +47,12 @@
     const cartes = ref([])
     const chargement = ref(true)
     const siMessage = ref(false)
-    const siMessageSuccess = ref(false)
+    const siMessageSucces = ref(false)
 
     onMounted(async () => {
         try {
-            const response = await store.dispatch("chercherCartesUser")
-            cartes.value = response.data
+            const reponse = await store.dispatch("chercherCartesUser")
+            cartes.value = reponse.data
             chargement.value = false
         } catch (error) {
             console.error("Erreur lors de la récupération des lots:", error);
@@ -64,21 +64,21 @@
             if (cartes.value.length > 1) {
                 siMessage.value = false
                 const carteSuppression = await store.dispatch("supprimerCarte", pmId)
-                const response = await store.dispatch("chercherCartesUser")
-                cartes.value = response.data
-                siMessageSuccess.value = true
+                const reponse = await store.dispatch("chercherCartesUser")
+                cartes.value = reponse.data
+                siMessageSucces.value = true
                 siMessage.value = false
                 document.querySelector("#messageSuccess").innerHTML = "Carte supprimé avec succès."
             }
             else {
                 siMessage.value = true
-                siMessageSuccess.value = false
+                siMessageSucces.value = false
                 document.querySelector("#message").innerHTML = "Vous devez avoir au moins une carte dans votre profil afin d'utiliser nos services"
             }
 
         } catch (error) {
             siMessage.value = true
-            siMessageSuccess.value = false
+            siMessageSucces.value = false
             document.querySelector("#message").innerHTML = error
         }
     })

@@ -483,7 +483,6 @@ foreach (var item in utilisateurs)
             DateAchat = DateTime.Now,
             PrixLots = 0,
             NumeroEncan = 232,
-            FacturePDFPath = "",
             estPaye = true
         };
 
@@ -502,10 +501,6 @@ foreach (var item in utilisateurs)
         facture.CalculerFacture();
         context.Factures.Add(facture);
         context.SaveChanges();
-
-        facture.FacturePDFPath = $"Factures/F232/F232_{facture.Id}.pdf";
-
-        context.Factures.Update(facture);
 
         infoFactures.RemoveAll(i => i.Pseudonyme == item.UserName);
     }

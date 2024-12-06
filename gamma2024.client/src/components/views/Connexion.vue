@@ -30,7 +30,7 @@
                                    v-model="emailOuPseudo"
                                    @input="validerEmailOuPseudo"
                                    :class="{ 'is-invalid': emailOuPseudoErreur }" />
-                            <div v-if="emailOuPseudoErreur" class="invalid-feedback">
+                            <div v-if="emailOuPseudoErreur" class="retroaction-invalide">
                                 {{ emailOuPseudoErreur }}
                             </div>
                         </div>
@@ -41,10 +41,10 @@
                             <input type="password"
                                    class="form-control"
                                    id="motDePasse"
-                                   v-model="password"
+                                   v-model="motDePasse"
                                    @input="validerMotDePasse"
                                    :class="{ 'is-invalid': motDePasseErreur }" />
-                            <div v-if="motDePasseErreur" class="invalid-feedback">
+                            <div v-if="motDePasseErreur" class="retroaction-invalide">
                                 {{ motDePasseErreur }}
                             </div>
                         </div>
@@ -91,7 +91,7 @@
         data() {
             return {
                 emailOuPseudo: "",
-                password: "",
+                motDePasse: "",
                 emailOuPseudoErreur: "",
                 motDePasseErreur: "",
                 messageVerrouiller: "",
@@ -103,7 +103,7 @@
 
         computed: {
             isValide() {
-                if (this.emailOuPseudo.trim() !== "" && this.password.trim() !== "") {
+                if (this.emailOuPseudo.trim() !== "" && this.motDePasse.trim() !== "") {
                     return true;
                 }
                 return false;
@@ -120,7 +120,7 @@
                 this.emailOuPseudoErreur = "";
             },
             validerMotDePasse() {
-                if (this.password.trim() === "") {
+                if (this.motDePasse.trim() === "") {
                     this.motDePasseErreur = "Le mot de passe est requis pour la connexion";
                     return;
                 }
@@ -140,7 +140,7 @@
                 try {
                     let result = await this.$store.dispatch("login", {
                         emailOuPseudo: this.emailOuPseudo,
-                        password: this.password,
+                        password: this.motDePasse,
                     });
                     if (result.success) {
                         // Vérifiez la structure de result.roles
@@ -231,7 +231,7 @@
         font-size: 0.875rem;
     }
 
-    .invalid-feedback {
+    .retroaction-invalide {
         display: block;
         color: #dc3545;
         font-size: 0.875rem;

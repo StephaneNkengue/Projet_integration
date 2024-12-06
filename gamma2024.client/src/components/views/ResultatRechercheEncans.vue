@@ -110,8 +110,8 @@
 
     onMounted(async () => {
         try {
-            initialiseData();
-        } catch (error) { }
+            initialiseDonnees();
+        } catch (erreur) { }
     });
 
     const voirEncan = ref(function (numeroEncanRecu) {
@@ -126,11 +126,11 @@
     });
 
     const queryChangement = computed(() => route.query);
-    watch(queryChangement, initialiseData);
+    watch(queryChangement, initialiseDonnees);
 
-    async function initialiseData() {
-        const response = await store.dispatch("chercherTousEncansVisibles");
-        encans.value = response.data.map((encan) => ({
+    async function initialiseDonnees() {
+        const reponse = await store.dispatch("chercherTousEncansVisibles");
+        encans.value = reponse.data.map((encan) => ({
             ...encan,
         }));
         genererListeDEncansFiltree();
@@ -151,22 +151,22 @@
     }
 
     function filtrerLesEncansParNumeroEncan() {
-        var stringquery = JSON.parse(route.query.data);
+        var stringDeRequete = JSON.parse(route.query.data);
         encansFiltres.value = encansFiltres.value.filter((encan) => {
-            if (stringquery.stringNumeroEncan) {
-                if (stringquery.selectNumeroEncan == 0) {
-                    if (encan.numeroEncan.toString() == stringquery.stringNumeroEncan) {
+            if (stringDeRequete.stringNumeroEncan) {
+                if (stringDeRequete.selectNumeroEncan == 0) {
+                    if (encan.numeroEncan.toString() == stringDeRequete.stringNumeroEncan) {
                         return true;
                     }
                     return false;
                 }
                 if (
-                    stringquery.selectNumeroEncan == 1 &&
-                    stringquery.stringNumeroEncan2
+                    stringDeRequete.selectNumeroEncan == 1 &&
+                    stringDeRequete.stringNumeroEncan2
                 ) {
                     if (
-                        encan.numeroEncan.toString() >= stringquery.stringNumeroEncan &&
-                        encan.numeroEncan.toString() <= stringquery.stringNumeroEncan2
+                        encan.numeroEncan.toString() >= stringDeRequete.stringNumeroEncan &&
+                        encan.numeroEncan.toString() <= stringDeRequete.stringNumeroEncan2
                     ) {
                         return true;
                     }
@@ -178,36 +178,36 @@
     }
 
     function filtrerLesEncansParDate() {
-        var stringquery = JSON.parse(route.query.data);
+        var stringDeRequete = JSON.parse(route.query.data);
         encansFiltres.value = encansFiltres.value.filter((encan) => {
             var encanDateDebut = moment(encan.dateDebut).format("yyyy-MM-DD");
             var encanDateFin = moment(encan.dateFin).format("yyyy-MM-DD");
-            if (stringquery.stringDate) {
-                if (stringquery.selectDate == 0) {
+            if (stringDeRequete.stringDate) {
+                if (stringDeRequete.selectDate == 0) {
                     if (
-                        moment(encanDateDebut).isSameOrBefore(stringquery.stringDate) &&
-                        moment(encanDateFin).isSameOrAfter(stringquery.stringDate)
+                        moment(encanDateDebut).isSameOrBefore(stringDeRequete.stringDate) &&
+                        moment(encanDateFin).isSameOrAfter(stringDeRequete.stringDate)
                     ) {
                         return true;
                     }
                     return false;
                 }
-                if (stringquery.selectDate == 1) {
-                    if (moment(encanDateDebut).isSameOrBefore(stringquery.stringDate)) {
+                if (stringDeRequete.selectDate == 1) {
+                    if (moment(encanDateDebut).isSameOrBefore(stringDeRequete.stringDate)) {
                         return true;
                     }
                     return false;
                 }
-                if (stringquery.selectDate == 2) {
-                    if (moment(encanDateFin).isSameOrAfter(stringquery.stringDate)) {
+                if (stringDeRequete.selectDate == 2) {
+                    if (moment(encanDateFin).isSameOrAfter(stringDeRequete.stringDate)) {
                         return true;
                     }
                     return false;
                 }
-                if (stringquery.selectDate == 3 && stringquery.stringDate2) {
+                if (stringDeRequete.selectDate == 3 && stringDeRequete.stringDate2) {
                     if (
-                        moment(encanDateDebut).isSameOrBefore(stringquery.stringDate2) &&
-                        moment(encanDateFin).isSameOrAfter(stringquery.stringDate)
+                        moment(encanDateDebut).isSameOrBefore(stringDeRequete.stringDate2) &&
+                        moment(encanDateFin).isSameOrAfter(stringDeRequete.stringDate)
                     ) {
                         return true;
                     }

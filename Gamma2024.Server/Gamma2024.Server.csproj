@@ -13,10 +13,14 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <Compile Remove="jsreport\**" />
+	  <Content Remove="jsreport\**" />
+	  <EmbeddedResource Remove="jsreport\**" />
+	  <None Remove="jsreport\**" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="datatables.net-dt" Version="2.1.7" />
-		<PackageReference Include="jsreport.AspNetCore" Version="3.8.1" />
-		<PackageReference Include="jsreport.Binary" Version="4.4.0" />
-		<PackageReference Include="jsreport.Local" Version="3.8.2" />
 		<PackageReference Include="mailkit" Version="4.7.1.1" />
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.8" />
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.Negotiate" Version="8.0.1" />
@@ -58,11 +62,6 @@
 		<None Update="Avatars\default.png">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</None>
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Folder Include="jsreport\" />
-	  <Folder Include="wwwroot\Factures\NewFolder\" />
 	</ItemGroup>
 
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">

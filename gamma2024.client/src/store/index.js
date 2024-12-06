@@ -305,7 +305,6 @@ const store = createStore({
 
                     return finA - finB;
                 });
-            ;
 
             const lotsReorganises = {};
             lotsNonVendus.forEach((lot) => {
@@ -1174,6 +1173,28 @@ const store = createStore({
                 const response = await state.api.post(
                     "/facturesLivraison/enregistrerChoixLivraison",
                     choixLivraison
+                );
+                return response;
+            } catch (error) {
+                return "Erreur, veuillez réessayer";
+            }
+        },
+
+        async chercherDetailsFactureLivraison({ state }, idFactureLivraison) {
+            try {
+                const response = await state.api.get(
+                    "/facturesLivraison/chercherDetailsFactureLivraison/" + idFactureLivraison
+                );
+                return response;
+            } catch (error) {
+                return "Erreur, veuillez réessayer";
+            }
+        },
+
+        async chercherDetailsFacture({ state }, idFacture) {
+            try {
+                const response = await state.api.get(
+                    "/factures/chercherDetailsFacture/" + idFacture
                 );
                 return response;
             } catch (error) {

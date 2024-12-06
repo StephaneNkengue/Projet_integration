@@ -31,12 +31,12 @@
         </router-link>
 
         <transition name="fade">
-            <div v-if="errorMessage" class="alert alert-danger">
-                {{ errorMessage }}
+            <div v-if="messageErreur" class="alert alert-danger">
+                {{ messageErreur }}
             </div>
             <div v-else>
-                <div v-if="successMessage" class="alert alert-success">
-                    {{ successMessage }}
+                <div v-if="messageSucces" class="alert alert-success">
+                    {{ messageSucces }}
                 </div>
             </div>
         </transition>
@@ -123,8 +123,8 @@
                             <td class="align-middle">{{ encan.dateDebut.split("T")[0] }}</td>
                             <td class="align-middle">{{ encan.dateFin.split("T")[0] }}</td>
                             <td class="align-middle">
-                                {{ encan.dateDebut.split("T")[0] }}
-                                {{ encan.dateDebutSoireeCloture.split("T")[1] }}
+                                {{ encan.dateDebutSoireeCloture.split("T")[0] }}
+                                {{ encan.dateDebutSoireeCloture.split("T")[1].split(".")[0] }}
                             </td>
                             <td class="align-middle">{{ encan.nbLots }}</td>
                             <td class="align-middle">
@@ -201,15 +201,15 @@
     const encanRechercheNumEncan = ref();
     const encanRechercheDate = ref();
 
-    const errorMessage = ref("");
-    const successMessage = ref("");
+    const messageErreur = ref("");
+    const messageSucces = ref("");
 
     const encan = ref("");
     const chargement = ref(true);
 
     onMounted(async () => {
         try {
-            initializeData();
+            initialiserDonnees();
         } catch (erreur) {
             console.error("Erreur encans" + erreur);
         }
@@ -217,7 +217,7 @@
 
     const supprimerMonEncan = async (idEncan) => {
         await store.dispatch("supprimerUnEncan", idEncan);
-        initializeData();
+        initialiserDonnees();
     };
 
     const editerEncan = async (idEncan) => {
@@ -343,7 +343,7 @@
         }
     }
 
-    async function initializeData() {
+    async function initialiserDonnees() {
         listeEncans.value = await store.dispatch("fetchEncanInfo");
 
         listeEncansFiltree.value = listeEncans.value;
@@ -369,16 +369,16 @@
 
                 const response = await store.dispatch("mettreAJourEncanPublie", formData);
                 if (response.success) {
-                    successMessage.value = "Statut encan modifié!";
-                    errorMessage.value = "";
+                    messageSucces.value = "Statut encan modifié!";
+                    messageErreur.value = "";
                     setTimeout(() => {
-                        successMessage.value = "";
+                        messageSucces.value = "";
                     }, 5000);
                 } else {
-                    errorMessage.value = response.error;
-                    successMessage.value = "";
+                    messageErreur.value = response.error;
+                    messageSucces.value = "";
                     setTimeout(() => {
-                        errorMessage.value = "";
+                        messageErreur.value = "";
                     }, 5000);
                 }
             }
