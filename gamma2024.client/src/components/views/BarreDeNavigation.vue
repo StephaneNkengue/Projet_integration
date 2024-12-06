@@ -607,7 +607,7 @@
 
     const ilYAUnEncanPresent = ref(false);
     const titreBarreDeRechercheDeLots = ref("");
-    var rechercheNumeroEncan = ref();
+    var rechercheNumeroEncan = "";
     const selectValeurEstimee = ref(0);
     const rechercheLotsValeurEstimee = ref();
     const rechercheLotsValeurEstimee2 = ref();
@@ -667,6 +667,10 @@
 
             if (type === "courant" || type === "soireeCloture") {
                 ilYAUnEncanPresent.value = true;
+                const reponseNumEncanCourrant = await store.dispatch("chercherNumeroEncanEnCours");
+                if (reponseNumEncanCourrant.data != '') {
+                    numeroEncanPresent = reponseNumEncanCourrant.data;
+                }
             } else {
                 ilYAUnEncanPresent.value = false;
             }
