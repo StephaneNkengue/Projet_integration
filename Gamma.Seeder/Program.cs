@@ -123,7 +123,7 @@ Console.WriteLine("Ajout des utilisateurs");
 
 var passwordHasher = new PasswordHasher<ApplicationUser>();
 
-var utilisateurs = System.IO.File.ReadAllLines("CSV/Acheteurs.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
+var utilisateurs = System.IO.File.ReadAllLines("CSV/DonneesOriginal/Acheteurs.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
                         .Skip(1)
                         .Where(x => x.Length > 1)
                         .ToApplicationUser()
@@ -189,7 +189,7 @@ context.SaveChanges();
 
 Console.WriteLine("Ajout des vendeurs");
 
-var vendeurs = System.IO.File.ReadAllLines("CSV/Vendeurs.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
+var vendeurs = System.IO.File.ReadAllLines("CSV/DonneesOriginal/Vendeurs.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
                 .Skip(1)
                 .Where(l => l.Length > 1)
                 .ToVendeur()
@@ -200,7 +200,7 @@ context.SaveChanges();
 
 Console.WriteLine("Ajout des categories");
 
-var categoriesLotsUniques = System.IO.File.ReadAllLines("CSV/Encan232et233.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
+var categoriesLotsUniques = System.IO.File.ReadAllLines("CSV/DonneesOriginal/Encan232et233.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
                         .Skip(1)
                         .Where(l => l.Length > 1)
                         .GetCategories()
@@ -213,7 +213,7 @@ context.SaveChanges();
 
 Console.WriteLine("Ajout des médiums");
 
-var mediumsLotsUniques = System.IO.File.ReadAllLines("CSV/Encan232et233.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
+var mediumsLotsUniques = System.IO.File.ReadAllLines("CSV/DonneesOriginal/Encan232et233.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
                         .Skip(1)
                         .Where(l => l.Length > 1)
                         .GetMediums()
@@ -226,19 +226,19 @@ context.SaveChanges();
 
 Console.WriteLine("Ajout des lots");
 
-var lotsVendeurs232 = System.IO.File.ReadAllLines("CSV/Vendeurs.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
+var lotsVendeurs232 = System.IO.File.ReadAllLines("CSV/DonneesOriginal/Vendeurs.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
                 .Skip(1)
                 .Where(l => l.Length > 1)
                 .GetNumeroLotsEncan232()
                 .ToList();
 
-var imagesLots232 = System.IO.File.ReadAllLines("CSV/Encan232et233.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
+var imagesLots232 = System.IO.File.ReadAllLines("CSV/DonneesOriginal/Encan232et233.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
                         .Skip(1)
                         .Where(l => l.Length > 1)
                         .GetImagesParLotParEncan(232)
                         .ToList();
 
-var lots232 = System.IO.File.ReadAllLines("CSV/Encan232et233.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
+var lots232 = System.IO.File.ReadAllLines("CSV/DonneesOriginal/Encan232et233.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
                         .Skip(1)
                         .Where(l => l.Length > 1)
                         .ToLotParEncan(232)
@@ -277,7 +277,7 @@ var lots232 = System.IO.File.ReadAllLines("CSV/Encan232et233.csv", System.Text.E
                         })
                         .ToList();
 
-var acheteurs232 = System.IO.File.ReadAllLines("CSV/AcheteurEncan232.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
+var acheteurs232 = System.IO.File.ReadAllLines("CSV/DonneesOriginal/AcheteurEncan232.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
                         .Skip(1)
                         .Where(l => l.Length > 1)
                         .GetAcheteursEncan232()
@@ -305,19 +305,19 @@ for (int i = 0; i < lots232.Count; i++)
 context.Lots.AddRange(lots232);
 context.SaveChanges();
 
-var lotsVendeurs233 = System.IO.File.ReadAllLines("CSV/Vendeurs.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
+var lotsVendeurs233 = System.IO.File.ReadAllLines("CSV/DonneesOriginal/Vendeurs.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
                 .Skip(1)
                 .Where(l => l.Length > 1)
                 .GetNumeroLotsEncan233()
                 .ToList();
 
-var imagesLots233 = System.IO.File.ReadAllLines("CSV/Encan232et233.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
+var imagesLots233 = System.IO.File.ReadAllLines("CSV/DonneesOriginal/Encan232et233.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
                         .Skip(1)
                         .Where(l => l.Length > 1)
                         .GetImagesParLotParEncan(233)
                         .ToList();
 
-var lots233 = System.IO.File.ReadAllLines("CSV/Encan232et233.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
+var lots233 = System.IO.File.ReadAllLines("CSV/DonneesOriginal/Encan232et233.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
                         .Skip(1)
                         .Where(l => l.Length > 1)
                         .ToLotParEncan(233)
@@ -509,7 +509,7 @@ context.SaveChanges();
 
 
 Console.WriteLine("Ajout des factures");
-var infoFactures = System.IO.File.ReadAllLines("CSV/AcheteurEncan232.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
+var infoFactures = System.IO.File.ReadAllLines("CSV/DonneesOriginal/AcheteurEncan232.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
                 .Skip(1)
                 .Where(l => l.Length > 1)
                 .GetAcheteursEncan232()

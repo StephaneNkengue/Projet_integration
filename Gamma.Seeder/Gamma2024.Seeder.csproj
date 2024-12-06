@@ -28,18 +28,22 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<None Update="CSV\AcheteurEncan232.csv">
+		<None Update="CSV\DonneesOriginal\AcheteurEncan232.csv">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</None>
-		<None Update="CSV\Acheteurs.csv">
+		<None Update="CSV\DonneesOriginal\Acheteurs.csv">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</None>
-		<None Update="CSV\Encan232et233.csv">
+		<None Update="CSV\DonneesOriginal\Encan232et233.csv">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</None>
-		<None Update="CSV\Vendeurs.csv">
+		<None Update="CSV\DonneesOriginal\Vendeurs.csv">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</None>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="CSV\DonneesDec\" />
 	</ItemGroup>
 
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
