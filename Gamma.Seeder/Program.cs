@@ -58,6 +58,22 @@ while (customersTemp.Data.Count == 100)
     customersTemp = customerService.List(new CustomerListOptions { Limit = 100, StartingAfter = customers.Data.Last().Id });
 }
 
+Console.WriteLine("Voulez vous supprimer les clients Stripe? Entre 1 pour oui et autre pour non");
+choix = Console.ReadLine();
+
+if (choix == "1")
+{
+    Console.WriteLine("Suppression des clients Stripe...");
+    foreach (var customer in customers.Data)
+    {
+        customerService.Delete(customer.Id);
+    }
+}
+else
+{
+    Console.WriteLine("Garder les clients Stripe");
+}
+
 var usersExistants = context.Users.Include(u => u.Adresses);
 
 foreach (var user in usersExistants)
