@@ -23,6 +23,8 @@ namespace Gamma2024.Server.Data
         public DbSet<Adresse> Adresses { get; set; } = default!;
         public DbSet<Medium> Mediums { get; set; } = default!;
         public DbSet<Charite> Charites { get; set; } = default!;
+        public DbSet<MiseAutomatique> MiseAutomatiques { get; set; }
+        public DbSet<Notification> Notifications { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -130,6 +132,25 @@ namespace Gamma2024.Server.Data
                 .WithOne(l => l.Medium)
                 .HasForeignKey(l => l.IdMedium)
                 .OnDelete(DeleteBehavior.Restrict);
+
+
+            // Configuration pour MiseAutomatique
+            builder.Entity<MiseAutomatique>()
+                .HasOne(m => m.Lot)
+                .WithMany(l => l.MisesAutomatiques)
+                .HasForeignKey(m => m.LotId);
+
+            builder.Entity<MiseAutomatique>()
+                .HasOne(m => m.User)
+                .WithMany()
+                .HasForeignKey(m => m.UserId);
+
+            //notification
+            builder.Entity<ApplicationUser>()
+                .HasMany(e => e.Notifications)
+                .WithOne(e => e.ApplicationUser)
+                .HasForeignKey(e => e.ApplicationUserId)
+                .IsRequired();
         }
 
         private void CreateRolesAndUsers(ModelBuilder builder)
@@ -200,7 +221,7 @@ namespace Gamma2024.Server.Data
                 SecurityStamp = "87162d4b-fc3b-4d65-8341-2f4a480982d1",
                 Name = "Admin",
                 FirstName = "Super",
-                Avatar = "avatars/default.png",
+                Avatar = "/Avatars/Defaut.png",
                 PhoneNumber = "466-666-6666",
                 ConcurrencyStamp = "f1f3de20-69b9-491d-bc82-b484b44cd47f",
                 PasswordHash = "AQAAAAIAAYagAAAAEImrQqIdpN3WKyTx0Ys/9QQXVKT5jTAyfxsPYj6ljA7MwE8U/IWotqFi5RT5o5V7VQ==",
@@ -220,7 +241,7 @@ namespace Gamma2024.Server.Data
                 SecurityStamp = "860b65a9-156b-473d-b11b-be6f787cf1e4",
                 Name = "Dupont",
                 FirstName = "Jean",
-                Avatar = "avatars/default.png",
+                Avatar = "/Avatars/Defaut.png",
                 PhoneNumber = "455-555-5555",
                 ConcurrencyStamp = "ff176598-423c-4557-bfc4-48e928f579e9",
                 PasswordHash = "AQAAAAIAAYagAAAAEBCLhDAVClAVnNnHmZ3ahe6KYsdJa/tTtcmHC64QlZsy07wt7VRMIl+nfrP0UJ8oKw==",

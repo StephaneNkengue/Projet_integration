@@ -1,32 +1,35 @@
 <template>
-    <div class="bg-image pt-5 imageDeFondEsquise">
+    <div class="bg-image p-2 pt-md-5 imageDeFondEsquise">
         <transition name="fade" class="transit">
-            <div v-if="message"
-                 :class="[
-          'alert',
+            <div class="w-100 d-flex justify-content-center">
+                <div v-if="message"
+                     :class="[
+          'alert col-12 col-md-6',
           message.type === 'success' ? 'alert-success' : 'alert-danger',
         ]">
-                {{ message.text }}
+                    {{ message.text }}
+                </div>
             </div>
+
         </transition>
         <div class="container d-flex flex-column justify-content-start align-items-stretch bg-white bg-opacity-75 cadreBlanc">
             <h2 class="fs-1 text-center fw-bold pt-4">
                 Réinitialiser le mot de passe
             </h2>
 
-            <form @submit.prevent="resetPassword"
+            <form @submit.prevent="effacerMotDePasse"
                   class="d-flex flex-column justify-content-start align-items-stretch">
                 <div class="px-4 py-2 mb-4">
                     <div class="d-flex flex-row justify-content-center mb-3">
                         <div class="form-group w-90">
                             <label for="email" class="fw-bold ms-3">Adresse courriel</label>
                             <input type="text"
-                                   :class="['form-control', { 'is-invalid': v.email.$error }]"
+                                   :class="['form-control', { 'is-invalid': vuelidate.email.$error }]"
                                    id="email"
-                                   v-model="resetPasswordData.email"
-                                   @blur="v.email.$touch()" />
-                            <div class="invalid-feedback" v-if="v.email.$error">
-                                {{ v.email.$errors[0].$message }}
+                                   v-model="effacerDonneesMotDePasse.email"
+                                   @blur="vuelidate.email.$touch()" />
+                            <div class="retroaction-invalide" v-if="vuelidate.email.$error">
+                                {{ vuelidate.email.$errors[0].$message }}
                             </div>
                         </div>
                     </div>
@@ -34,12 +37,12 @@
                         <div class="form-group w-90">
                             <label for="confirmPassword" class="fw-bold ms-3">Nouveau mot de passe</label>
                             <input type="password"
-                                   :class="['form-control', { 'is-invalid': v.password.$error }]"
+                                   :class="['form-control', { 'is-invalid': vuelidate.password.$error }]"
                                    id="confirmPassword"
-                                   v-model="resetPasswordData.password"
-                                   @blur="v.password.$touch()" />
-                            <div class="invalid-feedback" v-if="v.password.$error">
-                                {{ v.password.$errors[0].$message }}
+                                   v-model="effacerDonneesMotDePasse.password"
+                                   @blur="vuelidate.password.$touch()" />
+                            <div class="retroaction-invalide" v-if="vuelidate.password.$error">
+                                {{ vuelidate.password.$errors[0].$message }}
                             </div>
                         </div>
                     </div>
@@ -49,21 +52,21 @@
                             <input type="password"
                                    :class="[
                   'form-control',
-                  { 'is-invalid': v.confirmPassword.$error },
+                  { 'is-invalid': vuelidate.confirmPassword.$error },
                 ]"
                                    id="password"
-                                   v-model="resetPasswordData.confirmPassword"
-                                   @blur="v.confirmPassword.$touch()" />
-                            <div class="invalid-feedback" v-if="v.confirmPassword.$error">
-                                {{ v.confirmPassword.$errors[0].$message }}
+                                   v-model="effacerDonneesMotDePasse.confirmPassword"
+                                   @blur="vuelidate.confirmPassword.$touch()" />
+                            <div class="retroaction-invalide" v-if="vuelidate.confirmPassword.$error">
+                                {{ vuelidate.confirmPassword.$errors[0].$message }}
                             </div>
                         </div>
                     </div>
                     <div class="d-flex flex-row justify-content-center mb-2">
-                        <button :disabled="isSubmitting"
+                        <button :disabled="estSoumis"
                                 class="btn bleuNonValide rounded-pill px-5 text-white"
                                 type="submit">
-                            <span v-if="isSubmitting"
+                            <span v-if="estSoumis"
                                   class="spinner-grow spinner-grow-sm"
                                   role="status"
                                   aria-hidden="true"></span>
@@ -91,7 +94,7 @@
 
     const store = useStore();
     const router = useRouter();
-    let isSubmitting = ref(false);
+    let estSoumis = ref(false);
     const message = ref(null);
     const messageRequis = helpers.withMessage("Ce champ est requis.", required);
     const messageCourriel = helpers.withMessage(
@@ -99,23 +102,23 @@
         email
     );
 
-    const messageMinLengthPassword = helpers.withMessage(
+    const messageLongueurMinimaleMotDePasse = helpers.withMessage(
         "Le mot de passe doit contenir au moins 8 caractères, minimum 1 majuscule, 1 minuscule, 1 chiffre et 1 caractère spécial.",
         minLength(8)
     );
 
-    let resetPasswordData = reactive({
+    let effacerDonneesMotDePasse = reactive({
         email: "",
         password: "",
         confirmPassword: "",
     });
 
-    const messageSameAsPassword = helpers.withMessage(
+    const messageIdentiqueMotDePasse = helpers.withMessage(
         "Les mots de passe ne correspondent pas.",
-        sameAs(computed(() => resetPasswordData.password))
+        sameAs(computed(() => effacerDonneesMotDePasse.password))
     );
 
-    let rules = computed(() => {
+    let regles = computed(() => {
         return {
             email: {
                 required: messageRequis,
@@ -123,23 +126,23 @@
             },
             password: {
                 required: messageRequis,
-                minLength: messageMinLengthPassword,
+                minLength: messageLongueurMinimaleMotDePasse,
             },
             confirmPassword: {
                 required: messageRequis,
-                sameAsPassword: messageSameAsPassword,
+                sameAsPassword: messageIdentiqueMotDePasse,
             },
         };
     });
 
-    const v = useVuelidate(rules, resetPasswordData);
+    const vuelidate = useVuelidate(regles, effacerDonneesMotDePasse);
 
-    const resetPassword = async function () {
-        const result = await v.value.$validate();
-        isSubmitting.value = true;
+    const effacerMotDePasse = async function () {
+        const resultat = await vuelidate.value.$validate();
+        estSoumis.value = true;
 
-        if (!result) {
-            isSubmitting.value = false;
+        if (!resultat) {
+            estSoumis.value = false;
             message.value = {
                 type: "danger",
                 text: "Certaines informations du formulaire sont incorrectes",
@@ -151,20 +154,20 @@
         }
 
         try {
-            const response = await store.dispatch(
+            const reponse = await store.dispatch(
                 "reinitialisePassword",
-                resetPasswordData
+                effacerDonneesMotDePasse
             );
-            if (response.success) {
-                message.value = { type: "success", text: response.message };
+            if (reponse.success) {
+                message.value = { type: "success", text: reponse.message };
 
                 setTimeout(() => {
                     router.push("/connexion");
                 }, 4000);
             } else {
-                message.value = { type: "danger", text: response.message };
+                message.value = { type: "danger", text: reponse.message };
             }
-        } catch (error) {
+        } catch (erreur) {
             message.value = {
                 type: "danger",
                 text: "Une erreur est survenue lors de la création du compte.",
@@ -173,7 +176,7 @@
             setTimeout(() => {
                 message.value = null;
             }, 3500);
-            isSubmitting.value = false;
+            estSoumis.value = false;
         }
     };
 </script>
@@ -182,11 +185,6 @@
     .cadreBlanc {
         border-radius: 15px;
         min-height: 450px;
-        width: 550px;
-    }
-
-    .w-80 {
-        width: 80%;
     }
 
     .w-90 {
@@ -206,7 +204,7 @@
         font-size: 0.875rem;
     }
 
-    .invalid-feedback {
+    .retroaction-invalide {
         display: block;
         color: #dc3545;
         font-size: 0.875rem;
@@ -221,7 +219,6 @@
 
     .transit {
         margin: auto;
-        width: 600px;
         margin-bottom: 15px;
     }
 

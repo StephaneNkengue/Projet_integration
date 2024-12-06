@@ -351,8 +351,8 @@ encans.Add(new Encan
 {
     NumeroEncan = 233,
     DateDebut = new DateTime(2024, 3, 15, 6, 0, 0),
-    DateFin = new DateTime(2025, 3, 18, 6, 0, 0),
-    DateDebutSoireeCloture = new DateTime(2025, 3, 18, 6, 0, 1),
+    DateFin = DateTime.Now.AddDays(1),
+    DateDebutSoireeCloture = DateTime.Now.AddDays(1),
     EstPublie = true,
     PasLot = 10,
     PasMise = 120
@@ -384,6 +384,7 @@ encans.Add(new Encan
 context.Encans.AddRange(encans);
 context.SaveChanges();
 
+
 Console.WriteLine("Association des lots au encans respectifs");
 var encanLots = new List<EncanLot>();
 
@@ -413,9 +414,33 @@ foreach (var item in lots233)
 }
 
 context.Encans.Update(encans[1]);
-context.SaveChanges();
 
 context.EncanLots.AddRange(encanLots);
+context.SaveChanges();
+
+
+///Ajout des decomptes 
+var nbLot233 = 0;
+foreach (var item in lots233)
+{
+    nbLot233++;
+    item.DateDebutDecompteLot = encans[1].DateDebutSoireeCloture;
+    item.DateFinDecompteLot = encans[1].DateDebutSoireeCloture + TimeSpan.FromSeconds(encans[1].PasLot * nbLot233);
+}
+
+context.UpdateRange(lots233);
+context.SaveChanges();
+
+///// 
+var nbLot232 = 0;
+foreach (var item in lots232)
+{
+    nbLot232++;
+    item.DateDebutDecompteLot = encans[0].DateDebutSoireeCloture;
+    item.DateFinDecompteLot = encans[0].DateDebutSoireeCloture + TimeSpan.FromSeconds(encans[0].PasLot * nbLot232);
+}
+
+context.UpdateRange(lots232);
 context.SaveChanges();
 
 Console.WriteLine("Ajout des charités");
@@ -451,15 +476,15 @@ foreach (var item in utilisateurs)
 
     if (achats.Any())
     {
-        //var facture = new Facture
-        //{
-        //    IdClient = item.Id,
-        //    Client = item,
-        //    DateAchat = DateTime.Now,
-        //    PrixLots = 0,
-        //    NumeroEncan = 232,
-        //    FacturePDFPath = ""
-        //};
+        var facture = new Facture
+        {
+            IdClient = item.Id,
+            Client = item,
+            DateAchat = DateTime.Now,
+            PrixLots = 0,
+            NumeroEncan = 232,
+            estPaye = true
+        };
 
         foreach (var a in achats)
         {
@@ -470,18 +495,12 @@ foreach (var item in utilisateurs)
             lot.ClientMise = item;
             lot.SeraLivree = a.Livraison;
             lot.DateFinVente = DateTime.Now;
-            //facture.Lots.Add(lot);
+            facture.Lots.Add(lot);
         }
 
-        //facture.CalculerFacture();
-        //context.Factures.Add(facture);
-        //context.SaveChanges();
-
-        //factureService.ChargerFacture(facture);
-
-        //facture.FacturePDFPath = $"Factures/F232_{facture.Id}.pdf";
-
-        //context.Factures.Update(facture);
+        facture.CalculerFacture();
+        context.Factures.Add(facture);
+        context.SaveChanges();
 
         infoFactures.RemoveAll(i => i.Pseudonyme == item.UserName);
     }

@@ -16,7 +16,7 @@
 
             <div v-else class="w-100 px-3 row row-cols-lg-2 row-cols-1">
                 <div v-for="index in encans" class="col py-3">
-                    <span @click="voirEncan(index.numeroEncan)">
+                    <span @click="voirEncan(index.numeroEncan)" role="button">
                         <AffichageEncanTuile :encan="index" />
                     </span>
                 </div>
@@ -39,7 +39,6 @@
     const numEncanCours = ref(0)
 
     const voirEncan = ref(function (numeroEncanRecu) {
-        console.log(numeroEncanRecu)
         if (numeroEncanRecu == numEncanCours.value) {
             router.push({ name: 'EncanPresent' })
         }
@@ -51,12 +50,12 @@
     })
 
     onMounted(async () => {
-        const response = await store.dispatch("chercherTousEncansVisibles");
-        encans.value = response.data
+        const reponse = await store.dispatch("chercherTousEncansVisibles");
+        encans.value = reponse.data
 
-        const responseNumEncanCourrant = await store.dispatch("chercherNumeroEncanEnCours");
-        if (responseNumEncanCourrant.data != '') {
-            numEncanCours.value = responseNumEncanCourrant.data
+        const reponseNumEncanCourrant = await store.dispatch("chercherNumeroEncanEnCours");
+        if (reponseNumEncanCourrant.data != '') {
+            numEncanCours.value = reponseNumEncanCourrant.data
         }
         chargement.value = false
     })

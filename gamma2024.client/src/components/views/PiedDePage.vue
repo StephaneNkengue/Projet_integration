@@ -1,11 +1,11 @@
 <template>
     <footer class="bleuMarinSecondaireFond text-white py-1 justify-content-between d-flex align-items-center flex-column flex-md-row">
 
-        <p class="col-md-5 mb-0 ps-3">
+        <p class="col-md-4 col-lg-5 mb-0 ps-3">
             © Les Encans de Nantes au Québec 2024
         </p>
 
-        <div class="col-md-7">
+        <div class="col-md-8 col-lg-7">
             <ul class="nav justify-content-end d-flex align-items-center flex-column flex-md-row">
                 <li>
                     <router-link :to="{ name: 'ConditionsCompagnie' }" class="text-decoration-none">

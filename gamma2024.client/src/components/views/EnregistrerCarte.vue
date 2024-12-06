@@ -11,7 +11,7 @@
                 <div id="payment-element">
                     <!--Stripe.js injects the Payment Element-->
                 </div>
-                <button id="submit" class="btn btn-outline bleuMoyenFond text-white btnSurvolerBleuMoyenFond my-2">
+                <button id="submit" class="btn btn-outline text-white btnSurvolerBleuMoyenFond my-2">
                     <div class="spinner-grow d-none" id="spinner"></div>
                     <span id="button-text">Enregistrer</span>
                 </button>
@@ -40,12 +40,12 @@
         stripe = Stripe(import.meta.env.VITE_STRIPE_PK);
         initialize()
 
-        document.querySelector("#payment-form").addEventListener("submit", handleSubmit);
+        document.querySelector("#payment-form").addEventListener("submit", soumettre);
     })
 
     async function initialize() {
-        const response = await store.dispatch("creerSetupIntent")
-        const clientSecret = response.data.clientSecret;
+        const reponse = await store.dispatch("creerSetupIntent")
+        const clientSecret = reponse.data.clientSecret;
 
         const appearance = {
             theme: 'stripe',
@@ -53,20 +53,20 @@
         };
         elements = stripe.elements({ appearance, clientSecret, locale: "fr", loader: 'always' });
 
-        const paymentElementOptions = {
+        const optionsPaiementElements = {
             layout: "tabs",
         };
 
-        const paymentElement = elements.create("payment", paymentElementOptions);
+        const paymentElement = elements.create("payment", optionsPaiementElements);
         paymentElement.mount("#payment-element");
         chargement.value = false
     }
 
-    async function handleSubmit(e) {
+    async function soumettre(e) {
         e.preventDefault();
-        setLoading(true);
+        mettreChargement(true);
 
-        const { error } = await stripe.confirmSetup({
+        const { erreur } = await stripe.confirmSetup({
             elements,
             confirmParams: {
                 return_url: "https://google.com",
@@ -74,39 +74,39 @@
             redirect: "if_required",
         });
 
-        if (error != undefined) {
-            if (error.type === "card_error" || error.type === "validation_error") {
-                showMessage(error.message);
+        if (erreur != undefined) {
+            if (erreur.type === "card_error" || erreur.type === "validation_error") {
+                montrerMessage(erreur.message);
             } else {
-                showMessage("An unexpected error occurred.");
+                montrerMessage("An unexpected error occurred.");
             }
         }
         else {
-            const response = await store.dispatch("chercherCartesUser")
-            if (response.data.length > 1) {
+            const reponse = await store.dispatch("chercherCartesUser")
+            if (reponse.data.length > 1) {
                 router.push({ name: 'GestionCartes' })
             }
             else {
                 router.push({ name: "EncanPresent" })
             }
         }
-        setLoading(false);
+        mettreChargement(false);
     }
 
-    function showMessage(messageText) {
-        const messageContainer = document.querySelector("#payment-message");
+    function montrerMessage(messageText) {
+        const conteneurMessage = document.querySelector("#payment-message");
 
-        messageContainer.classList.remove("hidden");
-        messageContainer.textContent = messageText;
+        conteneurMessage.classList.remove("hidden");
+        conteneurMessage.textContent = messageText;
 
         setTimeout(function () {
-            messageContainer.classList.add("hidden");
-            messageContainer.textContent = "";
+            conteneurMessage.classList.add("hidden");
+            conteneurMessage.textContent = "";
         }, 4000);
     }
 
-    function setLoading(isLoading) {
-        if (isLoading) {
+    function mettreChargement(enChargement) {
+        if (enChargement) {
             document.querySelector("#submit").classList.add("disabled")
             document.querySelector("#spinner").classList.remove("d-none");
             document.querySelector("#button-text").classList.add("d-none");

@@ -15,35 +15,35 @@
         <div v-else class="d-flex flex-column align-items-center">
 
             <div class="d-flex flex-row-reverse w-100 px-4 me-2 gap-2 ">
-                <button class="rounded bleuMoyenFond btn btnSurvolerBleuMoyenFond"
+                <button class="rounded btn btnSurvolerBleuMoyenFond"
                         v-if="!siTuile"
                         @click="changerTypeAffichage('tuile')">
-                    <img src="/icons/IconTableau.png"
+                    <img src="/icons/TableauOption.png"
                          alt="Affichage en tableau"
                          height="25" />
                 </button>
-                <button class="rounded bleuMoyenFond btn btnSurvolerBleuMoyenFond"
+                <button class="rounded btn btnSurvolerBleuMoyenFond"
                         v-else
                         @click="changerTypeAffichage('liste')">
-                    <img src="/icons/IconListe.png" alt="Affichage en liste" height="25" />
+                    <img src="/icons/ListeOption.png" alt="Affichage en liste" height="25" />
                 </button>
-                <button class="d-flex align-items-center text-center rounded btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
+                <button class="d-flex align-items-center text-center rounded btn text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
                         type="button"
                         @click="afficherTousLots"
                         v-bind:disabled="lotsParPage == nbLotsRecus">
                     Tous
                 </button>
-                <button class="d-flex align-items-center text-center rounded btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
+                <button class="d-flex align-items-center text-center rounded btn text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
                         @click="changerNbLotParPage(100)"
                         v-bind:disabled="lotsParPage == 100">
                     100
                 </button>
-                <button class="d-flex align-items-center text-center rounded btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
+                <button class="d-flex align-items-center text-center rounded btn text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
                         @click="changerNbLotParPage(50)"
                         v-bind:disabled="lotsParPage == 50">
                     50
                 </button>
-                <button class="d-flex align-items-center text-center rounded btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
+                <button class="d-flex align-items-center text-center rounded btn text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
                         @click="changerNbLotParPage(20)"
                         v-bind:disabled="lotsParPage == 20">
                     20
@@ -52,7 +52,7 @@
 
             <div v-if="siTuile"
                  class="row row-cols-lg-5 row-cols-md-3 row-cols-sm-2 row-cols-1 w-100 px-3">
-                <div v-for="index in lotsAffiche"
+                <div v-for="index in lotsAffiches"
                      :key="index.id"
                      class="col p-2 d-flex">
                     <LotTuile :lotRecu="index" />
@@ -60,14 +60,14 @@
             </div>
 
             <div v-else class="d-flex flex-column px-5 w-100">
-                <div v-for="index in lotsAffiche" :key="index.id" class="p-2">
+                <div v-for="index in lotsAffiches" :key="index.id" class="p-2">
                     <LotListe :lotRecu="index" />
                 </div>
             </div>
 
             <div class="d-flex flex-row justify-content-center gap-1 flex-wrap p-3">
                 <button type="button"
-                        class="btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
+                        class="btn text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
                         @click="reculerPage"
                         v-bind:disabled="pageCourante == 1">
                     ⮜
@@ -75,7 +75,7 @@
 
                 <div v-for="item in listePagination">
                     <button type="button"
-                            class="btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
+                            class="btn text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
                             :pageId="item"
                             @click="changerPage()"
                             v-bind:disabled="pageCourante == item || item == '...'">
@@ -84,7 +84,7 @@
                 </div>
 
                 <button type="button"
-                        class="btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
+                        class="btn text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
                         @click="avancerPage"
                         v-bind:disabled="pageCourante == nbPages">
                     ⮞
@@ -97,10 +97,10 @@
 </template>
 
 <script setup>
-import LotTuile from "@/components/views/LotTuile.vue";
-import LotListe from "@/components/views/LotListe.vue";
-import { ref, watch, onMounted, computed } from "vue";
-import { useStore } from "vuex";
+    import LotTuile from "@/components/views/LotTuile.vue";
+    import LotListe from "@/components/views/LotListe.vue";
+    import { ref, watch, onMounted, computed } from "vue";
+    import { useStore } from "vuex";
 
     const store = useStore();
 
@@ -114,41 +114,39 @@ import { useStore } from "vuex";
     const listePagination = ref([]);
     const pageCourante = ref(1);
     const siTuile = ref(true);
-    const lotsAffiche = ref();
+    const lotsAffiches = ref();
     const nbPages = ref();
     const chargement = ref(true);
 
-// Ajouter un computed pour les lots du store
-const storeLots = computed(() => store.state.lots);
+    // Ajouter un computed pour les lots du store
+    const storeLots = computed(() => store.state.lots);
 
-// Surveiller les changements dans le store
-watch(storeLots, () => {
-  // Mettre à jour la liste des lots affichés si nécessaire
-  if (storeLots.value.length > 0) {
-    listeLots.value = storeLots.value;
-    chercherLotsAAfficher();
-  }
-}, { deep: true });
+    // Surveiller les changements dans le store
+    watch(storeLots, () => {
+        // Mettre à jour la liste des lots affichés si nécessaire
+        if (storeLots.value.length > 0) {
+            listeLots.value = storeLots.value;
+            chercherLotsAAfficher();
+        }
+    }, { deep: true });
 
-onMounted(async () => {
-  try {
-    console.log("ID Encan envoyé:", props.idEncan);
-    const response = await store.dispatch(
-      "chercherTousLotsParEncan",
-      props.idEncan
-    );
-    console.log("Réponse complète:", response);
+    onMounted(async () => {
+        try {
+            const reponse = await store.dispatch(
+                "chercherTousLotsParEncan",
+                props.idEncan
+            );
 
-    if (response && response.data) {
-      listeLots.value = response.data;
-      nbLotsRecus.value = listeLots.value.length;
-      lotsParPage.value = nbLotsRecus.value;
-      nbPages.value = recalculerNbPages();
+            if (reponse && reponse.data) {
+                listeLots.value = reponse.data;
+                nbLotsRecus.value = listeLots.value.length;
+                lotsParPage.value = nbLotsRecus.value;
+                nbPages.value = recalculerNbPages();
 
                 genererListePagination();
                 chercherLotsAAfficher();
             } else {
-                console.error("Réponse invalide:", response);
+                console.error("Réponse invalide:", reponse);
             }
         } catch (error) {
             console.error("Erreur lors du chargement des lots:", error);
@@ -228,39 +226,54 @@ onMounted(async () => {
     }
 
     function chercherLotsAAfficher() {
-        lotsAffiche.value = [];
+        lotsAffiches.value = [];
 
         let positionDebut = (pageCourante.value - 1) * lotsParPage.value;
         let positionFin = pageCourante.value * lotsParPage.value;
 
-  for (
-    let i = positionDebut;
-    i < positionFin && i < listeLots.value.length;
-    i++
-  ) {
-    lotsAffiche.value.push(listeLots.value[i]);
-  }
-}
-
-const chargerLots = async () => {
-  try {
-    const response = await store.dispatch("chercherTousLotsParEncan", props.idEncan);
-    if (response?.data) {
-      console.log('Lots reçus:', response.data);
-      store.commit('setLots', response.data);
-      listeLots.value = response.data;
-      nbLotsRecus.value = response.data.length;
+        for (
+            let i = positionDebut;
+            i < positionFin && i < listeLots.value.length;
+            i++
+        ) {
+            lotsAffiches.value.push(listeLots.value[i]);
+        }
     }
-  } catch (error) {
-    console.error("Erreur lors du chargement des lots:", error);
-  }
-  chargement.value = false;
-};
 
-// Appeler chargerLots au montage du composant
-onMounted(() => {
-  chargerLots();
-});
+    const chargerLots = async () => {
+        try {
+            const reponse = await store.dispatch("chercherTousLotsParEncan", props.idEncan);
+            if (reponse?.data) {
+                store.commit('setLots', reponse.data);
+                listeLots.value = reponse.data;
+                nbLotsRecus.value = reponse.data.length;
+
+                // Charger les mises de l'utilisateur si connecté
+                if (store.state.isLoggedIn) {
+                    await store.dispatch("fetchUserBids");
+                }
+            }
+        } catch (error) {
+            console.error("Erreur lors du chargement des lots:", error);
+        }
+        chargement.value = false;
+    };
+
+    // Appeler chargerLots au montage du composant
+    onMounted(() => {
+        chargerLots();
+    });
+
+    // Ajouter ce computed
+    const isLoggedIn = computed(() => store.state.isLoggedIn);
+
+    // Ajouter ce watch pour recharger les lots quand l'utilisateur se connecte
+    watch(isLoggedIn, async (newValue) => {
+        if (newValue) {
+            await store.dispatch("fetchUserBids");
+            await chargerLots();
+        }
+    });
 </script>
 
 <style scoped></style>

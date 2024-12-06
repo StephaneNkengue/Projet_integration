@@ -22,17 +22,17 @@
             <AffichageEncanAccueil :type="futur" />
         </div>
 
-        <div class="col-11 col-md-6 pt-3 px-4 mt-4 bleuMoyenFond text-center text-white contourDiv">
+        <div class="col-11 col-md-6 p-3 p-md-4 mt-4 bleuMoyenFond text-center text-white contourDiv">
 
             <div class="fw-bold">
-                <img src="/icons/IconeMarteauBleuGris.png"
+                <img src="/icons/MarteauBleuGris.png"
                      alt="Les Encans de Nantes"
                      height="60"
                      class="transpositionImage px-2 d-none d-lg-inline" />
 
                 Déroulement d'un encan
 
-                <img src="/icons/IconeMarteauBleuGris.png"
+                <img src="/icons/MarteauBleuGris.png"
                      alt="Les Encans de Nantes"
                      height="60"
                      class="px-2" />

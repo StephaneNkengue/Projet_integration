@@ -1,9 +1,11 @@
 using Gamma2024.Server.Data;
+using Gamma2024.Server.Hub;
 using Gamma2024.Server.Models;
 using Gamma2024.Server.Services;
 using Gamma2024.Server.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
@@ -15,11 +17,14 @@ namespace Gamma2024.Server.Controllers
 	{
 		private readonly LotService _lotService;
 		private readonly ApplicationDbContext _context;
+		private readonly IHubContext<LotMiseHub> _hubContext;
 
-		public LotsController(LotService lotService, ApplicationDbContext context)
+
+		public LotsController(LotService lotService, ApplicationDbContext context, IHubContext<LotMiseHub> hubContext)
 		{
 			_lotService = lotService;
 			_context = context;
+			_hubContext = hubContext;
 		}
 
 		[Authorize(Roles = ApplicationRoles.ADMINISTRATEUR)]
@@ -159,14 +164,6 @@ namespace Gamma2024.Server.Controllers
 		}
 
 		[AllowAnonymous]
-		[HttpGet("chercherTousLots")]
-		public ICollection<LotAffichageAdministrateurVM> ChercherTousLots()
-		{
-			ICollection<LotAffichageAdministrateurVM> lots = _lotService.ChercherTousLots();
-			return lots;
-		}
-
-		[AllowAnonymous]
 		[HttpGet("chercherDetailsLotParId/{idLot}")]
 		public LotDetailsVM ChercherDetailsLotParId(string idLot)
 		{
@@ -191,21 +188,32 @@ namespace Gamma2024.Server.Controllers
 				return BadRequest(ModelState);
 			}
 
-			// Récupérer l'ID de l'utilisateur connecté
 			mise.UserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 			if (string.IsNullOrEmpty(mise.UserId))
 			{
 				return Unauthorized();
 			}
 
-			var (success, message) = await _lotService.PlacerMise(mise);
-			if (success)
+			(bool isSuccess, string resultMessage) = await _lotService.PlacerMise(mise);
+
+			if (isSuccess)
 			{
-				return Ok(new { success = true, message = message });
+				var lastUserBid = await _lotService.GetUserLastBid(mise.LotId, mise.UserId);
+
+				return Ok(new
+				{
+					success = true,
+					message = resultMessage,
+					userLastBid = lastUserBid
+				});
 			}
 			else
 			{
-				return BadRequest(new { success = false, message = message });
+				return BadRequest(new
+				{
+					success = false,
+					message = resultMessage
+				});
 			}
 		}
 
@@ -220,6 +228,20 @@ namespace Gamma2024.Server.Controllers
 
 			var userBids = await _lotService.GetUserBids(userId);
 			return Ok(userBids);
+		}
+
+		[Authorize]
+		[HttpGet("userLastBid/{lotId}")]
+		public async Task<ActionResult<double?>> GetUserLastBid(int lotId)
+		{
+			var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+			if (string.IsNullOrEmpty(userId))
+			{
+				return Unauthorized();
+			}
+
+			var lastBid = await _lotService.GetUserLastBid(lotId, userId);
+			return Ok(lastBid);
 		}
 
 	}

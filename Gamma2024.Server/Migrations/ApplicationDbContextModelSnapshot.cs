@@ -180,7 +180,7 @@ namespace Gamma2024.Server.Migrations
                         {
                             Id = "8e445865-a24d-4543-a6c6-9443d048cdb9",
                             AccessFailedCount = 0,
-                            Avatar = "avatars/default.png",
+                            Avatar = "/Avatars/Defaut.png",
                             ConcurrencyStamp = "f1f3de20-69b9-491d-bc82-b484b44cd47f",
                             Email = "admin@example.com",
                             EmailConfirmed = true,
@@ -201,7 +201,7 @@ namespace Gamma2024.Server.Migrations
                         {
                             Id = "1d8ac862-e54d-4f10-b6f8-638808c02967",
                             AccessFailedCount = 0,
-                            Avatar = "avatars/default.png",
+                            Avatar = "/Avatars/Defaut.png",
                             ConcurrencyStamp = "ff176598-423c-4557-bfc4-48e928f579e9",
                             Email = "client@example.com",
                             EmailConfirmed = true,
@@ -320,10 +320,6 @@ namespace Gamma2024.Server.Migrations
                     b.Property<DateTime>("DateAchat")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("FacturePDFPath")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<double>("FraisEncanteur")
                         .HasColumnType("float");
 
@@ -386,7 +382,7 @@ namespace Gamma2024.Server.Migrations
                     b.Property<bool>("EstPaye")
                         .HasColumnType("bit");
 
-                    b.Property<int>("IdAdresse")
+                    b.Property<int?>("IdAdresse")
                         .HasColumnType("int");
 
                     b.Property<int?>("IdCharite")
@@ -431,7 +427,13 @@ namespace Gamma2024.Server.Migrations
                     b.Property<DateTime>("DateCreation")
                         .HasColumnType("datetime2");
 
+                    b.Property<DateTime?>("DateDebutDecompteLot")
+                        .HasColumnType("datetime2");
+
                     b.Property<DateTime>("DateDepot")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DateFinDecompteLot")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("DateFinVente")
@@ -520,6 +522,71 @@ namespace Gamma2024.Server.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Mediums");
+                });
+
+            modelBuilder.Entity("Gamma2024.Server.Models.MiseAutomatique", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("DateMise")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("EstMiseAutomatique")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("LotId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("Montant")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal?>("MontantMaximal")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("LotId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("MiseAutomatiques");
+                });
+
+            modelBuilder.Entity("Gamma2024.Server.Models.Notification", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ApplicationUserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("CreeA")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("estLu")
+                        .HasColumnType("bit");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ApplicationUserId");
+
+                    b.ToTable("Notifications");
                 });
 
             modelBuilder.Entity("Gamma2024.Server.Models.Photo", b =>
@@ -795,8 +862,7 @@ namespace Gamma2024.Server.Migrations
                     b.HasOne("Gamma2024.Server.Models.Adresse", "Adresse")
                         .WithMany("FacturesLivraisons")
                         .HasForeignKey("IdAdresse")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("Gamma2024.Server.Models.Charite", "Charite")
                         .WithMany("FacturesLivraisons")
@@ -847,6 +913,36 @@ namespace Gamma2024.Server.Migrations
                     b.Navigation("Medium");
 
                     b.Navigation("Vendeur");
+                });
+
+            modelBuilder.Entity("Gamma2024.Server.Models.MiseAutomatique", b =>
+                {
+                    b.HasOne("Gamma2024.Server.Models.Lot", "Lot")
+                        .WithMany("MisesAutomatiques")
+                        .HasForeignKey("LotId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Gamma2024.Server.Models.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Lot");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Gamma2024.Server.Models.Notification", b =>
+                {
+                    b.HasOne("Gamma2024.Server.Models.ApplicationUser", "ApplicationUser")
+                        .WithMany("Notifications")
+                        .HasForeignKey("ApplicationUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ApplicationUser");
                 });
 
             modelBuilder.Entity("Gamma2024.Server.Models.Photo", b =>
@@ -930,6 +1026,8 @@ namespace Gamma2024.Server.Migrations
             modelBuilder.Entity("Gamma2024.Server.Models.ApplicationUser", b =>
                 {
                     b.Navigation("Adresses");
+
+                    b.Navigation("Notifications");
                 });
 
             modelBuilder.Entity("Gamma2024.Server.Models.Categorie", b =>
@@ -961,6 +1059,8 @@ namespace Gamma2024.Server.Migrations
             modelBuilder.Entity("Gamma2024.Server.Models.Lot", b =>
                 {
                     b.Navigation("EncanLots");
+
+                    b.Navigation("MisesAutomatiques");
 
                     b.Navigation("Photos");
                 });

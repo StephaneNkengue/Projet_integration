@@ -23,9 +23,9 @@ namespace Gamma2024.Server.Models
             set => _don = value.HasValue ? Math.Round(value.Value, 2, MidpointRounding.ToZero) : null;
         }
 
-        public int IdAdresse { get; set; }
+        public int? IdAdresse { get; set; }
         public int? IdCharite { get; set; }
-        public Adresse Adresse { get; set; } = null!;
+        public Adresse? Adresse { get; set; }
         public Charite? Charite { get; set; }
         public int IdFacture { get; set; }
         public Facture Facture { get; set; } = null!;

@@ -7,14 +7,14 @@
             <div class="d-flex flex-column align-items-center justify-content-around">
                 <div class="d-flex flex-column align-items-center">
                     <p class="mb-1">Courriel:</p>
-                    <p>clientTI@cegepgranby.qc.ca</p>
+                    <p><a href="mailto:clientTI@cegepgranby.qc.ca" class="text-black">clientTI@cegepgranby.qc.ca</a></p>
                 </div>
 
                 <div class="d-flex flex-column align-items-center">
                     <p class="mb-1">Adresse:</p>
                     <p class="text-center mb-1">1 rue Church Stanstead, QC J0B 3E2, Canada</p>
                     <a href="https://maps.app.goo.gl/kS5TjtZ7Q2gfChCG7" target="_blank" class="text-decoration-none text-black d-flex flex-column align-items-center">
-                        <img src="/icons/map.png" alt="carte" height="80" />
+                        <img src="/icons/Carte.png" alt="carte" height="80" />
                         <p class="text-decoration-underline">Voir la carte</p>
                     </a>
                 </div>

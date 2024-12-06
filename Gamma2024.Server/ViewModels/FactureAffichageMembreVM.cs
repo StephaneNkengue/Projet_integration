@@ -8,7 +8,8 @@ namespace Gamma2024.Server.ViewModels
         public string IdClient { get; set; } = null!;
         public int Encan { get; set; }
         public DateTime DateAchat { get; set; }
-        public string PdfPath { get; set; } = null!;
         public ICollection<Lot> Lots { get; set; } = [];
+        public bool? Livraison { get; set; }
+        public int? IdFactureLivraison { get; set; } = null!;
     }
 }

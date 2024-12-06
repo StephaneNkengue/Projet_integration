@@ -28,6 +28,9 @@ namespace Gamma2024.Server.ViewModels
 		public string Vendeur { get; set; }
 		public string IdClientMise { get; set; }
 		public bool SeraLivree { get; set; }
+		public int? NombreMises { get; set; }
+		public DateTime? DateDebutDecompteLot { get; set; }
+		public DateTime? DateFinDecompteLot { get; set; }
 	}
 
 

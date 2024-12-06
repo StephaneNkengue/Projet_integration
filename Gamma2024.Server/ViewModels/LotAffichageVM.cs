@@ -3,19 +3,20 @@ namespace Gamma2024.Server.ViewModels
 	public class LotAffichageVM
 	{
 		public int Id { get; set; }
-		public string NumeroEncan { get; set; } = null!; // ENCAN #
-		public string Code { get; set; } = null!; // LOT #
-		public string PrixOuverture { get; set; } = null!; // PRIX OUVERTURE
-		public string? PrixMinPourVente { get; set; } // VALEUR MIN POUR VENDRE
-		public string ValeurEstimeMin { get; set; } = null!; // ESTIMATION MIN
-		public string ValeurEstimeMax { get; set; } = null!; // ESTIMATION MAX
-		public string Categorie { get; set; } = null!; // GROUPE-CATÉGORIE
-		public string Artiste { get; set; } = null!; // ARTISTE
-		public string Dimension { get; set; } = null!; // DIMENSION (en po), sera formaté comme "Hauteur x Largeur"
-		public string Description { get; set; } = null!; // DESCRIPTION
-		public string Medium { get; set; } = null!; // MÉDIUM
-		public bool EstLivrable { get; set; } // LIVRAISON
-		public string Vendeur { get; set; } = null!; // Formaté comme "Prénom Nom"
+		public string NumeroEncan { get; set; } = null!;
+		public string Code { get; set; } = null!;
+		public double PrixOuverture { get; set; }
+		public double? PrixMinPourVente { get; set; }
+		public double ValeurEstimeMin { get; set; }
+		public double ValeurEstimeMax { get; set; }
+		public string Categorie { get; set; } = null!;
+		public string Artiste { get; set; } = null!;
+		public double Hauteur { get; set; }
+		public double Largeur { get; set; }
+		public string Description { get; set; } = null!;
+		public string Medium { get; set; } = null!;
+		public bool EstLivrable { get; set; }
+		public string Vendeur { get; set; } = null!;
 		public double? Mise { get; set; }
 		public bool EstVendu { get; set; }
 		public DateTime? DateFinVente { get; set; }
@@ -24,11 +25,5 @@ namespace Gamma2024.Server.ViewModels
 		public string? IdClientMise { get; set; }
 		public bool? SeraLivree { get; set; }
 		public ICollection<PhotoVM> Photos { get; set; } = new List<PhotoVM>();
-	}
-
-	public class PhotoVM
-	{
-		public int Id { get; set; }
-		public string Url { get; set; } = null!;
 	}
 }

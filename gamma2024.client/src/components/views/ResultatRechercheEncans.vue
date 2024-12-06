@@ -1,7 +1,7 @@
 <template>
     <div class="d-flex flex-column align-items-center pb-3">
         <h1>Résultat de la recherche d'encans</h1>
-        <div class="d-flex gap-2 w-100" v-if="chargement">
+        <div class="d-flex gap-2 w-100 justify-content-center" v-if="chargement">
             <div class="spinner-border" role="status">
                 <span class="visually-hidden">Chargement des encans...</span>
             </div>
@@ -12,23 +12,23 @@
             <h5 class="text-center" v-if="nbEncansRecus == 0">Aucun encan trouvé</h5>
             <div v-else>
                 <div class="d-flex flex-row-reverse w-100 px-4 me-2 gap-2">
-                    <button class="d-flex align-items-center text-center rounded btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
+                    <button class="d-flex align-items-center text-center rounded btn text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
                             type="button"
                             @click="afficherTousEncans"
                             v-bind:disabled="encansParPage == nbEncansRecus">
                         Tous
                     </button>
-                    <button class="d-flex align-items-center text-center rounded btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
+                    <button class="d-flex align-items-center text-center rounded btn text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
                             @click="changerNbEncanParPage(100)"
                             v-bind:disabled="encansParPage == 100">
                         100
                     </button>
-                    <button class="d-flex align-items-center text-center rounded btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
+                    <button class="d-flex align-items-center text-center rounded btn text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
                             @click="changerNbEncanParPage(50)"
                             v-bind:disabled="encansParPage == 50">
                         50
                     </button>
-                    <button class="d-flex align-items-center text-center rounded btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
+                    <button class="d-flex align-items-center text-center rounded btn text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
                             @click="changerNbEncanParPage(20)"
                             v-bind:disabled="encansParPage == 20">
                         20
@@ -46,7 +46,9 @@
                     </h5>
 
                     <div v-else class="w-100 px-3 row row-cols-lg-2 row-cols-1">
-                        <div v-for="index in encansFiltres" class="col py-3">
+                        <div v-for="index in encansAffiche"
+                             :key="index.numeroEncan"
+                             class="col py-3">
                             <span @click="voirEncan(index.numeroEncan)">
                                 <AffichageEncanTuile :encan="index" />
                             </span>
@@ -55,7 +57,7 @@
                 </div>
                 <div class="d-flex flex-row justify-content-center gap-1 flex-wrap p-3">
                     <button type="button"
-                            class="btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
+                            class="btn text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
                             @click="reculerPage"
                             v-bind:disabled="pageCourante == 1">
                         ⮜
@@ -63,7 +65,7 @@
 
                     <div v-for="item in listePagination">
                         <button type="button"
-                                class="btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
+                                class="btn text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
                                 :pageId="item"
                                 @click="changerPage()"
                                 v-bind:disabled="pageCourante == item || item == '...'">
@@ -72,7 +74,7 @@
                     </div>
 
                     <button type="button"
-                            class="btn bleuMoyenFond text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
+                            class="btn text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
                             @click="avancerPage"
                             v-bind:disabled="pageCourante == nbPages">
                         ⮞
@@ -104,24 +106,31 @@
     const encansAffiche = ref();
     const nbPages = ref();
     const chargement = ref(true);
-
-    const mois = [
-
-    ];
+    const numEncanCours = ref(0);
 
     onMounted(async () => {
         try {
-            initialiseData();
-        } catch (error) {
+            initialiseDonnees();
+        } catch (erreur) { }
+    });
+
+    const voirEncan = ref(function (numeroEncanRecu) {
+        if (numeroEncanRecu == numEncanCours.value) {
+            router.push({ name: "EncanPresent" });
+        } else {
+            router.push({
+                name: "Encan",
+                params: { numeroEncan: numeroEncanRecu },
+            });
         }
     });
 
-    const queryChangement = computed(() => route.query)
-    watch(queryChangement, initialiseData)
+    const queryChangement = computed(() => route.query);
+    watch(queryChangement, initialiseDonnees);
 
-    async function initialiseData() {
-        const response = await store.dispatch("chercherTousEncansVisibles");
-        encans.value = response.data.map((encan) => ({
+    async function initialiseDonnees() {
+        const reponse = await store.dispatch("chercherTousEncansVisibles");
+        encans.value = reponse.data.map((encan) => ({
             ...encan,
         }));
         genererListeDEncansFiltree();
@@ -139,63 +148,75 @@
         encansFiltres.value = encans.value;
         filtrerLesEncansParNumeroEncan();
         filtrerLesEncansParDate();
-    };
+    }
 
     function filtrerLesEncansParNumeroEncan() {
-        var stringquery = JSON.parse(route.query.data);
+        var stringDeRequete = JSON.parse(route.query.data);
         encansFiltres.value = encansFiltres.value.filter((encan) => {
-            if (stringquery.stringNumeroEncan) {
-                if (stringquery.selectNumeroEncan == 0) {
-                    if (encan.numeroEncan.toString() == stringquery.stringNumeroEncan) {
-                        return true
+            if (stringDeRequete.stringNumeroEncan) {
+                if (stringDeRequete.selectNumeroEncan == 0) {
+                    if (encan.numeroEncan.toString() == stringDeRequete.stringNumeroEncan) {
+                        return true;
                     }
-                    return false
+                    return false;
                 }
-                if (stringquery.selectNumeroEncan == 1 && stringquery.stringNumeroEncan2) {
-                    if (encan.numeroEncan.toString() >= stringquery.stringNumeroEncan && encan.numeroEncan.toString() <= stringquery.stringNumeroEncan2) {
-                        return true
+                if (
+                    stringDeRequete.selectNumeroEncan == 1 &&
+                    stringDeRequete.stringNumeroEncan2
+                ) {
+                    if (
+                        encan.numeroEncan.toString() >= stringDeRequete.stringNumeroEncan &&
+                        encan.numeroEncan.toString() <= stringDeRequete.stringNumeroEncan2
+                    ) {
+                        return true;
                     }
-                    return false
+                    return false;
                 }
             }
-            return true
+            return true;
         });
-    };
+    }
 
     function filtrerLesEncansParDate() {
-        var stringquery = JSON.parse(route.query.data);
+        var stringDeRequete = JSON.parse(route.query.data);
         encansFiltres.value = encansFiltres.value.filter((encan) => {
-            var encanDateDebut = moment(encan.dateDebut).format('yyyy-MM-DD');
-            var encanDateFin = moment(encan.dateFin).format('yyyy-MM-DD');
-            if (stringquery.stringDate) {
-                if (stringquery.selectDate == 0) {
-                    if (moment(encanDateDebut).isSameOrBefore(stringquery.stringDate) && moment(encanDateFin).isSameOrAfter(stringquery.stringDate)) {
-                        return true
+            var encanDateDebut = moment(encan.dateDebut).format("yyyy-MM-DD");
+            var encanDateFin = moment(encan.dateFin).format("yyyy-MM-DD");
+            if (stringDeRequete.stringDate) {
+                if (stringDeRequete.selectDate == 0) {
+                    if (
+                        moment(encanDateDebut).isSameOrBefore(stringDeRequete.stringDate) &&
+                        moment(encanDateFin).isSameOrAfter(stringDeRequete.stringDate)
+                    ) {
+                        return true;
                     }
-                    return false
+                    return false;
                 }
-                if (stringquery.selectDate == 1) {
-                    if (moment(encanDateDebut).isSameOrBefore(stringquery.stringDate)) {
-                        return true
+                if (stringDeRequete.selectDate == 1) {
+                    if (moment(encanDateDebut).isSameOrBefore(stringDeRequete.stringDate)) {
+                        return true;
                     }
-                    return false
+                    return false;
                 }
-                if (stringquery.selectDate == 2) {
-                    if (moment(encanDateFin).isSameOrAfter(stringquery.stringDate)) {
-                        return true
+                if (stringDeRequete.selectDate == 2) {
+                    if (moment(encanDateFin).isSameOrAfter(stringDeRequete.stringDate)) {
+                        return true;
                     }
-                    return false
+                    return false;
                 }
-                if (stringquery.selectDate == 3 && stringquery.stringDate2) {
-                    if (moment(encanDateDebut).isSameOrBefore(stringquery.stringDate2) && moment(encanDateFin).isSameOrAfter(stringquery.stringDate)) {
-                        return true
+                if (stringDeRequete.selectDate == 3 && stringDeRequete.stringDate2) {
+                    if (
+                        moment(encanDateDebut).isSameOrBefore(stringDeRequete.stringDate2) &&
+                        moment(encanDateFin).isSameOrAfter(stringDeRequete.stringDate)
+                    ) {
+                        return true;
                     }
-                    return false
+                    return false;
                 }
             }
-            return true
+            return true;
         });
-    };
+    }
 
     watch(pageCourante, () => {
         genererListePagination();

@@ -1,12 +1,9 @@
 using Gamma2024.Server.Data;
+using Gamma2024.Server.Hub;
 using Gamma2024.Server.Interface;
 using Gamma2024.Server.Models;
 using Gamma2024.Server.Services;
 using Gamma2024.Server.Services.Email;
-using Gamma2024.Server.WebSockets;
-using jsreport.AspNetCore;
-using jsreport.Binary;
-using jsreport.Local;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -44,20 +41,24 @@ builder.Services.AddControllers()
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddSignalR();
 
 builder.Services.AddScoped<ClientInscriptionService>();
 builder.Services.AddScoped<ClientModificationService>();
 builder.Services.AddScoped<EncanService>();
+builder.Services.AddHttpClient<EncanService>();
 builder.Services.AddScoped<VendeurService>();
 builder.Services.AddScoped<AdministrateurService>();
 builder.Services.AddScoped<LotService>();
 builder.Services.AddScoped<FactureService>();
 builder.Services.AddScoped<FactureLivraisonService>();
+builder.Services.AddScoped<NotificationService>();
 
 builder.Services.Configure<EmailConfiguration>(
     builder.Configuration.GetSection("EmailConfiguration"));
-
 builder.Services.AddTransient<IEmailSender, EmailService>();
+builder.Services.Configure<InvoiceSettings>(builder.Configuration.GetSection("InvoiceSettings"));
+
 
 // Configuration CORS pour différents environnements
 builder.Services.AddCors(options =>
@@ -110,13 +111,7 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;
 });
 
-builder.Services.AddSingleton<WebSocketHandler>();
-
-builder.Services.AddJsReport(new LocalReporting()
-    .UseBinary(JsReportBinary.GetBinary())
-    .KillRunningJsReportProcesses()
-    .AsUtility()
-    .Create());
+var jsReportOptions = builder.Configuration.GetSection("JsReport").Get<JsReportOptions>();
 
 var app = builder.Build();
 
@@ -129,6 +124,7 @@ if (app.Environment.IsDevelopment())
 else
 {
     app.UseExceptionHandler("/Error");
+    //app.UseDeveloperExceptionPage();
     app.UseHsts();
     app.UseCors("Production");
 }
@@ -138,6 +134,10 @@ app.UseRouting();
 StripeConfiguration.ApiKey = builder.Configuration["Stripe:SecretKey"];
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.MapHub<LotMiseHub>("/api/hub/lotMiseHub"); // Permet de mapper les requêtes vers SignalR
+app.MapHub<NotificationHub>("/api/hub/NotificationHub");
+app.MapHub<EncanHub>("/api/hub/EncanHub");
 
 app.MapControllers();
 
@@ -151,11 +151,8 @@ app.UseStaticFiles();
 
 app.MapFallbackToFile("index.html");
 
-var webSocketOptions = new WebSocketOptions
-{
-    KeepAliveInterval = TimeSpan.FromMinutes(2)
-};
-app.UseWebSockets(webSocketOptions);
-app.UseMiddleware<WebSocketMiddleware>();
+
+
+
 
 app.Run();

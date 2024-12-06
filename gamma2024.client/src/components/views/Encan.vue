@@ -17,7 +17,7 @@
             <div v-else>
                 <h5 class="text-center">{{ dateDebut }} - {{ dateFin }}</h5>
                 <p class="text-center">
-                    Date de debut de la soirée de cloture: {{ soireeDate }}
+                    Date de début de la soirée de cloture: {{ soireeDate }}
                 </p>
 
                 <AffichageLots :idEncan="encan.id" />
@@ -60,8 +60,8 @@
 
     onMounted(async () => {
         const numero = props.numeroEncan;
-        const response = await store.dispatch("chercherEncanParNumero", numero);
-        encan.value = response.data;
+        const reponse = await store.dispatch("chercherEncanParNumero", numero);
+        encan.value = reponse.data;
         if (encan.value != "") {
             soireeDate.value = formatageDate(
                 encan.value.dateDebutSoireeCloture,
