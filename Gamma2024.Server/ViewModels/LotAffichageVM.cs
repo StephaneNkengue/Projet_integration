@@ -11,7 +11,8 @@ namespace Gamma2024.Server.ViewModels
 		public double ValeurEstimeMax { get; set; } // ESTIMATION MAX
 		public string Categorie { get; set; } = null!; // GROUPE-CATÉGORIE
 		public string Artiste { get; set; } = null!; // ARTISTE
-		public string Dimension { get; set; } = null!; // DIMENSION (en po), sera formaté comme "Hauteur x Largeur"
+		public double Hauteur { get; set; } // DIMENSION (en po), sera formaté comme "Hauteur x Largeur"
+		public double Largeur { get; set; } // DIMENSION (en po), sera formaté comme "Hauteur x Largeur"
 		public string Description { get; set; } = null!; // DESCRIPTION
 		public string Medium { get; set; } = null!; // MÉDIUM
 		public bool EstLivrable { get; set; } // LIVRAISON

@@ -200,7 +200,7 @@
                             <td v-if="colonnesVisibles.estimationMax">{{ lot.valeurEstimeMax }} $</td>
                             <td v-if="colonnesVisibles.categorie">{{ lot.categorie }}</td>
                             <td v-if="colonnesVisibles.artiste">{{ lot.artiste }}</td>
-                            <td v-if="colonnesVisibles.dimension">{{ lot.dimension }}</td>
+                            <td v-if="colonnesVisibles.dimension">{{ lot.hauteur }} x {{ lot.largeur }}</td>
                             <td v-if="colonnesVisibles.description">{{ lot.description }}</td>
                             <td v-if="colonnesVisibles.medium">{{ lot.medium }}</td>
                             <td v-if="colonnesVisibles.vendeur">{{ lot.vendeur }}</td>
@@ -454,7 +454,6 @@
 
             let rechercheEnMinuscule = rechercheDansListeDeLot.value.toLowerCase();
             lotsFiltres.value = lotsAFiltres.filter((lot) => {
-                let dimensions = lot.dimension.split(" x ");
                 if (
                     listeDesCheckboxesRecherche[0].checked &&
                     lot.numeroEncan
@@ -512,12 +511,12 @@
                     return true;
                 } else if (
                     listeDesCheckboxesRecherche[8].checked &&
-                    dimensions[0].toString().toLowerCase().startsWith(rechercheEnMinuscule)
+                    lot.hauteur.toString().toLowerCase().startsWith(rechercheEnMinuscule)
                 ) {
                     return true;
                 } else if (
                     listeDesCheckboxesRecherche[8].checked &&
-                    dimensions[1].toString().toLowerCase().startsWith(rechercheEnMinuscule)
+                    lot.largeur.toString().toLowerCase().startsWith(rechercheEnMinuscule)
                 ) {
                     return true;
                 } else if (
