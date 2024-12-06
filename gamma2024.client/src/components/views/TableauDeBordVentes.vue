@@ -1,5 +1,5 @@
 <template>
-    <span v-for="facture in ventesAffiches" :key="facture.id">
+    <span v-for="facture in ventesAffichees" :key="facture.id">
         <FactureModal :idFacture="facture.id"></FactureModal>
         <FactureLivraisonModal v-if="facture.livraison == true" :idFacture="facture.idFactureLivraison"></FactureLivraisonModal>
     </span>

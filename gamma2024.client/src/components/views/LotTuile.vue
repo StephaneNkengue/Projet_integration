@@ -13,12 +13,12 @@
                     </p>
 
                     <img src="/icons/Livrable.png"
-                         height="30"
+                         height="25"
                          alt="Livrable"
                          v-if="lot.estLivrable" />
 
                     <img src="/icons/NonLivrable.png"
-                         height="30"
+                         height="25"
                          alt="Non livrable"
                          v-else />
                 </div>
@@ -398,7 +398,7 @@
     }
 
     .fs-8 {
-        font-size: 0.75rem;
+        font-size: 0.60rem;
     }
 
     .card {
