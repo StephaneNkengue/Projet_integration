@@ -1402,7 +1402,12 @@ const store = createStore({
       const connection = new signalR.HubConnectionBuilder()
         .withUrl(`${cleanBaseUrl}/api/hub/NotificationHub`, {
           accessTokenFactory: () => state.token,
-        }) // Ajuste l'URL si nécessaire
+          skipNegotiation: true,
+          transport: signalR.HttpTransportType.WebSockets,
+          withCredentials: true,
+          headers: { "X-Requested-With": "XMLHttpRequest" },
+        })
+        .configureLogging(signalR.LogLevel.Debug)
         .withAutomaticReconnect()
         .build();
 

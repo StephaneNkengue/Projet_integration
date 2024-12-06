@@ -32,7 +32,7 @@ namespace Gamma2024.Server.Services
             await _context.SaveChangesAsync();
 
             // Envoyer la notification en temps réel via SignalR
-            await _hubContext.SendToUser(userId, notification);
+            await _hubContext.SendToUser(notification);
         }
 
         public async Task<ICollection<Notification>> GetUnreadNotification(string userId)

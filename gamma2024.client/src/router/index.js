@@ -36,6 +36,7 @@ import HistoriqueMisesParMembre from "@/components/views/HistoriqueMisesParMembr
 
 import ChoixLivraison from "@/components/views/ChoixLivraison.vue";
 import ConditionsCompagnie from "@/components/views/ConditionsCompagnie.vue";
+import ConfirmationCourriel from "@/components/views/ConfirmationCourriel.vue";
 
 const routes = [
   {
@@ -285,6 +286,11 @@ const routes = [
     name: "HistoriqueMisesParMembre",
     component: HistoriqueMisesParMembre,
     meta: { requiresAuth: true, requiredRole: "Client" },
+  },
+  {
+    path: "/ConfirmationCourriel",
+    name: "ConfirmationCourriel",
+    component: ConfirmationCourriel,
   },
 ];
 
