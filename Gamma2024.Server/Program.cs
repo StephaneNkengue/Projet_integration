@@ -62,6 +62,30 @@ builder.Services.Configure<EmailConfiguration>(
 builder.Services.AddTransient<IEmailSender, EmailService>();
 builder.Services.Configure<InvoiceSettings>(builder.Configuration.GetSection("InvoiceSettings"));
 
+// Important : Ajouter ceci avant AddHttpClient
+builder.Services.AddHttpContextAccessor();
+
+var logger = builder.Services.BuildServiceProvider().GetRequiredService<ILogger<Program>>();
+
+builder.Services.AddHttpClient("ApiClient", (serviceProvider, client) =>
+{
+    var httpContextAccessor = serviceProvider.GetRequiredService<IHttpContextAccessor>();
+    var request = httpContextAccessor.HttpContext?.Request;
+    
+    string baseUrl;
+    if (request != null)
+    {
+        baseUrl = $"{request.Scheme}://{request.Host}";
+    }
+    else
+    {
+        baseUrl = "https://localhost:7206";
+    }
+    
+    client.BaseAddress = new Uri(baseUrl);
+});
+
+
 
 // Configuration CORS pour différents environnements
 builder.Services.AddCors(options =>

@@ -342,22 +342,9 @@
         if (tempsRestant.value <= 0) {
             cancelAnimationFrame(rafId);
             
-            // Vérifier si le lot n'est pas déjà vendu
-            const lot = store.getters.getLot(props.lotRecu.id);
-            if (lot && !lot.estVendu && store.state.connection?.state === "Connected") {
-                // Utiliser la connexion du store
-                store.state.connection.invoke("LotVendu", props.lotRecu.id)
-                    .catch(err => {
-                        console.error("Erreur lors du marquage du lot comme vendu:", err);
-                        // Optionnel : afficher un toast d'erreur
-                        toast.error(
-                            h(ToastContent, {
-                                title: "Erreur",
-                                description: "Impossible de marquer le lot comme vendu"
-                            })
-                        );
-                    });
-            }
+            // Plus d'appel au serveur via SignalR
+            // Juste une mise à jour locale via le store
+            store.commit('SET_LOT_VENDU', props.lotRecu.id);
             return;
         }
         rafId = requestAnimationFrame(updateTimer);
@@ -434,7 +421,7 @@
 
     // Ajouter une vérification périodique
     onMounted(() => {
-        const intervalId = setInterval(verifierEtatLot, 3000); // Vérifier toutes les 3 secondes
+        const intervalId = setInterval(verifierEtatLot, 3000); // V��rifier toutes les 3 secondes
         
         onUnmounted(() => {
             clearInterval(intervalId);
