@@ -904,20 +904,31 @@ namespace Gamma2024.Server.Services
 
 		public async Task<IEnumerable<UserBidVM>> GetUserBids(string userId)
 		{
-			var userBids = await _context.MiseAutomatiques
-				.Where(m => m.UserId == userId)  // Filtre les mises de l'utilisateur
-				.GroupBy(m => m.LotId)           // Groupe par lot
-				.Select(g => new UserBidVM
-				{
-					LotId = g.Key,
-					IsLastBidder = _context.Lots
-						.Where(l => l.Id == g.Key)
-						.Select(l => l.IdClientMise == userId)
-						.FirstOrDefault()  // Compare directement les strings IdClientMise et userId
-				})
-				.ToListAsync();
+			_logger.LogInformation($"Service - Recherche des mises pour l'utilisateur {userId}");
 
-			return userBids;
+			try
+			{
+				var userBids = await _context.MiseAutomatiques
+					.Where(m => m.UserId == userId)
+					.GroupBy(m => m.LotId)
+					.Select(g => new UserBidVM
+					{
+						LotId = g.Key,
+						IsLastBidder = _context.Lots
+							.Where(l => l.Id == g.Key)
+							.Select(l => l.IdClientMise == userId)
+							.FirstOrDefault()
+					})
+					.ToListAsync();
+
+				_logger.LogInformation($"Service - Trouvé {userBids.Count()} lots avec mises pour l'utilisateur {userId}");
+				return userBids;
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError(ex, $"Service - Erreur lors de la récupération des mises pour {userId}");
+				throw;
+			}
 		}
 
 
@@ -1057,39 +1068,29 @@ namespace Gamma2024.Server.Services
 		{
 			try
 			{
+				_logger.LogInformation($"Début de la finalisation de l'encan #{numeroEncan}");
+				
 				var client = _httpClientFactory.CreateClient("ApiClient");
 				
-				_logger.LogInformation($"URL de base utilisée : {client.BaseAddress}");
+				_logger.LogInformation("Création des factures...");
+				var factureResponse = await client.PostAsync($"api/factures/CreerFacturesParEncan/{numeroEncan}", null);
+				var factureContent = await factureResponse.Content.ReadAsStringAsync();
+				_logger.LogInformation($"Réponse création factures: {factureResponse.StatusCode} - {factureContent}");
 
-				var tasks = new[]
-				{
-					client.PostAsync($"api/factures/CreerFacturesParEncan/{numeroEncan}", null),
-					client.PostAsync($"api/paiement/ChargerClients/{numeroEncan}", null)
-				};
-
-				_logger.LogInformation($"Appel des endpoints : " +
-					$"api/factures/CreerFacturesParEncan/{numeroEncan} et " +
-					$"api/paiement/ChargerClients/{numeroEncan}");
-
-				await Task.WhenAll(tasks);
-
-				// Vérifier les résultats
-				foreach (var response in tasks)
-				{
-					if (!response.Result.IsSuccessStatusCode)
-					{
-						_logger.LogError($"Erreur HTTP : {response.Result.StatusCode} - {await response.Result.Content.ReadAsStringAsync()}");
-					}
-					response.Result.EnsureSuccessStatusCode();
-				}
+				_logger.LogInformation("Traitement des paiements...");
+				var paiementResponse = await client.PostAsync($"api/paiement/ChargerClients/{numeroEncan}", null);
+				var paiementContent = await paiementResponse.Content.ReadAsStringAsync();
+				_logger.LogInformation($"Réponse paiements: {paiementResponse.StatusCode} - {paiementContent}");
 
 				// Marquer l'encan comme terminé
 				var encan = await _context.Encans
 					.FirstOrDefaultAsync(e => e.NumeroEncan == numeroEncan);
+				
 				if (encan != null)
 				{
 					encan.EstTermine = true;
 					await _context.SaveChangesAsync();
+					_logger.LogInformation($"Encan #{numeroEncan} marqué comme terminé");
 				}
 
 				// Notifier les clients
@@ -1099,6 +1100,8 @@ namespace Gamma2024.Server.Services
 					numeroEncan = numeroEncan,
 					message = "L'encan est terminé et les factures ont été générées."
 				});
+				
+				_logger.LogInformation($"Finalisation de l'encan #{numeroEncan} terminée avec succès");
 			}
 			catch (Exception ex)
 			{

@@ -30,52 +30,46 @@ namespace Gamma2024.Server.Services
             {
                 try
                 {
-                    await VerifierEncansTermines(stoppingToken);
+                    using (var scope = _services.CreateScope())
+                    {
+                        var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+                        var lotService = scope.ServiceProvider.GetRequiredService<LotService>();
+
+                        var maintenant = DateTime.Now;
+
+                        _logger.LogInformation($"Début de la vérification à {maintenant}");
+
+                        var encansTermines = await context.Encans
+                            .Where(e => !e.EstTermine && 
+                                       e.DateFin < maintenant && 
+                                       e.EncanLots.Any(el => el.Lot.Mise > 0))
+                            .Select(e => new 
+                            { 
+                                e.Id,
+                                e.NumeroEncan,
+                                DerniereLotDate = e.EncanLots
+                                    .Max(el => el.Lot.DateFinDecompteLot)
+                            })
+                            .Where(e => e.DerniereLotDate <= maintenant)
+                            .ToListAsync(stoppingToken);
+
+                        _logger.LogInformation($"Trouvé {encansTermines.Count} encans terminés à vérifier");
+                        
+                        foreach (var encan in encansTermines)
+                        {
+                            _logger.LogInformation($"Traitement de l'encan #{encan.NumeroEncan} (ID: {encan.Id})");
+                            _logger.LogInformation($"Date du dernier lot : {encan.DerniereLotDate}");
+                            
+                            await lotService.VerifierEtFinaliserLotsExpires(encan.Id);
+                        }
+                    }
+
                     await Task.Delay(TimeSpan.FromMinutes(1), stoppingToken);
-                }
-                catch (Exception ex) when (ex is not OperationCanceledException)
-                {
-                    _logger.LogError(ex, "Erreur lors de la vérification des lots");
-                    await Task.Delay(TimeSpan.FromSeconds(5), stoppingToken);
-                }
-            }
-        }
-
-        private async Task VerifierEncansTermines(CancellationToken stoppingToken)
-        {
-            using var scope = _services.CreateScope();
-            var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-            var lotService = scope.ServiceProvider.GetRequiredService<LotService>();
-
-            var maintenant = DateTime.Now;
-
-            var encansTermines = await dbContext.Encans
-                .Where(e => !e.EstTermine && 
-                           e.DateFin < maintenant && 
-                           e.EncanLots.Any(el => el.Lot.Mise > 0))
-                .Select(e => new 
-                {
-                    e.Id,
-                    DerniereLotDate = e.EncanLots
-                        .Select(el => el.Lot.DateFinDecompteLot)
-                        .Max()
-                })
-                .Where(e => e.DerniereLotDate <= maintenant)
-                .Select(e => e.Id)
-                .ToListAsync(stoppingToken);
-
-            _logger.LogInformation($"Trouvé {encansTermines.Count} encans terminés à vérifier");
-
-            foreach (var idEncan in encansTermines)
-            {
-                try
-                {
-                    await lotService.VerifierEtFinaliserLotsExpires(idEncan);
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(ex, $"Erreur lors du traitement de l'encan {idEncan}");
-                    // Continue avec le prochain encan même si celui-ci échoue
+                    _logger.LogError(ex, "Erreur lors de la vérification des lots");
+                    await Task.Delay(TimeSpan.FromSeconds(5), stoppingToken);
                 }
             }
         }

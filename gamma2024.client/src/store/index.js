@@ -1026,19 +1026,35 @@ const store = createStore({
         },
 
         async fetchUserBids({ state, commit }) {
-            if (!state.user?.id || !state.token) return;
+            if (!state.user?.id || !state.token) {
+                console.log("Pas d'utilisateur ou de token, abandon de fetchUserBids");
+                return;
+            }
+
+            console.log("Tentative fetchUserBids:", {
+                userId: state.user.id,
+                hasToken: !!state.token
+            });
 
             try {
+                // S'assurer que le token est dans les headers
                 const response = await state.api.get(`/lots/userBids/${state.user.id}`, {
                     headers: {
                         'Authorization': `Bearer ${state.token}`
                     }
                 });
+
+                console.log("Réponse userBids:", response.data);
                 commit("setUserBids", response.data);
             } catch (error) {
-                console.error("Erreur lors du chargement des mises:", error);
-                // Si erreur d'authentification, nettoyer les données
+                console.error("Erreur fetchUserBids:", {
+                    status: error.response?.status,
+                    data: error.response?.data,
+                    token: state.token ? 'présent' : 'absent'
+                });
+                
                 if (error.response?.status === 401) {
+                    // Potentiellement rafraîchir le token ou rediriger vers login
                     commit("setUserBids", []);
                 }
             }
