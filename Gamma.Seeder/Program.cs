@@ -200,7 +200,8 @@ context.SaveChanges();
 
 Console.WriteLine("Ajout des vendeurs");
 
-var vendeurs = System.IO.File.ReadAllLines("CSV/DonneesOriginal/Vendeurs.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
+//var vendeurs = System.IO.File.ReadAllLines("CSV/DonneesOriginal/Vendeurs.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
+var vendeurs = System.IO.File.ReadAllLines("CSV/DonneesDec/VendeursEtVentes.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
                 .Skip(1)
                 .Where(l => l.Length > 1)
                 .ToVendeur()
