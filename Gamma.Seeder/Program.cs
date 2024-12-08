@@ -33,7 +33,7 @@ if (choix == "1")
     context.FactureLivraisons.RemoveRange(context.FactureLivraisons);
     context.Factures.RemoveRange(context.Factures);
     context.Charites.RemoveRange(context.Charites);
-    context.Adresses.RemoveRange(context.Adresses);
+    context.Adresses.RemoveRange(context.Adresses.Where(a => a.IdApplicationUser != "8e445865-a24d-4543-a6c6-9443d048cdb9" && a.IdApplicationUser != "1d8ac862-e54d-4f10-b6f8-638808c02967"));
     context.Vendeurs.RemoveRange(context.Vendeurs);
     context.Users.RemoveRange(context.Users.Where(c => c.Id != "8e445865-a24d-4543-a6c6-9443d048cdb9" && c.Id != "1d8ac862-e54d-4f10-b6f8-638808c02967"));
     context.Notifications.RemoveRange(context.Notifications);
@@ -47,6 +47,7 @@ else
 }
 
 
+var usersExistants = context.Users.Include(u => u.Adresses);
 var customerService = new CustomerService();
 var options = new CustomerListOptions { Limit = 100 };
 StripeList<Customer> customersTemp = customerService.List(options);
@@ -68,13 +69,19 @@ if (choix == "1")
     {
         customerService.Delete(customer.Id);
     }
+    customers = customerService.List(options);
+    foreach (var user in usersExistants)
+    {
+        user.StripeCustomer = "";
+        context.Users.Update(user);
+        context.SaveChanges();
+    }
 }
 else
 {
     Console.WriteLine("Garder les clients Stripe");
 }
 
-var usersExistants = context.Users.Include(u => u.Adresses);
 
 foreach (var user in usersExistants)
 {
@@ -88,7 +95,7 @@ foreach (var user in usersExistants)
         }
         else
         {
-            var customer = customerService.Create(new CustomerCreateOptions
+            var createOptions = new CustomerCreateOptions
             {
                 Email = user.Email,
                 Name = user.FirstName + " " + user.Name,
@@ -104,11 +111,13 @@ foreach (var user in usersExistants)
                     City = user.Adresses.First().Ville,
                     Country = user.Adresses.First().Pays,
                     Line1 = $"{user.Adresses.First().Numero} {user.Adresses.First().Rue}",
-                    //Line2 = user.Adresses.First().Appartement,
+                    Line2 = user.Adresses.First().Appartement,
                     PostalCode = user.Adresses.First().CodePostal,
-                    State = user.Adresses.First().Province
-                }
-            });
+                    State = user.Adresses.First().Province,
+                },
+                Phone = user.PhoneNumber,
+            };
+            var customer = customerService.Create(createOptions);
             user.StripeCustomer = customer.Id;
             context.Update(user);
 
@@ -156,7 +165,8 @@ var utilisateurs = System.IO.File.ReadAllLines("CSV/DonneesOriginal/Acheteurs.cs
                                         Line2 = u.Adresses.First().Appartement,
                                         PostalCode = u.Adresses.First().CodePostal,
                                         State = u.Adresses.First().Province
-                                    }
+                                    },
+                                    Phone = u.PhoneNumber
                                 };
                                 var customer = customerService.Create(options);
                                 u.StripeCustomer = customer.Id;
