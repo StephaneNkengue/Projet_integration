@@ -212,6 +212,14 @@ context.SaveChanges();
 
 Console.WriteLine("Ajout des categories");
 
+//var categoriesLotsUniques = System.IO.File.ReadAllLines("CSV/DonneesOriginal/Encan232et233.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
+//                        .Skip(1)
+//                        .Where(l => l.Length > 1)
+//                        .GetCategories()
+//                        .GroupBy(c => c.Nom)
+//                        .Select(c => c.First())
+//                        .ToList();
+
 var categoriesLotsUniques = System.IO.File.ReadAllLines("CSV/DonneesDec/Encan232Et233.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
                             .Skip(1)
                             .Where(l => l.Length > 1)
@@ -235,26 +243,38 @@ categoriesLotsUniques = categoriesLotsUniques
                             .Select(c => c.First())
                             .ToList();
 
-//var categoriesLotsUniques = System.IO.File.ReadAllLines("CSV/DonneesOriginal/Encan232et233.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
-//                        .Skip(1)
-//                        .Where(l => l.Length > 1)
-//                        .GetCategories()
-//                        .GroupBy(c => c.Nom)
-//                        .Select(c => c.First())
-//                        .ToList();
-
 context.Categories.AddRange(categoriesLotsUniques);
 context.SaveChanges();
 
 Console.WriteLine("Ajout des médiums");
 
-var mediumsLotsUniques = System.IO.File.ReadAllLines("CSV/DonneesOriginal/Encan232et233.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
-                        .Skip(1)
-                        .Where(l => l.Length > 1)
-                        .GetMediums()
-                        .GroupBy(m => m.Type)
-                        .Select(m => m.First())
-                        .ToList();
+//var mediumsLotsUniques = System.IO.File.ReadAllLines("CSV/DonneesOriginal/Encan232et233.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
+//                        .Skip(1)
+//                        .Where(l => l.Length > 1)
+//                        .GetMediums()
+//                        .GroupBy(m => m.Type)
+//                        .Select(m => m.First())
+//                        .ToList();
+
+var mediumsLotsUniques = System.IO.File.ReadAllLines("CSV/DonneesDec/Encan232Et233.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
+                            .Skip(1)
+                            .Where(l => l.Length > 1)
+                            .GetMediums()
+                            .ToList();
+
+mediumsLotsUniques.AddRange(System.IO.File.ReadAllLines("CSV/DonneesDec/Encan234.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
+                            .Skip(1)
+                            .Where(l => l.Length > 1)
+                            .GetMediums()
+                            .ToList());
+
+mediumsLotsUniques.AddRange(System.IO.File.ReadAllLines("CSV/DonneesDec/Encan235.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
+                            .Skip(1)
+                            .Where(l => l.Length > 1)
+                            .GetMediums()
+                            .ToList());
+
+mediumsLotsUniques = mediumsLotsUniques.GroupBy(m => m.Type).Select(m => m.First()).ToList();
 
 context.Mediums.AddRange(mediumsLotsUniques);
 context.SaveChanges();
