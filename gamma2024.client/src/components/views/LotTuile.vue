@@ -218,16 +218,16 @@
         if (lotActuel) {
             lot.value = { ...lotActuel };
         }
-        modalMise.value.show();
+        modalMise.value.presenterModal();
     };
 
     const onMiseConfirmee = async (montant) => {
         lot.value.mise = montant;
 
         try {
-            const response = await store.dispatch('chercherDetailsLotParId', lot.value.id);
-            if (response && response.data) {
-                lot.value = response.data;
+            const reponse = await store.dispatch('chercherDetailsLotParId', lot.value.id);
+            if (reponse && reponse.data) {
+                lot.value = reponse.data;
             }
         } catch (error) {
             console.error("Erreur lors du rechargement des données du lot:", error);

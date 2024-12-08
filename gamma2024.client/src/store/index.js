@@ -324,41 +324,41 @@ const store = createStore({
                 if (!state.api) {
                     throw new Error("API non initialisée");
                 }
-                const response = await state.api.post("/home/login", userData);
-                if (response.data && response.data.message === "Connexion réussie") {
+                const reponse = await state.api.post("/home/login", userData);
+                if (reponse.data && reponse.data.message === "Connexion réussie") {
                     commit("setLoggedIn", true);
                     commit("setUser", {
-                        id: response.data.userId,
-                        username: response.data.username,
-                        name: response.data.name,
-                        firstName: response.data.firstName,
-                        roles: response.data.roles,
-                        photo: response.data.photo,
+                        id: reponse.data.userId,
+                        username: reponse.data.username,
+                        name: reponse.data.name,
+                        firstName: reponse.data.firstName,
+                        roles: reponse.data.roles,
+                        photo: reponse.data.photo,
                     });
-                    commit("setRoles", response.data.roles);
-                    if (response.data.token) {
-                        commit("setToken", response.data.token);
-                        sessionStorage.setItem("token", response.data.token);
+                    commit("setRoles", reponse.data.roles);
+                    if (reponse.data.token) {
+                        commit("setToken", reponse.data.token);
+                        sessionStorage.setItem("token", reponse.data.token);
                         state.api.defaults.headers.common[
                             "Authorization"
-                        ] = `Bearer ${response.data.token}`;
+                        ] = `Bearer ${reponse.data.token}`;
                         await dispatch("initializeSignalR");
-                        await dispatch("obtenirNotification", response.data.userId);
+                        await dispatch("obtenirNotification", reponse.data.userId);
                         await dispatch("initNotificationConnection");
                     }
-                    return { success: true, roles: response.data.roles };
+                    return { success: true, roles: reponse.data.roles };
                 } else {
                     return {
                         success: false,
-                        error: response.data?.message || "Réponse inattendue du serveur",
+                        error: reponse.data?.message || "Réponse inattendue du serveur",
                     };
                 }
             } catch (error) {
                 return {
                     success: false,
-                    element: error.response.data?.element,
+                    element: error.reponse.data?.element,
                     error:
-                        error.response?.data?.message ||
+                        error.reponse?.data?.message ||
                         error.message ||
                         "Erreur lors de la création du compte",
                 };
@@ -367,13 +367,13 @@ const store = createStore({
 
         async fetchClientInfo({ state, commit }) {
             try {
-                const response = await state.api.get(
+                const reponse = await state.api.get(
                     "/Utilisateurs/ObtentionInfoClient"
                 );
-                commit("SET_CLIENT_INFO", response.data);
+                commit("SET_CLIENT_INFO", reponse.data);
                 // Assurez-vous également de mettre à jour l'utilisateur
-                commit("setUser", response.data);
-                return response.data;
+                commit("setUser", reponse.data);
+                return reponse.data;
             } catch (error) {
                 console.error(
                     "Erreur lors de la récupération des informations du client:",
@@ -385,21 +385,21 @@ const store = createStore({
 
         async updateClientInfo({ state, commit }, userData) {
             try {
-                const response = await state.api.put(
+                const reponse = await state.api.put(
                     "/utilisateurs/miseajourinfoclient",
                     userData
                 );
-                const updatedUser = { ...state.user, ...response.data };
+                const updatedUser = { ...state.user, ...reponse.data };
                 commit("setUser", updatedUser);
 
                 // Forcer la mise à jour des getters
                 commit("refreshUserData");
 
-                return response;
+                return reponse;
             } catch (error) {
                 console.error(
                     "Erreur lors de la mise à jour des informations du client:",
-                    error.response || error
+                    error.reponse || error
                 );
                 throw error;
             }
@@ -407,16 +407,16 @@ const store = createStore({
 
         async updateAvatar({ commit, state }, formData) {
             try {
-                const response = await state.api.put("/utilisateurs/avatar", formData, {
+                const reponse = await state.api.put("/utilisateurs/avatar", formData, {
                     headers: {
                         "Content-Type": "multipart/form-data",
                     },
                 });
 
                 // Construire l'URL complète de l'avatar
-                const avatarPath = response.data.avatarUrl.startsWith("/")
-                    ? response.data.avatarUrl
-                    : `/Avatars/${response.data.avatarUrl}`;
+                const avatarPath = reponse.data.avatarUrl.startsWith("/")
+                    ? reponse.data.avatarUrl
+                    : `/Avatars/${reponse.data.avatarUrl}`;
                 const fullAvatarUrl = `${state.api.defaults.baseURL.replace(
                     "/api",
                     ""
@@ -427,13 +427,13 @@ const store = createStore({
                 commit("setUser", updatedUser);
 
                 return {
-                    ...response,
-                    data: { ...response.data, avatarUrl: fullAvatarUrl },
+                    ...reponse,
+                    data: { ...reponse.data, avatarUrl: fullAvatarUrl },
                 };
             } catch (error) {
                 console.error(
                     "Erreur détaillée lors de la mise à jour de l'avatar:",
-                    error.response || error
+                    error.reponse || error
                 );
                 throw error;
             }
@@ -441,12 +441,12 @@ const store = createStore({
 
         async verifierPseudonyme({ commit, state }, pseudo) {
             try {
-                const response = await state.api.get(
+                const reponse = await state.api.get(
                     `/utilisateurs/verifier-pseudonyme?pseudo=${encodeURIComponent(
                         pseudo
                     )}`
                 );
-                return response.data.disponible;
+                return reponse.data.disponible;
             } catch (error) {
                 console.error("Erreur lors de la vérification du pseudonyme:", error);
                 throw error;
@@ -455,10 +455,10 @@ const store = createStore({
 
         async verifierEmail({ commit, state }, email) {
             try {
-                const response = await state.api.get(
+                const reponse = await state.api.get(
                     `/utilisateurs/verifier-email?email=${encodeURIComponent(email)}`
                 );
-                return response.data.disponible;
+                return reponse.data.disponible;
             } catch (error) {
                 console.error("Erreur lors de la vérification de l'email:", error);
                 throw error;
@@ -467,8 +467,8 @@ const store = createStore({
 
         async obtenirTousVendeurs({ commit, state }) {
             try {
-                const response = await state.api.get("/vendeurs/tous");
-                return response.data;
+                const reponse = await state.api.get("/vendeurs/tous");
+                return reponse.data;
             } catch (error) {
                 console.error(
                     "Erreur lors de la récupération de tous les vendeurs:",
@@ -479,52 +479,52 @@ const store = createStore({
         },
         async creerVendeur({ commit, state }, vendeurData) {
             try {
-                const response = await state.api.post("/vendeurs/creer", vendeurData);
-                if (response.data.success) {
-                    return { success: true, message: response.data.message };
+                const reponse = await state.api.post("/vendeurs/creer", vendeurData);
+                if (reponse.data.success) {
+                    return { success: true, message: reponse.data.message };
                 } else {
-                    return { success: false, error: response.data.message };
+                    return { success: false, error: reponse.data.message };
                 }
             } catch (error) {
                 console.error(
                     "Erreur détaillée lors de la création du vendeur:",
-                    error.response || error
+                    error.reponse || error
                 );
                 return {
                     success: false,
                     error:
-                        error.response?.data?.message ||
+                        error.reponse?.data?.message ||
                         error.message ||
                         "Erreur lors de la création du vendeur",
-                    details: error.response?.data, // Ajoutez cette ligne pour obtenir plus de détails
+                    details: error.reponse?.data, // Ajoutez cette ligne pour obtenir plus de détails
                 };
             }
         },
         async modifierVendeur({ commit, state }, vendeurData) {
             try {
-                const response = await state.api.put(
+                const reponse = await state.api.put(
                     `/vendeurs/modifier/${vendeurData.id}`,
                     vendeurData
                 );
-                if (response.data.success) {
-                    return { success: true, message: response.data.message };
+                if (reponse.data.success) {
+                    return { success: true, message: reponse.data.message };
                 } else {
-                    return { success: false, error: response.data.message };
+                    return { success: false, error: reponse.data.message };
                 }
             } catch (error) {
                 console.error("Erreur lors de la modification du vendeur:", error);
                 return {
                     success: false,
                     error:
-                        error.response?.data?.message ||
+                        error.reponse?.data?.message ||
                         "Erreur lors de la modification du vendeur",
                 };
             }
         },
         async obtenirVendeur({ commit, state }, id) {
             try {
-                const response = await state.api.get(`/vendeurs/${id}`);
-                return response.data;
+                const reponse = await state.api.get(`/vendeurs/${id}`);
+                return reponse.data;
             } catch (error) {
                 console.error("Erreur lors de la récupération du vendeur:", error);
                 throw error;
@@ -532,12 +532,12 @@ const store = createStore({
         },
         async creerLot({ state }, formData) {
             try {
-                const response = await state.api.post("/lots/creer", formData, {
+                const reponse = await state.api.post("/lots/creer", formData, {
                     headers: {
                         "Content-Type": "multipart/form-data",
                     },
                 });
-                return response.data;
+                return reponse.data;
             } catch (error) {
                 console.error("Erreur lors de la création du lot:", error);
                 throw error;
@@ -546,12 +546,12 @@ const store = createStore({
 
         async modifierLot({ state }, { id, lotData }) {
             try {
-                const response = await state.api.put(`/lots/modifier/${id}`, lotData, {
+                const reponse = await state.api.put(`/lots/modifier/${id}`, lotData, {
                     headers: {
                         "Content-Type": "multipart/form-data",
                     },
                 });
-                return response.data;
+                return reponse.data;
             } catch (error) {
                 console.error("Erreur lors de la modification du lot:", error);
                 throw error;
@@ -560,8 +560,8 @@ const store = createStore({
 
         async obtenirTousLots({ state }) {
             try {
-                const response = await state.api.get("/lots/tous");
-                return response.data || [];
+                const reponse = await state.api.get("/lots/tous");
+                return reponse.data || [];
             } catch (error) {
                 console.error(
                     "Erreur lors de la récupération de tous les lots:",
@@ -573,8 +573,8 @@ const store = createStore({
 
         async obtenirLot({ state }, id) {
             try {
-                const response = await state.api.get(`/lots/${id}`);
-                return response.data;
+                const reponse = await state.api.get(`/lots/${id}`);
+                return reponse.data;
             } catch (error) {
                 console.error("Erreur lors de la récupération du lot:", error);
                 throw error;
@@ -583,39 +583,39 @@ const store = createStore({
 
         async supprimerLot({ state }, id) {
             try {
-                const response = await state.api.delete(`/lots/supprimer/${id}`);
-                return response.data;
+                const reponse = await state.api.delete(`/lots/supprimer/${id}`);
+                return reponse.data;
             } catch (error) {
                 console.error("Erreur lors de la suppression du lot:", error);
                 throw error;
             }
         },
         async obtenirCategories({ state }) {
-            const response = await state.api.get("/lots/categories");
-            return response.data;
+            const reponse = await state.api.get("/lots/categories");
+            return reponse.data;
         },
         async obtenirVendeurs({ state }) {
-            const response = await state.api.get("/lots/vendeurs");
-            return response.data;
+            const reponse = await state.api.get("/lots/vendeurs");
+            return reponse.data;
         },
         async obtenirMediums({ state }) {
-            const response = await state.api.get("/lots/mediums");
-            return response.data;
+            const reponse = await state.api.get("/lots/mediums");
+            return reponse.data;
         },
         async obtenirEncans({ state }) {
-            const response = await state.api.get("/lots/encans");
-            return response.data;
+            const reponse = await state.api.get("/lots/encans");
+            return reponse.data;
         },
         async ObtenirTousLesMembres({ commit, state }) {
             try {
-                const response = await state.api.get(
+                const reponse = await state.api.get(
                     `/administrateur/ObtenirTousLesUsers`
                 );
-                return response.data;
+                return reponse.data;
             } catch (error) {
                 console.error(
                     "Erreur détaillée:",
-                    error.response?.data || error.message
+                    error.reponse?.data || error.message
                 );
                 throw error;
             }
@@ -623,10 +623,10 @@ const store = createStore({
 
         async obtenirUnMembre({ commit, state }, membreId) {
             try {
-                const response = await state.api.get(
+                const reponse = await state.api.get(
                     `/administrateur/obtenirTousLesMembres/${membreId}`
                 );
-                return response.data;
+                return reponse.data;
             } catch (error) {
                 console.error("Erreur lors de la récupération du membre:", error);
                 throw error;
@@ -635,10 +635,10 @@ const store = createStore({
 
         async bloquerUnMembre({ commit, state }, membreId) {
             try {
-                const response = await state.api.get(
+                const reponse = await state.api.get(
                     `/administrateur/bloquerMembre/${membreId}`
                 );
-                return response.data;
+                return reponse.data;
             } catch (error) {
                 console.error("Erreur lors du blocage du membre:", error);
                 throw error;
@@ -647,10 +647,10 @@ const store = createStore({
 
         async debloquerUnMembre({ commit, state }, membreId) {
             try {
-                const response = await state.api.get(
+                const reponse = await state.api.get(
                     `/administrateur/debloquerMembre/${membreId}`
                 );
-                return response.data;
+                return reponse.data;
             } catch (error) {
                 console.error("Erreur lors du déblocage du membre:", error);
                 throw error;
@@ -671,11 +671,11 @@ const store = createStore({
             }
 
             try {
-                const response = await state.api.get("/home/check-auth");
-                if (response.data.isAuthenticated) {
+                const reponse = await state.api.get("/home/check-auth");
+                if (reponse.data.isAuthenticated) {
                     commit("setLoggedIn", true);
-                    commit("setUser", response.data.user);
-                    commit("setRoles", response.data.roles);
+                    commit("setUser", reponse.data.user);
+                    commit("setRoles", reponse.data.roles);
                     await dispatch("fetchUserBids");
                     dispatch("forceUpdate");
                 } else {
@@ -684,9 +684,9 @@ const store = createStore({
             } catch (error) {
                 console.error(
                     "Erreur détaillée lors de la vérification de l'authentification:",
-                    error.response || error
+                    error.reponse || error
                 );
-                if (error.response && error.response.status === 401) {
+                if (error.reponse && error.reponse.status === 401) {
                     commit("setLoggedIn", false);
                     commit("setUser", null);
                     commit("setRoles", []);
@@ -700,7 +700,7 @@ const store = createStore({
                 await stopSignalRConnection();
                 commit("SET_CONNECTION", null);
                 // Appel à l'API pour invalider le token côté serveur
-                const response = await state.api.post("/home/logout");
+                const reponse = await state.api.post("/home/logout");
             } catch (error) {
                 console.error("Erreur lors de la déconnexion:", error);
             } finally {
@@ -725,17 +725,6 @@ const store = createStore({
                 });
                 state.userBids = [];
                 state.lots = {};
-            }
-        },
-
-        async fetchListeDeLotsPourAdministrateur({ commit, state }) {
-            try {
-                const response = await state.api.get("/lots/chercherTousLots");
-                // let dataResponse = await response.json();
-                return response.data;
-            } catch (error) {
-                console.error("Erreur détaillée:", error.response || error);
-                throw error;
             }
         },
 
@@ -770,28 +759,28 @@ const store = createStore({
 
         async chercherTousEncansVisibles({ commit, state }) {
             try {
-                const response = await state.api.get(
+                const reponse = await state.api.get(
                     "/encans/cherchertousencansvisibles"
                 );
-                return response;
+                return reponse;
             } catch (error) {
                 return "Erreur, veuillez réessayer";
             }
         },
         async chercherEncanParNumero({ commit, state }, numeroEncan) {
             try {
-                const response = await state.api.get(
+                const reponse = await state.api.get(
                     "/encans/chercherencanparnumero/" + numeroEncan
                 );
-                return response;
+                return reponse;
             } catch (error) {
                 return "Erreur, veuillez réessayer";
             }
         },
         async chercherEncanEnCours({ commit, state }) {
             try {
-                const response = await state.api.get("/encans/chercherencanencours");
-                return response;
+                const reponse = await state.api.get("/encans/chercherencanencours");
+                return reponse;
             } catch (error) {
                 return "Erreur, veuillez réessayer";
             }
@@ -799,10 +788,10 @@ const store = createStore({
 
         async chercherNumeroEncanEnCours({ commit, state }) {
             try {
-                const response = await state.api.get(
+                const reponse = await state.api.get(
                     "/encans/ChercherNumeroEncanEnCours"
                 );
-                return response;
+                return reponse;
             } catch (error) {
                 return "Erreur, veuillez réessayer";
             }
@@ -810,38 +799,38 @@ const store = createStore({
 
         async fetchEncanInfo({ commit, state }) {
             try {
-                const response = await state.api.get("/encans/cherchertousencans");
+                const reponse = await state.api.get("/encans/cherchertousencans");
 
-                return response.data;
+                return reponse.data;
             } catch (error) {
-                console.error("Erreur détaillée:", error.response || error);
+                console.error("Erreur détaillée:", error.reponse || error);
                 throw error;
             }
         },
         async supprimerUnEncan({ commit, state }, numeroEncan) {
             try {
-                const response = await state.api.delete(
+                const reponse = await state.api.delete(
                     `/encans/supprimerEncan/${numeroEncan}`
                 );
-                return response.data;
+                return reponse.data;
             } catch (error) {
                 console.error(
                     "Erreur détaillée lors de la suppression de l'encan",
-                    error.response || error
+                    error.reponse || error
                 );
                 throw error;
             }
         },
         async obtenirUnEncanParId({ commit, state }, idEncan) {
             try {
-                const response = await state.api.get(
+                const reponse = await state.api.get(
                     `/encans/obtenirUnEncan/${idEncan}`
                 );
-                return response.data;
+                return reponse.data;
             } catch (error) {
                 console.error(
                     "Erreur détaillée lors de la suppression de l'encan",
-                    error.response || error
+                    error.reponse || error
                 );
                 throw error;
             }
@@ -849,20 +838,20 @@ const store = createStore({
 
         async modifierEncan({ commit, state }, encanData) {
             try {
-                const response = await state.api.put(
+                const reponse = await state.api.put(
                     `/encans/modifierEncan/${encanData.id}`,
                     encanData
                 );
-                if (response.data.success) {
-                    return { success: true, message: response.data.message };
+                if (reponse.data.success) {
+                    return { success: true, message: reponse.data.message };
                 } else {
-                    return { success: false, error: response.data.message };
+                    return { success: false, error: reponse.data.message };
                 }
             } catch (error) {
                 return {
                     success: false,
                     error:
-                        error.response?.data?.message ||
+                        error.reponse?.data?.message ||
                         "Erreur lors de la modification de l'encan",
                 };
             }
@@ -870,50 +859,50 @@ const store = createStore({
 
         async creerEncan({ commit, state }, encanData) {
             try {
-                const response = await state.api.post("/encans/creerEncan", encanData);
-                if (response.data.sucess) {
-                    return { success: true, message: response.data.message };
+                const reponse = await state.api.post("/encans/creerEncan", encanData);
+                if (reponse.data.sucess) {
+                    return { success: true, message: reponse.data.message };
                 } else {
-                    return { success: false, error: response.data.message };
+                    return { success: false, error: reponse.data.message };
                 }
             } catch (error) {
                 return {
                     success: false,
-                    error: error.response.data.message,
-                    details: error.response?.data,
+                    error: error.reponse.data.message,
+                    details: error.reponse?.data,
                 };
             }
         },
 
         async mettreAJourEncanPublie({ commit, state }, encanData) {
             try {
-                const response = await state.api.put(
+                const reponse = await state.api.put(
                     "/encans/mettreAJourEncanPublie",
                     encanData
                 );
-                if (response.data.sucess) {
-                    return { success: true, message: response.data.message };
+                if (reponse.data.sucess) {
+                    return { success: true, message: reponse.data.message };
                 } else {
-                    return { success: false, error: response.data.message };
+                    return { success: false, error: reponse.data.message };
                 }
             } catch (error) {
                 return {
                     success: false,
-                    error: error.response.data.message,
-                    details: error.response?.data,
+                    error: error.reponse.data.message,
+                    details: error.reponse?.data,
                 };
             }
         },
 
         async chercherTousLotsRecherche({ state }) {
             try {
-                const response = await state.api.get(`/lots/cherchertouslotsrecherche`);
-                return response;
+                const reponse = await state.api.get(`/lots/cherchertouslotsrecherche`);
+                return reponse;
             } catch (error) {
                 console.error("Erreur détaillée:", {
                     message: error.message,
-                    status: error.response?.status,
-                    data: error.response?.data,
+                    status: error.reponse?.status,
+                    data: error.reponse?.data,
                     config: error.config,
                 });
                 throw error;
@@ -921,16 +910,16 @@ const store = createStore({
         },
         async chercherTousLotsParEncan({ state }, idEncan) {
             try {
-                const response = await state.api.get(
+                const reponse = await state.api.get(
                     `/lots/cherchertouslotsparencan/${idEncan}`
                 );
 
-                return response;
+                return reponse;
             } catch (error) {
                 console.error("Erreur détaillée:", {
                     message: error.message,
-                    status: error.response?.status,
-                    data: error.response?.data,
+                    status: error.reponse?.status,
+                    data: error.reponse?.data,
                     config: error.config,
                 });
                 throw error;
@@ -938,10 +927,10 @@ const store = createStore({
         },
         async chercherDetailsLotParId({ commit, state }, idLot) {
             try {
-                const response = await state.api.get(
+                const reponse = await state.api.get(
                     "/lots/chercherDetailsLotParId/" + idLot
                 );
-                return response;
+                return reponse;
             } catch (error) {
                 return "Erreur, veuillez réessayer";
             }
@@ -949,8 +938,8 @@ const store = createStore({
 
         async chercherEncansFuturs({ commit, state }) {
             try {
-                const response = await state.api.get("/encans/chercherencansfuturs");
-                return response;
+                const reponse = await state.api.get("/encans/chercherencansfuturs");
+                return reponse;
             } catch (error) {
                 return "Erreur, veuillez réessayer";
             }
@@ -958,8 +947,8 @@ const store = createStore({
 
         async chercherEncansPasses({ commit, state }) {
             try {
-                const response = await state.api.get("/encans/chercherencanspasses");
-                return response;
+                const reponse = await state.api.get("/encans/chercherencanspasses");
+                return reponse;
             } catch (error) {
                 return "Erreur, veuillez réessayer";
             }
@@ -971,19 +960,19 @@ const store = createStore({
         async placerMise({ state, commit, dispatch }, miseData) {
             try {
 
-                const response = await state.api.post("/lots/placerMise", {
+                const reponse = await state.api.post("/lots/placerMise", {
                     LotId: miseData.lotId,
                     Montant: parseFloat(miseData.montant),
                     UserId: state.user?.id,
                     MontantMaximal: miseData.montantMaximal,
                 });
 
-                return response.data;
+                return reponse.data;
             } catch (error) {
                 console.error("Store - Erreur lors de la mise:", error);
                 return {
                     success: false,
-                    message: error.response?.data?.message || "Erreur lors de la mise",
+                    message: error.reponse?.data?.message || "Erreur lors de la mise",
                 };
             }
         },
@@ -992,7 +981,7 @@ const store = createStore({
             if (!state.user?.id || !state.token) return;
 
             try {
-                const response = await state.api.get(
+                const reponse = await state.api.get(
                     `/lots/userBids/${state.user.id}`,
                     {
                         headers: {
@@ -1000,11 +989,11 @@ const store = createStore({
                         },
                     }
                 );
-                commit("setUserBids", response.data);
+                commit("setUserBids", reponse.data);
             } catch (error) {
                 console.error("Erreur lors du chargement des mises:", error);
                 // Si erreur d'authentification, nettoyer les données
-                if (error.response?.status === 401) {
+                if (error.reponse?.status === 401) {
                     commit("setUserBids", []);
                 }
             }
@@ -1048,36 +1037,36 @@ const store = createStore({
 
         async reinitialisePassword({ commit, state }, resetPasswordData) {
             try {
-                const response = await state.api.post(
+                const reponse = await state.api.post(
                     "/utilisateurs/reinitialiserMotDePasse",
                     resetPasswordData
                 );
                 return {
                     success: true,
-                    message: response.data,
+                    message: reponse.data,
                 };
             } catch (error) {
                 return {
                     success: false,
                     message:
-                        error.response?.data ||
+                        error.reponse?.data ||
                         "Erreur lors de la modification du mot de passe.",
                 };
             }
         },
         async creerCompteUtilisateur({ commit, state }, formData) {
             try {
-                const response = await state.api.post("/utilisateurs/creer", formData);
+                const reponse = await state.api.post("/utilisateurs/creer", formData);
 
-                if (response.data.success) {
+                if (reponse.data.success) {
                     return {
                         success: true,
-                        message: response.data.message,
+                        message: reponse.data.message,
                     };
                 } else {
                     return {
                         success: false,
-                        message: response.data.message,
+                        message: reponse.data.message,
                     };
                 }
             } catch (error) {
@@ -1085,32 +1074,32 @@ const store = createStore({
                 return {
                     success: false,
                     message:
-                        error.response?.data?.message ||
+                        error.reponse?.data?.message ||
                         "Une erreur est survenue lors de la création du compte",
                 };
             }
         },
         async fetchFactureInfoMembre({ commit, state }) {
             try {
-                const response = await state.api.get(
+                const reponse = await state.api.get(
                     "/factures/chercherFacturesMembre"
                 );
-                return response.data;
+                return reponse.data;
             } catch (error) {
-                console.error("Erreur détaillée:", error.response || error);
+                console.error("Erreur détaillée:", error.reponse || error);
                 throw error;
             }
         },
 
         async obtenirArtistes({ state }) {
-            const response = await state.api.get("/lots/artistes");
-            return response.data;
+            const reponse = await state.api.get("/lots/artistes");
+            return reponse.data;
         },
 
         async creerSetupIntent({ state }) {
             try {
-                const response = await state.api.post("/paiement/creerSetupIntent");
-                return response;
+                const reponse = await state.api.post("/paiement/creerSetupIntent");
+                return reponse;
             } catch (error) {
                 return "Erreur, veuillez réessayer";
             }
@@ -1118,51 +1107,51 @@ const store = createStore({
 
         async chercherCartesUser({ state }) {
             try {
-                const response = await state.api.get("/paiement/chercherCartes");
-                return response;
+                const reponse = await state.api.get("/paiement/chercherCartes");
+                return reponse;
             } catch (error) {
                 return "Erreur, veuillez réessayer";
             }
         },
         async fetchFactureInfo({ commit, state }) {
             try {
-                const response = await state.api.get("/factures/chercherFactures");
+                const reponse = await state.api.get("/factures/chercherFactures");
 
-                return response.data;
+                return reponse.data;
             } catch (error) {
-                console.error("Erreur détaillée:", error.response || error);
+                console.error("Erreur détaillée:", error.reponse || error);
                 throw error;
             }
         },
 
         async creerPaymentIntent({ state }, idFacture) {
             try {
-                const response = await state.api.post(
+                const reponse = await state.api.post(
                     "/paiement/creerPaymentIntent/" + idFacture
                 );
-                return response;
+                return reponse;
             } catch (error) {
                 return "Erreur, veuillez réessayer";
             }
         },
         async chercherPrevisualisationLivraison({ state }, idFacture) {
             try {
-                const response = await state.api.get(
+                const reponse = await state.api.get(
                     "/facturesLivraison/GenererFactureLivraison/" + idFacture
                 );
-                return response;
+                return reponse;
             } catch (error) {
-                console.error("Erreur détaillée:", error.response || error);
+                console.error("Erreur détaillée:", error.reponse || error);
                 throw error;
             }
         },
 
         async chercherAdressesClient({ state }) {
             try {
-                const response = await state.api.get(
+                const reponse = await state.api.get(
                     "/utilisateurs/chercheradressesclient"
                 );
-                return response;
+                return reponse;
             } catch (error) {
                 return "Erreur, veuillez réessayer";
             }
@@ -1170,11 +1159,11 @@ const store = createStore({
 
         async enregistrerChoixLivraison({ state }, choixLivraison) {
             try {
-                const response = await state.api.post(
+                const reponse = await state.api.post(
                     "/facturesLivraison/enregistrerChoixLivraison",
                     choixLivraison
                 );
-                return response;
+                return reponse;
             } catch (error) {
                 return "Erreur, veuillez réessayer";
             }
@@ -1182,10 +1171,10 @@ const store = createStore({
 
         async chercherDetailsFactureLivraison({ state }, idFactureLivraison) {
             try {
-                const response = await state.api.get(
+                const reponse = await state.api.get(
                     "/facturesLivraison/chercherDetailsFactureLivraison/" + idFactureLivraison
                 );
-                return response;
+                return reponse;
             } catch (error) {
                 return "Erreur, veuillez réessayer";
             }
@@ -1193,10 +1182,10 @@ const store = createStore({
 
         async chercherDetailsFacture({ state }, idFacture) {
             try {
-                const response = await state.api.get(
+                const reponse = await state.api.get(
                     "/factures/chercherDetailsFacture/" + idFacture
                 );
-                return response;
+                return reponse;
             } catch (error) {
                 return "Erreur, veuillez réessayer";
             }
@@ -1204,10 +1193,10 @@ const store = createStore({
 
         async supprimerCarte({ state }, pmId) {
             try {
-                const response = await state.api.post(
+                const reponse = await state.api.post(
                     "/paiement/supprimerCarte/" + pmId
                 );
-                return response;
+                return reponse;
             } catch (error) {
                 return "Erreur, veuillez réessayer";
             }
@@ -1218,15 +1207,15 @@ const store = createStore({
             if (!state.isLoggedIn) return 0;
 
             try {
-                const response = await state.api.get(`/lots/userLastBid/${lotId}`);
-                if (response.data > 0) {
+                const reponse = await state.api.get(`/lots/userLastBid/${lotId}`);
+                if (reponse.data > 0) {
                     commit("UPDATE_USER_LAST_BID", {
                         lotId,
                         userId: state.user?.id,
-                        montant: response.data,
+                        montant: reponse.data,
                     });
                 }
-                return response.data;
+                return reponse.data;
             } catch (error) {
                 console.error(
                     "Erreur lors de la récupération de la dernière mise:",
@@ -1237,47 +1226,47 @@ const store = createStore({
         },
         async chargerClientsFinEncan({ state }, numeroEncan) {
             try {
-                const response = await state.api.post(
+                const reponse = await state.api.post(
                     "/factures/CreerFacturesParEncan/" + 232
                 );
-                return response;
+                return reponse;
             } catch (error) {
                 return "Erreur, veuillez réessayer";
             }
         },
         async chercherFacturesParEncan({ state }, numeroEncan) {
             try {
-                const response = await state.api.get(
+                const reponse = await state.api.get(
                     "/factures/chercherFacturesParEncan/" + 232
                 );
-                return response;
+                return reponse;
             } catch (error) {
                 return "Erreur, veuillez réessayer";
             }
         },
         async chercherFacturesChoixAFaire({ state }) {
             try {
-                const response = await state.api.get(
+                const reponse = await state.api.get(
                     "/factures/chercherFacturesChoixAFaire"
                 );
-                return response;
+                return reponse;
             } catch (error) {
                 return "Erreur, veuillez réessayer";
             }
         },
         async verifierEtatEncan({ state, commit }) {
-            const response = await state.api.get("/encans/etat-courant");
-            const { type, encan } = response.data;
+            const reponse = await state.api.get("/encans/etat-courant");
+            const { type, encan } = reponse.data;
 
             commit("SET_ENCAN_COURANT", encan);
 
             if (encan?.id) {
                 // Charger les lots séparément pour avoir toutes les informations
-                const lotsResponse = await state.api.get(
+                const lotsreponse = await state.api.get(
                     `/lots/cherchertouslotsparencan/${encan.id}`
                 );
-                if (lotsResponse.data) {
-                    commit("setLots", lotsResponse.data);
+                if (lotsreponse.data) {
+                    commit("setLots", lotsreponse.data);
                 }
             }
 
@@ -1339,11 +1328,11 @@ const store = createStore({
 
         async obtenirNotification({ state, commit }, userId) {
             try {
-                const response = await state.api.get(
+                const reponse = await state.api.get(
                     `Notification/obtenirNotificationNonLu/${userId}`
                 );
-                if (response) {
-                    commit("SET_NOTIFICATIONS", response.data);
+                if (reponse) {
+                    commit("SET_NOTIFICATIONS", reponse.data);
                 }
             } catch (error) {
                 console.error(
@@ -1355,8 +1344,8 @@ const store = createStore({
 
         async marquerToutesNotifLues({ state, commit }) {
             try {
-                const response = await state.api.post("notification/marquerLues");
-                if (response.data) {
+                const reponse = await state.api.post("notification/marquerLues");
+                if (reponse.data) {
                     commit("MARK_AS_READ");
                 }
             } catch (error) {

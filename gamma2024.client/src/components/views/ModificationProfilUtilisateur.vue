@@ -548,16 +548,16 @@
             try {
                 const fData = new FormData();
                 fData.append("avatar", file);
-                const response = await store.dispatch("updateAvatar", fData);
+                const reponse = await store.dispatch("updateAvatar", fData);
 
                 // Utiliser l'URL complète retournée par l'action du store
-                avatarUrl.value = response.data.avatarUrl;
+                avatarUrl.value = reponse.data.avatarUrl;
 
                 formulaireChange.value = true;
             } catch (erreur) {
                 messageErreur.value =
                     "Erreur lors de la mise à jour de l'avatar: " +
-                    (erreur.response?.data?.message || erreur.message);
+                    (erreur.reponse?.data?.message || erreur.message);
             }
         }
     };
@@ -701,7 +701,7 @@
                     type: "error",
                     text:
                         "Erreur lors de la mise à jour des informations: " +
-                        (erreur.response?.data?.message || erreur.message),
+                        (erreur.reponse?.data?.message || erreur.message),
                 };
             }
         } else {
