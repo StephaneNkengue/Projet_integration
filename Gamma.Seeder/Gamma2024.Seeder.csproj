@@ -28,6 +28,27 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<None Update="CSV\DonneesDec\Acheteur.csv">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+		<None Update="CSV\DonneesDec\AcheteurEncan232.csv">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+		<None Update="CSV\DonneesDec\AcheteurEncan233.csv">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+		<None Update="CSV\DonneesDec\Encan232Et233.csv">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+		<None Update="CSV\DonneesDec\Encan234.csv">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+		<None Update="CSV\DonneesDec\Encan235.csv">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+		<None Update="CSV\DonneesDec\VendeursEtVentes.csv">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
 		<None Update="CSV\DonneesOriginal\AcheteurEncan232.csv">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</None>
