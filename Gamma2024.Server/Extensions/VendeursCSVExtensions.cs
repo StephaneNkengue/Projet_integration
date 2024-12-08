@@ -1,4 +1,5 @@
 using Gamma2024.Server.Models;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Gamma2024.Server.Extensions
 {
@@ -10,27 +11,30 @@ namespace Gamma2024.Server.Extensions
             {
                 var columns = line.Split(';');
 
-                var adresse = columns[2].Split(",").Select(a => a.Trim()).ToList();
-
-                var numCiviqueRue = adresse[0].Split(" ", 2).Select(a => a.Trim()).ToList();
-
-                yield return new Vendeur
+                if (!columns[0].IsNullOrEmpty())
                 {
-                    Nom = columns[0],
-                    Prenom = columns[1],
-                    Adresse = new Adresse
+                    var adresse = columns[2].Split(",").Select(a => a.Trim()).ToList();
+
+                    var numCiviqueRue = adresse[0].Split(" ", 2).Select(a => a.Trim()).ToList();
+
+                    yield return new Vendeur
                     {
-                        Numero = int.Parse(numCiviqueRue[0]),
-                        Rue = numCiviqueRue[1],
-                        Ville = adresse[1],
-                        Province = adresse[2],
-                        Pays = "Canada",
-                        CodePostal = adresse[3].Replace(" ", ""),
-                        EstDomicile = false
-                    },
-                    Telephone = columns[3],
-                    Courriel = columns[4]
-                };
+                        Nom = columns[0],
+                        Prenom = columns[1],
+                        Adresse = new Adresse
+                        {
+                            Numero = int.Parse(numCiviqueRue[0]),
+                            Rue = numCiviqueRue[1],
+                            Ville = adresse[1],
+                            Province = adresse[2],
+                            Pays = "Canada",
+                            CodePostal = adresse[3].Replace(" ", ""),
+                            EstDomicile = false
+                        },
+                        Telephone = columns[3],
+                        Courriel = columns[4]
+                    };
+                }
             }
         }
 
