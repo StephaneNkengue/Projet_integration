@@ -132,7 +132,8 @@ Console.WriteLine("Ajout des utilisateurs");
 
 var passwordHasher = new PasswordHasher<ApplicationUser>();
 
-var utilisateurs = System.IO.File.ReadAllLines("CSV/DonneesOriginal/Acheteurs.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
+//var utilisateurs = System.IO.File.ReadAllLines("CSV/DonneesOriginal/Acheteurs.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
+var utilisateurs = System.IO.File.ReadAllLines("CSV/DonneesDec/Acheteur.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
                         .Skip(1)
                         .Where(x => x.Length > 1)
                         .ToApplicationUser()
