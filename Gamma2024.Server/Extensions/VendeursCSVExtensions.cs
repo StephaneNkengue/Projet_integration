@@ -1,3 +1,4 @@
+using Gamma2024.Server.Extensions.Objets;
 using Gamma2024.Server.Models;
 using Microsoft.IdentityModel.Tokens;
 
@@ -38,8 +39,9 @@ namespace Gamma2024.Server.Extensions
             }
         }
 
-        public static IEnumerable<IEnumerable<string>> GetNumeroLotsEncan232(this IEnumerable<string> source)
+        public static IEnumerable<VendeurLotsInfo> GetVendeurLots(this IEnumerable<string> source)
         {
+            var compteur = 0;
             foreach (var line in source)
             {
                 var columns = line.Split(';');
@@ -49,22 +51,48 @@ namespace Gamma2024.Server.Extensions
                     .Select(a => a.Trim().Replace("lot #", ""))
                     .ToList();
 
-                yield return lots;
-            }
-        }
+                yield return new VendeurLotsInfo
+                {
+                    Ligne = compteur,
+                    NumeroEncan = 232,
+                    NumerosLots = lots
+                };
 
-        public static IEnumerable<IEnumerable<string>> GetNumeroLotsEncan233(this IEnumerable<string> source)
-        {
-            foreach (var line in source)
-            {
-                var columns = line.Split(';');
-
-                var lots = columns[6]
+                lots = columns[6]
                     .Split(",")
                     .Select(a => a.Trim().Replace("lot #", ""))
                     .ToList();
 
-                yield return lots;
+                yield return new VendeurLotsInfo
+                {
+                    Ligne = compteur,
+                    NumeroEncan = 233,
+                    NumerosLots = lots
+                };
+
+                lots = columns[7]
+                    .Split(",")
+                    .Select(a => a.Trim().Replace("lot #", ""))
+                    .ToList();
+
+                yield return new VendeurLotsInfo
+                {
+                    Ligne = compteur,
+                    NumeroEncan = 234,
+                    NumerosLots = lots
+                };
+
+                lots = columns[8]
+                    .Split(",")
+                    .Select(a => a.Trim().Replace("lot #", ""))
+                    .ToList();
+
+                yield return new VendeurLotsInfo
+                {
+                    Ligne = compteur,
+                    NumeroEncan = 235,
+                    NumerosLots = lots
+                };
             }
         }
     }
