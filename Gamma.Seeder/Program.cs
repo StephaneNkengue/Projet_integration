@@ -132,7 +132,6 @@ Console.WriteLine("Ajout des utilisateurs");
 
 var passwordHasher = new PasswordHasher<ApplicationUser>();
 
-//var utilisateurs = System.IO.File.ReadAllLines("CSV/DonneesOriginal/Acheteurs.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
 var utilisateurs = System.IO.File.ReadAllLines("CSV/DonneesDec/Acheteur.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
                         .Skip(1)
                         .Where(x => x.Length > 1)
@@ -200,7 +199,6 @@ context.SaveChanges();
 
 Console.WriteLine("Ajout des vendeurs");
 
-//var vendeurs = System.IO.File.ReadAllLines("CSV/DonneesOriginal/Vendeurs.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
 var vendeurs = System.IO.File.ReadAllLines("CSV/DonneesDec/VendeursEtVentes.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
                 .Skip(1)
                 .Where(l => l.Length > 1)
@@ -211,14 +209,6 @@ context.Vendeurs.AddRange(vendeurs);
 context.SaveChanges();
 
 Console.WriteLine("Ajout des categories");
-
-//var categoriesLotsUniques = System.IO.File.ReadAllLines("CSV/DonneesOriginal/Encan232et233.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
-//                        .Skip(1)
-//                        .Where(l => l.Length > 1)
-//                        .GetCategories()
-//                        .GroupBy(c => c.Nom)
-//                        .Select(c => c.First())
-//                        .ToList();
 
 var categoriesLotsUniques = System.IO.File.ReadAllLines("CSV/DonneesDec/Encan232Et233.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
                             .Skip(1)
@@ -247,14 +237,6 @@ context.Categories.AddRange(categoriesLotsUniques);
 context.SaveChanges();
 
 Console.WriteLine("Ajout des médiums");
-
-//var mediumsLotsUniques = System.IO.File.ReadAllLines("CSV/DonneesOriginal/Encan232et233.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
-//                        .Skip(1)
-//                        .Where(l => l.Length > 1)
-//                        .GetMediums()
-//                        .GroupBy(m => m.Type)
-//                        .Select(m => m.First())
-//                        .ToList();
 
 var mediumsLotsUniques = System.IO.File.ReadAllLines("CSV/DonneesDec/Encan232Et233.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
                             .Skip(1)
