@@ -8,20 +8,21 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Gamma2024.Server.Services
 {
-	public class EncanService
-	{
-		private readonly ApplicationDbContext _context;
-		private readonly ILogger<EncanService> _logger;
-		private readonly IHubContext<LotMiseHub, ILotMiseHub> _hubContext;
-		private readonly HttpClient _httpClient;
+    public class EncanService
+    {
+        private readonly ApplicationDbContext _context;
+        private readonly ILogger<EncanService> _logger;
+        private readonly IHubContext<LotMiseHub, ILotMiseHub> _hubContext;
 
-		public EncanService(ApplicationDbContext context, ILogger<EncanService> logger, IHubContext<LotMiseHub, ILotMiseHub> hubContext, HttpClient httpClient)
-		{
-			_context = context;
-			_logger = logger;
-			_hubContext = hubContext;
-			_httpClient = httpClient;
-		}
+        public EncanService(
+            ApplicationDbContext context,
+            ILogger<EncanService> logger,
+            IHubContext<LotMiseHub, ILotMiseHub> hubContext)
+        {
+            _context = context;
+            _logger = logger;
+            _hubContext = hubContext;
+        }
 
 		public ICollection<EncanAffichageAdminVM> ChercherTousEncans()
 		{
@@ -255,27 +256,10 @@ namespace Gamma2024.Server.Services
 				.OrderByDescending(e => e.DateFin)
 				.FirstOrDefaultAsync();
 
-			if (dernierEncan?.EstEnSoireeCloture() == true)
-			{
-				var lotsOrdonnes = dernierEncan.EncanLots
-					.OrderBy(el => el.Lot.Numero)
-					.ToList();
-
-				var derniereDateFin = lotsOrdonnes
-					.Where(el => el.Lot.DateFinDecompteLot.HasValue)
-					.Max(el => el.Lot.DateFinDecompteLot) ?? maintenant;
-
-				foreach (var encanLot in lotsOrdonnes.Where(el => !el.Lot.DateDebutDecompteLot.HasValue))
-				{
-					var index = lotsOrdonnes.IndexOf(encanLot);
-					encanLot.Lot.DateDebutDecompteLot = derniereDateFin;
-					encanLot.Lot.DateFinDecompteLot = derniereDateFin.AddSeconds(dernierEncan.PasLot * (index + 1));
-				}
-
-				await _context.SaveChangesAsync();
-
-				return ("soireeCloture", dernierEncan);
-			}
+            if (dernierEncan?.EstEnSoireeCloture() == true)
+            {
+                return ("soireeCloture", dernierEncan);
+            }
 
 			var encanCourant = await _context.Encans
 				.Include(e => e.EncanLots)
@@ -299,67 +283,10 @@ namespace Gamma2024.Server.Services
 					.ThenInclude(el => el.Lot)
 				.FirstOrDefaultAsync(e => e.NumeroEncan == numeroEncan);
 
-			if (encan == null)
-			{
-				return false;
-			}
+            return encan?.EstEnSoireeCloture() ?? false;
+        }
 
-			return encan.EstEnSoireeCloture();
-		}
-
-		public async Task VerifierFinSoireeCloture(int numeroEncan)
-		{
-			var encan = await _context.Encans
-				.Include(e => e.EncanLots)
-					.ThenInclude(el => el.Lot)
-				.FirstOrDefaultAsync(e => e.NumeroEncan == numeroEncan);
-
-			if (encan != null)
-			{
-				var maintenant = DateTime.Now;
-
-				// Vérifier que tous les lots sont vendus ET que leur temps est écoulé
-				var tousLotsTermines = encan.EncanLots.All(el =>
-					el.Lot.EstVendu &&
-					(!el.Lot.DateFinDecompteLot.HasValue || el.Lot.DateFinDecompteLot <= maintenant)
-				);
-
-				if (tousLotsTermines)
-				{
-					using var transaction = await _context.Database.BeginTransactionAsync();
-					try
-					{
-						// 1. Appeler le endpoint du FactureController
-						var factureReponse = await _httpClient.PostAsync(
-							$"/api/factures/CreerFacturesParEncan/{numeroEncan}",
-							null
-						);
-						factureReponse.EnsureSuccessStatusCode();
-
-						// 2. Appeler le endpoint du PaiementController
-						var paiementReponse = await _httpClient.PostAsync(
-							$"/api/paiement/ChargerClients/{numeroEncan}",
-							null
-						);
-						paiementReponse.EnsureSuccessStatusCode();
-
-						await transaction.CommitAsync();
-
-						// Notifier les clients via SignalR
-						await _hubContext.Clients.All.ReceiveNewBid(new
-						{
-							type = "soireeTerminee",
-							numeroEncan = numeroEncan
-						});
-					}
-					catch (Exception ex)
-					{
-						await transaction.RollbackAsync();
-						_logger.LogError(ex, "Erreur lors de la finalisation de la soirée de clôture");
-						throw;
-					}
-				}
-			}
-		}
-	}
+        
+    }
 }
+    

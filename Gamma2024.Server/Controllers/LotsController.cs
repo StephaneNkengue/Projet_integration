@@ -11,21 +11,23 @@ using System.Security.Claims;
 
 namespace Gamma2024.Server.Controllers
 {
-	[ApiController]
-	[Route("api/[controller]")]
-	public class LotsController : ControllerBase
-	{
-		private readonly LotService _lotService;
-		private readonly ApplicationDbContext _context;
-		private readonly IHubContext<LotMiseHub> _hubContext;
+    [ApiController]
+    [Route("api/[controller]")]
+    public class LotsController : ControllerBase
+    {
+        private readonly LotService _lotService;
+        private readonly ApplicationDbContext _context;
+        private readonly IHubContext<LotMiseHub> _hubContext;
+		private readonly ILogger<LotsController> _logger;
 
 
-		public LotsController(LotService lotService, ApplicationDbContext context, IHubContext<LotMiseHub> hubContext)
-		{
-			_lotService = lotService;
-			_context = context;
-			_hubContext = hubContext;
-		}
+        public LotsController(LotService lotService, ApplicationDbContext context, IHubContext<LotMiseHub> hubContext, ILogger<LotsController> logger)
+        {
+            _lotService = lotService;
+            _context = context;
+            _hubContext = hubContext;
+			_logger = logger;
+        }
 
 		[Authorize(Roles = ApplicationRoles.ADMINISTRATEUR)]
 		[HttpGet("tous")]
@@ -217,17 +219,31 @@ namespace Gamma2024.Server.Controllers
 			}
 		}
 
-		[Authorize(Roles = ApplicationRoles.CLIENT)]
+		[Authorize]
 		[HttpGet("userBids/{userId}")]
 		public async Task<IActionResult> GetUserBids(string userId)
 		{
-			if (userId != User.FindFirst(ClaimTypes.NameIdentifier)?.Value)
+			try
 			{
-				return Unauthorized();
-			}
+				_logger.LogInformation($"Contrôleur - Début GetUserBids pour userId: {userId}");
+				
+				var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+				_logger.LogInformation($"Contrôleur - CurrentUserId: {currentUserId}, RequestedUserId: {userId}");
 
-			var userBids = await _lotService.GetUserBids(userId);
-			return Ok(userBids);
+				if (currentUserId != userId)
+				{
+					_logger.LogWarning($"Contrôleur - Accès non autorisé: currentUserId ({currentUserId}) != requestedUserId ({userId})");
+					return Forbid();
+				}
+
+				var userBids = await _lotService.GetUserBids(userId);
+				return Ok(userBids);
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError(ex, $"Contrôleur - Erreur dans GetUserBids pour userId: {userId}");
+				return StatusCode(500, "Une erreur est survenue lors de la récupération des mises");
+			}
 		}
 
 		[Authorize]
@@ -244,5 +260,6 @@ namespace Gamma2024.Server.Controllers
 			return Ok(lastBid);
 		}
 
-	}
+
+    }
 }

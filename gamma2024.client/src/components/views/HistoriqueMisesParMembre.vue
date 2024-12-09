@@ -71,6 +71,7 @@
             .map(lot => ({
                 ...lot,
                 userHasBid: true
+                
             }));
     });
 

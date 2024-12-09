@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Gamma2024.Server.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialiserBD : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -94,7 +94,8 @@ namespace Gamma2024.Server.Migrations
                     DateDebutSoireeCloture = table.Column<DateTime>(type: "datetime2", nullable: false),
                     EstPublie = table.Column<bool>(type: "bit", nullable: false),
                     PasLot = table.Column<int>(type: "int", nullable: false),
-                    PasMise = table.Column<int>(type: "int", nullable: false)
+                    PasMise = table.Column<int>(type: "int", nullable: false),
+                    EstTermine = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
