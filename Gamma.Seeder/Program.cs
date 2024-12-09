@@ -537,4 +537,54 @@ foreach (var item in utilisateurs)
 context.Lots.UpdateRange(lots.Select(l => l.Lot));
 context.SaveChanges();
 
+Console.WriteLine("Ajout des mises dans l'encan 234");
+
+var lotsSimNumeros = new List<string> { "8", "10", "16" };
+var lotsHugNumeros = new List<string> { "5", "15a", "21" };
+
+var lotsSim = lots.Where(l => l.NumeroEncan == 234 && lotsSimNumeros.Contains(l.Lot.Numero)).Select(l => l.Lot).ToList();
+var lotsHug = lots.Where(l => l.NumeroEncan == 234 && lotsHugNumeros.Contains(l.Lot.Numero)).Select(l => l.Lot).ToList();
+
+var simon = utilisateurs.First(u => u.UserName == "SimCar");
+var hugo = utilisateurs.First(u => u.UserName == "HugoLam");
+
+foreach (var lot in lotsSim)
+{
+    lot.ClientMise = simon;
+    lot.IdClientMise = simon.Id;
+    var mise = new MiseAutomatique
+    {
+        LotId = lot.Id,
+        UserId = simon.Id,
+        Montant = (decimal)(lot.PrixOuverture),
+        DateMise = DateTime.UtcNow,
+        EstMiseAutomatique = false
+    };
+    lot.Mise = (double)mise.Montant;
+
+    context.MiseAutomatiques.Add(mise);
+    context.Lots.Update(lot);
+    context.SaveChanges();
+}
+
+
+foreach (var lot in lotsHug)
+{
+    lot.ClientMise = hugo;
+    lot.IdClientMise = hugo.Id;
+    var mise = new MiseAutomatique
+    {
+        LotId = lot.Id,
+        UserId = hugo.Id,
+        Montant = (decimal)(lot.PrixOuverture),
+        DateMise = DateTime.UtcNow,
+        EstMiseAutomatique = false
+    };
+    lot.Mise = (double)mise.Montant;
+
+    context.MiseAutomatiques.Add(mise);
+    context.Lots.Update(lot);
+    context.SaveChanges();
+}
+
 Console.WriteLine("Fin du seed");
