@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Gamma2024.Server.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241205192154_InitialiserBD")]
-    partial class InitialiserBD
+    [Migration("20241209103512_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -275,6 +275,9 @@ namespace Gamma2024.Server.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<bool>("EstPublie")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("EstTermine")
                         .HasColumnType("bit");
 
                     b.Property<int>("NumeroEncan")

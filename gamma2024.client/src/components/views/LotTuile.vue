@@ -329,9 +329,10 @@
     const mettreAJourCompteur = () => {
         if (tempsRestant.value <= 0) {
             cancelAnimationFrame(rafId);
-            if (store.state.connection?.state === "Connected") {
-                store.state.connection.invoke("LotVendu", props.lotRecu.id);
-            }
+            
+            // Plus d'appel au serveur via SignalR
+            // Juste une mise à jour locale via le store
+            store.commit('SET_LOT_VENDU', props.lotRecu.id);
             return;
         }
         rafId = requestAnimationFrame(mettreAJourCompteur);
@@ -389,6 +390,8 @@
 
         return !lot.estVendu && finDecompte > maintenant;
     });
+
+
 
 </script>
 
