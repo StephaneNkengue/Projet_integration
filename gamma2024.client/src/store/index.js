@@ -43,8 +43,9 @@ const store = createStore({
     },
 
     setLoggedIn(state, value) {
+      console.log("Setting logged in:", value);
       state.isLoggedIn = value;
-      sessionStorage.setItem("isLoggedIn", value);
+      localStorage.setItem("isLoggedIn", value);
       if (!value) {
         state.userBids = [];
         if (state.lots) {
@@ -55,6 +56,7 @@ const store = createStore({
       }
     },
     setUser(state, user) {
+      console.log("Setting user:", user?.id);
       if (user) {
         state.user = {
           id: user.id,
@@ -77,32 +79,29 @@ const store = createStore({
           country: user.country,
           postalCode: user.postalCode,
         };
+        localStorage.setItem("user", JSON.stringify(state.user));
       } else {
         state.user = null;
+        localStorage.removeItem("user");
       }
-      sessionStorage.setItem("user", JSON.stringify(state.user));
     },
     setRoles(state, roles) {
-      if (roles && roles) {
-        state.roles = roles;
-      } else if (Array.isArray(roles)) {
-        state.roles = roles;
-      } else {
-        state.roles = [roles];
-      }
-      sessionStorage.setItem("roles", JSON.stringify(state.roles));
+      console.log("Setting roles:", roles);
+      state.roles = Array.isArray(roles) ? roles : [roles];
+      localStorage.setItem("roles", JSON.stringify(state.roles));
     },
     setToken(state, token) {
+      console.log("Setting token:", token ? "exists" : "none");
       state.token = token;
       if (token) {
-        sessionStorage.setItem("token", token);
+        localStorage.setItem("token", token);
         if (state.api) {
           state.api.defaults.headers.common[
             "Authorization"
           ] = `Bearer ${token}`;
         }
       } else {
-        sessionStorage.removeItem("token");
+        localStorage.removeItem("token");
         if (state.api) {
           delete state.api.defaults.headers.common["Authorization"];
         }
@@ -111,7 +110,7 @@ const store = createStore({
     SET_API(state, api) {
       state.api = api;
       // Configurer le token s'il existe
-      const token = sessionStorage.getItem("token");
+      const token = localStorage.getItem("token");
       if (token) {
         state.api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
       }
@@ -328,57 +327,44 @@ const store = createStore({
         }
         const reponse = await state.api.post("/home/login", userData);
         if (reponse.data && reponse.data.message === "Connexion réussie") {
-          commit("setLoggedIn", true);
-          commit("setUser", {
+            commit("setLoggedIn", true);
+
+          // Sauvegarder le token
+          const token = reponse.data.token;
+          localStorage.setItem("token", token);
+          
+          // Sauvegarder l'utilisateur
+          const user = {
             id: reponse.data.userId,
             username: reponse.data.username,
             name: reponse.data.name,
             firstName: reponse.data.firstName,
             roles: reponse.data.roles,
             photo: reponse.data.photo,
-          });
-          commit("setRoles", reponse.data.roles);
-          
-          if (reponse.data.token) {
-            commit("setToken", reponse.data.token);
-            sessionStorage.setItem("token", reponse.data.token);
-            state.api.defaults.headers.common["Authorization"] = `Bearer ${reponse.data.token}`;
-            
-            // Initialiser SignalR avant les notifications
-            await dispatch("initializeSignalR").catch(err => {
-              console.warn("Erreur SignalR:", err);
-            });
-
-            // Gérer les notifications séparément
-            try {
-              await dispatch("obtenirNotification", reponse.data.userId);
-            } catch (notifError) {
-              console.warn("Erreur notifications:", notifError);
-            }
-
-            try {
-              await dispatch("initNotificationConnection");
-            } catch (connError) {
-              console.warn("Erreur connection notifications:", connError);
-            }
-          }
-          
-          return { success: true, roles: reponse.data.roles };
-        } else {
-          return {
-            success: false,
-            error: reponse.data?.message || "Réponse inattendue du serveur",
           };
+          localStorage.setItem("userData", JSON.stringify(user));
+          localStorage.setItem("userRoles", JSON.stringify(reponse.data.roles));
+
+          // Mettre à jour le store
+          commit("setToken", token);
+          commit("setUser", user);
+          commit("setRoles", reponse.data.roles);
+          commit("setLoggedIn", true);
+
+          // Initialiser les connexions
+          await dispatch("initializeSignalR");
+          try {
+            await dispatch("obtenirNotification", user.id);
+            await dispatch("initNotificationConnection");
+          } catch (err) {
+            console.warn("Erreur notifications:", err);
+          }
+
+          return { success: true, roles: reponse.data.roles };
         }
+        return { success: false, error: "Réponse inattendue" };
       } catch (error) {
-        return {
-          success: false,
-          element: error.reponse.data?.element,
-          error:
-            error.reponse?.data?.message ||
-            error.message ||
-            "Erreur lors de la création du compte",
-        };
+        return { success: false, error: error.message };
       }
     },
 
@@ -674,42 +660,45 @@ const store = createStore({
       }
     },
     async checkAuthStatus({ commit, state, dispatch }) {
-      const token = state.token || sessionStorage.getItem("token");
-      if (!token) {
-        commit("setLoggedIn", false);
+      try {
+        const token = localStorage.getItem("token");
+        const userData = JSON.parse(localStorage.getItem("userData"));
+        const userRoles = JSON.parse(localStorage.getItem("userRoles"));
+
+        if (!token || !userData) {
+          throw new Error("Données d'authentification manquantes");
+        }
+
+        // Configurer l'API
+        state.api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+
+        // Vérifier l'authentification
+        const response = await state.api.get("/home/check-auth");
+        
+        if (response.data.isAuthenticated) {
+          commit("setToken", token);
+          commit("setUser", userData);
+          commit("setRoles", userRoles);
+          commit("setLoggedIn", true);
+
+          // Réinitialiser les connexions
+          await dispatch("initializeSignalR");
+          return true;
+        }
+        throw new Error("Non authentifié");
+      } catch (error) {
+        // Nettoyer le stockage local
+        localStorage.removeItem("token");
+        localStorage.removeItem("userData");
+        localStorage.removeItem("userRoles");
+        
+        // Réinitialiser le store
+        commit("setToken", null);
         commit("setUser", null);
         commit("setRoles", []);
-        return;
-      }
-
-      // Attendre que la base URL soit définie
-      while (!state.api.defaults.baseURL) {
-        await new Promise((resolve) => setTimeout(resolve, 100));
-      }
-
-      try {
-        const reponse = await state.api.get("/home/check-auth");
-        if (reponse.data.isAuthenticated) {
-          commit("setLoggedIn", true);
-          commit("setUser", reponse.data.user);
-          commit("setRoles", reponse.data.roles);
-          await dispatch("fetchUserBids");
-          dispatch("forceUpdate");
-        } else {
-          throw new Error("Non authentifié");
-        }
-      } catch (error) {
-        console.error(
-          "Erreur détaillée lors de la vérification de l'authentification:",
-          error.reponse || error
-        );
-        if (error.reponse && error.reponse.status === 401) {
-          commit("setLoggedIn", false);
-          commit("setUser", null);
-          commit("setRoles", []);
-          commit("setToken", null);
-          sessionStorage.removeItem("token");
-        }
+        commit("setLoggedIn", false);
+        
+        return false;
       }
     },
     async logout({ commit, state }) {
@@ -729,10 +718,10 @@ const store = createStore({
         commit("SET_CONNECTION", null); // Nettoyer la référence SignalR
 
         // Nettoyage du stockage local
-        sessionStorage.removeItem("token");
-        sessionStorage.removeItem("user");
-        sessionStorage.removeItem("roles");
-        sessionStorage.removeItem("isLoggedIn");
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+        localStorage.removeItem("roles");
+        localStorage.removeItem("isLoggedIn");
 
         // Réinitialiser les données liées aux mises
         commit("updateLotMise", {
@@ -746,30 +735,36 @@ const store = createStore({
     },
 
     async initializeStore({ commit, dispatch }) {
-      // Récupérer les données de session
-      const token = sessionStorage.getItem("token");
-      const savedIsLoggedIn = sessionStorage.getItem("isLoggedIn") === "true";
-      const savedUser = JSON.parse(sessionStorage.getItem("user"));
-      const savedRoles = JSON.parse(sessionStorage.getItem("roles")) || [];
+      try {
+        const token = localStorage.getItem("token");
+        const savedIsLoggedIn = localStorage.getItem("isLoggedIn") === "true";
+        const savedUser = JSON.parse(localStorage.getItem("user"));
+        const savedRoles = JSON.parse(localStorage.getItem("roles")) || [];
 
-      // Initialiser l'API avec le token
-      const api = initApi(() => token);
-      if (token) {
-        api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-      }
-      commit("SET_API", api);
+        const api = initApi(() => token);
+        if (token) {
+          api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+        }
+        commit("SET_API", api);
 
-      // Initialiser l'état
-      commit("setToken", token);
-      commit("setLoggedIn", savedIsLoggedIn);
-      commit("setUser", savedUser);
-      commit("setRoles", savedRoles);
+        commit("setToken", token);
+        commit("setLoggedIn", savedIsLoggedIn);
+        commit("setUser", savedUser);
+        commit("setRoles", savedRoles);
 
-      if (savedIsLoggedIn) {
-        await dispatch("fetchUserBids");
-        // Initialiser SignalR après la connexion
-        await dispatch("initializeSignalR");
-        await dispatch("initNotificationConnection");
+        if (savedIsLoggedIn) {
+          await dispatch("fetchUserBids");
+          await dispatch("initializeSignalR");
+          await dispatch("initNotificationConnection");
+          await dispatch("verifierEtatEncan");
+        }
+      } catch (error) {
+        console.error("Erreur lors de l'initialisation du store:", error);
+        // Réinitialiser l'état en cas d'erreur
+        commit("setLoggedIn", false);
+        commit("setUser", null);
+        commit("setRoles", []);
+        commit("setToken", null);
       }
     },
 
@@ -1200,7 +1195,7 @@ const store = createStore({
         );
         return reponse;
       } catch (error) {
-        return "Erreur, veuillez réessayer";
+        return "Erreur, veuillez r��essayer";
       }
     },
 

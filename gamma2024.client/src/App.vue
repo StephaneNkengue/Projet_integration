@@ -1,19 +1,25 @@
 <script setup>
 import BarreDeNavigation from "./components/views/BarreDeNavigation.vue";
 import PiedDePage from "./components/views/PiedDePage.vue";
-import { onMounted } from "vue";
+import { onMounted, onBeforeMount } from "vue";
 import { useStore } from "vuex";
 
 const store = useStore();
 
+onBeforeMount(async () => {
+    const token = localStorage.getItem("token");
+    if (token && !store.state.isLoggedIn) {
+        await store.dispatch("checkAuthStatus");
+    }
+});
+
 onMounted(async () => {
-  if (store.state.isLoggedIn) {
-    await store.dispatch("fetchUserBids");
-  }
-  // Initialiser SignalR une seule fois au montage de l'application
-  if (store.state.isLoggedIn && !store.state.connection) {
-    await store.dispatch("initializeSignalR");
-  }
+    if (store.state.isLoggedIn) {
+        await store.dispatch("fetchUserBids");
+        if (!store.state.connection) {
+            await store.dispatch("initializeSignalR");
+        }
+    }
 });
 </script>
 
