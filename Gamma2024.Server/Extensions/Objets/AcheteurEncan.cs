@@ -1,6 +1,6 @@
 namespace Gamma2024.Server.Extensions.Objets
 {
-    public class AcheteurEncanInfo
+    public class AcheteurEncan
     {
         public string Lot { get; set; } = default!;
         public double PrixAchete { get; set; }
