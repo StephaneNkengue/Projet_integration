@@ -21,7 +21,7 @@ namespace Gamma2024.Server.Controllers
         private readonly IWebHostEnvironment _environment;
         private readonly ILogger<FacturesController> _logger;
 
-        public FacturesController(IWebHostEnvironment environment, ApplicationDbContext context, UserManager<ApplicationUser> userManager, FactureService factureService, IEmailSender emailSender)
+        public FacturesController(IWebHostEnvironment environment, ApplicationDbContext context, UserManager<ApplicationUser> userManager, FactureService factureService, IEmailSender emailSender, ILogger<FacturesController> logger)
         {
             _context = context;
             _userManager = userManager;

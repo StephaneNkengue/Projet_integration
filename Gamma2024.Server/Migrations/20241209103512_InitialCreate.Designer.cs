@@ -12,13 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Gamma2024.Server.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-<<<<<<<< HEAD:Gamma2024.Server/Migrations/20241206165440_InitialCreate.Designer.cs
-    [Migration("20241206165440_InitialCreate")]
+    [Migration("20241209103512_InitialCreate")]
     partial class InitialCreate
-========
-    [Migration("20241205192154_InitialiserBD")]
-    partial class InitialiserBD
->>>>>>>> dev:Gamma2024.Server/Migrations/20241205192154_InitialiserBD.Designer.cs
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
