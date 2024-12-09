@@ -97,7 +97,7 @@
     // Ajouter un watch sur les lots restants
     watch(lotsTriesParTemps, async (nouveauxLots) => {
         if (nouveauxLots.length === 0 && encan.value) {
-
+            await store.dispatch('marquerToutesNotifLues')
         }
     }, { deep: true });
 </script> 

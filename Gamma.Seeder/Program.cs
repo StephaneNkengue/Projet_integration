@@ -386,6 +386,7 @@ encans.Add(new Encan
     DateDebutSoireeCloture = new DateTime(2023, 3, 18, 6, 0, 0),
     EstPublie = true,
     PasLot = 30,
+    EstTermine = true,
     PasMise = 60
 });
 
@@ -396,6 +397,7 @@ encans.Add(new Encan
     DateFin = new DateTime(2024, 6, 15, 6, 0, 0),
     DateDebutSoireeCloture = new DateTime(2024, 6, 15, 6, 0, 0),
     EstPublie = true,
+    EstTermine = true,
     PasLot = 30,
     PasMise = 60
 });
@@ -407,6 +409,7 @@ encans.Add(new Encan
     DateFin = new DateTime(2024, 12, 16, 18, 0, 0),
     DateDebutSoireeCloture = new DateTime(2024, 12, 16, 18, 0, 0),
     EstPublie = true,
+    EstTermine = false,
     PasLot = 30,
     PasMise = 60
 });
@@ -419,6 +422,7 @@ encans.Add(new Encan
     DateDebutSoireeCloture = new DateTime(2025, 1, 13, 18, 0, 0),
     EstPublie = true,
     PasLot = 30,
+    EstTermine = false,
     PasMise = 60
 });
 

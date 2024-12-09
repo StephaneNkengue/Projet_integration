@@ -45,19 +45,43 @@ builder.Services.AddSignalR();
 
 builder.Services.AddScoped<ClientInscriptionService>();
 builder.Services.AddScoped<ClientModificationService>();
-builder.Services.AddScoped<EncanService>();
-builder.Services.AddHttpClient<EncanService>();
 builder.Services.AddScoped<VendeurService>();
 builder.Services.AddScoped<AdministrateurService>();
+builder.Services.AddScoped<EncanService>();
 builder.Services.AddScoped<LotService>();
 builder.Services.AddScoped<FactureService>();
 builder.Services.AddScoped<FactureLivraisonService>();
 builder.Services.AddScoped<NotificationService>();
+builder.Services.AddHostedService<VerificationLotsBackgroundService>();
 
 builder.Services.Configure<EmailConfiguration>(
     builder.Configuration.GetSection("EmailConfiguration"));
 builder.Services.AddTransient<IEmailSender, EmailService>();
 builder.Services.Configure<InvoiceSettings>(builder.Configuration.GetSection("InvoiceSettings"));
+
+// Important : Ajouter ceci avant AddHttpClient
+builder.Services.AddHttpContextAccessor();
+
+var logger = builder.Services.BuildServiceProvider().GetRequiredService<ILogger<Program>>();
+
+builder.Services.AddHttpClient("ApiClient", (serviceProvider, client) =>
+{
+    var httpContextAccessor = serviceProvider.GetRequiredService<IHttpContextAccessor>();
+    var request = httpContextAccessor.HttpContext?.Request;
+    
+    string baseUrl;
+    if (request != null)
+    {
+        baseUrl = $"{request.Scheme}://{request.Host}";
+    }
+    else
+    {
+        baseUrl = "https://localhost:7206";
+    }
+    
+    client.BaseAddress = new Uri(baseUrl);
+});
+
 
 
 // Configuration CORS pour différents environnements
