@@ -1,6 +1,6 @@
 <template>
     <div class="container">
-        <h1 class="text-center mb-5">Liste des vendeurs</h1>
+        <h1 class="text-center mb-2 mb-md-5">Liste des vendeurs</h1>
 
         <h3 class="text-center">Rechercher un vendeur</h3>
 
@@ -25,7 +25,7 @@
         </div>
 
         <div v-if="!chargement" class="w-100">
-            <div class="d-flex justify-content-end my-4" v-if="vendeursAffiche.length">
+            <div class="d-flex justify-content-center justify-content-md-end my-4" v-if="vendeursAffiches.length">
                 <div class="d-flex flex-row gap-2">
                     <button class="d-flex align-items-center text-center rounded btn text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
                             @click="changerNbVendeurParPage(20)"
@@ -51,7 +51,7 @@
                 </div>
             </div>
 
-            <div class="d-flex justify-content-center mt-4" v-if="!vendeursAffiche.length">
+            <div class="d-flex justify-content-center mt-4" v-if="!vendeursAffiches.length">
                 <h2>Aucun résultat trouvé</h2>
             </div>
 
@@ -68,7 +68,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="(vendeur, index) in vendeursAffiche" :key="vendeur.id">
+                        <tr v-for="(vendeur, index) in vendeursAffiches" :key="vendeur.id">
                             <td scope="row" class="align-middle">{{ index + 1 }}</td>
                             <td class="align-middle">{{ vendeur.nom }}</td>
                             <td class="align-middle">{{ vendeur.prenom }}</td>
@@ -89,7 +89,7 @@
                 </table>
             </div>
 
-            <div class="d-flex flex-row justify-content-center gap-1 flex-wrap p-3" v-if="vendeursAffiche.length">
+            <div class="d-flex flex-row justify-content-center gap-1 flex-wrap p-3" v-if="vendeursAffiches.length">
                 <button type="button"
                         class="btn text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
                         @click="reculerPage"
@@ -131,7 +131,7 @@
     const listePagination = ref([]);
     const pageCourante = ref(1);
     const nbPages = ref();
-    const vendeursAffiche = ref([]);
+    const vendeursAffiches = ref([]);
 
     const chargement = ref(true);
 
@@ -146,7 +146,7 @@
         try {
             vendeurs.value = await store.dispatch("obtenirTousVendeurs");
 
-            nbVendeursRecus.value = filteredVendeurs.value.length;
+            nbVendeursRecus.value = vendeursFiltres.value.length;
             vendeursParPage.value = nbVendeursRecus.value;
             nbPages.value = recalculerNbPages();
 
@@ -159,7 +159,7 @@
         }
     });
 
-    const filteredVendeurs = computed(() => {
+    const vendeursFiltres = computed(() => {
         return vendeursAffichage.value.filter((vendeur) => {
             const searchLower = searchQuery.value.toLowerCase();
             return (
@@ -171,10 +171,10 @@
         });
     });
 
-    watch(filteredVendeurs, () => {
-        vendeursAffiche.value = filteredVendeurs.value;
+    watch(vendeursFiltres, () => {
+        vendeursAffiches.value = vendeursFiltres.value;
 
-        nbVendeursRecus.value = filteredVendeurs.value.length;
+        nbVendeursRecus.value = vendeursFiltres.value.length;
         pageCourante.value = 1;
         AjusterPagination();
     });
@@ -232,17 +232,17 @@
     }
 
     function chercherVendeursAAfficher() {
-        vendeursAffiche.value = [];
+        vendeursAffiches.value = [];
 
         let positionDebut = (pageCourante.value - 1) * vendeursParPage.value;
         let positionFin = pageCourante.value * vendeursParPage.value;
 
         for (
             let i = positionDebut;
-            i < positionFin && i < filteredVendeurs.value.length;
+            i < positionFin && i < vendeursFiltres.value.length;
             i++
         ) {
-            vendeursAffiche.value.push(filteredVendeurs.value[i]);
+            vendeursAffiches.value.push(vendeursFiltres.value[i]);
         }
     }
 
@@ -271,24 +271,6 @@
     input {
         box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.2), 0 3px 5px 0 rgba(0, 0, 0, 0.19);
     }
-
-    .btn-like-field {
-        display: inline-block;
-        padding: 0.375rem 0.75rem;
-        font-size: 1rem;
-        font-weight: 400;
-        line-height: 1.5;
-        color: #1e3a8a;
-        background-color: #ffffff;
-        border: 1px solid #1e3a8a;
-        border-radius: 0.25rem;
-        transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out;
-    }
-
-        .btn-like-field:hover {
-            color: #ffffff;
-            background-color: #1e3a8a;
-        }
 
     th {
         font-size: 18px;

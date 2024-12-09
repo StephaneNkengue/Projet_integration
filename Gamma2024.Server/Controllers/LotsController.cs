@@ -58,13 +58,13 @@ namespace Gamma2024.Server.Controllers
 				lotVM.Photos = Request.Form.Files.ToList();
 			}
 
-            var resultat = await _lotService.CreerLot(lotVM);
-            if (!resultat.Success)
-            {
-                return BadRequest(resultat.Message);
-            }
-            return Ok(new { success = true, message = "Lot crée avec succès" });
-        }
+			var resultat = await _lotService.CreerLot(lotVM);
+			if (!resultat.Success)
+			{
+				return BadRequest(resultat.Message);
+			}
+			return Ok(new { success = true, message = "Lot crée avec succès" });
+		}
 
 		[Authorize(Roles = ApplicationRoles.ADMINISTRATEUR)]
 		[HttpPut("modifier/{id}")]
@@ -134,43 +134,35 @@ namespace Gamma2024.Server.Controllers
 			return Ok(encans);
 		}
 
-        [HttpGet("cherchertouslotsrecherche")]
-        [AllowAnonymous]
-        public async Task<ActionResult<ICollection<LotEncanAffichageVM>>> ChercherTousLotsRecherche()
-        {
-            try
-            {
-                var lots = _lotService.ChercherTousLotsRecherche();
-                return Ok(lots);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest($"Erreur: {ex.Message}");
-            }
-        }
-
-        [HttpGet("cherchertouslotsparencan/{idEncan}")]
-        [AllowAnonymous]
-        public async Task<ActionResult<ICollection<LotEncanAffichageVM>>> ChercherTousLotsParEncan(string idEncan)
-        {
-            try
-            {
-                var idEncanInt = int.Parse(idEncan);
-                var lots = _lotService.ChercherTousLotsParEncan(idEncanInt);
-                return Ok(lots);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest($"Erreur: {ex.Message}");
-            }
-        }
-
+		[HttpGet("cherchertouslotsrecherche")]
 		[AllowAnonymous]
-		[HttpGet("chercherTousLots")]
-		public ICollection<LotAffichageAdministrateurVM> ChercherTousLots()
+		public async Task<ActionResult<ICollection<LotEncanAffichageVM>>> ChercherTousLotsRecherche()
 		{
-			ICollection<LotAffichageAdministrateurVM> lots = _lotService.ChercherTousLots();
-			return lots;
+			try
+			{
+				var lots = _lotService.ChercherTousLotsRecherche();
+				return Ok(lots);
+			}
+			catch (Exception ex)
+			{
+				return BadRequest($"Erreur: {ex.Message}");
+			}
+		}
+
+		[HttpGet("cherchertouslotsparencan/{idEncan}")]
+		[AllowAnonymous]
+		public async Task<ActionResult<ICollection<LotEncanAffichageVM>>> ChercherTousLotsParEncan(string idEncan)
+		{
+			try
+			{
+				var idEncanInt = int.Parse(idEncan);
+				var lots = _lotService.ChercherTousLotsParEncan(idEncanInt);
+				return Ok(lots);
+			}
+			catch (Exception ex)
+			{
+				return BadRequest($"Erreur: {ex.Message}");
+			}
 		}
 
 		[AllowAnonymous]
@@ -189,40 +181,43 @@ namespace Gamma2024.Server.Controllers
 			}
 		}
 
-        [Authorize(Roles = ApplicationRoles.CLIENT)]
-        [HttpPost("placerMise")]
-        public async Task<IActionResult> PlacerMise([FromBody] MiseVM mise)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+		[Authorize(Roles = ApplicationRoles.CLIENT)]
+		[HttpPost("placerMise")]
+		public async Task<IActionResult> PlacerMise([FromBody] MiseVM mise)
+		{
+			if (!ModelState.IsValid)
+			{
+				return BadRequest(ModelState);
+			}
 
-            mise.UserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (string.IsNullOrEmpty(mise.UserId))
-            {
-                return Unauthorized();
-            }
+			mise.UserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+			if (string.IsNullOrEmpty(mise.UserId))
+			{
+				return Unauthorized();
+			}
 
-            (bool isSuccess, string resultMessage) = await _lotService.PlacerMise(mise);
-            
-            if (isSuccess)
-            {
-                var lastUserBid = await _lotService.GetUserLastBid(mise.LotId, mise.UserId);
-                return Ok(new { 
-                    success = true, 
-                    message = resultMessage,
-                    userLastBid = lastUserBid
-                });
-            }
-            else
-            {
-                return BadRequest(new { 
-                    success = false, 
-                    message = resultMessage
-                });
-            }
-        }
+			(bool isSuccess, string resultMessage) = await _lotService.PlacerMise(mise);
+
+			if (isSuccess)
+			{
+				var lastUserBid = await _lotService.GetUserLastBid(mise.LotId, mise.UserId);
+
+				return Ok(new
+				{
+					success = true,
+					message = resultMessage,
+					userLastBid = lastUserBid
+				});
+			}
+			else
+			{
+				return BadRequest(new
+				{
+					success = false,
+					message = resultMessage
+				});
+			}
+		}
 
 		[Authorize]
 		[HttpGet("userBids/{userId}")]
@@ -251,19 +246,19 @@ namespace Gamma2024.Server.Controllers
 			}
 		}
 
-        [Authorize]
-        [HttpGet("userLastBid/{lotId}")]
-        public async Task<ActionResult<double?>> GetUserLastBid(int lotId)
-        {
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (string.IsNullOrEmpty(userId))
-            {
-                return Unauthorized();
-            }
+		[Authorize]
+		[HttpGet("userLastBid/{lotId}")]
+		public async Task<ActionResult<double?>> GetUserLastBid(int lotId)
+		{
+			var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+			if (string.IsNullOrEmpty(userId))
+			{
+				return Unauthorized();
+			}
 
-            var lastBid = await _lotService.GetUserLastBid(lotId, userId);
-            return Ok(lastBid);
-        }
+			var lastBid = await _lotService.GetUserLastBid(lotId, userId);
+			return Ok(lastBid);
+		}
 
 
     }

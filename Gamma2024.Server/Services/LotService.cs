@@ -27,46 +27,47 @@ namespace Gamma2024.Server.Services
             _httpClientFactory = httpClientFactory;
         }
 
-        public async Task<IEnumerable<LotAffichageVM>> ObtenirTousLots()
-        {
-            return await _context.Lots
-                .Include(l => l.Photos)
-                .Include(l => l.Categorie)
-                .Include(l => l.Medium)
-                .Include(l => l.Vendeur)
-                .Include(l => l.EncanLots)
-                .ThenInclude(el => el.Encan)
-                .Select(l => new LotAffichageVM
-                {
-                    Id = l.Id,
-                    NumeroEncan = l.EncanLots.FirstOrDefault().Encan.NumeroEncan.ToString(),
-                    Code = l.Numero,
-                    PrixOuverture = $"{l.PrixOuverture.ToString()} $",
-                    PrixMinPourVente = $"{l.PrixMinPourVente.ToString()} $",
-                    ValeurEstimeMin = $"{l.ValeurEstimeMin.ToString()} $",
-                    ValeurEstimeMax = $"{l.ValeurEstimeMax.ToString()} $",
-                    Categorie = l.Categorie.Nom,
-                    Artiste = l.Artiste,
-                    Dimension = $"{l.Hauteur} x {l.Largeur}",
-                    Description = l.Description,
-                    Medium = l.Medium.Type,
-                    EstLivrable = l.EstLivrable,
-                    Vendeur = $"{l.Vendeur.Prenom} {l.Vendeur.Nom}",
-                    Mise = l.Mise,
-                    EstVendu = l.EstVendu,
-                    DateFinVente = l.DateFinVente,
-                    DateDepot = l.DateDepot,
-                    DateCreation = l.DateCreation,
-                    IdClientMise = l.IdClientMise,
-                    SeraLivree = l.SeraLivree,
-                    Photos = l.Photos.Select(p => new PhotoVM
-                    {
-                        Id = p.Id,
-                        Url = p.Lien
-                    }).ToList()
-                })
-                .ToListAsync();
-        }
+		public async Task<IEnumerable<LotAffichageVM>> ObtenirTousLots()
+		{
+			return await _context.Lots
+				.Include(l => l.Photos)
+				.Include(l => l.Categorie)
+				.Include(l => l.Medium)
+				.Include(l => l.Vendeur)
+				.Include(l => l.EncanLots)
+				.ThenInclude(el => el.Encan)
+				.Select(l => new LotAffichageVM
+				{
+					Id = l.Id,
+					NumeroEncan = l.EncanLots.FirstOrDefault().Encan.NumeroEncan.ToString(),
+					Code = l.Numero,
+					PrixOuverture = l.PrixOuverture,
+					PrixMinPourVente = l.PrixMinPourVente,
+					ValeurEstimeMin = l.ValeurEstimeMin,
+					ValeurEstimeMax = l.ValeurEstimeMax,
+					Categorie = l.Categorie.Nom,
+					Artiste = l.Artiste,
+					Hauteur = l.Hauteur,
+					Largeur = l.Largeur,
+					Description = l.Description,
+					Medium = l.Medium.Type,
+					EstLivrable = l.EstLivrable,
+					Vendeur = $"{l.Vendeur.Prenom} {l.Vendeur.Nom}",
+					Mise = l.Mise,
+					EstVendu = l.EstVendu,
+					DateFinVente = l.DateFinVente,
+					DateDepot = l.DateDepot,
+					DateCreation = l.DateCreation,
+					IdClientMise = l.IdClientMise,
+					SeraLivree = l.SeraLivree,
+					Photos = l.Photos.Select(p => new PhotoVM
+					{
+						Id = p.Id,
+						Url = p.Lien
+					}).ToList()
+				})
+				.ToListAsync();
+		}
 
         public async Task<LotModificationVM> ObtenirLot(int id)
         {
@@ -144,6 +145,7 @@ namespace Gamma2024.Server.Services
                 {
                     return (false, "L'encan spécifié n'existe pas", null);
                 }
+				}
 
                 // Définir les dates du lot
                 var dateDebutDecompte = encan.DateDebutSoireeCloture;
@@ -544,35 +546,36 @@ namespace Gamma2024.Server.Services
             }
         }
 
-        // Ajoutez cette nouvelle méthode pour convertir LotModificationVM en LotAffichageVM
-        private LotAffichageVM ConvertirEnLotAffichageVM(LotModificationVM lotModification)
-        {
-            return new LotAffichageVM
-            {
-                Id = lotModification.Id,
-                NumeroEncan = lotModification.NumeroEncan,
-                Code = lotModification.Numero,
-                PrixOuverture = lotModification.PrixOuverture.ToString("N2") + " $",
-                PrixMinPourVente = lotModification.PrixMinPourVente?.ToString("N2") + " $",
-                ValeurEstimeMin = lotModification.ValeurEstimeMin.ToString("N2") + " $",
-                ValeurEstimeMax = lotModification.ValeurEstimeMax.ToString("N2") + " $",
-                Categorie = lotModification.Categorie,
-                Artiste = lotModification.Artiste,
-                Dimension = $"{lotModification.Hauteur} x {lotModification.Largeur}",
-                Description = lotModification.Description,
-                Medium = lotModification.Medium,
-                EstLivrable = lotModification.EstLivrable,
-                Vendeur = lotModification.Vendeur,
-                Mise = lotModification.Mise,
-                EstVendu = lotModification.EstVendu,
-                DateFinVente = lotModification.DateFinVente,
-                DateDepot = lotModification.DateDepot,
-                DateCreation = lotModification.DateCreation,
-                IdClientMise = lotModification.IdClientMise,
-                SeraLivree = lotModification.SeraLivree,
-                Photos = lotModification.PhotosModifie
-            };
-        }
+		// Ajoutez cette nouvelle méthode pour convertir LotModificationVM en LotAffichageVM
+		private LotAffichageVM ConvertirEnLotAffichageVM(LotModificationVM lotModification)
+		{
+			return new LotAffichageVM
+			{
+				Id = lotModification.Id,
+				NumeroEncan = lotModification.NumeroEncan,
+				Code = lotModification.Numero,
+				PrixOuverture = lotModification.PrixOuverture,
+				PrixMinPourVente = lotModification.PrixMinPourVente,
+				ValeurEstimeMin = lotModification.ValeurEstimeMin,
+				ValeurEstimeMax = lotModification.ValeurEstimeMax,
+				Categorie = lotModification.Categorie,
+				Artiste = lotModification.Artiste,
+				Hauteur = lotModification.Hauteur,
+				Largeur = lotModification.Largeur,
+				Description = lotModification.Description,
+				Medium = lotModification.Medium,
+				EstLivrable = lotModification.EstLivrable,
+				Vendeur = lotModification.Vendeur,
+				Mise = lotModification.Mise,
+				EstVendu = lotModification.EstVendu,
+				DateFinVente = lotModification.DateFinVente,
+				DateDepot = lotModification.DateDepot,
+				DateCreation = lotModification.DateCreation,
+				IdClientMise = lotModification.IdClientMise,
+				SeraLivree = lotModification.SeraLivree,
+				Photos = lotModification.PhotosModifie
+			};
+		}
 
         public async Task<(bool success, string message)> PlacerMise(MiseVM mise)
         {

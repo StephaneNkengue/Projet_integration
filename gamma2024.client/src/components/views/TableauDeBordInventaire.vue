@@ -2,10 +2,10 @@
     <div class="px-3">
         <div class="container">
 
-            <h1 class="text-center mb-5">Liste des lots</h1>
+            <h1 class="text-center mb-2 mb-md-5">Liste des lots</h1>
 
             <div v-if="messageConfirmation" class="alert alert-success py-0">
-                {{ messageConfirmation }}sdsdd
+                {{ messageConfirmation }}
             </div>
 
             <h3 class="text-center" for="Recherche">Rechercher un lot</h3>
@@ -25,24 +25,26 @@
                         <li class="d-flex dropdown-item">
                             <input class="checkboxTousRecherche d-flex-1"
                                    type="checkbox"
-                                   id="tousSelectionnerCheckboxRecherche"
+                                   id="tousSelectionnerrCheckboxRecherche"
                                    checked />
-                            <label class="d-flex-1" for="tousSelectionnerCheckboxRecherche">
+                            <label class="d-flex-1" for="tousSelectionnerrCheckboxRecherche">
                                 Tous Sélectionner
                             </label>
                         </li>
-                        <li v-for="(visible, colonne) in colonnesVisibles"
+                        <li v-for="(visible, colonne, index) in colonnesVisibles"
                             :key="colonne"
                             class="d-flex justify-content-start dropdown-item">
-                            <input class="checkboxSeulRecherche d-flex-1"
-                                   type="checkbox"
-                                   :id="`lot${ colonne.charAt(0).toUpperCase() + colonne.slice(1) } CheckboxRecherche`"
-                                   checked
-                                   disabled />
-                            <label class="d-flex-1"
-                                   :for="`lot${colonne.charAt(0).toUpperCase() + colonne.slice(1)}CheckboxRecherche`">
-                                {{(colonne.charAt(0).toUpperCase() + colonne.slice(1)).replace(/([A-Z])/g," $1")}}
-                            </label>
+                            <div v-if="index <=12">
+                                <input class="checkboxSeulRecherche d-flex-1"
+                                       type="checkbox"
+                                       :id="`lot${ colonne.charAt(0).toUpperCase() + colonne.slice(1) } CheckboxRecherche`"
+                                       checked
+                                       disabled />
+                                <label class="d-flex-1"
+                                       :for="`lot${colonne.charAt(0).toUpperCase() + colonne.slice(1)}CheckboxRecherche`">
+                                    {{(colonne.charAt(0).toUpperCase() + colonne.slice(1)).replace(/([A-Z])/g," $1")}}
+                                </label>
+                            </div>
                         </li>
                     </ul>
                 </div>
@@ -52,7 +54,7 @@
                        aria-label="Recherche"
                        v-model="rechercheDansListeDeLot"
                        placeholder="Rechercher un lot"
-                       class="form-control inputRecherche" />
+                       class="form-control insertionRecherche" />
             </div>
 
             <div>
@@ -73,8 +75,8 @@
         </div>
 
         <div v-if="!chargement" class="w-100">
-            <div class="d-flex justify-content-between my-4">
-                <div class="dropdown d-flex-1" v-if="lotsAffiches.length">
+            <div class="d-flex flex-column flex-md-row justify-content-center justify-content-md-between my-4">
+                <div class="dropdown d-flex justify-content-center mb-2 mb-md-0" v-if="lotsAffiches.length">
                     <button class="btn btnSurvolerBleuMoyenFond boutonPersonnalise text-white dropdown-toggle"
                             type="button"
                             id="dropdownMenuButton"
@@ -88,11 +90,11 @@
                         <li class="d-flex justify-content-start dropdown-item">
                             <input class="checkboxTous d-flex-1"
                                    type="checkbox"
-                                   id="tousSelectionnerCheckbox"
-                                   v-model="tousSelectionne"
+                                   id="tousSelectionnerrCheckbox"
+                                   v-model="tousSelectionner"
                                    @change="toggleToutesColonnes" />
                             <label class="d-flex-1"
-                                   for="tousSelectionnerCheckbox">
+                                   for="tousSelectionnerrCheckbox">
                                 Tous Sélectionner
                             </label>
                         </li>
@@ -101,16 +103,16 @@
                                    type="checkbox"
                                    :id="`lot${colonne.charAt(0).toUpperCase() + colonne.slice(1)}Checkbox`"
                                    :checked="visible"
-                                   :disabled="tousSelectionne"
+                                   :disabled="tousSelectionner"
                                    @change="toggleColonne(colonne)" />
                             <label class="d-flex-1" :for="`lot${colonne.charAt(0).toUpperCase() + colonne.slice(1)}Checkbox`">
-                                {{ colonne.charAt(0).toUpperCase() + colonne.slice(1) }}
+                                {{ (colonne.charAt(0).toUpperCase() + colonne.slice(1)).replace(/([A-Z])/g," $1") }}
                             </label>
                         </li>
                     </ul>
                 </div>
 
-                <div class="d-flex-1" v-if="lotsAffiches.length">
+                <div class="d-flex justify-content-center" v-if="lotsAffiches.length">
                     <div class="d-flex flex-row gap-2">
                         <button class="d-flex align-items-center text-center rounded btn text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
                                 type="button"
@@ -144,7 +146,7 @@
                 <h2>Aucun résultat trouvé</h2>
             </div>
 
-            <div class="margesPourTable" v-else>
+            <div class="overflow-auto" v-else>
                 <table class="table table-striped text-center">
                     <colgroup id="colgroup">
                         <col id="colEncan">
@@ -189,21 +191,21 @@
                         <tr v-for="lot in lotsAffiches" :key="lot.id" class="align-middle">
                             <td v-if="colonnesVisibles.encan">{{ lot.numeroEncan }}</td>
                             <td v-if="colonnesVisibles.numero">{{ lot.code }}</td>
-                            <td v-if="colonnesVisibles.prixOuverture">{{ lot.prixOuverture }}</td>
+                            <td v-if="colonnesVisibles.prixOuverture">{{ lot.prixOuverture }} $</td>
                             <td v-if="colonnesVisibles.valeurMinPourVente">
-                                <span v-if="lot.prixMinPourVente=='0 $'"></span>
-                                <span v-else>{{ lot.prixMinPourVente }}</span>
+                                <span v-if="lot.prixMinPourVente==0"></span>
+                                <span v-else>{{ lot.prixMinPourVente }} $</span>
                             </td>
-                            <td v-if="colonnesVisibles.estimationMin">{{ lot.valeurEstimeMin }}</td>
-                            <td v-if="colonnesVisibles.estimationMax">{{ lot.valeurEstimeMax }}</td>
+                            <td v-if="colonnesVisibles.estimationMin">{{ lot.valeurEstimeMin }} $</td>
+                            <td v-if="colonnesVisibles.estimationMax">{{ lot.valeurEstimeMax }} $</td>
                             <td v-if="colonnesVisibles.categorie">{{ lot.categorie }}</td>
                             <td v-if="colonnesVisibles.artiste">{{ lot.artiste }}</td>
-                            <td v-if="colonnesVisibles.dimension">{{ lot.dimension }}</td>
+                            <td v-if="colonnesVisibles.dimension">{{ lot.hauteur }} x {{ lot.largeur }}</td>
                             <td v-if="colonnesVisibles.description">{{ lot.description }}</td>
                             <td v-if="colonnesVisibles.medium">{{ lot.medium }}</td>
                             <td v-if="colonnesVisibles.vendeur">{{ lot.vendeur }}</td>
                             <td v-if="colonnesVisibles.estVendu">
-                                <img v-if="lot.estVendu" src="/icons/Vendu.png" width="40" height="40" />
+                                <span v-if="lot.estVendu">{{ lot.mise }}$</span>
                                 <img v-else src="/icons/NonVendu.png" width="40" height="40" />
                             </td>
                             <td v-if="colonnesVisibles.livraison">
@@ -311,10 +313,10 @@
         livraison: true,
     });
 
-    const tousSelectionne = ref(true);
+    const tousSelectionner = ref(true);
 
     const toggleToutesColonnes = () => {
-        if (tousSelectionne.value) {
+        if (tousSelectionner.value) {
             Object.keys(colonnesVisibles.value).forEach((key) => {
                 colonnesVisibles.value[key] = true;
             });
@@ -322,7 +324,7 @@
     };
 
     const toggleColonne = (colonne) => {
-        if (!tousSelectionne.value) {
+        if (!tousSelectionner.value) {
             colonnesVisibles.value[colonne] = !colonnesVisibles.value[colonne];
         }
     };
@@ -354,17 +356,17 @@
         chercherLotsAAfficher();
     };
 
-    const reculerPage = ref(function (event) {
+    const reculerPage = ref(function (evenement) {
         if (pageCourante.value > 1) {
             pageCourante.value--;
-            chercherLotsAAfficher(event);
+            chercherLotsAAfficher(evenement);
         }
     });
 
-    const avancerPage = ref(function (event) {
+    const avancerPage = ref(function (evenement) {
         if (pageCourante.value < nbPages.value) {
             pageCourante.value++;
-            chercherLotsAAfficher(event);
+            chercherLotsAAfficher(evenement);
         }
     });
 
@@ -396,7 +398,7 @@
         }
     }
 
-    function chercherLotsAAfficher(event) {
+    function chercherLotsAAfficher(evenement) {
         lotsAffiches.value = [];
         let positionDebut = (pageCourante.value - 1) * lotsParPage.value;
         let positionFin = pageCourante.value * lotsParPage.value;
@@ -418,9 +420,9 @@
         );
 
         try {
-            initialiseData();
-        } catch (error) {
-            console.error("Erreur lors de la récupération des lots:", error);
+            initialiserDonnees();
+        } catch (erreur) {
+            console.error("Erreur lors de la récupération des lots:", erreur);
         }
 
         listeDesCheckboxesRecherche.forEach((el, index) => {
@@ -451,9 +453,7 @@
             lotsFiltres.value = [];
 
             let rechercheEnMinuscule = rechercheDansListeDeLot.value.toLowerCase();
-            console.log(rechercheEnMinuscule);
             lotsFiltres.value = lotsAFiltres.filter((lot) => {
-                let dimensions = lot.dimension.split(" x ");
                 if (
                     listeDesCheckboxesRecherche[0].checked &&
                     lot.numeroEncan
@@ -511,12 +511,12 @@
                     return true;
                 } else if (
                     listeDesCheckboxesRecherche[8].checked &&
-                    dimensions[0].toString().toLowerCase().startsWith(rechercheEnMinuscule)
+                    lot.hauteur.toString().toLowerCase().startsWith(rechercheEnMinuscule)
                 ) {
                     return true;
                 } else if (
                     listeDesCheckboxesRecherche[8].checked &&
-                    dimensions[1].toString().toLowerCase().startsWith(rechercheEnMinuscule)
+                    lot.largeur.toString().toLowerCase().startsWith(rechercheEnMinuscule)
                 ) {
                     return true;
                 } else if (
@@ -537,13 +537,20 @@
                     lot.vendeur.toString().toLowerCase().startsWith(rechercheEnMinuscule)
                 ) {
                     return true;
-                }
-                return false;
+                } else if (
+                    listeDesCheckboxesRecherche[12].checked &&
+                    lot.mise
+                        .toString()
+                        .toLowerCase()
+                        .startsWith(rechercheEnMinuscule)
+                ) {
+                    return true;
+                } return false;
             });
         };
 
-        let rechercherAvance = function (newValue) {
-            if (newValue == "" || newValue == null) {
+        let rechercherAvance = function (nouvelleValeur) {
+            if (nouvelleValeur == "" || nouvelleValeur == null) {
                 lotsFiltres.value = lots.value;
             } else {
                 genererListeDeLotsFiltree();
@@ -555,14 +562,14 @@
             chercherLotsAAfficher();
         };
 
-        watch(rechercheDansListeDeLot, (newValue) => {
-            rechercherAvance(newValue);
+        watch(rechercheDansListeDeLot, (nouvelleValeur) => {
+            rechercherAvance(nouvelleValeur);
         });
     });
 
-    async function initialiseData() {
-        const response = await store.dispatch("obtenirTousLots");
-        lots.value = response.map((lot) => ({
+    async function initialiserDonnees() {
+        const reponse = await store.dispatch("obtenirTousLots");
+        lots.value = reponse.map((lot) => ({
             ...lot,
         }));
         lotsFiltres.value = lots.value;
@@ -576,43 +583,8 @@
         chargement.value = false;
     }
 
-    function setupRechercheAvancee() {
-        const checkboxQuiSelectionneToutRecherche = document.querySelector(
-            ".checkboxTousRecherche"
-        );
-        const listeDesCheckboxesRecherche = document.querySelectorAll(
-            ".checkboxSeulRecherche"
-        );
-
-        if (checkboxQuiSelectionneToutRecherche) {
-            checkboxQuiSelectionneToutRecherche.addEventListener(
-                "change",
-                function (e) {
-                    if (this.checked) {
-                        listeDesCheckboxesRecherche.forEach((el) => {
-                            el.checked = true;
-                            el.disabled = true;
-                        });
-                    } else {
-                        listeDesCheckboxesRecherche.forEach((el) => {
-                            el.disabled = false;
-                            el.checked = false;
-                        });
-                    }
-                    rechercherAvance(rechercheDansListeDeLot.value);
-                }
-            );
-        }
-
-        listeDesCheckboxesRecherche.forEach((el) => {
-            el.addEventListener("click", () => {
-                rechercherAvance(rechercheDansListeDeLot.value);
-            });
-        });
-    }
-
-    watch(rechercheDansListeDeLot, (newValue) => {
-        rechercherAvance(newValue);
+    watch(rechercheDansListeDeLot, (nouvelleValeur) => {
+        rechercherAvance(nouvelleValeur);
     });
 
     function rechercherAvance(valeur) {
@@ -655,7 +627,7 @@
                 lotASupprimer.value = null;
             }
         }
-        await initialiseData();
+        await initialiserDonnees();
     };
 
     const annulerSuppression = () => {
@@ -751,7 +723,7 @@
         font-size: 14px;
     }
 
-    .inputRecherche {
+    .insertionRecherche {
         box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.2), 0 3px 5px 0 rgba(0, 0, 0, 0.19);
     }
 </style>

@@ -352,8 +352,8 @@ encans.Add(new Encan
 {
     NumeroEncan = 233,
     DateDebut = new DateTime(2024, 3, 15, 6, 0, 0),
-    DateFin = DateTime.Now.AddMinutes(1),
-    DateDebutSoireeCloture = DateTime.Now.AddMinutes(1),
+    DateFin = DateTime.Now.AddDays(1),
+    DateDebutSoireeCloture = DateTime.Now.AddDays(1),
     EstPublie = true,
     PasLot = 10,
     PasMise = 120,
@@ -487,7 +487,6 @@ foreach (var item in utilisateurs)
             DateAchat = DateTime.Now,
             PrixLots = 0,
             NumeroEncan = 232,
-            FacturePDFPath = "",
             estPaye = true
         };
 
@@ -506,10 +505,6 @@ foreach (var item in utilisateurs)
         facture.CalculerFacture();
         context.Factures.Add(facture);
         context.SaveChanges();
-
-        facture.FacturePDFPath = $"Factures/F232/F232_{facture.Id}.pdf";
-
-        context.Factures.Update(facture);
 
         infoFactures.RemoveAll(i => i.Pseudonyme == item.UserName);
     }

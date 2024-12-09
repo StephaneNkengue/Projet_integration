@@ -1,6 +1,6 @@
 <template lang="">
     <div class="container">
-        <h1 class="text-center mb-5">Liste des membres</h1>
+        <h1 class="text-center md-2 mb-md-5">Liste des membres</h1>
 
         <h3 class="text-center">Rechercher un membre</h3>
 
@@ -18,7 +18,7 @@
         </div>
 
         <div v-if="!chargement" class="w-100">
-            <div class="d-flex justify-content-end my-4" v-if="membresAffiche.length">
+            <div class="d-flex justify-content-center justify-content-md-end my-4" v-if="membresAffiches.length">
                 <div class="d-flex flex-row gap-2">
                     <button class="d-flex align-items-center text-center rounded btn text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
                             @click="changerNbMembreParPage(20)"
@@ -44,7 +44,7 @@
                 </div>
             </div>
 
-            <div class="d-flex justify-content-center mt-4" v-if="!membresAffiche.length">
+            <div class="d-flex justify-content-center mt-4" v-if="!membresAffiches.length">
                 <h2>Aucun résultat trouvé</h2>
             </div>
 
@@ -61,7 +61,7 @@
                         </tr>
                     </thead>
                     <tbody class="fs-6">
-                        <tr v-for="membre in membresAffiche" :key="membre.id">
+                        <tr v-for="membre in membresAffiches" :key="membre.id">
                             <td class="align-middle">{{ membre.name }}</td>
                             <td class="align-middle">{{ membre.firstName }}</td>
                             <td class="align-middle">{{ membre.userName }}</td>
@@ -69,19 +69,19 @@
                             <td class="align-middle">
                                 <span>
                                     <button class="btn btn-info" @click="detailsDuMembre(membre.id)">
-                                        <img src="/icons/VoirBtn.png" class="img-fluid" alt="..." />
+                                        <img src="/icons/VoirBtn.png" height="40" width="40" alt="..." />
                                     </button>
                                 </span>
                             </td>
                             <td class="align-middle">
                                 <span v-if="membre.estBloque">
                                     <button class="btn btn-danger" @click="debloquerUnMembre(membre)">
-                                        <img src="/icons/CadenasFerme.png" class="img-fluid" alt="..." />
+                                        <img src="/icons/CadenasFerme.png" height="40" width="40" alt="..." />
                                     </button>
                                 </span>
                                 <span v-else>
                                     <button class="btn btn-success" @click="bloquerUnMembre(membre)">
-                                        <img src="/icons/CadenasOuvert.png" class="img-fluid" alt="..." />
+                                        <img src="/icons/CadenasOuvert.png" height="40" width="40" alt="..." />
                                     </button>
                                 </span>
                             </td>
@@ -91,7 +91,7 @@
             </div>
         </div>
 
-        <div class="d-flex flex-row justify-content-center gap-1 flex-wrap p-3" v-if="membresAffiche.length != 0">
+        <div class="d-flex flex-row justify-content-center gap-1 flex-wrap p-3" v-if="membresAffiches.length != 0">
             <button type="button"
                     class="btn text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
                     @click="reculerPage"
@@ -136,11 +136,11 @@
     const listePagination = ref([]);
     const pageCourante = ref(1);
     const nbPages = ref();
-    const membresAffiche = ref([]);
+    const membresAffiches = ref([]);
 
     onMounted(async () => {
         try {
-            updateData();
+            mettreAJourDonnees();
         } catch (error) {
             console.error("Erreur lors de la récupération des membres:", error);
         }
@@ -152,21 +152,21 @@
 
     const bloquerUnMembre = async (membre) => {
         await store.dispatch("bloquerUnMembre", membre.id);
-        updateData();
+        mettreAJourDonnees();
     };
 
     const debloquerUnMembre = async (membre) => {
         await store.dispatch("debloquerUnMembre", membre.id);
-        updateData();
+        mettreAJourDonnees();
     };
 
-    const updateData = async function () {
-        const response = await store.dispatch("ObtenirTousLesMembres");
-        mesMembres.value = response.map((membre) => ({
+    const mettreAJourDonnees = async function () {
+        const reponse = await store.dispatch("ObtenirTousLesMembres");
+        mesMembres.value = reponse.map((membre) => ({
             ...membre,
         }));
 
-        nbMembresRecus.value = filteredMembres.value.length;
+        nbMembresRecus.value = membresFiltres.value.length;
         membresParPage.value = nbMembresRecus.value;
         nbPages.value = recalculerNbPages();
 
@@ -177,14 +177,14 @@
     };
 
     // Propriété calculée pour filtrer les membres en fonction de la recherche
-    const filteredMembres = computed(() => {
+    const membresFiltres = computed(() => {
         return tousLesMembres.value.filter((membre) => {
-            const searchLower = searchQuery.value.toLowerCase();
+            const rechercheEnMinuscule = searchQuery.value.toLowerCase();
             return (
-                membre.name.toLowerCase().includes(searchLower) ||
-                membre.firstName.toLowerCase().includes(searchLower) ||
-                membre.userName.toLowerCase().includes(searchLower) ||
-                membre.email.toLowerCase().includes(searchLower)
+                membre.name.toLowerCase().includes(rechercheEnMinuscule) ||
+                membre.firstName.toLowerCase().includes(rechercheEnMinuscule) ||
+                membre.userName.toLowerCase().includes(rechercheEnMinuscule) ||
+                membre.email.toLowerCase().includes(rechercheEnMinuscule)
             );
         });
     });
@@ -196,10 +196,10 @@
         return [];
     });
 
-    watch(filteredMembres, () => {
-        membresAffiche.value = filteredMembres.value;
+    watch(membresFiltres, () => {
+        membresAffiches.value = membresFiltres.value;
 
-        nbMembresRecus.value = filteredMembres.value.length;
+        nbMembresRecus.value = membresFiltres.value.length;
         pageCourante.value = 1;
         AjusterPagination();
     });
@@ -257,17 +257,17 @@
     }
 
     function chercherMembresAAfficher() {
-        membresAffiche.value = [];
+        membresAffiches.value = [];
 
         let positionDebut = (pageCourante.value - 1) * membresParPage.value;
         let positionFin = pageCourante.value * membresParPage.value;
 
         for (
             let i = positionDebut;
-            i < positionFin && i < filteredMembres.value.length;
+            i < positionFin && i < membresFiltres.value.length;
             i++
         ) {
-            membresAffiche.value.push(filteredMembres.value[i]);
+            membresAffiches.value.push(membresFiltres.value[i]);
         }
     }
 
@@ -284,10 +284,6 @@
 </script>
 
 <style scoped>
-    img {
-        width: 25px;
-        height: 30px;
-    }
 
     table,
     input {

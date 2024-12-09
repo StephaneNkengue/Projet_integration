@@ -2,8 +2,8 @@
     <router-link class="text-decoration-none"
                  :to="{ name: 'DetailsLot', params: { idLot: lot.id } }">
         <div class="card" :class="{
-    'user-bid': isUserHighestBidder,
-    'user-outbid': isUserOutbid
+    'utilisateurPlusHauteMise': estUtilisateurAvecPlusHauteMise,
+    'utilisateurMiseDepassee': estUtilisateurAvecMiseDepassee
   }">
             <div class="card-body">
                 <div class="d-flex flex-md-row flex-column flex-wrap justify-content-between gap-1">
@@ -39,8 +39,8 @@
                     <div class="d-flex align-self-center gap-1 flex-column flex-md-row align-items-center">
                         <button type="button"
                                 class="btn text-white btnSurvolerBleuMoyenFond"
-                                @click.stop.prevent="handleMiseClick"
-                                v-if="!isAdmin && peutMiser">
+                                @click.stop.prevent="gererCliquerSurMiser"
+                                v-if="!estAdmin && peutMiser">
                             Miser {{ formatMontant(getMiseMinimale) }}$
                         </button>
                         <img src="/icons/Livrable.png"
@@ -61,7 +61,7 @@
 
     <ModalMise ref="modalMise"
                :lot="lotPourModal"
-               @miseConfirmee="onMiseConfirmee" />
+               @miseConfirmee="surMiseConfirmee" />
 </template>
 <script setup>
     import { onMounted, ref, computed, watch, onUnmounted, nextTick } from "vue";
@@ -69,7 +69,6 @@
     import ModalMise from '@/components/modals/ModalMise.vue';
     import { toast } from 'vue3-toastify';
     import { useRouter } from 'vue-router';
-    import { useIntervalFn } from '@vueuse/core'
 
     const store = useStore();
     const router = useRouter();
@@ -82,7 +81,7 @@
     });
 
     const urlApi = ref("/api");
-    const userLastBid = ref(0);
+    const utilisateurDerniereMise = ref(0);
     const modalMise = ref(null);
 
     const calculerPasEnchere = (montant) => {
@@ -160,26 +159,25 @@
         ],
     });
 
-    const ouvrirModalMise = (event) => {
-        event.stopPropagation();
-        console.log("Ouverture modal pour lot:", lotPourModal.value);
-        modalMise.value.show();
+    const ouvrirModalMise = (evenement) => {
+        evenement.stopPropagation();
+        modalMise.value.presenterModal();
     };
 
-    const onMiseConfirmee = async (montant) => {
+    const surMiseConfirmee = async (montant) => {
         lot.value.mise = montant;
 
         try {
-            const response = await store.dispatch('chercherDetailsLotParId', lot.value.id);
-            if (response && response.data) {
-                lot.value = response.data;
+            const reponse = await store.dispatch('chercherDetailsLotParId', lot.value.id);
+            if (reponse && reponse.data) {
+                lot.value = reponse.data;
             }
-        } catch (error) {
-            console.error("Erreur lors du rechargement des données du lot:", error);
+        } catch (erreur) {
+            console.error("Erreur lors du rechargement des données du lot:", erreur);
         }
     };
 
-    const isUserHighestBidder = computed(() => {
+    const estUtilisateurAvecPlusHauteMise = computed(() => {
         const lotActuel = store.getters.getLot(props.lotRecu.id);
         const userId = store.state.user?.id;
         return store.getters.hasUserBidOnLot(props.lotRecu.id) &&
@@ -198,22 +196,22 @@
         return urlApi.value + props.lotRecu.photos[0].lien;
     });
 
-    watch(() => store.state.lots, (newLots) => {
+    watch(() => store.state.lots, (nouveuxLots) => {
         const lotActuel = store.getters.getLot(props.lotRecu.id);
         if (lotActuel) {
             lot.value = { ...lotActuel };
             nextTick(() => {
-                isUserHighestBidder.value;
-                isUserOutbid.value;
+                estUtilisateurAvecPlusHauteMise.value;
+                estUtilisateurAvecMiseDepassee.value;
             });
         }
     }, { deep: true, immediate: true });
 
-    const isAdmin = computed(() => store.getters.isAdmin);
-    const isLoggedIn = computed(() => store.state.isLoggedIn);
+    const estAdmin = computed(() => store.getters.isAdmin);
+    const estConnecte = computed(() => store.state.isLoggedIn);
 
-    const handleMiseClick = (event) => {
-        if (!isLoggedIn.value) {
+    const gererCliquerSurMiser = (evenement) => {
+        if (!estConnecte.value) {
             toast.info("Veuillez vous connecter pour pouvoir miser", {
                 position: "top-right",
                 autoClose: 5000,
@@ -233,10 +231,10 @@
             });
             return;
         }
-        ouvrirModalMise(event);
+        ouvrirModalMise(evenement);
     };
 
-    watch(isLoggedIn, (newValue) => {
+    watch(estConnecte, (newValue) => {
         if (!newValue) {
             // Forcer la mise à jour de l'état du lot quand l'utilisateur se déconnecte
             const lotActuel = store.getters.getLot(props.lotRecu.id);
@@ -246,29 +244,24 @@
         }
     });
 
-    const isUserOutbid = computed(() => {
+    const estUtilisateurAvecMiseDepassee = computed(() => {
         const lotActuel = store.getters.getLot(props.lotRecu.id);
-        const aFaitUneMise = store.getters.hasUserBidOnLot(props.lotRecu.id) || userLastBid.value > 0;
+        const aFaitUneMise = store.getters.hasUserBidOnLot(props.lotRecu.id) || utilisateurDerniereMise.value > 0;
         const nestPasPlusHautEncherisseur = lotActuel?.idClientMise !== store.state.user?.id;
         const miseExiste = lotActuel?.mise > 0;
-        const estSurenchere = lotActuel?.mise > userLastBid.value;
+        const estSurenchere = lotActuel?.mise > utilisateurDerniereMise.value;
 
         return aFaitUneMise && nestPasPlusHautEncherisseur && miseExiste && estSurenchere;
     });
 
-    const handleNewBid = async (data) => {
-        console.log('SignalR Received:', {
-            data,
-            currentUserId: store.state.user?.id,
-            userLastBid: userLastBid.value
-        });
+    const gererNouvelleEnchere = async (data) => {
 
         if (data.idLot === props.lotRecu.id) {
             store.commit('updateLotMise', {
                 idLot: data.idLot,
                 montant: data.montant,
                 userId: data.userId,
-                userLastBid: data.userLastBid,
+                utilisateurDerniereMise: data.utilisateurDerniereMise,
                 nombreMises: data.nombreMises
             });
 
@@ -278,18 +271,11 @@
                 lot.value = { ...lotActuel };
             }
 
-            if (data.userLastBid && data.userLastBid.userId === store.state.user?.id) {
-                console.log('Updating userLastBid:', data.userLastBid.montant);
-                userLastBid.value = data.userLastBid.montant;
+            if (data.utilisateurDerniereMise && data.utilisateurDerniereMise.userId === store.state.user?.id) {
+                utilisateurDerniereMise.value = data.utilisateurDerniereMise.montant;
             }
 
             nextTick(() => {
-                console.log('After nextTick:', {
-                    isHighestBidder: isUserHighestBidder.value,
-                    isOutbid: isUserOutbid.value,
-                    userLastBid: userLastBid.value,
-                    nombreMises: nombreOffres.value
-                });
             });
         }
     };
@@ -299,24 +285,24 @@
         urlApi.value = await store.state.api.defaults.baseURL.replace("\api", "");
 
         // Ne récupérer la dernière mise que si l'utilisateur est connecté
-        if (store.state.isLoggedIn && props.lotRecu.id) {
-            userLastBid.value = await store.dispatch('getUserBidForLot', props.lotRecu.id);
+        if (store.state.estConnecte && props.lotRecu.id) {
+            utilisateurDerniereMise.value = await store.dispatch('getUserBidForLot', props.lotRecu.id);
         }
 
         if (store.state.connection) {
-            store.state.connection.on("ReceiveNewBid", handleNewBid);
+            store.state.connection.on("ReceiveNewBid", gererNouvelleEnchere);
         }
     });
 
     watch(() => store.getters.getLot(props.lotRecu.id)?.mise, async (newMise) => {
         if (newMise && props.lotRecu.id) {
-            userLastBid.value = await store.dispatch('getUserBidForLot', props.lotRecu.id);
+            utilisateurDerniereMise.value = await store.dispatch('getUserBidForLot', props.lotRecu.id);
         }
     });
 
     onUnmounted(() => {
         if (store.state.connection) {
-            store.state.connection.off("ReceiveNewBid", handleNewBid);
+            store.state.connection.off("ReceiveNewBid", gererNouvelleEnchere);
         }
     });
 
@@ -349,7 +335,7 @@
     // Utiliser requestAnimationFrame pour une mise à jour plus fluide
     let rafId = null;
 
-    const updateTimer = () => {
+    const mettreAJourCompteur = () => {
         if (tempsRestant.value <= 0) {
             cancelAnimationFrame(rafId);
             
@@ -358,11 +344,11 @@
             store.commit('SET_LOT_VENDU', props.lotRecu.id);
             return;
         }
-        rafId = requestAnimationFrame(updateTimer);
+        rafId = requestAnimationFrame(mettreAJourCompteur);
     };
 
     onMounted(() => {
-        rafId = requestAnimationFrame(updateTimer);
+        rafId = requestAnimationFrame(mettreAJourCompteur);
     });
 
     onUnmounted(() => {
@@ -410,7 +396,7 @@
         // Vérifier si le temps est écoulé
         const maintenant = new Date();
         const finDecompte = new Date(lot.dateFinDecompteLot);
-        
+
         return !lot.estVendu && finDecompte > maintenant;
     });
 
@@ -422,12 +408,12 @@
         transition: border-color 0.3s ease, box-shadow 0.3s ease;
     }
 
-    .user-bid {
+    .utilisateurPlusHauteMise {
         border: 2px solid #4CAF50 !important;
         box-shadow: 0 0 10px rgba(76, 175, 80, 0.3) !important;
     }
 
-    .user-outbid {
+    .utilisateurMiseDepassee {
         border: 2px solid #FF0000 !important;
         box-shadow: 0 0 10px rgba(255, 0, 0, 0.3) !important;
     }

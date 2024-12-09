@@ -24,6 +24,7 @@ namespace Gamma2024.Server.Data
         public DbSet<Medium> Mediums { get; set; } = default!;
         public DbSet<Charite> Charites { get; set; } = default!;
         public DbSet<MiseAutomatique> MiseAutomatiques { get; set; }
+        public DbSet<Notification> Notifications { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -143,6 +144,13 @@ namespace Gamma2024.Server.Data
                 .HasOne(m => m.User)
                 .WithMany()
                 .HasForeignKey(m => m.UserId);
+
+            //notification
+            builder.Entity<ApplicationUser>()
+                .HasMany(e => e.Notifications)
+                .WithOne(e => e.ApplicationUser)
+                .HasForeignKey(e => e.ApplicationUserId)
+                .IsRequired();
         }
 
         private void CreateRolesAndUsers(ModelBuilder builder)

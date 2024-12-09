@@ -65,11 +65,9 @@
 
     // Computed property pour filtrer les lots avec mises
     const lotsAvecMises = computed(() => {
-        const userBids = store.state.userBids;
-        const lots = store.state.lots;
-        
-        return Object.values(lots)
-            .filter(lot => userBids.some(bid => bid.lotId === lot.id))
+        const misesUtilisateur = store.state.userBids;
+        return Object.values(store.state.lots)
+            .filter(lot => misesUtilisateur.includes(lot.id))
             .map(lot => ({
                 ...lot,
                 userHasBid: true
@@ -93,8 +91,8 @@
             if (store.state.isLoggedIn) {
                 await store.dispatch('fetchUserBids');
             }
-        } catch (error) {
-            console.error("Erreur lors du chargement des mises:", error);
+        } catch (erreur) {
+            console.error("Erreur lors du chargement des mises:", erreur);
         } finally {
             chargement.value = false;
         }

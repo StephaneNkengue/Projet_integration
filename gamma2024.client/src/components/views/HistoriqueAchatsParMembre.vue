@@ -1,7 +1,7 @@
 <template>
     <span v-for="encan in numerosEncans">
-        <FactureModal :facturePdfPath="encan.pdfPath" :idFacture="'Fac'+encan.id"></FactureModal>
-        <FactureModal v-if="encan.livraison == true" :facturePdfPath="encan.pdfPathLivraison" :idFacture="'Livraison'+encan.id"></FactureModal>
+        <FactureModal :idFacture="encan.id"></FactureModal>
+        <FactureLivraisonModal v-if="encan.livraison == true" :idFacture="encan.idFactureLivraison"></FactureLivraisonModal>
     </span>
     <div class="container mt-5">
         <router-link class="text-decoration-none" :to="{ name: 'ChoixLivraison', params: {idFacture:facture.id} }" v-for="facture in listeFacturesChoixAFaire" :key="facture.id">
@@ -11,17 +11,17 @@
             </div>
         </router-link>
 
-        <h3 class="text-center">Rechercher une vente</h3>
+        <h3 class="text-center">Rechercher un achat</h3>
 
-        <input v-model="searchQuery"
+        <input v-model="rechercheQuery"
                class="form-control row col-10 ms-1"
                type="search"
-               placeholder="Rechercher une vente"
+               placeholder="Rechercher un achat"
                aria-label="Search" />
 
         <h1 class="text-center mt-5">Liste des achats</h1>
 
-        <div class="d-flex flex-row gap-2 justify-content-end mb-3">
+        <div class="d-flex flex-row gap-2 justify-content-md-end justify-content-center mb-3">
             <button class="d-flex align-items-center text-center rounded btn text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
                     @click="changerNbVenteParPage(20)"
                     v-bind:disabled="ventesParPage == 20">
@@ -53,52 +53,60 @@
         </div>
 
         <div v-if="!chargement" class="w-100">
-            <div class="d-flex justify-content-center" v-if="!filteredVentes.length">
+            <div class="d-flex justify-content-center" v-if="!ventesFiltrees.length">
                 <h2>Aucun résultat trouvé</h2>
             </div>
 
             <div v-else class="mb-5">
                 <div class="accordion" id="accordionEncan">
                     <div class="accordion-item" v-for="encan in numerosEncans" :key="encan">
-                        <div v-if="filteredVentes.filter((x) => x.encan == encan.encan) != 0 ">
-                            <h2 class="accordion-header px-0 d-flex" :style="{border: styleBorder}">
-                                <button class="accordion-button h-52" type="button" data-bs-toggle="collapse" :data-bs-target="'#collapse' + encan.encan"
+                        <div v-if="ventesFiltrees.filter((x) => x.encan == encan.encan) != 0 ">
+                            <h2 class="accordion-header px-0 d-flex" :style="{border: styleBordure}">
+                                <button class="accordion-button" type="button" data-bs-toggle="collapse" :data-bs-target="'#collapse' + encan.encan"
                                         aria-expanded="true" :aria-controls="'collapse' + encan.encan">
-                                    <div class="col">
-                                        <img v-if="encan.livraison == true"
-                                             src="/icons/Livrable.png" />
-                                        <img v-else-if="encan.livraison == false"
-                                             src="/icons/Cueillette.png"
-                                             class="imgCueillette" />
-                                        <img v-else
-                                             src="/icons/Avertissement.png"
-                                             class="imgAvertissement" />
+                                    <div class="d-flex align-items-center col-10">
+                                        <div class="me-3">
+                                            <img v-if="encan.livraison == true"
+                                                 src="/icons/Livrable.png"
+                                                 height="30"
+                                                 width="30" />
+                                            <img v-else-if="encan.livraison == false"
+                                                 src="/icons/Cueillette.png"
+                                                 height="30"
+                                                 width="30" />
+                                            <img v-else
+                                                 src="/icons/Avertissement.png"
+                                                 height="30"
+                                                 width="30" />
+                                        </div>
+
+                                        <div class="d-flex flex-md-row flex-column">
+                                            <div class="pe-5">
+                                                Encan : {{ encan.encan }}
+                                            </div>
+                                            <div>
+                                                Date de la facturation : {{ encan.dateAchat.split("T")[0] }}
+                                            </div>
+                                        </div>
+
                                     </div>
 
-                                    <div class="col-10 d-flex flex-row">
-                                        <div class="pe-5">
-                                            Encan : {{ encan.encan }}
-                                        </div>
-                                        <div>
-                                            Date de la facturation : {{ encan.dateAchat.split("T")[0] }}
-                                        </div>
-                                    </div>
-
-                                    <div class="col">
+                                    <div class="d-flex flex-column flex-md-row col justify-content-md-end me-md-2">
 
                                         <button v-if="encan.livraison == true"
-                                                class="btn btn-info"
+                                                class="btn btn-info mb-2 mb-md-0 me-md-2"
                                                 data-bs-toggle="modal"
-                                                :data-bs-target="'#modalLivraison'+encan.id">
-                                            <img src="/icons/Livrable.png" class="btnVisuel img-fluid" alt="..." />
+                                                :data-bs-target="'#modalFactureLivraison'+encan.idFactureLivraison">
+                                            <img src="/icons/Livrable.png"
+                                                 height="30"
+                                                 width="30" alt="..." />
                                         </button>
-                                    </div>
-
-                                    <div class="col">
                                         <button class="btn btn-info"
                                                 data-bs-toggle="modal"
-                                                :data-bs-target="'#modalFac'+encan.id">
-                                            <img src="/icons/VoirBtn.png" class="btnVisuel img-fluid" alt="..." />
+                                                :data-bs-target="'#modalFacture'+encan.id">
+                                            <img src="/icons/VoirBtn.png"
+                                                 height="30"
+                                                 width="30" alt="..." />
                                         </button>
                                     </div>
                                 </button>
@@ -109,7 +117,7 @@
                                  :class="{ show: encan == numerosEncans[0] }"
                                  data-bs-parent="#accordionEncan">
                                 <div class="accordion-body">
-                                    <div class="accordion" id="accordionClient" v-for="facture in ventesAffiche.filter((x)=> x.encan == encan.encan)" :key="facture.id">
+                                    <div class="accordion" id="accordionClient" v-for="facture in ventesAffichees.filter((x)=> x.encan == encan.encan)" :key="facture.id">
                                         <table class="table text-center">
                                             <thead class="table-dark">
                                                 <tr>
@@ -133,7 +141,7 @@
             </div>
         </div>
 
-        <div class="d-flex flex-row justify-content-center gap-1 flex-wrap p-3" v-if="ventesAffiche.length != 0">
+        <div class="d-flex flex-row justify-content-center gap-1 flex-wrap p-3" v-if="ventesAffichees.length != 0">
             <button type="button"
                     class="btn text-white btnSurvolerBleuMoyenFond btnDesactiverBleuMoyenFond"
                     @click="reculerPage"
@@ -165,12 +173,13 @@
     import { computed, watch, onMounted, ref } from "vue";
     import { useStore } from "vuex";
     import FactureModal from "@/components/modals/VoirFactureModal.vue";
+    import FactureLivraisonModal from "@/components/modals/VoirFactureLivraisonModal.vue";
 
     const store = useStore();
     const listeFacturesMembre = ref([]);
     const numerosEncans = ref([]);
-    const searchQuery = ref("");
-    const styleBorder = ref('');
+    const rechercheQuery = ref("");
+    const styleBordure = ref('');
     const chargement = ref(true);
 
     const pageCourante = ref(1);
@@ -178,7 +187,7 @@
     const nbVentesRecus = ref();
     const nbPages = ref();
     const listePagination = ref([]);
-    const ventesAffiche = ref([]);
+    const ventesAffichees = ref([]);
 
     const listeFacturesChoixAFaire = ref([]);
 
@@ -192,10 +201,10 @@
                 }
             });
 
-            const response = await store.dispatch("chercherFacturesChoixAFaire");
-            listeFacturesChoixAFaire.value = response.data;
+            const reponse = await store.dispatch("chercherFacturesChoixAFaire");
+            listeFacturesChoixAFaire.value = reponse.data;
 
-            nbVentesRecus.value = filteredVentes.value.length;
+            nbVentesRecus.value = ventesFiltrees.value.length;
             ventesParPage.value = nbVentesRecus.value;
             nbPages.value = recalculerNbPages();
 
@@ -203,8 +212,8 @@
             chercherVentesAAfficher();
 
             chargement.value = false;
-        } catch (error) {
-            console.log("Erreur factures" + error);
+        } catch (erreur) {
+            console.error("Erreur factures" + erreur);
         }
     });
 
@@ -215,26 +224,26 @@
         return [];
     });
 
-    const filteredVentes = computed(() => {
+    const ventesFiltrees = computed(() => {
         return tousLesVentes.value.filter((vente) => {
-            const searchLower = searchQuery.value.toLowerCase();
+            const rechercheEnMinuscule = rechercheQuery.value.toLowerCase();
             return (
-                vente.encan.toString().startsWith(searchLower) ||
-                vente.dateAchat.toLowerCase().startsWith(searchLower) ||
-                vente.lots.find(l => l.numero.startsWith(searchLower))
+                vente.encan.toString().startsWith(rechercheEnMinuscule) ||
+                vente.dateAchat.toLowerCase().startsWith(rechercheEnMinuscule) ||
+                vente.lots.find(l => l.numero.startsWith(rechercheEnMinuscule))
             );
         });
     });
 
-    watch(filteredVentes, () => {
-        if (listeFacturesMembre.value.length == filteredVentes.value.length) {
-            styleBorder.value = 'none';
+    watch(ventesFiltrees, () => {
+        if (listeFacturesMembre.value.length == ventesFiltrees.value.length) {
+            styleBordure.value = 'none';
         }
         else {
-            styleBorder.value = '2px solid green'
+            styleBordure.value = '2px solid green'
         }
 
-        nbVentesRecus.value = filteredVentes.value.length;
+        nbVentesRecus.value = ventesFiltrees.value.length;
         pageCourante.value = 1;
         AjusterPagination();
     });
@@ -303,31 +312,18 @@
     }
 
     function chercherVentesAAfficher() {
-        ventesAffiche.value = [];
+        ventesAffichees.value = [];
 
         let positionDebut = (pageCourante.value - 1) * ventesParPage.value;
         let positionFin = pageCourante.value * ventesParPage.value;
 
-        for (let i = positionDebut; i < positionFin && i < filteredVentes.value.length; i++) {
-            ventesAffiche.value.push(filteredVentes.value[i]);
+        for (let i = positionDebut; i < positionFin && i < ventesFiltrees.value.length; i++) {
+            ventesAffichees.value.push(ventesFiltrees.value[i]);
         }
     }
 </script>
 
 <style scoped>
-    img {
-        width: 25px;
-        height: 30px;
-    }
-
-    .imgCueillette {
-        height: 28px;
-    }
-
-    .imgAvertissement {
-        height: 25px;
-    }
-
     table,
     input {
         box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.2), 0 3px 5px 0 rgba(0, 0, 0, 0.19);
