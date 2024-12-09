@@ -107,7 +107,10 @@ namespace Gamma2024.Server.Extensions
 
                     for (int i = 12; i < columns.Length && i < 16; i++)
                     {
-                        images.Add(columns[i]);
+                        if (!columns[i].IsNullOrEmpty())
+                        {
+                            images.Add(columns[i]);
+                        }
                     }
 
                     yield return new LotImages
