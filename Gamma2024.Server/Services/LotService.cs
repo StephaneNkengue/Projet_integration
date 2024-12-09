@@ -1043,6 +1043,74 @@ namespace Gamma2024.Server.Services
             }
         }
 
+        public async Task<IEnumerable<MisesParEncanVM>> GetUserBidsGroupedByEncan(string userId)
+        {
+            try
+            {
+                _logger.LogInformation("Début de la récupération des mises pour {UserId}", userId);
+
+                var lots = await _context.Lots
+                    .Where(l => l.MisesAutomatiques.Any(m => m.UserId == userId))
+                    .Include(l => l.EncanLots)
+                        .ThenInclude(el => el.Encan)
+                    .Include(l => l.Photos)
+                    .Include(l => l.Categorie)
+                    .Include(l => l.Medium)
+                    .Include(l => l.Vendeur)
+                    .ToListAsync();
+
+                if (!lots.Any())
+                {
+                    _logger.LogInformation("Aucun lot trouvé pour l'utilisateur {UserId}", userId);
+                    return new List<MisesParEncanVM>();
+                }
+
+                var misesParEncan = lots
+                    .Where(l => l.EncanLots.Any())
+                    .GroupBy(l => l.EncanLots.FirstOrDefault()?.Encan)
+                    .Where(g => g.Key != null)
+                    .OrderByDescending(g => g.Key.DateFin)
+                    .Select(g => new MisesParEncanVM
+                    {
+                        NumeroEncan = g.Key.NumeroEncan,
+                        DateEncan = g.Key.DateFin,
+                        Lots = g.Select(l => new LotMiseVM
+                        {
+                            LotId = l.Id,
+                            Numero = l.Numero,
+                            Artiste = l.Artiste,
+                            Hauteur = l.Hauteur,
+                            Largeur = l.Largeur,
+                            DerniereMise = l.Mise.HasValue ? (decimal)l.Mise.Value : 0m,
+                            ValeurEstimeMin = (decimal)l.ValeurEstimeMin,
+                            ValeurEstimeMax = (decimal)l.ValeurEstimeMax,
+                            PrixOuverture = (decimal)l.PrixOuverture,
+                            PrixMinPourVente = l.PrixMinPourVente.HasValue ? (decimal)l.PrixMinPourVente.Value : 0m,
+                            EstPlusHautEncherisseur = l.IdClientMise == userId,
+                            EstVendu = l.EstVendu,
+                            PhotoPrincipale = l.Photos.FirstOrDefault()?.Lien ?? "",
+                            DateFinDecompteLot = l.DateFinDecompteLot,
+                            EstLivrable = l.EstLivrable,
+                            Description = l.Description,
+                            IdCategorie = l.IdCategorie,
+                            Categorie = l.Categorie.Nom,
+                            IdMedium = l.IdMedium,
+                            Medium = l.Medium.Type,
+                            IdVendeur = l.IdVendeur,
+                            Vendeur = $"{l.Vendeur.Prenom} {l.Vendeur.Nom}",
+                            SeraLivree = l.SeraLivree ?? false
+                        }).ToList()
+                    })
+                    .ToList();
+
+                return misesParEncan;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Erreur lors de la récupération des mises pour {UserId}", userId);
+                throw;
+            }
+        }
 
     }
 }
