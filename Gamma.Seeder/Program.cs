@@ -359,7 +359,8 @@ foreach (var lot in lots)
         {
             foreach (var image in lotImage.NomImages)
             {
-                var imagePath = Path.Combine("Images", "ImagesEncan232", image);
+                var imagePath = Path.Combine("Images", $"ImagesEncan{lot.NumeroEncan}", image);
+
                 lot.Lot.Photos.Add(new Photo
                 {
                     Lien = imagePath
