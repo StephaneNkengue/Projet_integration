@@ -49,18 +49,6 @@
 		<None Update="CSV\DonneesDec\VendeursEtVentes.csv">
 		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</None>
-		<None Update="CSV\DonneesOriginal\AcheteurEncan232.csv">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</None>
-		<None Update="CSV\DonneesOriginal\Acheteurs.csv">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</None>
-		<None Update="CSV\DonneesOriginal\Encan232et233.csv">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</None>
-		<None Update="CSV\DonneesOriginal\Vendeurs.csv">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</None>
 	</ItemGroup>
 
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">

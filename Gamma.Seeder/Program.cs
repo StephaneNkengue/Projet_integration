@@ -534,7 +534,6 @@ foreach (var item in utilisateurs)
     }
 }
 
-
 context.Lots.UpdateRange(lots.Select(l => l.Lot));
 context.SaveChanges();
 
