@@ -1,3 +1,4 @@
+using Gamma2024.Server.Extensions.Objets;
 using Gamma2024.Server.Models;
 using Microsoft.IdentityModel.Tokens;
 
@@ -88,21 +89,28 @@ namespace Gamma2024.Server.Extensions
             }
         }
 
-        public static IEnumerable<IEnumerable<string>> GetImagesParLotParEncan(this IEnumerable<string> source, int numeroEncan)
+        public static IEnumerable<LotImages> GetLotImages(this IEnumerable<string> source)
         {
             foreach (var line in source)
             {
                 var columns = line.Split(';');
 
-                if (!string.IsNullOrEmpty(columns[1]) && int.Parse(columns[0]) == numeroEncan)
+                if (!string.IsNullOrEmpty(columns[1]))
                 {
                     var images = new List<string>();
 
                     images.Add(columns[12]);
                     images.Add(columns[13]);
                     images.Add(columns[14]);
+                    images.Add(columns[15]);
+                    images.Add(columns[16]);
 
-                    yield return images;
+                    yield return new LotImages
+                    {
+                        NomImages = images,
+                        NumeroLot = columns[1],
+                        NumeroEncan = int.Parse(columns[0])
+                    };
                 }
 
             }
