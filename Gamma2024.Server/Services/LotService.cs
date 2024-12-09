@@ -27,47 +27,47 @@ namespace Gamma2024.Server.Services
             _httpClientFactory = httpClientFactory;
         }
 
-		public async Task<IEnumerable<LotAffichageVM>> ObtenirTousLots()
-		{
-			return await _context.Lots
-				.Include(l => l.Photos)
-				.Include(l => l.Categorie)
-				.Include(l => l.Medium)
-				.Include(l => l.Vendeur)
-				.Include(l => l.EncanLots)
-				.ThenInclude(el => el.Encan)
-				.Select(l => new LotAffichageVM
-				{
-					Id = l.Id,
-					NumeroEncan = l.EncanLots.FirstOrDefault().Encan.NumeroEncan.ToString(),
-					Code = l.Numero,
-					PrixOuverture = l.PrixOuverture,
-					PrixMinPourVente = l.PrixMinPourVente,
-					ValeurEstimeMin = l.ValeurEstimeMin,
-					ValeurEstimeMax = l.ValeurEstimeMax,
-					Categorie = l.Categorie.Nom,
-					Artiste = l.Artiste,
-					Hauteur = l.Hauteur,
-					Largeur = l.Largeur,
-					Description = l.Description,
-					Medium = l.Medium.Type,
-					EstLivrable = l.EstLivrable,
-					Vendeur = $"{l.Vendeur.Prenom} {l.Vendeur.Nom}",
-					Mise = l.Mise,
-					EstVendu = l.EstVendu,
-					DateFinVente = l.DateFinVente,
-					DateDepot = l.DateDepot,
-					DateCreation = l.DateCreation,
-					IdClientMise = l.IdClientMise,
-					SeraLivree = l.SeraLivree,
-					Photos = l.Photos.Select(p => new PhotoVM
-					{
-						Id = p.Id,
-						Url = p.Lien
-					}).ToList()
-				})
-				.ToListAsync();
-		}
+        public async Task<IEnumerable<LotAffichageVM>> ObtenirTousLots()
+        {
+            return await _context.Lots
+                .Include(l => l.Photos)
+                .Include(l => l.Categorie)
+                .Include(l => l.Medium)
+                .Include(l => l.Vendeur)
+                .Include(l => l.EncanLots)
+                .ThenInclude(el => el.Encan)
+                .Select(l => new LotAffichageVM
+                {
+                    Id = l.Id,
+                    NumeroEncan = l.EncanLots.FirstOrDefault().Encan.NumeroEncan.ToString(),
+                    Code = l.Numero,
+                    PrixOuverture = l.PrixOuverture,
+                    PrixMinPourVente = l.PrixMinPourVente,
+                    ValeurEstimeMin = l.ValeurEstimeMin,
+                    ValeurEstimeMax = l.ValeurEstimeMax,
+                    Categorie = l.Categorie.Nom,
+                    Artiste = l.Artiste,
+                    Hauteur = l.Hauteur,
+                    Largeur = l.Largeur,
+                    Description = l.Description,
+                    Medium = l.Medium.Type,
+                    EstLivrable = l.EstLivrable,
+                    Vendeur = $"{l.Vendeur.Prenom} {l.Vendeur.Nom}",
+                    Mise = l.Mise,
+                    EstVendu = l.EstVendu,
+                    DateFinVente = l.DateFinVente,
+                    DateDepot = l.DateDepot,
+                    DateCreation = l.DateCreation,
+                    IdClientMise = l.IdClientMise,
+                    SeraLivree = l.SeraLivree,
+                    Photos = l.Photos.Select(p => new PhotoVM
+                    {
+                        Id = p.Id,
+                        Url = p.Lien
+                    }).ToList()
+                })
+                .ToListAsync();
+        }
 
         public async Task<LotModificationVM> ObtenirLot(int id)
         {
@@ -145,7 +145,7 @@ namespace Gamma2024.Server.Services
                 {
                     return (false, "L'encan spécifié n'existe pas", null);
                 }
-				}
+
 
                 // Définir les dates du lot
                 var dateDebutDecompte = encan.DateDebutSoireeCloture;
@@ -472,31 +472,6 @@ namespace Gamma2024.Server.Services
             return null;
         }
 
-        public ICollection<LotAffichageAdministrateurVM> ChercherTousLots()
-        {
-            var lots = _context.Lots
-                .Select(l => new LotAffichageAdministrateurVM()
-                {
-                    Id = l.Id,
-                    Encan = _context.Encans.Where(e => e.Id == (_context.EncanLots.Where(e => e.IdLot == l.Id).Max(e => e.IdEncan))).Single().NumeroEncan,
-                    Numero = l.Numero,
-                    PrixOuverture = l.PrixOuverture.ToString() + " $",
-                    ValeurMinPourVente = l.PrixMinPourVente.ToString() + " $",
-                    ValeurEstimeMax = l.ValeurEstimeMax.ToString() + " $",
-                    ValeurEstimeMin = l.ValeurEstimeMin.ToString() + " $",
-                    Categorie = _context.Categories.Where(c => c.Id == l.IdCategorie).Single().Nom,
-                    Artiste = l.Artiste,
-                    Description = l.Description,
-                    Hauteur = l.Hauteur,
-                    Largeur = l.Largeur,
-                    Medium = _context.Mediums.Where(m => m.Id == l.IdMedium).Single().Type,
-                    Vendeur = l.Vendeur.Prenom + " " + l.Vendeur.Nom,
-                    EstVendu = l.EstVendu,
-                    EstLivrable = l.EstLivrable,
-                }).ToList();
-            return lots;
-        }
-
         public async Task<(bool Success, string Message)> SupprimerLot(int id)
         {
             try
@@ -546,36 +521,36 @@ namespace Gamma2024.Server.Services
             }
         }
 
-		// Ajoutez cette nouvelle méthode pour convertir LotModificationVM en LotAffichageVM
-		private LotAffichageVM ConvertirEnLotAffichageVM(LotModificationVM lotModification)
-		{
-			return new LotAffichageVM
-			{
-				Id = lotModification.Id,
-				NumeroEncan = lotModification.NumeroEncan,
-				Code = lotModification.Numero,
-				PrixOuverture = lotModification.PrixOuverture,
-				PrixMinPourVente = lotModification.PrixMinPourVente,
-				ValeurEstimeMin = lotModification.ValeurEstimeMin,
-				ValeurEstimeMax = lotModification.ValeurEstimeMax,
-				Categorie = lotModification.Categorie,
-				Artiste = lotModification.Artiste,
-				Hauteur = lotModification.Hauteur,
-				Largeur = lotModification.Largeur,
-				Description = lotModification.Description,
-				Medium = lotModification.Medium,
-				EstLivrable = lotModification.EstLivrable,
-				Vendeur = lotModification.Vendeur,
-				Mise = lotModification.Mise,
-				EstVendu = lotModification.EstVendu,
-				DateFinVente = lotModification.DateFinVente,
-				DateDepot = lotModification.DateDepot,
-				DateCreation = lotModification.DateCreation,
-				IdClientMise = lotModification.IdClientMise,
-				SeraLivree = lotModification.SeraLivree,
-				Photos = lotModification.PhotosModifie
-			};
-		}
+        // Ajoutez cette nouvelle méthode pour convertir LotModificationVM en LotAffichageVM
+        private LotAffichageVM ConvertirEnLotAffichageVM(LotModificationVM lotModification)
+        {
+            return new LotAffichageVM
+            {
+                Id = lotModification.Id,
+                NumeroEncan = lotModification.NumeroEncan,
+                Code = lotModification.Numero,
+                PrixOuverture = lotModification.PrixOuverture,
+                PrixMinPourVente = lotModification.PrixMinPourVente,
+                ValeurEstimeMin = lotModification.ValeurEstimeMin,
+                ValeurEstimeMax = lotModification.ValeurEstimeMax,
+                Categorie = lotModification.Categorie,
+                Artiste = lotModification.Artiste,
+                Hauteur = lotModification.Hauteur,
+                Largeur = lotModification.Largeur,
+                Description = lotModification.Description,
+                Medium = lotModification.Medium,
+                EstLivrable = lotModification.EstLivrable,
+                Vendeur = lotModification.Vendeur,
+                Mise = lotModification.Mise,
+                EstVendu = lotModification.EstVendu,
+                DateFinVente = lotModification.DateFinVente,
+                DateDepot = lotModification.DateDepot,
+                DateCreation = lotModification.DateCreation,
+                IdClientMise = lotModification.IdClientMise,
+                SeraLivree = lotModification.SeraLivree,
+                Photos = lotModification.PhotosModifie
+            };
+        }
 
         public async Task<(bool success, string message)> PlacerMise(MiseVM mise)
         {
@@ -1067,6 +1042,7 @@ namespace Gamma2024.Server.Services
                 throw;
             }
         }
+
 
     }
 }
