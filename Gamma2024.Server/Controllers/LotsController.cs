@@ -260,6 +260,28 @@ namespace Gamma2024.Server.Controllers
 			return Ok(lastBid);
 		}
 
+		[Authorize]
+		[HttpGet("userBidsGroupedByEncan")]
+		public async Task<IActionResult> GetUserBidsGroupedByEncan()
+		{
+			try
+			{
+				var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+				if (string.IsNullOrEmpty(userId))
+				{
+					return Unauthorized();
+				}
+
+				var misesParEncan = await _lotService.GetUserBidsGroupedByEncan(userId);
+				return Ok(misesParEncan);
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError(ex, "Erreur lors de la récupération des mises groupées par encan");
+				return StatusCode(500, "Une erreur est survenue");
+			}
+		}
+
 
     }
 }

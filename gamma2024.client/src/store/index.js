@@ -1436,8 +1436,19 @@ const store = createStore({
                 }
             }
         },
+
+    async getUserBidsGroupedByEncan({ state }) {
+      try {
+        const response = await state.api.get('/lots/userBidsGroupedByEncan');
+        console.log('Réponse de la requête:', response.data);
+        return response.data;
+      } catch (error) {
+        console.error('Erreur lors de la récupération des mises par encan:', error);
+        throw error;
+      }
     },
-    getters: {
+  },
+  getters: {
         isAdmin: (state) => {
             const result =
                 Array.isArray(state.roles) && state.roles.includes("Administrateur");
