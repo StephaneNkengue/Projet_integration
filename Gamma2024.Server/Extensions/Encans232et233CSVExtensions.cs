@@ -40,13 +40,13 @@ namespace Gamma2024.Server.Extensions
             }
         }
 
-        public static IEnumerable<Lot> ToLotParEncan(this IEnumerable<string> source, int numeroEncan)
+        public static IEnumerable<LotEncan> ToLot(this IEnumerable<string> source)
         {
             foreach (var line in source)
             {
                 var columns = line.Split(';');
 
-                if (!string.IsNullOrEmpty(columns[1]) && int.Parse(columns[0]) == numeroEncan)
+                if (!string.IsNullOrEmpty(columns[1]))
                 {
                     var livrable = false;
                     if (columns[11] == "oui")
@@ -62,27 +62,33 @@ namespace Gamma2024.Server.Extensions
 
                     var dimensions = columns[8].Split("x");
 
-                    yield return new Lot
+                    yield return new LotEncan
                     {
-                        Numero = columns[1],
-                        PrixOuverture = double.Parse(columns[2].Replace("$", "").Trim()),
-                        PrixMinPourVente = prixMinVente,
-                        ValeurEstimeMin = double.Parse(columns[4].Replace("$", "").Trim()),
-                        ValeurEstimeMax = double.Parse(columns[5].Replace("$", "").Trim()),
-                        Categorie = new Categorie
+                        Lot = new Lot
                         {
-                            Nom = columns[6]
+                            Numero = columns[1],
+                            PrixOuverture = double.Parse(columns[2].Replace("$", "").Trim()),
+                            PrixMinPourVente = prixMinVente,
+                            ValeurEstimeMin = double.Parse(columns[4].Replace("$", "").Trim()),
+                            ValeurEstimeMax = double.Parse(columns[5].Replace("$", "").Trim()),
+                            Categorie = new Categorie
+                            {
+                                Nom = columns[6]
+                            },
+                            Artiste = columns[7],
+                            //Hauteur = double.Parse(dimensions[0].Trim()),
+                            Hauteur = 10,
+                            //Largeur = double.Parse(dimensions[1].Trim()),
+                            Largeur = 20,
+                            Description = columns[9],
+                            Medium = new Medium
+                            {
+                                Type = columns[10]
+                            },
+                            EstLivrable = livrable,
+                            Mise = 0,
                         },
-                        Artiste = columns[7],
-                        Hauteur = double.Parse(dimensions[0].Trim()),
-                        Largeur = double.Parse(dimensions[1].Trim()),
-                        Description = columns[9],
-                        Medium = new Medium
-                        {
-                            Type = columns[10]
-                        },
-                        EstLivrable = livrable,
-                        Mise = 0
+                        NumeroEncan = int.Parse(columns[0])
                     };
                 }
 
@@ -99,11 +105,10 @@ namespace Gamma2024.Server.Extensions
                 {
                     var images = new List<string>();
 
-                    images.Add(columns[12]);
-                    images.Add(columns[13]);
-                    images.Add(columns[14]);
-                    images.Add(columns[15]);
-                    images.Add(columns[16]);
+                    for (int i = 12; i < columns.Length && i < 16; i++)
+                    {
+                        images.Add(columns[i]);
+                    }
 
                     yield return new LotImages
                     {

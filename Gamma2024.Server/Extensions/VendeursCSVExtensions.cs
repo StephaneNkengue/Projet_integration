@@ -39,9 +39,8 @@ namespace Gamma2024.Server.Extensions
             }
         }
 
-        public static IEnumerable<VendeurLotsInfo> GetVendeurLots(this IEnumerable<string> source)
+        public static IEnumerable<VendeurLots> GetVendeurLots(this IEnumerable<string> source)
         {
-            var compteur = 0;
             foreach (var line in source)
             {
                 var columns = line.Split(';');
@@ -51,9 +50,9 @@ namespace Gamma2024.Server.Extensions
                     .Select(a => a.Trim().Replace("lot #", ""))
                     .ToList();
 
-                yield return new VendeurLotsInfo
+                yield return new VendeurLots
                 {
-                    Ligne = compteur,
+                    Courriel = columns[4],
                     NumeroEncan = 232,
                     NumerosLots = lots
                 };
@@ -63,9 +62,9 @@ namespace Gamma2024.Server.Extensions
                     .Select(a => a.Trim().Replace("lot #", ""))
                     .ToList();
 
-                yield return new VendeurLotsInfo
+                yield return new VendeurLots
                 {
-                    Ligne = compteur,
+                    Courriel = columns[4],
                     NumeroEncan = 233,
                     NumerosLots = lots
                 };
@@ -75,9 +74,9 @@ namespace Gamma2024.Server.Extensions
                     .Select(a => a.Trim().Replace("lot #", ""))
                     .ToList();
 
-                yield return new VendeurLotsInfo
+                yield return new VendeurLots
                 {
-                    Ligne = compteur,
+                    Courriel = columns[4],
                     NumeroEncan = 234,
                     NumerosLots = lots
                 };
@@ -87,9 +86,9 @@ namespace Gamma2024.Server.Extensions
                     .Select(a => a.Trim().Replace("lot #", ""))
                     .ToList();
 
-                yield return new VendeurLotsInfo
+                yield return new VendeurLots
                 {
-                    Ligne = compteur,
+                    Courriel = columns[4],
                     NumeroEncan = 235,
                     NumerosLots = lots
                 };
