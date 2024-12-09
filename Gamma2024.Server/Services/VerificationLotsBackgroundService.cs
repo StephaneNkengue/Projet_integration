@@ -37,30 +37,54 @@ namespace Gamma2024.Server.Services
 
                         var maintenant = DateTime.Now;
 
-                        _logger.LogInformation($"Début de la vérification à {maintenant}");
-
-                        var encansTermines = await context.Encans
+                        // Chercher les encans qui devraient être terminés
+                        var encansAVerifier = await context.Encans
                             .Where(e => !e.EstTermine && 
                                        e.DateFin < maintenant && 
                                        e.EncanLots.Any(el => el.Lot.Mise > 0))
-                            .Select(e => new 
-                            { 
-                                e.Id,
-                                e.NumeroEncan,
-                                DerniereLotDate = e.EncanLots
-                                    .Max(el => el.Lot.DateFinDecompteLot)
-                            })
-                            .Where(e => e.DerniereLotDate <= maintenant)
+                            .Include(e => e.EncanLots)
+                                .ThenInclude(el => el.Lot)
                             .ToListAsync(stoppingToken);
 
-                        _logger.LogInformation($"Trouvé {encansTermines.Count} encans terminés à vérifier");
-                        
-                        foreach (var encan in encansTermines)
+                        foreach (var encan in encansAVerifier)
                         {
-                            _logger.LogInformation($"Traitement de l'encan #{encan.NumeroEncan} (ID: {encan.Id})");
-                            _logger.LogInformation($"Date du dernier lot : {encan.DerniereLotDate}");
-                            
-                            await lotService.VerifierEtFinaliserLotsExpires(encan.Id);
+                            // Trouver le dernier lot (celui avec la plus grande DateFinDecompteLot)
+                            var dernierLot = encan.EncanLots
+                                .Select(el => el.Lot)
+                                .Where(l => l.DateFinDecompteLot.HasValue)
+                                .OrderByDescending(l => l.DateFinDecompteLot)
+                                .FirstOrDefault();
+
+                            if (dernierLot == null || dernierLot.DateFinDecompteLot > maintenant)
+                            {
+                                // Si le dernier lot n'est pas encore terminé, on passe à l'encan suivant
+                                continue;
+                            }
+
+                            _logger.LogInformation($"Traitement de l'encan #{encan.NumeroEncan} - Dernier lot {dernierLot.Numero} se termine à {dernierLot.DateFinDecompteLot}");
+
+                            // Traiter tous les lots expirés dans l'ordre chronologique
+                            var lotsExpires = encan.EncanLots
+                                .Select(el => el.Lot)
+                                .Where(l => !l.EstVendu && 
+                                          l.DateFinDecompteLot <= maintenant &&
+                                          l.Mise > 0 &&
+                                          l.IdClientMise != null)
+                                .OrderBy(l => l.DateFinDecompteLot)
+                                .ToList();
+
+                            foreach (var lot in lotsExpires)
+                            {
+                                await lotService.MarquerLotVenduInterne(lot.Id);
+                                _logger.LogInformation($"Lot {lot.Numero} marqué comme vendu");
+                            }
+
+                            // Si on vient de traiter le dernier lot, finaliser l'encan
+                            if (lotsExpires.Any(l => l.Id == dernierLot.Id))
+                            {
+                                _logger.LogInformation($"Dernier lot traité, finalisation de l'encan #{encan.NumeroEncan}");
+                                await lotService.FinaliserEncan(encan.NumeroEncan);
+                            }
                         }
                     }
 

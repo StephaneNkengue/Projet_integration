@@ -265,12 +265,6 @@ namespace Gamma2024.Server.Controllers
             return Ok(lastBid);
         }
 
-        [HttpPost("verifier-lots/{idEncan}")]
-        public async Task<IActionResult> VerifierLots(int idEncan)
-        {
-            await _lotService.VerifierEtFinaliserLotsExpires(idEncan);
-            return Ok();
-        }
 
     }
 }

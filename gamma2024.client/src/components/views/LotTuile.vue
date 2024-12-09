@@ -403,30 +403,7 @@
         return !lot.estVendu && finDecompte > maintenant;
     });
 
-    const verifierEtatLot = async () => {
-        const lot = store.getters.getLot(props.lotRecu.id);
-        if (lot && !lot.estVendu) {
-            const maintenant = new Date();
-            const finDecompte = new Date(lot.dateFinDecompteLot);
-            
-            if (maintenant >= finDecompte) {
-                try {
-                    await store.state.connection.invoke("LotVendu", lot.id);
-                } catch (err) {
-                    console.error("Erreur lors du marquage du lot comme vendu:", err);
-                }
-            }
-        }
-    };
 
-    // Ajouter une vérification périodique
-    onMounted(() => {
-        const intervalId = setInterval(verifierEtatLot, 3000); // V��rifier toutes les 3 secondes
-        
-        onUnmounted(() => {
-            clearInterval(intervalId);
-        });
-    });
 
 </script>
 

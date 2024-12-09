@@ -20,6 +20,7 @@ const store = createStore({
         notifications: [],
         userBidHistory: {}, // Format: { lotId: { userId: montant } }
         encanCourant: null,
+        lotsEncanCourant: {}, // Pour l'encan actif
         soireeCloture: null,
     },
     mutations: {
@@ -325,9 +326,10 @@ const store = createStore({
         },
         HANDLE_SOIREE_TERMINEE(state, router) {
             state.encanCourant = null;
-            state.lots = {};
+            // Ne pas vider state.lots
+            // state.lots = {};  // Supprimer ou commenter cette ligne
             state.userBids = [];
-            router.push('/'); // Rediriger vers la page d'accueil
+            router.push('/');
         }
     },
     actions: {

@@ -66,11 +66,14 @@
     // Computed property pour filtrer les lots avec mises
     const lotsAvecMises = computed(() => {
         const userBids = store.state.userBids;
-        return Object.values(store.state.lots)
-            .filter(lot => userBids.includes(lot.id))
+        const lots = store.state.lots;
+        
+        return Object.values(lots)
+            .filter(lot => userBids.some(bid => bid.lotId === lot.id))
             .map(lot => ({
                 ...lot,
                 userHasBid: true
+                
             }));
     });
 
