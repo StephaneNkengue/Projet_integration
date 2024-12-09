@@ -1414,7 +1414,7 @@ const store = createStore({
                     return state.user.photo;
                 } else {
                     const baseUrl = state.api.defaults.avatarURL;
-                    const fullUrl = baseUrl + "/" + state.user.photo;
+                    const fullUrl = baseUrl + state.user.photo;
                     return fullUrl;
                 }
             }
