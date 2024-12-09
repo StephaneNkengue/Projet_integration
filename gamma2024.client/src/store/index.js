@@ -1423,59 +1423,59 @@ const store = createStore({
       }
     },
 
-    async sendNotification({ state }, { userId, message }) {
-      if (state.notificationConnection) {
-        try {
-          await state.notificationConnection.invoke(
-            "SendNotification",
-            userId,
-            message
-          );
-        } catch (err) {
-          console.error("Error sending notification:", err);
-        }
-      }
+        async sendNotification({ state }, { userId, message }) {
+            if (state.notificationConnection) {
+                try {
+                    await state.notificationConnection.invoke(
+                        "SendNotification",
+                        userId,
+                        message
+                    );
+                } catch (err) {
+                    console.error("Error sending notification:", err);
+                }
+            }
+        },
     },
-  },
-  getters: {
-    isAdmin: (state) => {
-      const result =
-        Array.isArray(state.roles) && state.roles.includes("Administrateur");
-      return result;
+    getters: {
+        isAdmin: (state) => {
+            const result =
+                Array.isArray(state.roles) && state.roles.includes("Administrateur");
+            return result;
+        },
+        isClient: (state) =>
+            Array.isArray(state.roles) && state.roles.includes("Client"),
+        currentUser: (state) => state.user,
+        username: (state) =>
+            state.user ? state.user.pseudonym || state.user.username : "USERNAME",
+        avatarUrl: (state) => {
+            if (state.user && state.user.photo) {
+                if (state.user.photo.startsWith("http")) {
+                    return state.user.photo;
+                } else {
+                    const baseUrl = state.api.defaults.avatarURL;
+                    const fullUrl = baseUrl + state.user.photo;
+                    return fullUrl;
+                }
+            }
+            return "/gamma2024.client/public/icons/Avatar.png";
+        },
+        hasUserBidOnLot: (state) => (lotId) => {
+            return state.userBids.includes(lotId);
+        },
+        getLot: (state) => (id) => {
+            return state.lots[id] || null;
+        },
+        getAllLots: (state) => {
+            return Object.values(state.lots);
+        },
+        getUniqueOffersCount: (state) => (lotId) => {
+            const lot = state.lots[lotId];
+            return lot?.nombreMises || 0;
+        },
+        allNotifications: (state) => state.notifications,
+        unreadNotifications: (state) => state.unreadCount,
     },
-    isClient: (state) =>
-      Array.isArray(state.roles) && state.roles.includes("Client"),
-    currentUser: (state) => state.user,
-    username: (state) =>
-      state.user ? state.user.pseudonym || state.user.username : "USERNAME",
-    avatarUrl: (state) => {
-      if (state.user && state.user.photo) {
-        if (state.user.photo.startsWith("http")) {
-          return state.user.photo;
-        } else {
-          const baseUrl = state.api.defaults.avatarURL;
-          const fullUrl = baseUrl + "/" + state.user.photo;
-          return fullUrl;
-        }
-      }
-      return "/gamma2024.client/public/icons/Avatar.png";
-    },
-    hasUserBidOnLot: (state) => (lotId) => {
-      return state.userBids.includes(lotId);
-    },
-    getLot: (state) => (id) => {
-      return state.lots[id] || null;
-    },
-    getAllLots: (state) => {
-      return Object.values(state.lots);
-    },
-    getUniqueOffersCount: (state) => (lotId) => {
-      const lot = state.lots[lotId];
-      return lot?.nombreMises || 0;
-    },
-    allNotifications: (state) => state.notifications,
-    unreadNotifications: (state) => state.unreadCount,
-  },
 });
 
 // Initialiser le store immédiatement
