@@ -1,187 +1,44 @@
 ENCAN #;LOT #;PRIX OUVERTURE;VALEUR MIN POUR VENDRE;ESTIMATION MIN;ESTIMATION MAX;GROUPE-CATÉGORIE;ARTISTE;DIMENSION (en po);DESCRIPTION;MÉDIUM;LIVRAISON;PHOTO 1;PHOTO 2;PHOTO 3;PHOTO 4
-234;1; 325,00  $ ;; 500  $ ; 800  $ ;Art-Paintings;Léon Bellefleur;17½ x 20½;1968/Deux personnages, bon augure;Lithographie;Oui;1_1.jpg;1_2.jpg;1_3.jpg;1_4.jpg
-234;2; 80,00  $ ;; 200  $ ; 300  $ ;Art-Paintings;Claude Dulude;12 x 9;1972/Abstraction;Huile sur papier;Oui;2_1.jpg;2_2.jpg;2_3.jpg;2_4.jpg
-234;3; 250,00  $ ;; 650  $ ; 950  $ ;Art-Paintings;Guy Paquet;20 x 14;Un marcheur est passé;Huile sur papier;Oui;3_1.jpg;3_2.jpg;3_3.jpg;
-234;4; 2 500,00  $ ;; 4 500  $ ; 7 000  $ ;Art-Paintings;Paul Tex Lecor;30 x 36;Solitude;Huile sur papier;Oui;4_1.jpg;4_2.jpg;4_3.jpg;4_4.jpg
-234;4a; 1 250,00  $ ;; 3 000  $ ; 4 500  $ ;Art-Paintings;Paul Tex Lecor;20 x 24;Campagne;Huile sur papier;Oui;4a_1.jpg;4a_2.jpg;4a_3.jpg;
-234;4b; 800,00  $ ;; 1 500  $ ; 2 500  $ ;Art-Paintings;Paul Tex Lecor;12 x 10;Les grands ormes;Huile sur papier;Oui;4b_1.jpg;4b_2.jpg;4b_3.jpg;
-234;5; 450,00  $ ;; 800  $ ; 1 200  $ ;Art-Paintings;Christian Bergeron;23 x 31;Paysage automne;Huile sur papier;Non;5_1.jpg;5_2.jpg;;
-234;6; 3 250,00  $ ;; 6 000  $ ; 8 000  $ ;Art-Paintings;Bruno Côté;30 x 36;Vallée rivière Malbaie;Huile sur panneau;Non;6_1.jpg;6_2.jpg;6_3.jpg;6_4.jpg
-234;7; 1 000,00  $ ;; 2 500  $ ; 3 000  $ ;Art-Paintings;Serge Lemoyne;23¼ x 17¼;1978/Road Runner;Sérigraphie;Oui;7_1.jpg;7_2.jpg;7_3.jpg;7_4.jpg
-234;8; 500,00  $ ;; 1 000  $ ; 1 500  $ ;Art-Paintings;Claude Tousignant;20 x 25½;1971/Diagonales;Sérigraphie;Non;8_1.jpg;8_2.jpg;8_3.jpg;8_4.jpg
-234;9; 1 250,00  $ ;; 2 000  $ ; 3 000  $ ;Art-Paintings;Charles Daudelin;19 x 13;1964/Abstraction;Huile sur papier;Non;9_1.jpg;9_2.jpg;9_3.jpg;9_4.jpg
-234;10; 300,00  $ ;; 700  $ ; 1 200  $ ;Art-Paintings;Fleurimont Constantineau;24 x 30;Iles de Baffin;Huile sur panneau;Oui;10_1.jpg;10_2.jpg;10_3.jpg;
-234;11; 800,00  $ ;; 1 500  $ ; 2 000  $ ;Art-Paintings;Lise Gervais;24¼ x 35¾;1979/Don Pedro;Aquarelle;Non;11_1.jpg;11_2.jpg;11_3.jpg;11_4.jpg
-234;12; 1 500,00  $ ;; 3 000  $ ; 4 000  $ ;Art-Paintings;Paul Tex Lecor;24 x 30;1977/Le rocher Percé;Huile sur toile;Oui;12_1.jpg;12_2.jpg;12_3.jpg;
-234;13; 50,00  $ ;; 400  $ ; 700  $ ;Art-Paintings;Georges St-Pierre;49 x 35;L'arbre mort;Huile sur toile;Oui;13_1.jpg;13_2.jpg;13_3.jpg;13_4.jpg
-234;14; 50,00  $ ;; 250  $ ; 400  $ ;Art-Paintings;Pierre Ayot;8 x 6;1964/Abstraction;Eau forte;Non;14_1.jpg;14_2.jpg;14_3.jpg;
-234;15; 850,00  $ ;; 2 000  $ ; 3 000  $ ;Art-Paintings;Serge Lemoyne;40 x 26;1964/Série cosmos;Acylique, aérosol;Oui;15_1.jpg;15_2.jpg;15_3.jpg;15_4.jpg
-234;15a; 50,00  $ ;; 300  $ ; 500  $ ;Art-Paintings;Serge Lemoyne;7½ x 4;1963/Abstraction;Mixte papier;Oui;15a_1.jpg;15a_2.jpg;15a_3.jpg;
-234;16; 3 500,00  $ ; 6 000,00  $ ; 5 000  $ ; 7 000  $ ;Antiques & Collectibles - Sports Cards;Serge Lemoyne;23 x 35;1978/Le 50ième but de Lafleur;Sérigraphie;Oui;16_1.jpg;16_2.jpg;16_3.jpg;16_4.jpg
-234;17; 500,00  $ ;; 1 000  $ ; 1 500  $ ;Art-Paintings;Kittie Bruneau;30 x 22½;1994/Le secret;Huile sur papier;Non;17_1.jpg;17_2.jpg;17_3.jpg;17_4.jpg
-234;18; 500,00  $ ;; 1 500  $ ; 2 500  $ ;Art-Prints/Lithographs;Alexander Calder ;20 x 29;Mutants;Sérigraphie;Oui;18_1.jpg;18_2.jpg;18_3.jpg;18_4.jpg
-234;19; 500,00  $ ;; 1 000  $ ; 2 000  $ ;Art-Paintings;Alfred Pellan;35 x 23;1973/Polychromée-O;Sérigraphie;Oui;19_1.jpg;19_2.jpg;19_3.jpg;19_4.jpg
-234;20; 400,00  $ ;; 700  $ ; 1 000  $ ;Art-Paintings;René Marcil;26x20;1981/Homme et femme;Pastel;Non;20_1.jpg;20_2.jpg;20_3.jpg;
-234;21; 1 000,00  $ ; 3 500,00  $ ; 3 000  $ ; 4 000  $ ;Art-Paintings;Jean-Paul Riopelle;23x27;1981/Lépervier-Harfang des neiges;Lithographie;Oui;21_1.jpg;21_2.jpg;21_3.jpg;
-234;22; 500,00  $ ;; 1 000  $ ; 1 500  $ ;Art-Paintings;Jean-Paul Riopelle;22 x 30,75;1979/Lied à Émile Nelligan #7;Lithographie;Oui;22_1.jpg;22_2.jpg;22_3.jpg;22_4.jpg
-234;23; 300,00  $ ;; 600  $ ; 1 000  $ ;Art-Paintings;Albert Dumouchel;24 x 36;Abstraction;Encre;Oui;23_1.jpg;23_2.jpg;23_3.jpg;
-234;24; 50,00  $ ;; 250  $ ; 350  $ ;Art-Paintings;Jacques Barbeau;11¾ x 17½;1978/Personnages;Huile sur toile;Non;24_1.jpg;24_2.jpg;24_3.jpg;
-234;25; 50,00  $ ;; 200  $ ; 300  $ ;Art-Paintings;Miyuki Tanobé;19½ x 15½;1983/Le restaurant de Sam Latour;Sérigraphie;Oui;25_1.jpg;25_2.jpg;25_3.jpg;25_4.jpg
-234;25a; 50,00  $ ;; 200  $ ; 300  $ ;Art-Paintings;Miyuki Tanobé;19½ x 15½;1983/Elle demanda un Coca-Cola, un hot-dog;Sérigraphie;Oui;25a_1.jpg;25a_2.jpg;25a_3.jpg;25a_4.jpg
-234;26; 50,00  $ ;; 500  $ ; 800  $ ;Sculpture;Stanley Lewis;22 x 14;1994/Personnage et soleil;Pierre;Non;26_1.jpg;26_2.jpg;26_3.jpg;
-234;27; 50,00  $ ;; 250  $ ; 400  $ ;Sculpture;Stanley Lewis;7 x 9;1994/Déchéance;Métal et pierre;Non;27_1.jpg;27_2.jpg;27_3.jpg;27_4.jpg
-234;28; 50,00  $ ;; 200  $ ; 300  $ ;Art-Paintings;Gérard Tremblay;18 x 24;1980/Retour de guerre;Encre;Oui;28_1.jpg;28_2.jpg;28_3.jpg;28_4.jpg
-234;29; 50,00  $ ;; 200  $ ; 300  $ ;Art-Paintings;Gérard Tremblay;10 x 12;1977/Le cœur dans l'aile;Encre;Oui;29_1.jpg;29_2.jpg;29_3.jpg;29_4.jpg
-234;30; 50,00  $ ;; 200  $ ; 300  $ ;Art-Paintings;Yvan Schwartz;21½ x 14½;1975/Elvan;Aquarelle;Oui;30_1.jpg;30_2.jpg;30_3.jpg;30_4.jpg
-234;31; 50,00  $ ;; 100  $ ; 200  $ ;Antiques & Collectibles - Sports Cards;Danny Dennis;11 x 8½;1996/Haida;Encre;Non;31_1.jpg;31_2.jpg;31_3.jpg;31_4.jpg
-234;32; 20,00  $ ;; 75  $ ; 150  $ ;Art-Prints/Lithographs;Danny Dennis;9 x 6;Raven Stealing Sun;Sérigraphie;Oui;32_1.jpg;32_2.jpg;32_3.jpg;
-234;33; 250,00  $ ;; 400  $ ; 600  $ ;Art-Paintings;François Carbu;18 x 21;Maisons et barques de pêcheurs au clair de lune;Huile sur toile;oui;33_1.jfif;33_2.jfif;33_3.jfif;
-234;34; 500,00  $ ;; 1 000  $ ; 1 500  $ ;Art-Paintings;Raynald Leclerc;30 x 24;L'olivier du bleu ciel, Provence;Huile sur toile;oui;34_1.jfif;34_2.jfif;;
-234;35; 4 000,00  $ ; 6 000,00  $ ; 8 000  $ ; 12 000  $ ;Art-Paintings;Jean Philippe Dallaire;26 x 18;1952/Pantin;Aquarelle (légères craquelures au papier);oui;35_1.jfif;35_2.jfif;;
-234;36; 300,00  $ ;; 800  $ ; 1 200  $ ;Art-Paintings;Henri Masson;20 x 16;En ville;Huile sur toile;oui;36_1.jfif;36_2.jfif;;
-234;37; 300,00  $ ;; 600  $ ; 1 000  $ ;Art-Paintings;Jean-Pierre Lafrance;9 x 33;1994/Maquette pour la murale ville d'Hamsted;Huile sur panneau;oui;37_1.jfif;37_2.jfif;;
-234;38; 300,00  $ ;; 600  $ ; 1 000  $ ;Art-Paintings;Jean-Pierre Lafrance;10 x 33;1994/Maquette pour la murale ville d'Hamsted;Huile sur panneau;oui;38_1.jfif;38_2.jfif;;
-234;38a; 2 000,00  $ ; 3 500,00  $ ; 5 000  $ ; 7 000  $ ;Art-Paintings;Marc Seguin;22 x 30,75;2022/Ange renard;Eau forte rehaussée;oui;38a_1.jfif;38a_2.jfif;38a_3.jfif;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;
+234;1;325,00 $ ;;500 $ ;800 $ ;Art-Paintings;Léon Bellefleur;17½ x 20½;1968/Deux personnages, bon augure;Lithographie;Oui;1_1.jpg;1_2.jpg;1_3.jpg;1_4.jpg
+234;2;80,00 $ ;;200 $ ;300 $ ;Art-Paintings;Claude Dulude;12 x 9;1972/Abstraction;Huile sur papier;Oui;2_1.jpg;2_2.jpg;2_3.jpg;2_4.jpg
+234;3;250,00 $ ;;650 $ ;950 $ ;Art-Paintings;Guy Paquet;20 x 14;Un marcheur est passé;Huile sur papier;Oui;3_1.jpg;3_2.jpg;3_3.jpg;
+234;4;2 500,00 $ ;;4 500 $ ;7 000 $ ;Art-Paintings;Paul Tex Lecor;30 x 36;Solitude;Huile sur papier;Oui;4_1.jpg;4_2.webp;4_3.jpg;4_4.jpg
+234;4a;1 250,00 $ ;;3 000 $ ;4 500 $ ;Art-Paintings;Paul Tex Lecor;20 x 24;Campagne;Huile sur papier;Oui;4a_1.jpg;4a_2.jpg;4a_3.jpg;
+234;4b;800,00 $ ;;1 500 $ ;2 500 $ ;Art-Paintings;Paul Tex Lecor;12 x 10;Les grands ormes;Huile sur papier;Oui;4b_1.jpg;4b_2.jpg;4b_3.jpg;
+234;5;450,00 $ ;;800 $ ;1 200 $ ;Art-Paintings;Christian Bergeron;23 x 31;Paysage automne;Huile sur papier;Non;5_1.jpg;5_2.jpg;;
+234;6;3 250,00 $ ;;6 000 $ ;8 000 $ ;Art-Paintings;Bruno Côté;30 x 36;Vallée rivière Malbaie;Huile sur panneau;Non;6_1.jpg;6_2.webp;6_3.jpg;6_4.jpg
+234;7;1 000,00 $ ;;2 500 $ ;3 000 $ ;Art-Paintings;Serge Lemoyne;23¼ x 17¼;1978/Road Runner;Sérigraphie;Oui;7_1.webp;7_2.jpg;7_3.jpg;7_4.jpg
+234;8;500,00 $ ;;1 000 $ ;1 500 $ ;Art-Paintings;Claude Tousignant;20 x 25½;1971/Diagonales;Sérigraphie;Non;8_1.webp;8_2.jpg;8_3.jpg;8_4.jpg
+234;9;1 250,00 $ ;;2 000 $ ;3 000 $ ;Art-Paintings;Charles Daudelin;19 x 13;1964/Abstraction;Huile sur papier;Non;9_1.jpg;9_2.webp;9_3.jpg;9_4.jpg
+234;10;300,00 $ ;;700 $ ;1 200 $ ;Art-Paintings;Fleurimont Constantineau;24 x 30;Iles de Baffin;Huile sur panneau;Oui;10_1.jpg;10_2.jpg;10_3.jpg;
+234;11;800,00 $ ;;1 500 $ ;2 000 $ ;Art-Paintings;Lise Gervais;24¼ x 35¾;1979/Don Pedro;Aquarelle;Non;11_1.jpg;11_2.jpg;11_3.jpg;11_4.jpg
+234;12;1 500,00 $ ;;3 000 $ ;4 000 $ ;Art-Paintings;Paul Tex Lecor;24 x 30;1977/Le rocher Percé;Huile sur toile;Oui;12_1.jpg;12_2.jpg;12_3.jpg;
+234;13;50,00 $ ;;400 $ ;700 $ ;Art-Paintings;Georges St-Pierre;49 x 35;L'arbre mort;Huile sur toile;Oui;13_1.webp;13_2.webp;13_3.jpg;13_4.jpg
+234;14;50,00 $ ;;250 $ ;400 $ ;Art-Paintings;Pierre Ayot;8 x 6;1964/Abstraction;Eau forte;Non;14_1.webp;14_2.webp;14_3.webp;
+234;15;850,00 $ ;;2 000 $ ;3 000 $ ;Art-Paintings;Serge Lemoyne;40 x 26;1964/Série cosmos;Acylique, aérosol;Oui;15_1.jpg;15_2.jpg;15_3.jpg;15_4.jpg
+234;15a;50,00 $ ;;300 $ ;500 $ ;Art-Paintings;Serge Lemoyne;7½ x 4;1963/Abstraction;Mixte papier;Oui;15a_1.jpg;15a_2.jpg;15a_3.jpg;
+234;16;3 500,00 $ ;6 000,00 $ ;5 000 $ ;7 000 $ ;Antiques & Collectibles - Sports Cards;Serge Lemoyne;23 x 35;1978/Le 50ième but de Lafleur;Sérigraphie;Oui;16_1.jpg;16_2.jpg;16_3.jpg;16_4.jpg
+234;17;500,00 $ ;;1 000 $ ;1 500 $ ;Art-Paintings;Kittie Bruneau;30 x 22½;1994/Le secret;Huile sur papier;Non;17_1.jpg;17_2.webp;17_3.jpg;17_4.jpg
+234;18;500,00 $ ;;1 500 $ ;2 500 $ ;Art-Prints/Lithographs;Alexander Calder ;20 x 29;Mutants;Sérigraphie;Oui;18_1.jpg;18_2.jpg;18_3.jpg;18_4.jpg
+234;19;500,00 $ ;;1 000 $ ;2 000 $ ;Art-Paintings;Alfred Pellan;35 x 23;1973/Polychromée-O;Sérigraphie;Oui;19_1.webp;19_2.webp;19_3.jpg;19_4.jpg
+234;20;400,00 $ ;;700 $ ;1 000 $ ;Art-Paintings;René Marcil;26x20;1981/Homme et femme;Pastel;Non;20_1.jpg;20_2.webp;20_3.jpg;
+234;21;1 000,00 $ ;3 500,00 $ ;3 000 $ ;4 000 $ ;Art-Paintings;Jean-Paul Riopelle;23x27;1981/Lépervier-Harfang des neiges;Lithographie;Oui;21_1.jpg;21_2.jpg;21_3.jpg;
+234;22;500,00 $ ;;1 000 $ ;1 500 $ ;Art-Paintings;Jean-Paul Riopelle;22 x 30,75;1979/Lied à Émile Nelligan #7;Lithographie;Oui;22_1.jpg;22_2.jpg;22_3.jpg;22_4.jpg
+234;23;300,00 $ ;;600 $ ;1 000 $ ;Art-Paintings;Albert Dumouchel;24 x 36;Abstraction;Encre;Oui;23_1.jpg;23_2.jpg;23_3.jpg;
+234;24;50,00 $ ;;250 $ ;350 $ ;Art-Paintings;Jacques Barbeau;11¾ x 17½;1978/Personnages;Huile sur toile;Non;24_1.jpg;24_2.jpg;24_3.jpg;
+234;25;50,00 $ ;;200 $ ;300 $ ;Art-Paintings;Miyuki Tanobé;19½ x 15½;1983/Le restaurant de Sam Latour;Sérigraphie;Oui;25_1.jpg;25_2.jpg;25_3.jpg;25_4.jpg
+234;25a;50,00 $ ;;200 $ ;300 $ ;Art-Paintings;Miyuki Tanobé;19½ x 15½;1983/Elle demanda un Coca-Cola, un hot-dog;Sérigraphie;Oui;25a_1.jpg;25a_2.jpg;25a_3.webp;25a_4.webp
+234;26;50,00 $ ;;500 $ ;800 $ ;Sculpture;Stanley Lewis;22 x 14;1994/Personnage et soleil;Pierre;Non;26_1.jpg;26_2.jpg;26_3.jpg;
+234;27;50,00 $ ;;250 $ ;400 $ ;Sculpture;Stanley Lewis;7 x 9;1994/Déchéance;Métal et pierre;Non;27_1.jpg;27_2.jpg;27_3.jpg;27_4.jpg
+234;28;50,00 $ ;;200 $ ;300 $ ;Art-Paintings;Gérard Tremblay;18 x 24;1980/Retour de guerre;Encre;Oui;28_1.jpg;28_2.webp;28_3.jpg;28_4.jpg
+234;29;50,00 $ ;;200 $ ;300 $ ;Art-Paintings;Gérard Tremblay;10 x 12;1977/Le cœur dans l'aile;Encre;Oui;29_1.jpg;29_2.jpg;29_3.jpg;29_4.jpg
+234;30;50,00 $ ;;200 $ ;300 $ ;Art-Paintings;Yvan Schwartz;21½ x 14½;1975/Elvan;Aquarelle;Oui;30_1.jpg;30_2.jpg;30_3.jpg;30_4.jpg
+234;31;50,00 $ ;;100 $ ;200 $ ;Antiques & Collectibles - Sports Cards;Danny Dennis;11 x 8½;1996/Haida;Encre;Non;31_1.jpg;31_2.jpg;31_3.jpg;31_4.jpg
+234;32;20,00 $ ;;75 $ ;150 $ ;Art-Prints/Lithographs;Danny Dennis;9 x 6;Raven Stealing Sun;Sérigraphie;Oui;32_1.jpg;32_2.jpg;32_3.jpg;
+234;33;250,00 $ ;;400 $ ;600 $ ;Art-Paintings;François Carbu;18 x 21;Maisons et barques de pêcheurs au clair de lune;Huile sur toile;oui;33_1.jfif;33_2.jfif;33_3.jfif;
+234;34;500,00 $ ;;1 000 $ ;1 500 $ ;Art-Paintings;Raynald Leclerc;30 x 24;L'olivier du bleu ciel, Provence;Huile sur toile;oui;34_1.jfif;34_2.jfif;;
+234;35;4 000,00 $ ;6 000,00 $ ;8 000 $ ;12 000 $ ;Art-Paintings;Jean Philippe Dallaire;26 x 18;1952/Pantin;Aquarelle (légères craquelures au papier);oui;35_1.jfif;35_2.jfif;;
+234;36;300,00 $ ;;800 $ ;1 200 $ ;Art-Paintings;Henri Masson;20 x 16;En ville;Huile sur toile;oui;36_1.jfif;36_2.jfif;;
+234;37;300,00 $ ;;600 $ ;1 000 $ ;Art-Paintings;Jean-Pierre Lafrance;9 x 33;1994/Maquette pour la murale ville d'Hamsted;Huile sur panneau;oui;37_1.jfif;37_2.jfif;;
+234;38;300,00 $ ;;600 $ ;1 000 $ ;Art-Paintings;Jean-Pierre Lafrance;10 x 33;1994/Maquette pour la murale ville d'Hamsted;Huile sur panneau;oui;38_1.jfif;38_2.jfif;;
+234;38a;2 000,00 $ ;3 500,00 $ ;5 000 $ ;7 000 $ ;Art-Paintings;Marc Seguin;22 x 30,75;2022/Ange renard;Eau forte rehaussée;oui;38a_1.jfif;38a_2.jfif;38a_3.jfif;
