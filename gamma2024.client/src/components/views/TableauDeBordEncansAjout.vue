@@ -59,7 +59,7 @@
                            class="bordureGrise"
                            min="1"
                            v-model="formData.pasLot" />
-                    <div class="invalid-feedback" v-if="v.pasLot.$error">
+                    <div class="invalid-feedback d-inline" v-if="v.pasLot.$error">
                         {{ v.pasLot.$errors[0].$message }}
                     </div>
                 </div>
@@ -72,7 +72,7 @@
                            class="bordureGrise"
                            min="1"
                            v-model="formData.pasMise" />
-                    <div class="invalid-feedback" v-if="v.pasMise.$error">
+                    <div class="invalid-feedback d-inline" v-if="v.pasMise.$error">
                         {{ v.pasMise.$errors[0].$message }}
                     </div>
                 </div>

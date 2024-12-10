@@ -69,7 +69,7 @@
                            class="bordureGrise"
                            min="1"
                            v-model="encanData.pasLot" />
-                    <div class="invalid-feedback" v-if="vuelidate.pasLot.$error">
+                    <div class="invalid-feedback d-inline" v-if="vuelidate.pasLot.$error">
                         {{ vuelidate.pasLot.$errors[0].$message }}
                     </div>
                 </div>
@@ -82,7 +82,7 @@
                            class="bordureGrise"
                            min="1"
                            v-model="encanData.pasMise" />
-                    <div class="invalid-feedback" v-if="vuelidate.pasMise.$error">
+                    <div class="invalid-feedback d-inline" v-if="vuelidate.pasMise.$error">
                         {{ vuelidate.pasMise.$errors[0].$message }}
                     </div>
                 </div>
