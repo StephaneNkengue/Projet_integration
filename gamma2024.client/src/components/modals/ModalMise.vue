@@ -18,7 +18,7 @@
                 <div class="modal-body">
                     <div class="d-flex flex-column gap-3">
                         <p class="fs-5 mb-0">Lot {{ lot?.numero }}</p>
-                        
+
                         <div class="mise-info">
                             <p class="fs-5 mb-2">Mise actuelle : {{ formatMontant(lot?.mise || lot?.prixOuverture) }}$</p>
                             <p class="fs-5 mb-2">Votre mise : {{ formatMontant(getMiseAffichage) }}$</p>
@@ -83,7 +83,7 @@
     const modalInstance = ref(null);
     const montantMise = ref(0);
     const montantInitial = ref(0);
-    const userLastBid = ref(0);
+    const utilisateurDerniereMise = ref(0);
     const miseAutomatique = ref(false);
 
     const props = defineProps({
@@ -117,7 +117,7 @@
     const getMiseMinimale = computed(() => {
         const miseActuelle = props.lot?.mise || 0;
         const prixOuverture = props.lot?.prixOuverture;
-        
+
         // S'il n'y a pas de mise, on utilise le prix d'ouverture
         if (miseActuelle === 0) {
             if (miseAutomatique.value) {
@@ -125,7 +125,7 @@
             }
             return prixOuverture;
         }
-        
+
         // S'il y a déjà une mise
         if (miseAutomatique.value) {
             return miseActuelle + calculerPasEnchere(miseActuelle);
@@ -178,8 +178,8 @@
                 // Mode mise automatique
                 montantMaximal = montantMise.value; // Le montant maximum choisi par l'utilisateur
                 // La mise effective commence au minimum (prix d'ouverture ou mise actuelle + step)
-                montantEffectif = miseActuelle === 0 ? 
-                    prixOuverture : 
+                montantEffectif = miseActuelle === 0 ?
+                    prixOuverture :
                     miseActuelle + calculerPasEnchere(miseActuelle);
             } else {
                 // Mode mise manuelle
@@ -196,11 +196,9 @@
                 montantMaximal: montantMaximal
             };
 
-            console.log('Données de mise envoyées:', miseData); // Pour debug
+            const reponse = await store.dispatch("placerMise", miseData);
 
-            const response = await store.dispatch("placerMise", miseData);
-            
-            if (response.success) {
+            if (reponse.success) {
                 modalInstance.value.hide();
                 emit("miseConfirmee", montantMise.value);
 
@@ -217,7 +215,7 @@
                 toast.error(
                     h(ToastContent, {
                         title: "Erreur",
-                        description: response.message
+                        description: reponse.message
                     })
                 );
             }
@@ -244,7 +242,7 @@
                 });
             }
             if (props.lot?.id) {
-                userLastBid.value = await store.dispatch('getUserBidForLot', props.lot.id);
+                utilisateurDerniereMise.value = await store.dispatch('getUserBidForLot', props.lot.id);
             }
         });
     });
@@ -264,10 +262,10 @@
     };
 
     // Méthodes du modal
-    const show = () => {
+    const presenterModal = () => {
         if (modalInstance.value) {
             const lot = store.getters.getLot(props.lot?.id);
-            montantMise.value = miseAutomatique.value ? 
+            montantMise.value = miseAutomatique.value ?
                 (lot?.mise || lot?.prixOuverture) + (calculerPasEnchere(lot?.mise || lot?.prixOuverture) * 2) :
                 getMiseMinimale.value;
             miseAutomatique.value = false; // Réinitialiser le switch
@@ -275,7 +273,7 @@
         }
     };
 
-    const hide = () => {
+    const cacherModal = () => {
         if (modalInstance.value) {
             modalInstance.value.hide();
         }
@@ -283,10 +281,10 @@
 
     // Computed properties
     const affichageMiseActuelle = computed(() => {
-        if (userLastBid.value > 0) {
+        if (utilisateurDerniereMise.value > 0) {
             const lot = store.getters.getLot(props.lot?.id);
             const estPlusHautEncherisseur = lot?.idClientMise === store.state.user?.id;
-            return `${userLastBid.value}$ ${estPlusHautEncherisseur ? '(meilleure offre)' : '(dépassée)'}`;
+            return `${utilisateurDerniereMise.value}$ ${estPlusHautEncherisseur ? '(meilleure offre)' : '(dépassée)'}`;
         }
         return "aucune mise";
     });
@@ -297,8 +295,8 @@
 
     // Expose les méthodes nécessaires
     defineExpose({
-        show,
-        hide,
+        presenterModal,
+        cacherModal,
     });
 
     // Définir les émissions
@@ -310,7 +308,7 @@
         async (newMise) => {
             if (newMise) {
                 montantMise.value = newMise;
-                userLastBid.value = await store.dispatch('getUserBidForLot', props.lot.id);
+                utilisateurDerniereMise.value = await store.dispatch('getUserBidForLot', props.lot.id);
             }
         }
     );
@@ -319,20 +317,14 @@
     watch(miseAutomatique, (newValue) => {
         const miseActuelle = props.lot?.mise || 0;
         const prixOuverture = props.lot?.prixOuverture;
-        
+
         if (newValue) { // Si on active la mise auto
             // Si pas de mise, on ajoute 2 steps au prix d'ouverture
             if (miseActuelle === 0) {
                 montantMise.value = prixOuverture + (calculerPasEnchere(prixOuverture) * 2);
-                console.log("montantMise.value", montantMise.value);
-                console.log("prixOuverture", prixOuverture);
-                console.log("calculerPasEnchere(prixOuverture)", calculerPasEnchere(prixOuverture));
             } else {
                 // Sinon on ajoute 2 steps à la mise actuelle
                 montantMise.value = miseActuelle + (calculerPasEnchere(miseActuelle) * 2);
-                console.log("montantMise.value", montantMise.value);
-                console.log("miseActuelle", miseActuelle);
-                console.log("calculerPasEnchere(miseActuelle)", calculerPasEnchere(miseActuelle));
             }
         } else {
             montantMise.value = getMiseMinimale.value;

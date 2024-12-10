@@ -31,12 +31,12 @@
         </router-link>
 
         <transition name="fade">
-            <div v-if="errorMessage" class="alert alert-danger">
-                {{ errorMessage }}
+            <div v-if="messageErreur" class="alert alert-danger">
+                {{ messageErreur }}
             </div>
             <div v-else>
-                <div v-if="successMessage" class="alert alert-success">
-                    {{ successMessage }}
+                <div v-if="messageSucces" class="alert alert-success">
+                    {{ messageSucces }}
                 </div>
             </div>
         </transition>
@@ -123,13 +123,13 @@
                             <td class="align-middle">{{ encan.dateDebut.split("T")[0] }}</td>
                             <td class="align-middle">{{ encan.dateFin.split("T")[0] }}</td>
                             <td class="align-middle">
-                                {{ encan.dateDebut.split("T")[0] }}
-                                {{ encan.dateDebutSoireeCloture.split("T")[1] }}
+                                {{ encan.dateDebutSoireeCloture.split("T")[0] }}
+                                {{ encan.dateDebutSoireeCloture.split("T")[1].split(".")[0] }}
                             </td>
                             <td class="align-middle">{{ encan.nbLots }}</td>
                             <td class="align-middle">
                                 <div class="d-flex flex-row justify-content-center">
-                                    <button class="btn bleuMarinSecondaireFond px-3 me-3 btnModifierIcone" @click="editerEncan(encan.id)">
+                                    <button v-if="VerifEstPasse(encan.dateDebut)" class="btn bleuMarinSecondaireFond px-3 me-3 btnModifierIcone" @click="editerEncan(encan.id)">
                                         <img src="/icons/ModifierBtn.png"
                                              width="30"
                                              height="30"
@@ -201,23 +201,23 @@
     const encanRechercheNumEncan = ref();
     const encanRechercheDate = ref();
 
-    const errorMessage = ref("");
-    const successMessage = ref("");
+    const messageErreur = ref("");
+    const messageSucces = ref("");
 
     const encan = ref("");
     const chargement = ref(true);
 
     onMounted(async () => {
         try {
-            initializeData();
+            initialiserDonnees();
         } catch (erreur) {
-            console.log("Erreur encans" + erreur);
+            console.error("Erreur encans" + erreur);
         }
     });
 
     const supprimerMonEncan = async (idEncan) => {
         await store.dispatch("supprimerUnEncan", idEncan);
-        initializeData();
+        initialiserDonnees();
     };
 
     const editerEncan = async (idEncan) => {
@@ -343,7 +343,7 @@
         }
     }
 
-    async function initializeData() {
+    async function initialiserDonnees() {
         listeEncans.value = await store.dispatch("fetchEncanInfo");
 
         listeEncansFiltree.value = listeEncans.value;
@@ -367,18 +367,18 @@
                     estPublie: encan.value.estPublie,
                 });
 
-                const response = await store.dispatch("mettreAJourEncanPublie", formData);
-                if (response.success) {
-                    successMessage.value = "Statut encan modifié!";
-                    errorMessage.value = "";
+                const reponse = await store.dispatch("mettreAJourEncanPublie", formData);
+                if (reponse.success) {
+                    messageSucces.value = "Statut encan modifié!";
+                    messageErreur.value = "";
                     setTimeout(() => {
-                        successMessage.value = "";
+                        messageSucces.value = "";
                     }, 5000);
                 } else {
-                    errorMessage.value = response.error;
-                    successMessage.value = "";
+                    messageErreur.value = reponse.error;
+                    messageSucces.value = "";
                     setTimeout(() => {
-                        errorMessage.value = "";
+                        messageErreur.value = "";
                     }, 5000);
                 }
             }
@@ -391,6 +391,19 @@
         nbPages.value = recalculerNbPages();
         genererListePagination();
         chercherEncansAAfficher();
+    }
+
+    function VerifEstPasse(dDebut){
+        const maintenant = new Date();
+
+        const debut = new Date(dDebut);
+
+        if (debut >= maintenant) {
+            return true;
+        }
+        else {
+            return false;
+        }
     }
 </script>
 

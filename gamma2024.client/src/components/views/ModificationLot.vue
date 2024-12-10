@@ -7,7 +7,7 @@
                 <h4>Photos existantes</h4>
                 <div class="d-flex flex-wrap">
                     <div v-for="photo in lot.photosModifie" :key="photo.id" class="me-2 mb-2 position-relative">
-                        <img :src="getImageUrl(photo.url)" alt="Photo du lot"
+                        <img :src="chercherImageUrl(photo.url)" alt="Photo du lot"
                              style="width: 100px; height: 100px; object-fit: cover; border: 1px solid #ddd;">
                         <button @click.prevent="marquerPhotoASupprimer(photo.id)" class="btn btn-danger btn-sm position-absolute top-0 end-0">X</button>
                     </div>
@@ -143,18 +143,18 @@
     const message = ref('');
     const erreur = ref('');
 
-    const MAX_PHOTOS = 5;
+    const nombreDePhotosMaximal = 5;
 
     // Calculer le nombre total de photos actuelles et futures
     const nombreTotalPhotos = computed(() => {
         const photosExistantesNonSupprimees = (lot.value?.photosModifie?.length || 0);
-        const nouvellesPhotosCount = nouvellesPhotos.value.length;
-        return photosExistantesNonSupprimees + nouvellesPhotosCount;
+        const nombreNouvellesPhotos = nouvellesPhotos.value.length;
+        return photosExistantesNonSupprimees + nombreNouvellesPhotos;
     });
 
     // Calculer le nombre de photos disponibles
     const photosDisponibles = computed(() => {
-        return MAX_PHOTOS - nombreTotalPhotos.value;
+        return nombreDePhotosMaximal - nombreTotalPhotos.value;
     });
 
     // Vérifier si on peut ajouter plus de photos
@@ -179,13 +179,12 @@
     onMounted(async () => {
         try {
             lot.value = await store.dispatch('obtenirLot', route.params.id);
-            console.log('Photos du lot:', lot.value.photos);
             categories.value = await store.dispatch('obtenirCategories');
             vendeurs.value = await store.dispatch('obtenirVendeurs');
             mediums.value = await store.dispatch('obtenirMediums');
             encans.value = await store.dispatch('obtenirEncans');
-        } catch (error) {
-            console.error("Erreur lors de la récupération des données:", error);
+        } catch (erreur) {
+            console.error("Erreur lors de la récupération des données:", erreur);
         }
     });
 
@@ -233,61 +232,61 @@
                 formData.append('PhotosASupprimer[]', photoId);
             });
 
-            const response = await store.dispatch('modifierLot', { id: route.params.id, lotData: formData });
-            if (response.success) {
+            const reponse = await store.dispatch('modifierLot', { id: route.params.id, lotData: formData });
+            if (reponse.success) {
                 message.value = "Le lot a été modifié avec succès.";
                 erreur.value = '';
                 setTimeout(() => {
                     router.push({ name: 'TableauDeBordInventaire' });
                 }, 2000);
             } else {
-                erreur.value = "Erreur lors de la modification du lot: " + response.data;
+                erreur.value = "Erreur lors de la modification du lot: " + reponse.data;
                 message.value = '';
             }
-        } catch (error) {
-            if (error.response && error.response.data) {
-                erreur.value = "Erreur lors de la modification du lot: " + error.response.data;
+        } catch (erreur) {
+            if (erreur.reponse && erreur.reponse.data) {
+                erreur.value = "Erreur lors de la modification du lot: " + erreur.reponse.data;
             } else {
-                erreur.value = "Erreur lors de la modification du lot: " + error.message;
+                erreur.value = "Erreur lors de la modification du lot: " + erreur.message;
             }
             message.value = '';
         }
     };
 
-    const getImageUrl = computed(() => (url) => {
+    const chercherImageUrl = computed(() => (url) => {
         if (!url) return '';
         const baseUrl = store.state.api.defaults.baseURL.replace('/api', '');
         return new URL(url, baseUrl).href;
     });
 
-    const ajouterNouvellesPhotos = (event) => {
-        const files = event.target.files;
+    const ajouterNouvellesPhotos = (evenement) => {
+        const fichiers = evenement.target.files;
         const photosRestantes = photosDisponibles.value;
 
         if (photosRestantes <= 0) {
             erreur.value = "Nombre maximum de photos atteint";
-            event.target.value = ''; // Réinitialiser l'input
+            evenement.target.value = ''; // Réinitialiser l'input
             return;
         }
 
         // Limiter le nombre de nouvelles photos à ajouter
-        const nombrePhotosAAjouter = Math.min(files.length, photosRestantes);
+        const nombrePhotosAAjouter = Math.min(fichiers.length, photosRestantes);
 
         for (let i = 0; i < nombrePhotosAAjouter; i++) {
-            const file = files[i];
-            if (file.type.startsWith('image/')) {
-                const preview = URL.createObjectURL(file);
-                nouvellesPhotos.value.push({ file, preview });
+            const fichier = fichiers[i];
+            if (fichier.type.startsWith('image/')) {
+                const preview = URL.createObjectURL(fichier);
+                nouvellesPhotos.value.push({ fichier, preview });
             }
         }
 
         // Afficher un message si certaines photos n'ont pas été ajoutées
-        if (files.length > photosRestantes) {
+        if (fichiers.length > photosRestantes) {
             message.value = `Seules ${nombrePhotosAAjouter} photo(s) ont été ajoutées pour respecter la limite de 5 photos au total`;
         }
 
         // Réinitialiser l'input
-        event.target.value = '';
+        evenement.target.value = '';
     };
 </script>
 

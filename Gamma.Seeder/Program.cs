@@ -344,7 +344,8 @@ encans.Add(new Encan
     DateDebutSoireeCloture = new DateTime(2005, 3, 18, 6, 0, 1),
     EstPublie = true,
     PasLot = 30,
-    PasMise = 120
+    PasMise = 120,
+    EstTermine = true
 });
 
 encans.Add(new Encan
@@ -355,7 +356,8 @@ encans.Add(new Encan
     DateDebutSoireeCloture = DateTime.Now.AddDays(1),
     EstPublie = true,
     PasLot = 10,
-    PasMise = 120
+    PasMise = 120,
+    EstTermine = false
 });
 
 encans.Add(new Encan
@@ -366,7 +368,8 @@ encans.Add(new Encan
     DateDebutSoireeCloture = new DateTime(2027, 3, 18, 6, 0, 1),
     EstPublie = true,
     PasLot = 20,
-    PasMise = 120
+    PasMise = 120,
+    EstTermine = false
 });
 
 encans.Add(new Encan
@@ -377,7 +380,8 @@ encans.Add(new Encan
     DateDebutSoireeCloture = new DateTime(2008, 3, 18, 6, 0, 1),
     EstPublie = true,
     PasLot = 30,
-    PasMise = 120
+    PasMise = 120,
+    EstTermine = true
 });
 
 
@@ -483,7 +487,6 @@ foreach (var item in utilisateurs)
             DateAchat = DateTime.Now,
             PrixLots = 0,
             NumeroEncan = 232,
-            FacturePDFPath = "",
             estPaye = true
         };
 
@@ -502,10 +505,6 @@ foreach (var item in utilisateurs)
         facture.CalculerFacture();
         context.Factures.Add(facture);
         context.SaveChanges();
-
-        facture.FacturePDFPath = $"Factures/F232/F232_{facture.Id}.pdf";
-
-        context.Factures.Update(facture);
 
         infoFactures.RemoveAll(i => i.Pseudonyme == item.UserName);
     }

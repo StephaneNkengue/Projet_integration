@@ -11,6 +11,7 @@ namespace Gamma2024.Server.Models
         public bool EstPublie { get; set; } = false;
         public int PasLot { get; set; }
         public int PasMise { get; set; }
+        public bool EstTermine { get; set; } = false;
 
         public bool EstEnSoireeCloture()
         {

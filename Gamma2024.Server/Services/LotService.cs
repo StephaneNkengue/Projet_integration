@@ -15,19 +15,16 @@ namespace Gamma2024.Server.Services
         private readonly IHubContext<LotMiseHub, ILotMiseHub> _hubContext;
         private readonly ILogger<LotService> _logger;
         private readonly EncanService _encanService;
-        private readonly NotificationService _notificationService;
+        private readonly IHttpClientFactory _httpClientFactory;
 
-
-        public LotService(ApplicationDbContext context, IWebHostEnvironment environment,
-            IHubContext<LotMiseHub, ILotMiseHub> hubContext, ILogger<LotService> logger,
-            EncanService encanService, NotificationService notificationService)
+        public LotService(ApplicationDbContext context, IWebHostEnvironment environment, IHubContext<LotMiseHub, ILotMiseHub> hubContext, ILogger<LotService> logger, EncanService encanService, IHttpClientFactory httpClientFactory)
         {
             _context = context;
             _environment = environment;
             _hubContext = hubContext;
             _logger = logger;
             _encanService = encanService;
-            _notificationService = notificationService;
+            _httpClientFactory = httpClientFactory;
         }
 
         public async Task<IEnumerable<LotAffichageVM>> ObtenirTousLots()
@@ -44,13 +41,14 @@ namespace Gamma2024.Server.Services
                     Id = l.Id,
                     NumeroEncan = l.EncanLots.FirstOrDefault().Encan.NumeroEncan.ToString(),
                     Code = l.Numero,
-                    PrixOuverture = $"{l.PrixOuverture.ToString()} $",
-                    PrixMinPourVente = $"{l.PrixMinPourVente.ToString()} $",
-                    ValeurEstimeMin = $"{l.ValeurEstimeMin.ToString()} $",
-                    ValeurEstimeMax = $"{l.ValeurEstimeMax.ToString()} $",
+                    PrixOuverture = l.PrixOuverture,
+                    PrixMinPourVente = l.PrixMinPourVente,
+                    ValeurEstimeMin = l.ValeurEstimeMin,
+                    ValeurEstimeMax = l.ValeurEstimeMax,
                     Categorie = l.Categorie.Nom,
                     Artiste = l.Artiste,
-                    Dimension = $"{l.Hauteur} x {l.Largeur}",
+                    Hauteur = l.Hauteur,
+                    Largeur = l.Largeur,
                     Description = l.Description,
                     Medium = l.Medium.Type,
                     EstLivrable = l.EstLivrable,
@@ -147,6 +145,7 @@ namespace Gamma2024.Server.Services
                 {
                     return (false, "L'encan spécifié n'existe pas", null);
                 }
+
 
                 // Définir les dates du lot
                 var dateDebutDecompte = encan.DateDebutSoireeCloture;
@@ -473,31 +472,6 @@ namespace Gamma2024.Server.Services
             return null;
         }
 
-        public ICollection<LotAffichageAdministrateurVM> ChercherTousLots()
-        {
-            var lots = _context.Lots
-                .Select(l => new LotAffichageAdministrateurVM()
-                {
-                    Id = l.Id,
-                    Encan = _context.Encans.Where(e => e.Id == (_context.EncanLots.Where(e => e.IdLot == l.Id).Max(e => e.IdEncan))).Single().NumeroEncan,
-                    Numero = l.Numero,
-                    PrixOuverture = l.PrixOuverture.ToString() + " $",
-                    ValeurMinPourVente = l.PrixMinPourVente.ToString() + " $",
-                    ValeurEstimeMax = l.ValeurEstimeMax.ToString() + " $",
-                    ValeurEstimeMin = l.ValeurEstimeMin.ToString() + " $",
-                    Categorie = _context.Categories.Where(c => c.Id == l.IdCategorie).Single().Nom,
-                    Artiste = l.Artiste,
-                    Description = l.Description,
-                    Hauteur = l.Hauteur,
-                    Largeur = l.Largeur,
-                    Medium = _context.Mediums.Where(m => m.Id == l.IdMedium).Single().Type,
-                    Vendeur = l.Vendeur.Prenom + " " + l.Vendeur.Nom,
-                    EstVendu = l.EstVendu,
-                    EstLivrable = l.EstLivrable,
-                }).ToList();
-            return lots;
-        }
-
         public async Task<(bool Success, string Message)> SupprimerLot(int id)
         {
             try
@@ -555,13 +529,14 @@ namespace Gamma2024.Server.Services
                 Id = lotModification.Id,
                 NumeroEncan = lotModification.NumeroEncan,
                 Code = lotModification.Numero,
-                PrixOuverture = lotModification.PrixOuverture.ToString("N2") + " $",
-                PrixMinPourVente = lotModification.PrixMinPourVente?.ToString("N2") + " $",
-                ValeurEstimeMin = lotModification.ValeurEstimeMin.ToString("N2") + " $",
-                ValeurEstimeMax = lotModification.ValeurEstimeMax.ToString("N2") + " $",
+                PrixOuverture = lotModification.PrixOuverture,
+                PrixMinPourVente = lotModification.PrixMinPourVente,
+                ValeurEstimeMin = lotModification.ValeurEstimeMin,
+                ValeurEstimeMax = lotModification.ValeurEstimeMax,
                 Categorie = lotModification.Categorie,
                 Artiste = lotModification.Artiste,
-                Dimension = $"{lotModification.Hauteur} x {lotModification.Largeur}",
+                Hauteur = lotModification.Hauteur,
+                Largeur = lotModification.Largeur,
                 Description = lotModification.Description,
                 Medium = lotModification.Medium,
                 EstLivrable = lotModification.EstLivrable,
@@ -870,6 +845,31 @@ namespace Gamma2024.Server.Services
                     _context.Lots.Update(lot);
 
                     await _context.SaveChangesAsync();
+
+                    // Vérifier si le temps est écoulé et gérer le pas de mise
+                    if (lot.DateFinDecompteLot.HasValue)
+                    {
+                        var tempsRestant = (lot.DateFinDecompteLot.Value - DateTime.Now).TotalSeconds;
+                        if (tempsRestant <= -60)
+                        {
+                            // Ajouter le pas de mise
+                            lot.DateFinDecompteLot = lot.DateFinDecompteLot.Value.AddSeconds(encan.PasMise);
+                            await _context.SaveChangesAsync();
+
+                            // Notifier les clients du nouveau temps
+                            await _hubContext.Clients.All.ReceiveNewBid(new
+                            {
+                                type = "tempsLotMisAJour",
+                                lotId = lot.Id,
+                                nouveauTemps = lot.DateFinDecompteLot.Value,
+                                ordreLotsActuel = await _context.Lots
+                                    .Where(l => !l.EstVendu)
+                                    .OrderBy(l => l.DateFinDecompteLot)
+                                    .Select(l => l.Id)
+                                    .ToListAsync()
+                            });
+                        }
+                    }
                 }
                 else
                 {
@@ -896,20 +896,31 @@ namespace Gamma2024.Server.Services
 
         public async Task<IEnumerable<UserBidVM>> GetUserBids(string userId)
         {
-            var userBids = await _context.MiseAutomatiques
-                .Where(m => m.UserId == userId)  // Filtre les mises de l'utilisateur
-                .GroupBy(m => m.LotId)           // Groupe par lot
-                .Select(g => new UserBidVM
-                {
-                    LotId = g.Key,
-                    IsLastBidder = _context.Lots
-                        .Where(l => l.Id == g.Key)
-                        .Select(l => l.IdClientMise == userId)
-                        .FirstOrDefault()  // Compare directement les strings IdClientMise et userId
-                })
-                .ToListAsync();
+            _logger.LogInformation($"Service - Recherche des mises pour l'utilisateur {userId}");
 
-            return userBids;
+            try
+            {
+                var userBids = await _context.MiseAutomatiques
+                    .Where(m => m.UserId == userId)
+                    .GroupBy(m => m.LotId)
+                    .Select(g => new UserBidVM
+                    {
+                        LotId = g.Key,
+                        IsLastBidder = _context.Lots
+                            .Where(l => l.Id == g.Key)
+                            .Select(l => l.IdClientMise == userId)
+                            .FirstOrDefault()
+                    })
+                    .ToListAsync();
+
+                _logger.LogInformation($"Service - Trouvé {userBids.Count()} lots avec mises pour l'utilisateur {userId}");
+                return userBids;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Service - Erreur lors de la récupération des mises pour {userId}");
+                throw;
+            }
         }
 
 
@@ -948,36 +959,172 @@ namespace Gamma2024.Server.Services
                 .CountAsync();
         }
 
+
+        // Version publique avec sa propre transaction
         public async Task MarquerLotVendu(int lotId)
+        {
+            using var transaction = await _context.Database.BeginTransactionAsync();
+            try
+            {
+                await MarquerLotVenduInterne(lotId);
+                await transaction.CommitAsync();
+            }
+            catch (Exception ex)
+            {
+                await transaction.RollbackAsync();
+                _logger.LogError(ex, "Erreur lors du marquage du lot comme vendu");
+                throw;
+            }
+        }
+
+        // Version interne sans transaction
+        public async Task MarquerLotVenduInterne(int lotId)
         {
             var lot = await _context.Lots
                 .Include(l => l.EncanLots)
                     .ThenInclude(el => el.Encan)
                 .FirstOrDefaultAsync(l => l.Id == lotId);
 
-            if (lot != null && !lot.EstVendu)
+            if (lot == null || lot.EstVendu)
             {
-                lot.EstVendu = true;
-                lot.DateFinVente = DateTime.Now;
+                return;
+            }
 
-                await _context.SaveChangesAsync();
+            var maintenant = DateTime.Now;
+            if (!lot.DateFinDecompteLot.HasValue || maintenant < lot.DateFinDecompteLot.Value)
+            {
+                return;
+            }
 
-                // Vérifier si c'était le dernier lot de la soirée
-                var encan = lot.EncanLots.FirstOrDefault()?.Encan;
+            lot.EstVendu = true;
+            lot.DateFinVente = maintenant;
+
+            await _context.SaveChangesAsync();
+
+            // Notifier tous les clients
+            await _hubContext.Clients.All.ReceiveNewBid(new
+            {
+                type = "lotVendu",
+                lotId = lotId,
+                timestamp = maintenant
+            });
+
+        }
+
+        public async Task FinaliserEncan(int numeroEncan)
+        {
+            try
+            {
+                _logger.LogInformation($"Début de la finalisation de l'encan #{numeroEncan}");
+
+                var client = _httpClientFactory.CreateClient("ApiClient");
+
+                _logger.LogInformation("Création des factures...");
+                var factureResponse = await client.PostAsync($"api/factures/CreerFacturesParEncan/{numeroEncan}", null);
+                var factureContent = await factureResponse.Content.ReadAsStringAsync();
+                _logger.LogInformation($"Réponse création factures: {factureResponse.StatusCode} - {factureContent}");
+
+                _logger.LogInformation("Traitement des paiements...");
+                var paiementResponse = await client.PostAsync($"api/paiement/ChargerClients/{numeroEncan}", null);
+                var paiementContent = await paiementResponse.Content.ReadAsStringAsync();
+                _logger.LogInformation($"Réponse paiements: {paiementResponse.StatusCode} - {paiementContent}");
+
+                // Marquer l'encan comme terminé
+                var encan = await _context.Encans
+                    .FirstOrDefaultAsync(e => e.NumeroEncan == numeroEncan);
+
                 if (encan != null)
                 {
-                    await _encanService.VerifierFinSoireeCloture(encan.NumeroEncan);
+                    encan.EstTermine = true;
+                    await _context.SaveChangesAsync();
+                    _logger.LogInformation($"Encan #{numeroEncan} marqué comme terminé");
                 }
 
+                // Notifier les clients
                 await _hubContext.Clients.All.ReceiveNewBid(new
                 {
-                    type = "lotVendu",
-                    lotId = lotId,
-                    timestamp = DateTime.Now
+                    type = "encanTermine",
+                    numeroEncan = numeroEncan,
+                    message = "L'encan est terminé et les factures ont été générées."
                 });
+
+                _logger.LogInformation($"Finalisation de l'encan #{numeroEncan} terminée avec succès");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Erreur lors de la finalisation de l'encan {numeroEncan}");
+                throw;
             }
         }
 
+        public async Task<IEnumerable<MisesParEncanVM>> GetUserBidsGroupedByEncan(string userId)
+        {
+            try
+            {
+                _logger.LogInformation("Début de la récupération des mises pour {UserId}", userId);
+
+                var lots = await _context.Lots
+                    .Where(l => l.MisesAutomatiques.Any(m => m.UserId == userId))
+                    .Include(l => l.EncanLots)
+                        .ThenInclude(el => el.Encan)
+                    .Include(l => l.Photos)
+                    .Include(l => l.Categorie)
+                    .Include(l => l.Medium)
+                    .Include(l => l.Vendeur)
+                    .ToListAsync();
+
+                if (!lots.Any())
+                {
+                    _logger.LogInformation("Aucun lot trouvé pour l'utilisateur {UserId}", userId);
+                    return new List<MisesParEncanVM>();
+                }
+
+                var misesParEncan = lots
+                    .Where(l => l.EncanLots.Any())
+                    .GroupBy(l => l.EncanLots.FirstOrDefault()?.Encan)
+                    .Where(g => g.Key != null)
+                    .OrderByDescending(g => g.Key.DateFin)
+                    .Select(g => new MisesParEncanVM
+                    {
+                        NumeroEncan = g.Key.NumeroEncan,
+                        DateEncan = g.Key.DateFin,
+                        Lots = g.Select(l => new LotMiseVM
+                        {
+                            LotId = l.Id,
+                            Numero = l.Numero,
+                            Artiste = l.Artiste,
+                            Hauteur = l.Hauteur,
+                            Largeur = l.Largeur,
+                            DerniereMise = l.Mise.HasValue ? (decimal)l.Mise.Value : 0m,
+                            ValeurEstimeMin = (decimal)l.ValeurEstimeMin,
+                            ValeurEstimeMax = (decimal)l.ValeurEstimeMax,
+                            PrixOuverture = (decimal)l.PrixOuverture,
+                            PrixMinPourVente = l.PrixMinPourVente.HasValue ? (decimal)l.PrixMinPourVente.Value : 0m,
+                            EstPlusHautEncherisseur = l.IdClientMise == userId,
+                            EstVendu = l.EstVendu,
+                            PhotoPrincipale = l.Photos.FirstOrDefault()?.Lien ?? "",
+                            DateFinDecompteLot = l.DateFinDecompteLot,
+                            EstLivrable = l.EstLivrable,
+                            Description = l.Description,
+                            IdCategorie = l.IdCategorie,
+                            Categorie = l.Categorie.Nom,
+                            IdMedium = l.IdMedium,
+                            Medium = l.Medium.Type,
+                            IdVendeur = l.IdVendeur,
+                            Vendeur = $"{l.Vendeur.Prenom} {l.Vendeur.Nom}",
+                            SeraLivree = l.SeraLivree ?? false
+                        }).ToList()
+                    })
+                    .ToList();
+
+                return misesParEncan;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Erreur lors de la récupération des mises pour {UserId}", userId);
+                throw;
+            }
+        }
 
     }
 }

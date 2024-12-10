@@ -4,18 +4,18 @@
             <h2 class="fs-1 text-center fw-bold mt-5 ps-0">Inscription</h2>
             <p class="text-center">Obtenir un compte membre</p>
 
-            <div v-if="errorMessage" class="alert alert-danger">
-                {{ errorMessage }}
+            <div v-if="messageErreur" class="alert alert-danger">
+                {{ messageErreur }}
             </div>
             <div v-else>
-                <div v-if="successMessage" class="alert alert-success">
-                    {{ successMessage }}
+                <div v-if="messageSucces" class="alert alert-success">
+                    {{ messageSucces }}
                 </div>
             </div>
 
             <!-- Stepper Navigation -->
             <div class="mt-3">
-                <form @submit.prevent="submitForm">
+                <form @submit.prevent="soumettreFormulaire">
                     <Stepper v-model:activeIndex="activeIndex" :class="['mb-4']">
                         <!-- Informations générales -->
                         <StepItem :disabled="activeIndex !== 1" id="itemStep1">
@@ -33,14 +33,14 @@
                                                        v-model="formData.generalInfo.nom"
                                                        :class="[
                             'form-control',
-                            { 'is-invalid': v.generalInfo.nom.$error },
+                            { 'is-invalid': vuelidate.generalInfo.nom.$error },
                           ]"
                                                        id="nom"
-                                                       placeholder="John"
-                                                       @blur="v.generalInfo.nom.$touch()" />
-                                                <div class="invalid-feedback"
-                                                     v-if="v.generalInfo.nom.$error">
-                                                    {{ v.generalInfo.nom.$errors[0].$message }}
+                                                       placeholder="Doe"
+                                                       @blur="vuelidate.generalInfo.nom.$touch()" />
+                                                <div class="retroaction-invalide"
+                                                     v-if="vuelidate.generalInfo.nom.$error">
+                                                    {{ vuelidate.generalInfo.nom.$errors[0].$message }}
                                                 </div>
                                             </div>
                                         </div>
@@ -52,14 +52,14 @@
                                                        v-model="formData.generalInfo.prenom"
                                                        :class="[
                             'form-control',
-                            { 'is-invalid': v.generalInfo.prenom.$error },
+                            { 'is-invalid': vuelidate.generalInfo.prenom.$error },
                           ]"
                                                        id="prenom"
-                                                       placeholder="Doe"
-                                                       @blur="v.generalInfo.prenom.$touch()" />
-                                                <div class="invalid-feedback"
-                                                     v-if="v.generalInfo.prenom.$error">
-                                                    {{ v.generalInfo.prenom.$errors[0].$message }}
+                                                       placeholder="John"
+                                                       @blur="vuelidate.generalInfo.prenom.$touch()" />
+                                                <div class="retroaction-invalide"
+                                                     v-if="vuelidate.generalInfo.prenom.$error">
+                                                    {{ vuelidate.generalInfo.prenom.$errors[0].$message }}
                                                 </div>
                                             </div>
                                         </div>
@@ -76,22 +76,22 @@
                             'form-control',
                             {
                               'is-invalid':
-                                v.generalInfo.courriel.$error ||
+                                vuelidate.generalInfo.courriel.$error ||
                                 (!emailDisponible && emailVerifie),
                               'is-valid': emailDisponible && emailVerifie,
                             },
                           ]"
                                                        id="courriel"
                                                        @blur="
-                            v.generalInfo.courriel.$touch();
+                            vuelidate.generalInfo.courriel.$touch();
                             verifierEmail();
                           "
                                                        @input="emailVerifie = false" />
-                                                <div class="invalid-feedback"
-                                                     v-if="v.generalInfo.courriel.$error">
-                                                    {{ v.generalInfo.courriel.$errors[0].$message }}
+                                                <div class="retroaction-invalide"
+                                                     v-if="vuelidate.generalInfo.courriel.$error">
+                                                    {{ vuelidate.generalInfo.courriel.$errors[0].$message }}
                                                 </div>
-                                                <div class="invalid-feedback"
+                                                <div class="retroaction-invalide"
                                                      v-if="!emailDisponible && emailVerifie">
                                                     Cette adresse email est déjà utilisée.
                                                 </div>
@@ -108,13 +108,13 @@
                                                                v-model="formData.generalInfo.telephone"
                                                                :class="[
                               'form-control',
-                              { 'is-invalid': v.generalInfo.telephone.$error },
+                              { 'is-invalid': vuelidate.generalInfo.telephone.$error },
                             ]"
                                                                id="telephone"
-                                                               @blur="v.generalInfo.telephone.$touch()" />
-                                                    <div class="invalid-feedback"
-                                                         v-if="v.generalInfo.telephone.$error">
-                                                        {{ v.generalInfo.telephone.$errors[0].$message }}
+                                                               @blur="vuelidate.generalInfo.telephone.$touch()" />
+                                                    <div class="retroaction-invalide"
+                                                         v-if="vuelidate.generalInfo.telephone.$error">
+                                                        {{ vuelidate.generalInfo.telephone.$errors[0].$message }}
                                                     </div>
                                                 </div>
                                             </div>
@@ -131,26 +131,26 @@
                             'form-control',
                             {
                               'is-invalid':
-                                v.generalInfo.pseudo.$error ||
+                                vuelidate.generalInfo.pseudo.$error ||
                                 (!pseudoDisponible && pseudoVerifie),
                             },
                           ]"
                                                        id="pseudonyme"
                                                        placeholder="johnDoe45"
                                                        @blur="
-                            v.generalInfo.pseudo.$touch();
+                            vuelidate.generalInfo.pseudo.$touch();
                             verifierPseudo();
                           "
                                                        @input="pseudoVerifie = false" />
-                                                <div class="invalid-feedback"
-                                                     v-if="v.generalInfo.pseudo.$error">
-                                                    {{ v.generalInfo.pseudo.$errors[0].$message }}
+                                                <div class="retroaction-invalide"
+                                                     v-if="vuelidate.generalInfo.pseudo.$error">
+                                                    {{ vuelidate.generalInfo.pseudo.$errors[0].$message }}
                                                 </div>
-                                                <div class="invalid-feedback"
+                                                <div class="retroaction-valide"
                                                      v-if="!pseudoDisponible && pseudoVerifie">
                                                     Le pseudonyme est valide.
                                                 </div>
-                                                <div class="valid-feedback"
+                                                <div class="retroaction-valide"
                                                      v-if="pseudoDisponible && pseudoVerifie">
                                                     Ce pseudonyme est disponible.
                                                 </div>
@@ -166,13 +166,13 @@
                                                        v-model="formData.generalInfo.motDePasse"
                                                        :class="[
                             'form-control',
-                            { 'is-invalid': v.generalInfo.motDePasse.$error },
+                            { 'is-invalid': vuelidate.generalInfo.motDePasse.$error },
                           ]"
                                                        id="motDePasse"
-                                                       @blur="v.generalInfo.motDePasse.$touch()" />
-                                                <div class="invalid-feedback"
-                                                     v-if="v.generalInfo.motDePasse.$error">
-                                                    {{ v.generalInfo.motDePasse.$errors[0].$message }}
+                                                       @blur="vuelidate.generalInfo.motDePasse.$touch()" />
+                                                <div class="retroaction-invalide"
+                                                     v-if="vuelidate.generalInfo.motDePasse.$error">
+                                                    {{ vuelidate.generalInfo.motDePasse.$errors[0].$message }}
                                                 </div>
                                             </div>
                                         </div>
@@ -186,15 +186,15 @@
                             'form-control',
                             {
                               'is-invalid':
-                                v.generalInfo.confirmMotPasse.$error,
+                                vuelidate.generalInfo.confirmMotPasse.$error,
                             },
                           ]"
                                                        id="confirmMotPasse"
-                                                       @blur="v.generalInfo.confirmMotPasse.$touch()" />
-                                                <div class="invalid-feedback"
-                                                     v-if="v.generalInfo.confirmMotPasse.$error">
+                                                       @blur="vuelidate.generalInfo.confirmMotPasse.$touch()" />
+                                                <div class="retroaction-invalide"
+                                                     v-if="vuelidate.generalInfo.confirmMotPasse.$error">
                                                     {{
-                            v.generalInfo.confirmMotPasse.$errors[0].$message
+                            vuelidate.generalInfo.confirmMotPasse.$errors[0].$message
                                                     }}
                                                 </div>
                                             </div>
@@ -231,13 +231,13 @@
                                                        placeholder="1"
                                                        :class="[
                             'form-control',
-                            { 'is-invalid': v.adresse.numeroCivique.$error },
+                            { 'is-invalid': vuelidate.adresse.numeroCivique.$error },
                           ]"
                                                        id="numeroCivique"
-                                                       @blur="v.adresse.numeroCivique.$touch()" />
-                                                <div class="invalid-feedback"
-                                                     v-if="v.adresse.numeroCivique.$error">
-                                                    {{ v.adresse.numeroCivique.$errors[0].$message }}
+                                                       @blur="vuelidate.adresse.numeroCivique.$touch()" />
+                                                <div class="retroaction-invalide"
+                                                     v-if="vuelidate.adresse.numeroCivique.$error">
+                                                    {{ vuelidate.adresse.numeroCivique.$errors[0].$message }}
                                                 </div>
                                             </div>
                                         </div>
@@ -249,13 +249,13 @@
                                                        placeholder="Saint Jacques"
                                                        :class="[
                             'form-control',
-                            { 'is-invalid': v.adresse.rue.$error },
+                            { 'is-invalid': vuelidate.adresse.rue.$error },
                           ]"
                                                        id="rue"
-                                                       @blur="v.adresse.rue.$touch()" />
-                                                <div class="invalid-feedback"
-                                                     v-if="v.adresse.rue.$error">
-                                                    {{ v.adresse.rue.$errors[0].$message }}
+                                                       @blur="vuelidate.adresse.rue.$touch()" />
+                                                <div class="retroaction-invalide"
+                                                     v-if="vuelidate.adresse.rue.$error">
+                                                    {{ vuelidate.adresse.rue.$errors[0].$message }}
                                                 </div>
                                             </div>
                                         </div>
@@ -280,13 +280,13 @@
                                                        v-model="formData.adresse.ville"
                                                        :class="[
                             'form-control',
-                            { 'is-invalid': v.adresse.ville.$error },
+                            { 'is-invalid': vuelidate.adresse.ville.$error },
                           ]"
                                                        id="ville"
-                                                       @blur="v.adresse.ville.$touch()" />
-                                                <div class="invalid-feedback"
-                                                     v-if="v.adresse.ville.$error">
-                                                    {{ v.adresse.ville.$errors[0].$message }}
+                                                       @blur="vuelidate.adresse.ville.$touch()" />
+                                                <div class="retroaction-invalide"
+                                                     v-if="vuelidate.adresse.ville.$error">
+                                                    {{ vuelidate.adresse.ville.$errors[0].$message }}
                                                 </div>
                                             </div>
                                         </div>
@@ -301,9 +301,9 @@
                                                         v-model="formData.adresse.province"
                                                         :class="[
                             'form-control',
-                            { 'is-invalid': v.adresse.province.$error },
+                            { 'is-invalid': vuelidate.adresse.province.$error },
                           ]"
-                                                        @blur="v.adresse.province.$touch()"
+                                                        @blur="vuelidate.adresse.province.$touch()"
                                                         placeholder="Sélectionnez une province">
                                                     <option value="" disabled selected>
                                                         Sélectionner une province
@@ -314,9 +314,9 @@
                                                         {{ province.text }}
                                                     </option>
                                                 </select>
-                                                <div class="invalid-feedback"
-                                                     v-if="v.adresse.province.$error">
-                                                    {{ v.adresse.province.$errors[0].$message }}
+                                                <div class="retroaction-invalide"
+                                                     v-if="vuelidate.adresse.province.$error">
+                                                    {{ vuelidate.adresse.province.$errors[0].$message }}
                                                 </div>
                                             </div>
                                         </div>
@@ -340,15 +340,15 @@
                                                                v-model="formData.adresse.codePostal"
                                                                :class="[
                               'form-control',
-                              { 'is-invalid': v.adresse.codePostal.$error },
+                              { 'is-invalid': vuelidate.adresse.codePostal.$error },
                             ]"
                                                                id="postalCode"
                                                                mask="a9a 9a9"
                                                                placeholder="A1A 2B2"
-                                                               @blur="v.adresse.codePostal.$touch()" />
-                                                    <div class="invalid-feedback"
-                                                         v-if="v.adresse.codePostal.$error">
-                                                        {{ v.adresse.codePostal.$errors[0].$message }}
+                                                               @blur="vuelidate.adresse.codePostal.$touch()" />
+                                                    <div class="retroaction-invalide"
+                                                         v-if="vuelidate.adresse.codePostal.$error">
+                                                        {{ vuelidate.adresse.codePostal.$errors[0].$message }}
                                                     </div>
                                                 </div>
                                             </div>
@@ -411,8 +411,8 @@
     const store = useStore();
     const router = useRouter();
 
-    const errorMessage = ref("");
-    const successMessage = ref("");
+    const messageErreur = ref("");
+    const messageSucces = ref("");
 
     const activeIndex = ref(1);
     const messageRequis = helpers.withMessage("Ce champ est requis.", required);
@@ -421,17 +421,17 @@
         email
     );
 
-    const messageMinLengthPassword = helpers.withMessage(
+    const messageLongueurMinimaleMotDePasse = helpers.withMessage(
         "Le mot de passe doit contenir au moins 8 caractères, minimum 1 majuscule, 1 minuscule, 1 chiffre et 1 caractère spécial.",
         minLength(8)
     );
 
-    const messageMinLengthPseudo = helpers.withMessage(
+    const messageLongueurMinimalePseudo = helpers.withMessage(
         "Le pseudo doit contenir au moins 3 caractères.",
         minLength(3)
     );
 
-    const messageMaxLengthPseudo = helpers.withMessage(
+    const messageLongueurMaximalePseudo = helpers.withMessage(
         "Le pseudo doit contenir au maximum 20 caractères.",
         maxLength(20)
     );
@@ -474,7 +474,7 @@
         },
     });
 
-    const messageSameAsPassword = helpers.withMessage(
+    const messageIdentiqueAuMotDePasse = helpers.withMessage(
         "Les mots de passe ne correspondent pas.",
         sameAs(computed(() => formData.generalInfo.motDePasse))
     );
@@ -484,8 +484,8 @@
     const emailDisponible = ref(true);
     const emailVerifie = ref(false);
 
-    //objet rules qui contient toutes les validations
-    let rules = computed(() => {
+    //objet regles qui contient toutes les validations
+    let regles = computed(() => {
         return {
             generalInfo: {
                 nom: { required: messageRequis },
@@ -504,16 +504,16 @@
                         }
                         return true;
                     },
-                    minLength: messageMinLengthPseudo,
-                    maxLength: messageMaxLengthPseudo,
+                    minLength: messageLongueurMinimalePseudo,
+                    maxLength: messageLongueurMaximalePseudo,
                 },
                 motDePasse: {
                     required: messageRequis,
-                    minLength: messageMinLengthPassword,
+                    minLength: messageLongueurMinimaleMotDePasse,
                 },
                 confirmMotPasse: {
                     required: messageRequis,
-                    sameAsPassword: messageSameAsPassword,
+                    sameAsPassword: messageIdentiqueAuMotDePasse,
                 },
             },
             adresse: {
@@ -528,8 +528,8 @@
         };
     });
 
-    const v = useVuelidate(rules, formData);
-    const info = useVuelidate(rules.value.generalInfo, formData.generalInfo);
+    const vuelidate = useVuelidate(regles, formData);
+    const info = useVuelidate(regles.value.generalInfo, formData.generalInfo);
     const isSubmitting = ref(false);
 
     const classeActiveBouton = ref("btn rounded-pill px-5");
@@ -539,7 +539,7 @@
     });
 
     const stateFinal = computed(() => {
-        return v.value.$invalid;
+        return vuelidate.value.$invalid;
     });
 
     function allerAuSuivantPrecedent(stepIndex) {
@@ -566,7 +566,7 @@
     const verifierEmail = async () => {
         if (
             formData.generalInfo.courriel.length > 0 &&
-            !v.value.generalInfo.courriel.$error
+            !vuelidate.value.generalInfo.courriel.$error
         ) {
             try {
                 emailVerifie.value = false;
@@ -584,21 +584,21 @@
         }
     };
 
-    const submitForm = async () => {
-        const result = await v.value.$validate();
+    const soumettreFormulaire = async () => {
+        const result = await vuelidate.value.$validate();
         isSubmitting.value = true;
 
         if (!result) {
             isSubmitting.value = false;
-            errorMessage.value =
+            messageErreur.value =
                 "Certaines informations du formulaire sont incorrectes";
             return;
         }
 
         try {
-            const response = await store.dispatch("creerCompteUtilisateur", formData);
-            if (response.success) {
-                successMessage.value = "Compte crée avec succès !";
+            const reponse = await store.dispatch("creerCompteUtilisateur", formData);
+            if (reponse.success) {
+                messageSucces.value = "Compte crée avec succès !";
                 toast.success(
                     h(ToastContent, {
                         title: "Compte créé avec succès !",
@@ -621,12 +621,12 @@
                     router.push("/connexion");
                 }, 4000);
             } else {
-                errorMessage.value =
-                    response.message ||
+                messageErreur.value =
+                    reponse.message ||
                     "Une erreur est survenue lors de la création du compte.";
             }
         } catch (error) {
-            errorMessage.value =
+            messageErreur.value =
                 "Une erreur est survenue lors de la création du compte.";
         } finally {
             isSubmitting.value = false;
@@ -681,14 +681,14 @@
         border-color: #c3e6cb;
     }
 
-    .invalid-feedback {
+    .retroaction-invalide {
         color: #dc3545;
         font-size: 0.875em;
         margin-top: 0.25rem;
         display: block;
     }
 
-    .valid-feedback {
+    .retroaction-valide {
         color: #28a745;
         font-size: 0.875em;
         margin-top: 0.25rem;

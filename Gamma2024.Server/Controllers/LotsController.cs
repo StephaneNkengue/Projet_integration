@@ -18,239 +18,270 @@ namespace Gamma2024.Server.Controllers
         private readonly LotService _lotService;
         private readonly ApplicationDbContext _context;
         private readonly IHubContext<LotMiseHub> _hubContext;
+		private readonly ILogger<LotsController> _logger;
 
 
-        public LotsController(LotService lotService, ApplicationDbContext context, IHubContext<LotMiseHub> hubContext)
+        public LotsController(LotService lotService, ApplicationDbContext context, IHubContext<LotMiseHub> hubContext, ILogger<LotsController> logger)
         {
             _lotService = lotService;
             _context = context;
             _hubContext = hubContext;
+			_logger = logger;
         }
 
-        [Authorize(Roles = ApplicationRoles.ADMINISTRATEUR)]
-        [HttpGet("tous")]
-        public async Task<ActionResult<IEnumerable<LotAffichageVM>>> ObtenirTousLots()
-        {
-            var lots = await _lotService.ObtenirTousLots();
-            return Ok(lots.ToList());
-        }
+		[Authorize(Roles = ApplicationRoles.ADMINISTRATEUR)]
+		[HttpGet("tous")]
+		public async Task<ActionResult<IEnumerable<LotAffichageVM>>> ObtenirTousLots()
+		{
+			var lots = await _lotService.ObtenirTousLots();
+			return Ok(lots.ToList());
+		}
 
-        [Authorize(Roles = ApplicationRoles.ADMINISTRATEUR)]
-        [HttpGet("{id}")]
-        public async Task<ActionResult<LotAffichageVM>> ObtenirLot(int id)
-        {
-            var lot = await _lotService.ObtenirLot(id);
-            if (lot == null)
-            {
-                return NotFound();
-            }
-            return Ok(lot);
-        }
+		[Authorize(Roles = ApplicationRoles.ADMINISTRATEUR)]
+		[HttpGet("{id}")]
+		public async Task<ActionResult<LotAffichageVM>> ObtenirLot(int id)
+		{
+			var lot = await _lotService.ObtenirLot(id);
+			if (lot == null)
+			{
+				return NotFound();
+			}
+			return Ok(lot);
+		}
 
-        [Authorize(Roles = ApplicationRoles.ADMINISTRATEUR)]
-        [HttpPost("creer")]
-        public async Task<ActionResult<LotAffichageVM>> CreerLot([FromForm] LotCreationVM lotVM)
-        {
-            if (Request.Form.Files.Count > 0)
-            {
-                lotVM.Photos = Request.Form.Files.ToList();
-            }
+		[Authorize(Roles = ApplicationRoles.ADMINISTRATEUR)]
+		[HttpPost("creer")]
+		public async Task<ActionResult<LotAffichageVM>> CreerLot([FromForm] LotCreationVM lotVM)
+		{
+			if (Request.Form.Files.Count > 0)
+			{
+				lotVM.Photos = Request.Form.Files.ToList();
+			}
 
-            var resultat = await _lotService.CreerLot(lotVM);
-            if (!resultat.Success)
-            {
-                return BadRequest(resultat.Message);
-            }
-            return Ok(new { success = true, message = "Lot crée avec succès" });
-        }
+			var resultat = await _lotService.CreerLot(lotVM);
+			if (!resultat.Success)
+			{
+				return BadRequest(resultat.Message);
+			}
+			return Ok(new { success = true, message = "Lot crée avec succès" });
+		}
 
-        [Authorize(Roles = ApplicationRoles.ADMINISTRATEUR)]
-        [HttpPut("modifier/{id}")]
-        public async Task<IActionResult> ModifierLot(int id, LotModificationVM lotVM)
-        {
-            var resultat = await _lotService.ModifierLot(id, lotVM);
-            if (!resultat.Success)
-            {
-                return BadRequest(resultat.Message);
-            }
-            return Ok(new { success = true, message = "Lot modifié avec succès" });
-        }
+		[Authorize(Roles = ApplicationRoles.ADMINISTRATEUR)]
+		[HttpPut("modifier/{id}")]
+		public async Task<IActionResult> ModifierLot(int id, LotModificationVM lotVM)
+		{
+			var resultat = await _lotService.ModifierLot(id, lotVM);
+			if (!resultat.Success)
+			{
+				return BadRequest(resultat.Message);
+			}
+			return Ok(new { success = true, message = "Lot modifié avec succès" });
+		}
 
-        [Authorize(Roles = ApplicationRoles.ADMINISTRATEUR)]
-        [HttpDelete("supprimer/{id}")]
-        public async Task<IActionResult> SupprimerLot(int id)
-        {
-            var resultat = await _lotService.SupprimerLot(id);
-            if (!resultat.Success)
-            {
-                return BadRequest(resultat.Message);
-            }
-            return Ok(new { success = true, message = "Lot supprimé avec succès" });
-        }
+		[Authorize(Roles = ApplicationRoles.ADMINISTRATEUR)]
+		[HttpDelete("supprimer/{id}")]
+		public async Task<IActionResult> SupprimerLot(int id)
+		{
+			var resultat = await _lotService.SupprimerLot(id);
+			if (!resultat.Success)
+			{
+				return BadRequest(resultat.Message);
+			}
+			return Ok(new { success = true, message = "Lot supprimé avec succès" });
+		}
 
-        [HttpGet("artistes")]
-        public async Task<ActionResult<ICollection<ArtisteVM>>> ObtenirTousArtistes()
-        {
-            try
-            {
-                var artistes = _lotService.ObtenirTousArtistes();
-                return Ok(artistes);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest($"Erreur d'obtenir tous les artistes: {ex.Message}");
-            }
-        }
+		[HttpGet("artistes")]
+		public async Task<ActionResult<ICollection<ArtisteVM>>> ObtenirTousArtistes()
+		{
+			try
+			{
+				var artistes = _lotService.ObtenirTousArtistes();
+				return Ok(artistes);
+			}
+			catch (Exception ex)
+			{
+				return BadRequest($"Erreur d'obtenir tous les artistes: {ex.Message}");
+			}
+		}
 
-        [HttpGet("categories")]
-        public async Task<ActionResult<IEnumerable<Categorie>>> ObtenirCategories()
-        {
-            var categories = await _context.Categories.ToListAsync();
-            return Ok(categories);
-        }
+		[HttpGet("categories")]
+		public async Task<ActionResult<IEnumerable<Categorie>>> ObtenirCategories()
+		{
+			var categories = await _context.Categories.ToListAsync();
+			return Ok(categories);
+		}
 
-        [Authorize(Roles = ApplicationRoles.ADMINISTRATEUR)]
-        [HttpGet("vendeurs")]
-        public async Task<ActionResult<IEnumerable<Vendeur>>> ObtenirVendeurs()
-        {
-            var vendeurs = await _context.Vendeurs.ToListAsync();
-            return Ok(vendeurs);
-        }
+		[Authorize(Roles = ApplicationRoles.ADMINISTRATEUR)]
+		[HttpGet("vendeurs")]
+		public async Task<ActionResult<IEnumerable<Vendeur>>> ObtenirVendeurs()
+		{
+			var vendeurs = await _context.Vendeurs.ToListAsync();
+			return Ok(vendeurs);
+		}
 
-        [HttpGet("mediums")]
-        public async Task<ActionResult<IEnumerable<Medium>>> ObtenirMediums()
-        {
-            var mediums = await _context.Mediums.ToListAsync();
-            return Ok(mediums);
-        }
+		[HttpGet("mediums")]
+		public async Task<ActionResult<IEnumerable<Medium>>> ObtenirMediums()
+		{
+			var mediums = await _context.Mediums.ToListAsync();
+			return Ok(mediums);
+		}
 
-        [Authorize(Roles = ApplicationRoles.ADMINISTRATEUR)]
-        [HttpGet("encans")]
-        public async Task<ActionResult<IEnumerable<Encan>>> ObtenirEncans()
-        {
-            var encans = await _context.Encans.ToListAsync();
-            return Ok(encans);
-        }
+		[Authorize(Roles = ApplicationRoles.ADMINISTRATEUR)]
+		[HttpGet("encans")]
+		public async Task<ActionResult<IEnumerable<Encan>>> ObtenirEncans()
+		{
+			var encans = await _context.Encans.ToListAsync();
+			return Ok(encans);
+		}
 
-        [HttpGet("cherchertouslotsrecherche")]
-        [AllowAnonymous]
-        public async Task<ActionResult<ICollection<LotEncanAffichageVM>>> ChercherTousLotsRecherche()
-        {
-            try
-            {
-                var lots = _lotService.ChercherTousLotsRecherche();
-                return Ok(lots);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest($"Erreur: {ex.Message}");
-            }
-        }
+		[HttpGet("cherchertouslotsrecherche")]
+		[AllowAnonymous]
+		public async Task<ActionResult<ICollection<LotEncanAffichageVM>>> ChercherTousLotsRecherche()
+		{
+			try
+			{
+				var lots = _lotService.ChercherTousLotsRecherche();
+				return Ok(lots);
+			}
+			catch (Exception ex)
+			{
+				return BadRequest($"Erreur: {ex.Message}");
+			}
+		}
 
-        [HttpGet("cherchertouslotsparencan/{idEncan}")]
-        [AllowAnonymous]
-        public async Task<ActionResult<ICollection<LotEncanAffichageVM>>> ChercherTousLotsParEncan(string idEncan)
-        {
-            try
-            {
-                var idEncanInt = int.Parse(idEncan);
-                var lots = _lotService.ChercherTousLotsParEncan(idEncanInt);
-                return Ok(lots);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest($"Erreur: {ex.Message}");
-            }
-        }
+		[HttpGet("cherchertouslotsparencan/{idEncan}")]
+		[AllowAnonymous]
+		public async Task<ActionResult<ICollection<LotEncanAffichageVM>>> ChercherTousLotsParEncan(string idEncan)
+		{
+			try
+			{
+				var idEncanInt = int.Parse(idEncan);
+				var lots = _lotService.ChercherTousLotsParEncan(idEncanInt);
+				return Ok(lots);
+			}
+			catch (Exception ex)
+			{
+				return BadRequest($"Erreur: {ex.Message}");
+			}
+		}
 
-        [AllowAnonymous]
-        [HttpGet("chercherTousLots")]
-        public ICollection<LotAffichageAdministrateurVM> ChercherTousLots()
-        {
-            ICollection<LotAffichageAdministrateurVM> lots = _lotService.ChercherTousLots();
-            return lots;
-        }
+		[AllowAnonymous]
+		[HttpGet("chercherDetailsLotParId/{idLot}")]
+		public LotDetailsVM ChercherDetailsLotParId(string idLot)
+		{
+			try
+			{
+				var idLotInt = int.Parse(idLot);
+				LotDetailsVM lot = _lotService.ChercherDetailsLotParId(idLotInt);
+				return lot;
+			}
+			catch
+			{
+				return null;
+			}
+		}
 
-        [AllowAnonymous]
-        [HttpGet("chercherDetailsLotParId/{idLot}")]
-        public LotDetailsVM ChercherDetailsLotParId(string idLot)
-        {
-            try
-            {
-                var idLotInt = int.Parse(idLot);
-                LotDetailsVM lot = _lotService.ChercherDetailsLotParId(idLotInt);
-                return lot;
-            }
-            catch
-            {
-                return null;
-            }
-        }
+		[Authorize(Roles = ApplicationRoles.CLIENT)]
+		[HttpPost("placerMise")]
+		public async Task<IActionResult> PlacerMise([FromBody] MiseVM mise)
+		{
+			if (!ModelState.IsValid)
+			{
+				return BadRequest(ModelState);
+			}
 
-        [Authorize(Roles = ApplicationRoles.CLIENT)]
-        [HttpPost("placerMise")]
-        public async Task<IActionResult> PlacerMise([FromBody] MiseVM mise)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+			mise.UserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+			if (string.IsNullOrEmpty(mise.UserId))
+			{
+				return Unauthorized();
+			}
 
-            mise.UserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (string.IsNullOrEmpty(mise.UserId))
-            {
-                return Unauthorized();
-            }
+			(bool isSuccess, string resultMessage) = await _lotService.PlacerMise(mise);
 
-            (bool isSuccess, string resultMessage) = await _lotService.PlacerMise(mise);
+			if (isSuccess)
+			{
+				var lastUserBid = await _lotService.GetUserLastBid(mise.LotId, mise.UserId);
 
-            if (isSuccess)
-            {
-                var lastUserBid = await _lotService.GetUserLastBid(mise.LotId, mise.UserId);
+				return Ok(new
+				{
+					success = true,
+					message = resultMessage,
+					userLastBid = lastUserBid
+				});
+			}
+			else
+			{
+				return BadRequest(new
+				{
+					success = false,
+					message = resultMessage
+				});
+			}
+		}
 
-                return Ok(new
-                {
-                    success = true,
-                    message = resultMessage,
-                    userLastBid = lastUserBid
-                });
-            }
-            else
-            {
-                return BadRequest(new
-                {
-                    success = false,
-                    message = resultMessage
-                });
-            }
-        }
+		[Authorize]
+		[HttpGet("userBids/{userId}")]
+		public async Task<IActionResult> GetUserBids(string userId)
+		{
+			try
+			{
+				_logger.LogInformation($"Contrôleur - Début GetUserBids pour userId: {userId}");
+				
+				var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+				_logger.LogInformation($"Contrôleur - CurrentUserId: {currentUserId}, RequestedUserId: {userId}");
 
-        [Authorize(Roles = ApplicationRoles.CLIENT)]
-        [HttpGet("userBids/{userId}")]
-        public async Task<IActionResult> GetUserBids(string userId)
-        {
-            if (userId != User.FindFirst(ClaimTypes.NameIdentifier)?.Value)
-            {
-                return Unauthorized();
-            }
+				if (currentUserId != userId)
+				{
+					_logger.LogWarning($"Contrôleur - Accès non autorisé: currentUserId ({currentUserId}) != requestedUserId ({userId})");
+					return Forbid();
+				}
 
-            var userBids = await _lotService.GetUserBids(userId);
-            return Ok(userBids);
-        }
+				var userBids = await _lotService.GetUserBids(userId);
+				return Ok(userBids);
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError(ex, $"Contrôleur - Erreur dans GetUserBids pour userId: {userId}");
+				return StatusCode(500, "Une erreur est survenue lors de la récupération des mises");
+			}
+		}
 
-        [Authorize]
-        [HttpGet("userLastBid/{lotId}")]
-        public async Task<ActionResult<double?>> GetUserLastBid(int lotId)
-        {
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (string.IsNullOrEmpty(userId))
-            {
-                return Unauthorized();
-            }
+		[Authorize]
+		[HttpGet("userLastBid/{lotId}")]
+		public async Task<ActionResult<double?>> GetUserLastBid(int lotId)
+		{
+			var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+			if (string.IsNullOrEmpty(userId))
+			{
+				return Unauthorized();
+			}
 
-            var lastBid = await _lotService.GetUserLastBid(lotId, userId);
-            return Ok(lastBid);
-        }
+			var lastBid = await _lotService.GetUserLastBid(lotId, userId);
+			return Ok(lastBid);
+		}
+
+		[Authorize]
+		[HttpGet("userBidsGroupedByEncan")]
+		public async Task<IActionResult> GetUserBidsGroupedByEncan()
+		{
+			try
+			{
+				var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+				if (string.IsNullOrEmpty(userId))
+				{
+					return Unauthorized();
+				}
+
+				var misesParEncan = await _lotService.GetUserBidsGroupedByEncan(userId);
+				return Ok(misesParEncan);
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError(ex, "Erreur lors de la récupération des mises groupées par encan");
+				return StatusCode(500, "Une erreur est survenue");
+			}
+		}
+
 
     }
 }

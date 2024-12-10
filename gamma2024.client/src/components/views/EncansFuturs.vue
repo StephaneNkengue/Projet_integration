@@ -42,8 +42,8 @@
     const chargement = ref(true)
 
     onMounted(async () => {
-        const response = await store.dispatch("chercherEncansFuturs");
-        encans.value = response.data
+        const reponse = await store.dispatch("chercherEncansFuturs");
+        encans.value = reponse.data
         chargement.value = false
     })
 </script>

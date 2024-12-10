@@ -274,6 +274,9 @@ namespace Gamma2024.Server.Migrations
                     b.Property<bool>("EstPublie")
                         .HasColumnType("bit");
 
+                    b.Property<bool>("EstTermine")
+                        .HasColumnType("bit");
+
                     b.Property<int>("NumeroEncan")
                         .HasColumnType("int");
 
@@ -319,10 +322,6 @@ namespace Gamma2024.Server.Migrations
 
                     b.Property<DateTime>("DateAchat")
                         .HasColumnType("datetime2");
-
-                    b.Property<string>("FacturePDFPath")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<double>("FraisEncanteur")
                         .HasColumnType("float");
@@ -385,10 +384,6 @@ namespace Gamma2024.Server.Migrations
 
                     b.Property<bool>("EstPaye")
                         .HasColumnType("bit");
-
-                    b.Property<string>("FacturePDFPath")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("IdAdresse")
                         .HasColumnType("int");

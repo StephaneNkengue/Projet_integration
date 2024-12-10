@@ -1,12 +1,10 @@
 using Gamma2024.Server.Data;
-using Gamma2024.Server.Models;
 using Gamma2024.Server.Hub;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using Microsoft.AspNetCore.SignalR;
-using Gamma2024.Server.ViewModels;
-using System.Net.Http;
+using Gamma2024.Server.Models;
 using Gamma2024.Server.Validations;
+using Gamma2024.Server.ViewModels;
+using Microsoft.AspNetCore.SignalR;
+using Microsoft.EntityFrameworkCore;
 
 namespace Gamma2024.Server.Services
 {
@@ -15,351 +13,280 @@ namespace Gamma2024.Server.Services
         private readonly ApplicationDbContext _context;
         private readonly ILogger<EncanService> _logger;
         private readonly IHubContext<LotMiseHub, ILotMiseHub> _hubContext;
-        private readonly HttpClient _httpClient;
 
-        public EncanService(ApplicationDbContext context, ILogger<EncanService> logger, IHubContext<LotMiseHub, ILotMiseHub> hubContext, HttpClient httpClient)
+        public EncanService(
+            ApplicationDbContext context,
+            ILogger<EncanService> logger,
+            IHubContext<LotMiseHub, ILotMiseHub> hubContext)
         {
             _context = context;
             _logger = logger;
             _hubContext = hubContext;
-            _httpClient = httpClient;
         }
 
-        public ICollection<EncanAffichageAdminVM> ChercherTousEncans()
-        {
-            var encans = _context.Encans
-                .Select(e => new EncanAffichageAdminVM()
-                {
-                    Id = e.Id,
-                    NumeroEncan = e.NumeroEncan,
-                    DateDebut = e.DateDebut,
-                    DateFin = e.DateFin,
-                    DateDebutSoireeCloture = e.DateDebutSoireeCloture,
-                    EstPublie = e.EstPublie,
-                    NbLots = _context.EncanLots.Count(el => el.IdEncan == e.Id)
-                }).OrderByDescending(e => e.DateDebut.Year).ThenByDescending(e => e.DateDebut.Month).ThenByDescending(e => e.DateDebut.Day).ToList();
+		public ICollection<EncanAffichageAdminVM> ChercherTousEncans()
+		{
+			var encans = _context.Encans
+				.Select(e => new EncanAffichageAdminVM()
+				{
+					Id = e.Id,
+					NumeroEncan = e.NumeroEncan,
+					DateDebut = e.DateDebut,
+					DateFin = e.DateFin,
+					DateDebutSoireeCloture = e.DateDebutSoireeCloture,
+					EstPublie = e.EstPublie,
+					NbLots = _context.EncanLots.Count(el => el.IdEncan == e.Id)
+				}).OrderByDescending(e => e.DateDebut.Year).ThenByDescending(e => e.DateDebut.Month).ThenByDescending(e => e.DateDebut.Day).ToList();
 
-            return encans;
-        }
+			return encans;
+		}
 
-        public ICollection<EncanAffichageAdminVM> ChercherTousEncansVisibles()
-        {
-            var encans = _context.Encans
-                .Where(e => e.EstPublie == true)
-                .Select(e => new EncanAffichageAdminVM()
-                {
-                    Id = e.Id,
-                    NumeroEncan = e.NumeroEncan,
-                    DateDebut = e.DateDebut,
-                    DateFin = e.DateFin,
-                    DateDebutSoireeCloture = e.DateDebutSoireeCloture
-                }).ToList();
+		public ICollection<EncanAffichageAdminVM> ChercherTousEncansVisibles()
+		{
+			var encans = _context.Encans
+				.Where(e => e.EstPublie == true)
+				.Select(e => new EncanAffichageAdminVM()
+				{
+					Id = e.Id,
+					NumeroEncan = e.NumeroEncan,
+					DateDebut = e.DateDebut,
+					DateFin = e.DateFin,
+					DateDebutSoireeCloture = e.DateDebutSoireeCloture
+				}).ToList();
 
-            return encans;
-        }
+			return encans;
+		}
 
-        public async Task<(bool Success, string Message)> CreerEncan(EncanVM vm)
-        {
-            var (isValid, errorMessage) = EncanValidation.ValidateEncan(vm);
+		public async Task<(bool Success, string Message)> CreerEncan(EncanVM vm)
+		{
+			var (isValid, errorMessage) = EncanValidation.ValidateEncan(vm);
 
-            if (!isValid)
-            {
-                return (false, errorMessage);
-            }
+			if (!isValid)
+			{
+				return (false, errorMessage);
+			}
 
-            var listeEncan = _context.Encans.OrderBy(e => e.NumeroEncan).ToList();
+			var listeEncan = _context.Encans.OrderBy(e => e.NumeroEncan).ToList();
 
-            bool estVide = false;
-            if (listeEncan.Count == 0)
-            {
-                estVide = true;
-            }
+			bool estVide = false;
+			if (listeEncan.Count == 0)
+			{
+				estVide = true;
+			}
 
-            var encan = new Encan()
-            {
-                Id = 0,
-                NumeroEncan = estVide ? 1 : listeEncan.LastOrDefault().NumeroEncan + 1,
-                DateDebut = vm.DateDebut,
-                DateFin = vm.DateFin,
-                DateDebutSoireeCloture = vm.DateFin,
-                EncanLots = [],
-                EstPublie = false,
-                PasLot = vm.PasLot,
-                PasMise = vm.PasMise
-            };
+			var encan = new Encan()
+			{
+				Id = 0,
+				NumeroEncan = estVide ? 1 : listeEncan.LastOrDefault().NumeroEncan + 1,
+				DateDebut = vm.DateDebut.ToLocalTime(),
+				DateFin = vm.DateFin.ToLocalTime(),
+				DateDebutSoireeCloture = vm.DateFin.ToLocalTime(),
+				EncanLots = [],
+				EstPublie = false,
+				PasLot = vm.PasLot,
+				PasMise = vm.PasMise
+			};
+			_context.Encans.Add(encan);
+			_context.SaveChanges();
+			return (true, encan.Id.ToString());
+		}
 
-            _context.Encans.Add(encan);
-            _context.SaveChanges();
-            return (true, encan.Id.ToString());
-        }
+		public async Task<(bool Success, string Message)> MettreAJourEncanPublie(EncanPublieVM vm)
+		{
+			var numeroEncan = _context.Encans.FirstOrDefault(e => e.NumeroEncan.Equals(vm.NumeroEncan));
+			if (numeroEncan != null)
+			{
+				numeroEncan.NumeroEncan = vm.NumeroEncan;
+				numeroEncan.EstPublie = vm.EstPublie;
+				_context.Encans.Update(numeroEncan);
+				_context.SaveChanges();
+				return (true, numeroEncan.Id.ToString());
+			}
 
-        public async Task<(bool Success, string Message)> MettreAJourEncanPublie(EncanPublieVM vm)
-        {
-            var numeroEncan = _context.Encans.FirstOrDefault(e => e.NumeroEncan.Equals(vm.NumeroEncan));
-            if (numeroEncan != null)
-            {
-                numeroEncan.NumeroEncan = vm.NumeroEncan;
-                numeroEncan.EstPublie = vm.EstPublie;
-                _context.Encans.Update(numeroEncan);
-                _context.SaveChanges();
-                return (true, numeroEncan.Id.ToString());
-            }
+			return (false, "Il n'y a aucun encan à ce numéro.");
+		}
 
-            return (false, "Il n'y a aucun encan à ce numéro.");
-        }
+		public Encan GetEncanByNumber(int numero)
+		{
+			return _context.Encans.FirstOrDefault(e => e.NumeroEncan == numero);
+		}
 
-        public Encan GetEncanByNumber(int numero)
-        {
-            return _context.Encans.FirstOrDefault(e => e.NumeroEncan == numero);
-        }
+		public Encan GetEncanById(int idEncan)
+		{
+			return _context.Encans.FirstOrDefault(e => e.Id == idEncan);
+		}
 
-        public Encan GetEncanById(int idEncan)
-        {
-            return _context.Encans.FirstOrDefault(e => e.Id == idEncan);
-        }
+		public async Task<(bool success, string message)> ModifierEncan(int id, EncanVM model)
+		{
+			var (isValid, message) = EncanValidation.ValidateEncan(model);
+			if (!isValid)
+			{
+				return (false, message);
+			}
 
-        public async Task<(bool success, string message)> ModifierEncan(int id, EncanVM model)
-        {
-            var (isValid, message) = EncanValidation.ValidateEncan(model);
-            if (!isValid)
-            {
-                return (false, message);
-            }
+			var encan = await _context.Encans.FindAsync(id);
+			if (encan == null)
+			{
+				return (false, "Encan non trouvé");
+			}
 
-            var encan = await _context.Encans.FindAsync(id);
-            if (encan == null)
-            {
-                return (false, "Encan non trouvé");
-            }
+			using var transaction = await _context.Database.BeginTransactionAsync();
 
-            using var transaction = await _context.Database.BeginTransactionAsync();
-
-            try
-            {
-                encan.DateDebut = model.DateDebut;
-                encan.DateFin = model.DateFin;
+			try
+			{
+				encan.DateDebut = model.DateDebut.ToLocalTime();
+				encan.DateFin = model.DateFin.ToLocalTime();
+				encan.DateDebutSoireeCloture = model.DateFin.ToLocalTime();
 
 
-                await _context.SaveChangesAsync();
-                await transaction.CommitAsync();
+				await _context.SaveChangesAsync();
+				await transaction.CommitAsync();
 
-                return (true, "Encan modifié avec succès");
-            }
-            catch (Exception ex)
-            {
-                await transaction.RollbackAsync();
-                return (false, $"Une erreur est survenue lors de la modification de l'encan : {ex.Message}");
-            }
-        }
-        public EncanAffichageVM ChercherEncanParNumero(int numero)
-        {
-            var encan = _context.Encans
-                .FirstOrDefault(e => e.NumeroEncan == numero);
+				return (true, "Encan modifié avec succès");
+			}
+			catch (Exception ex)
+			{
+				await transaction.RollbackAsync();
+				return (false, $"Une erreur est survenue lors de la modification de l'encan : {ex.Message}");
+			}
+		}
+		public EncanAffichageVM ChercherEncanParNumero(int numero)
+		{
+			var encan = _context.Encans
+				.FirstOrDefault(e => e.NumeroEncan == numero);
 
-            if (encan != null && encan.EstPublie)
-            {
-                return new EncanAffichageVM()
-                {
-                    Id = encan.Id,
-                    NumeroEncan = encan.NumeroEncan,
-                    DateDebut = encan.DateDebut,
-                    DateFin = encan.DateFin,
-                    DateDebutSoireeCloture = encan.DateDebutSoireeCloture
-                };
+			if (encan != null && encan.EstPublie)
+			{
+				return new EncanAffichageVM()
+				{
+					Id = encan.Id,
+					NumeroEncan = encan.NumeroEncan,
+					DateDebut = encan.DateDebut,
+					DateFin = encan.DateFin,
+					DateDebutSoireeCloture = encan.DateDebutSoireeCloture
+				};
 
-            }
+			}
 
-            return null;
-        }
+			return null;
+		}
 
-        public EncanAffichageVM ChercherEncanEnCours()
-        {
-            var encan = _context.Encans
-                .FirstOrDefault(e => DateTime.Now < e.DateFin && DateTime.Now > e.DateDebut);
+		public EncanAffichageVM ChercherEncanEnCours()
+		{
+			var encan = _context.Encans
+				.FirstOrDefault(e => DateTime.Now < e.DateFin && DateTime.Now > e.DateDebut);
 
-            if (encan != null && encan.EstPublie)
-            {
-                return new EncanAffichageVM()
-                {
-                    Id = encan.Id,
-                    NumeroEncan = encan.NumeroEncan,
-                    DateDebut = encan.DateDebut,
-                    DateFin = encan.DateFin,
-                    DateDebutSoireeCloture = encan.DateDebutSoireeCloture
-                };
+			if (encan != null && encan.EstPublie)
+			{
+				return new EncanAffichageVM()
+				{
+					Id = encan.Id,
+					NumeroEncan = encan.NumeroEncan,
+					DateDebut = encan.DateDebut,
+					DateFin = encan.DateFin,
+					DateDebutSoireeCloture = encan.DateDebutSoireeCloture
+				};
 
-            }
+			}
 
-            return null;
-        }
+			return null;
+		}
 
-        public int ChercherNumeroEncanEnCours()
-        {
-            var encan = _context.Encans
-                .FirstOrDefault(e => DateTime.Now < e.DateFin && DateTime.Now > e.DateDebut);
+		public int ChercherNumeroEncanEnCours()
+		{
+			var encan = _context.Encans
+				.FirstOrDefault(e => DateTime.Now < e.DateFin && DateTime.Now > e.DateDebut);
 
-            if (encan != null && encan.EstPublie)
-            {
-                return encan.NumeroEncan;
+			if (encan != null && encan.EstPublie)
+			{
+				return encan.NumeroEncan;
 
-            }
+			}
 
-            return 0;
-        }
+			return 0;
+		}
 
-        public ICollection<EncanAffichageVM> ChercherEncansFuturs()
-        {
-            var encans = _context.Encans
-                .Where(e => DateTime.Now < e.DateDebut)
-                .Where(e => e.EstPublie == true)
-                .OrderBy(e => e.DateDebut)
-                .ToList()
-                .Select(e => new EncanAffichageVM
-                {
-                    Id = e.Id,
-                    NumeroEncan = e.NumeroEncan,
-                    DateDebut = e.DateDebut,
-                    DateFin = e.DateFin,
-                    DateDebutSoireeCloture = e.DateDebutSoireeCloture
-                })
-                .ToList();
+		public ICollection<EncanAffichageVM> ChercherEncansFuturs()
+		{
+			var encans = _context.Encans
+				.Where(e => DateTime.Now < e.DateDebut)
+				.Where(e => e.EstPublie == true)
+				.OrderBy(e => e.DateDebut)
+				.ToList()
+				.Select(e => new EncanAffichageVM
+				{
+					Id = e.Id,
+					NumeroEncan = e.NumeroEncan,
+					DateDebut = e.DateDebut,
+					DateFin = e.DateFin,
+					DateDebutSoireeCloture = e.DateDebutSoireeCloture
+				})
+				.ToList();
 
-            return encans;
-        }
+			return encans;
+		}
 
-        public ICollection<EncanAffichageVM> ChercherEncansPasses()
-        {
-            var encans = _context.Encans
-                .Where(e => e.EstPublie == true && DateTime.Now > e.DateFin)
-                .OrderByDescending(e => e.DateFin)
-                .ToList()
-                .Select(e => new EncanAffichageVM
-                {
-                    Id = e.Id,
-                    NumeroEncan = e.NumeroEncan,
-                    DateDebut = e.DateDebut,
-                    DateFin = e.DateFin,
-                    DateDebutSoireeCloture = e.DateDebutSoireeCloture
-                })
-                .ToList();
+		public ICollection<EncanAffichageVM> ChercherEncansPasses()
+		{
+			var encans = _context.Encans
+				.Where(e => e.EstPublie == true && DateTime.Now > e.DateFin)
+				.OrderByDescending(e => e.DateFin)
+				.ToList()
+				.Select(e => new EncanAffichageVM
+				{
+					Id = e.Id,
+					NumeroEncan = e.NumeroEncan,
+					DateDebut = e.DateDebut,
+					DateFin = e.DateFin,
+					DateDebutSoireeCloture = e.DateDebutSoireeCloture
+				})
+				.ToList();
 
-            return encans;
-        }
+			return encans;
+		}
 
-        public async Task<(string type, Encan encan)> GetEtatCourant()
-        {
-            var maintenant = DateTime.Now;
-            
-            var dernierEncan = await _context.Encans
-                .Include(e => e.EncanLots)
-                    .ThenInclude(el => el.Lot)
-                .Where(e => e.DateFin < maintenant)
-                .OrderByDescending(e => e.DateFin)
-                .FirstOrDefaultAsync();
+		public async Task<(string type, Encan encan)> GetEtatCourant()
+		{
+			var maintenant = DateTime.Now;
+
+			var dernierEncan = await _context.Encans
+				.Include(e => e.EncanLots)
+					.ThenInclude(el => el.Lot)
+				.Where(e => e.DateFin < maintenant)
+				.OrderByDescending(e => e.DateFin)
+				.FirstOrDefaultAsync();
 
             if (dernierEncan?.EstEnSoireeCloture() == true)
             {
-                var lotsOrdonnes = dernierEncan.EncanLots
-                    .OrderBy(el => el.Lot.Numero)
-                    .ToList();
-
-                var derniereDateFin = lotsOrdonnes
-                    .Where(el => el.Lot.DateFinDecompteLot.HasValue)
-                    .Max(el => el.Lot.DateFinDecompteLot) ?? maintenant;
-
-                foreach (var encanLot in lotsOrdonnes.Where(el => !el.Lot.DateDebutDecompteLot.HasValue))
-                {
-                    var index = lotsOrdonnes.IndexOf(encanLot);
-                    encanLot.Lot.DateDebutDecompteLot = derniereDateFin;
-                    encanLot.Lot.DateFinDecompteLot = derniereDateFin.AddSeconds(dernierEncan.PasLot * (index + 1));
-                }
-
-                await _context.SaveChangesAsync();
-                
                 return ("soireeCloture", dernierEncan);
             }
 
-            var encanCourant = await _context.Encans
-                .Include(e => e.EncanLots)
-                    .ThenInclude(el => el.Lot)
-                        .ThenInclude(l => l.Photos)
-                .Where(e => e.DateDebut <= maintenant && e.DateFin >= maintenant)
-                .FirstOrDefaultAsync();
+			var encanCourant = await _context.Encans
+				.Include(e => e.EncanLots)
+					.ThenInclude(el => el.Lot)
+						.ThenInclude(l => l.Photos)
+				.Where(e => e.DateDebut <= maintenant && e.DateFin >= maintenant)
+				.FirstOrDefaultAsync();
 
-            if (encanCourant != null)
-            {
-                return ("courant", encanCourant);
-            }
+			if (encanCourant != null)
+			{
+				return ("courant", encanCourant);
+			}
 
-            return ("aucun", null);
+			return ("aucun", null);
+		}
+
+		public async Task<bool> EstEnSoireeCloture(int numeroEncan)
+		{
+			var encan = await _context.Encans
+				.Include(e => e.EncanLots)
+					.ThenInclude(el => el.Lot)
+				.FirstOrDefaultAsync(e => e.NumeroEncan == numeroEncan);
+
+            return encan?.EstEnSoireeCloture() ?? false;
         }
 
-        public async Task<bool> EstEnSoireeCloture(int numeroEncan)
-        {
-            var encan = await _context.Encans
-                .Include(e => e.EncanLots)
-                    .ThenInclude(el => el.Lot)
-                .FirstOrDefaultAsync(e => e.NumeroEncan == numeroEncan);
-
-            if (encan == null)
-                return false;
-
-            return encan.EstEnSoireeCloture();
-        }
-
-        public async Task VerifierFinSoireeCloture(int numeroEncan)
-        {
-            var encan = await _context.Encans
-                .Include(e => e.EncanLots)
-                    .ThenInclude(el => el.Lot)
-                .FirstOrDefaultAsync(e => e.NumeroEncan == numeroEncan);
-
-            if (encan != null)
-            {
-                var maintenant = DateTime.Now;
-                
-                // Vérifier que tous les lots sont vendus ET que leur temps est écoulé
-                var tousLotsTermines = encan.EncanLots.All(el => 
-                    el.Lot.EstVendu && 
-                    (!el.Lot.DateFinDecompteLot.HasValue || el.Lot.DateFinDecompteLot <= maintenant)
-                );
-
-                if (tousLotsTermines)
-                {
-                    using var transaction = await _context.Database.BeginTransactionAsync();
-                    try
-                    {
-                        // 1. Appeler le endpoint du FactureController
-                        var factureResponse = await _httpClient.PostAsync(
-                            $"/api/factures/CreerFacturesParEncan/{numeroEncan}", 
-                            null
-                        );
-                        factureResponse.EnsureSuccessStatusCode();
-
-                        // 2. Appeler le endpoint du PaiementController
-                        var paiementResponse = await _httpClient.PostAsync(
-                            $"/api/paiement/ChargerClients/{numeroEncan}", 
-                            null
-                        );
-                        paiementResponse.EnsureSuccessStatusCode();
-
-                        await transaction.CommitAsync();
-                        
-                        // Notifier les clients via SignalR
-                        await _hubContext.Clients.All.ReceiveNewBid(new
-                        {
-                            type = "soireeTerminee",
-                            numeroEncan = numeroEncan
-                        });
-                    }
-                    catch (Exception ex)
-                    {
-                        await transaction.RollbackAsync();
-                        _logger.LogError(ex, "Erreur lors de la finalisation de la soirée de clôture");
-                        throw;
-                    }
-                }
-            }
-        }
+        
     }
 }
+    

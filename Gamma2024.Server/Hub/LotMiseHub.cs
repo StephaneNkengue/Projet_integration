@@ -15,10 +15,12 @@ namespace Gamma2024.Server.Hub
     public class LotMiseHub : Hub<ILotMiseHub>
     {
         private readonly ApplicationDbContext _context;
+        private readonly LotService _lotService;
 
-        public LotMiseHub(ApplicationDbContext context)
-        {
+        public LotMiseHub(ApplicationDbContext context, LotService lotService)
+        {   
             _context = context;
+            _lotService = lotService;
         }
 
         public async Task PlaceBid(int lotId, decimal amount, string userId)
@@ -47,6 +49,18 @@ namespace Gamma2024.Server.Hub
                 currentBidderId = userId,
                 previousBidders = previousBidders
             });
+        }
+
+        public async Task LotVendu(int lotId)
+        {
+            try
+            {
+                await _lotService.MarquerLotVendu(lotId);
+            }
+            catch (Exception ex)
+            {
+                throw new HubException($"Erreur lors du marquage du lot comme vendu: {ex.Message}");
+            }
         }
     }
 }
