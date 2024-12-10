@@ -225,14 +225,31 @@
                         </div>
                         <div class="card-body">
                             <div class="row">
-                                <div class="col-6">
+                                <div class="col-2">
+                                    <div class="col">
+                                        <label class="text-nowrap recherchelabel fw-bold"
+                                               for="rechercheLotsNumeroLot">
+                                            Numéro de lot
+                                        </label>
+                                        <div class="row">
+                                            <div class="col-sm">
+                                                <input type="number"
+                                                       maxlength="10"
+                                                       class="form-control rechercheinput align-self-end"
+                                                       v-model="rechercheLotsNumeroLot"
+                                                       id="rechercheLotsNumeroLot" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-10">
                                     <div class="col">
                                         <label class="text-nowrap recherchelabel fw-bold"
                                                for="rechercheLotsValeurEstimee">
                                             Prix estimé
                                         </label>
                                         <div class="row">
-                                            <div class="col-lg-4 mb-1 mb-lg-0">
+                                            <div class="col-lg-3 mb-1 mb-lg-0">
                                                 <select class="form-select py-0 selectPourListe"
                                                         v-model="selectValeurEstimee"
                                                         id="selectValeurEstimee"
@@ -267,7 +284,9 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-6">
+                            </div>
+                            <div class="row mt-2">
+                                <div class="col-md-4">
                                     <label class="text-nowrap recherchelabel fw-bold"
                                            for="rechercheLotsArtiste">
                                         Artiste
@@ -288,9 +307,7 @@
                                         </option>
                                     </select>
                                 </div>
-                            </div>
-                            <div class="row mt-2">
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <label class="text-nowrap recherchelabel fw-bold"
                                            for="rechercheLotsCategorie">
                                         Catégorie
@@ -311,7 +328,7 @@
                                         </option>
                                     </select>
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <label class="text-nowrap recherchelabel fw-bold"
                                            for="rechercheLotsMedium">
                                         Medium
@@ -341,7 +358,7 @@
                                             Hauteur
                                         </label>
                                         <div class="row">
-                                            <div class="col-lg-4 mb-1 mb-lg-0">
+                                            <div class="col-lg-5 mb-1 mb-lg-0">
                                                 <select class="form-select py-0 selectPourListe"
                                                         v-model="selectHauteur"
                                                         id="selectHauteur"
@@ -386,7 +403,7 @@
                                             Largeur
                                         </label>
                                         <div class="row">
-                                            <div class="col-lg-4 mb-1 mb-lg-0">
+                                            <div class="col-lg-5 mb-1 mb-lg-0">
                                                 <select class="form-select py-0 selectPourListe"
                                                         v-model="selectLargeur"
                                                         id="selectLargeur"
@@ -608,6 +625,7 @@
     const ilYAUnEncanPresent = ref(false);
     const titreBarreDeRechercheDeLots = ref("");
     var rechercheNumeroEncan = "";
+    const rechercheLotsNumeroLot = ref();
     const selectValeurEstimee = ref(0);
     const rechercheLotsValeurEstimee = ref();
     const rechercheLotsValeurEstimee2 = ref();
@@ -711,6 +729,9 @@
         }
 
         stringquery["numeroEncan"] = rechercheNumeroEncan;
+        if (rechercheLotsNumeroLot.value) {
+            stringquery["stringNumeroLot"] = rechercheLotsNumeroLot.value;
+        }
         if (rechercheLotsValeurEstimee.value) {
             stringquery["selectValeurEstimee"] = selectValeurEstimee.value;
             stringquery["stringValeurEstimee"] = rechercheLotsValeurEstimee.value;
@@ -758,6 +779,7 @@
             from.name == "EncanPresent"
         ) {
             var elementsAEffacer = [
+                rechercheLotsNumeroLot,
                 rechercheLotsValeurEstimee,
                 rechercheLotsValeurEstimee2,
                 rechercheLotsHauteur,
@@ -905,6 +927,9 @@
                     titreBarreDeRechercheDeLots.value =
                         "Recherche avancée de lots dans l'Encan " + rechercheNumeroEncan;
                 }
+            }
+            if (stringquery.stringNumeroLot) {
+                rechercheLotsNumeroLot.value = stringquery.stringNumeroLot;
             }
             if (stringquery.stringValeurEstimee) {
                 selectValeurEstimee.value = stringquery.selectValeurEstimee;
