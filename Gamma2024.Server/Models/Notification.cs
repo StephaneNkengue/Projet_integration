@@ -4,7 +4,7 @@ namespace Gamma2024.Server.Models
     {
         public int Id { get; set; }
         public string Message { get; set; } = default!;
-        public bool estLu { get; set; }
+        public bool EstLu { get; set; }
         public DateTime CreeA { get; set; }
 
         public string ApplicationUserId { get; set; } = default!;

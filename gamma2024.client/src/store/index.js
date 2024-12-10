@@ -1,5 +1,6 @@
 import { createStore } from "vuex";
 import { initApi } from "@/services/api";
+import { reactive } from "vue";
 import {
   startSignalRConnection,
   stopSignalRConnection,
@@ -20,26 +21,33 @@ const store = createStore({
     lots: {},
     userBids: [],
     userOutbidLots: [],
-    notifications: [],
+    notifications: reactive([]),
     userBidHistory: {}, // Format: { lotId: { userId: montant } }
     encanCourant: null,
     lotsEncanCourant: {}, // Pour l'encan actif
     soireeCloture: null,
-    unreadCount: 0,
+    nombreNotifNonLue: reactive(0),
   },
   mutations: {
-    SET_NOTIFICATIONS(state, notifications) {
-      state.notifications = notifications;
-      state.unreadCount = notifications.filter((n) => !n.estLu).length;
-    },
-    ADD_NOTIFICATION(state, notification) {
-      state.notifications.push(notification);
-      state.unreadCount++;
+    SET_NOTIFICATIONS(state, myNotifications) {
+      if (Array.isArray(myNotifications)) {
+        state.notifications = myNotifications;
+      } else if (
+        typeof myNotifications === "object" &&
+        myNotifications !== null
+      ) {
+        state.notifications.push(myNotifications);
+      }
+
+      state.nombreNotifNonLue = state.notifications
+        ? state.notifications.length
+        : 0;
+      console.log(state.nombreNotifNonLue);
     },
 
     MARK_AS_READ(state) {
       state.notifications = [];
-      state.unreadCount = 0;
+      state.nombreNotifNonLue = 0;
     },
 
     setLoggedIn(state, value) {
@@ -327,12 +335,12 @@ const store = createStore({
         }
         const reponse = await state.api.post("/home/login", userData);
         if (reponse.data && reponse.data.message === "Connexion réussie") {
-            commit("setLoggedIn", true);
+          commit("setLoggedIn", true);
 
           // Sauvegarder le token
           const token = reponse.data.token;
           localStorage.setItem("token", token);
-          
+
           // Sauvegarder l'utilisateur
           const user = {
             id: reponse.data.userId,
@@ -382,7 +390,7 @@ const store = createStore({
           "Erreur lors de la récupération des informations du client:",
           error
         );
-        throw error;
+        throw error.response?.data || error.message;
       }
     },
 
@@ -404,7 +412,7 @@ const store = createStore({
           "Erreur lors de la mise à jour des informations du client:",
           error.reponse || error
         );
-        throw error;
+        throw error.response?.data || error.message;
       }
     },
 
@@ -438,7 +446,7 @@ const store = createStore({
           "Erreur détaillée lors de la mise à jour de l'avatar:",
           error.reponse || error
         );
-        throw error;
+        throw error.response?.data || error.message;
       }
     },
 
@@ -452,7 +460,7 @@ const store = createStore({
         return reponse.data.disponible;
       } catch (error) {
         console.error("Erreur lors de la vérification du pseudonyme:", error);
-        throw error;
+        throw error.response?.data || error.message;
       }
     },
 
@@ -464,7 +472,7 @@ const store = createStore({
         return reponse.data.disponible;
       } catch (error) {
         console.error("Erreur lors de la vérification de l'email:", error);
-        throw error;
+        throw error.response?.data || error.message;
       }
     },
 
@@ -477,7 +485,7 @@ const store = createStore({
           "Erreur lors de la récupération de tous les vendeurs:",
           error
         );
-        throw error;
+        throw error.response?.data || error.message;
       }
     },
     async creerVendeur({ commit, state }, vendeurData) {
@@ -489,17 +497,12 @@ const store = createStore({
           return { success: false, error: reponse.data.message };
         }
       } catch (error) {
-        console.error(
-          "Erreur détaillée lors de la création du vendeur:",
-          error.reponse || error
-        );
+        console.error("Erreur détaillée lors de la création du vendeur:", error);
         return {
           success: false,
-          error:
-            error.reponse?.data?.message ||
-            error.message ||
-            "Erreur lors de la création du vendeur",
-          details: error.reponse?.data, // Ajoutez cette ligne pour obtenir plus de détails
+          error: error.response?.data?.message || 
+                error.message || 
+                "Erreur lors de la création du vendeur"
         };
       }
     },
@@ -518,9 +521,8 @@ const store = createStore({
         console.error("Erreur lors de la modification du vendeur:", error);
         return {
           success: false,
-          error:
-            error.reponse?.data?.message ||
-            "Erreur lors de la modification du vendeur",
+          error: error.response?.data?.message || 
+                "Erreur lors de la modification du vendeur"
         };
       }
     },
@@ -530,7 +532,7 @@ const store = createStore({
         return reponse.data;
       } catch (error) {
         console.error("Erreur lors de la récupération du vendeur:", error);
-        throw error;
+        throw error.response?.data || error.message;
       }
     },
     async creerLot({ state }, formData) {
@@ -543,7 +545,7 @@ const store = createStore({
         return reponse.data;
       } catch (error) {
         console.error("Erreur lors de la création du lot:", error);
-        throw error;
+        throw error.response?.data || error.message;
       }
     },
 
@@ -557,7 +559,7 @@ const store = createStore({
         return reponse.data;
       } catch (error) {
         console.error("Erreur lors de la modification du lot:", error);
-        throw error;
+        throw error.response?.data || error.message;
       }
     },
 
@@ -570,7 +572,7 @@ const store = createStore({
           "Erreur lors de la récupération de tous les lots:",
           error
         );
-        throw error;
+        throw error.response?.data || error.message;
       }
     },
 
@@ -580,7 +582,7 @@ const store = createStore({
         return reponse.data;
       } catch (error) {
         console.error("Erreur lors de la récupération du lot:", error);
-        throw error;
+        throw error.response?.data || error.message;
       }
     },
 
@@ -590,11 +592,11 @@ const store = createStore({
         return reponse.data;
       } catch (error) {
         console.error("Erreur lors de la suppression du lot:", error);
-        throw error;
+        throw error.response?.data || error.message;
       }
     },
     async obtenirCategories({ state }) {
-      const reponse = await state.api.get("/lots/categories");
+      const reponse = await state.api.xget("/lots/categories");
       return reponse.data;
     },
     async obtenirVendeurs({ state }) {
@@ -620,7 +622,7 @@ const store = createStore({
           "Erreur détaillée:",
           error.reponse?.data || error.message
         );
-        throw error;
+        throw error.response?.data || error.message;
       }
     },
 
@@ -632,7 +634,7 @@ const store = createStore({
         return reponse.data;
       } catch (error) {
         console.error("Erreur lors de la récupération du membre:", error);
-        throw error;
+        throw error.response?.data || error.message;
       }
     },
 
@@ -644,7 +646,7 @@ const store = createStore({
         return reponse.data;
       } catch (error) {
         console.error("Erreur lors du blocage du membre:", error);
-        throw error;
+        throw error.response?.data || error.message;
       }
     },
 
@@ -656,7 +658,7 @@ const store = createStore({
         return reponse.data;
       } catch (error) {
         console.error("Erreur lors du déblocage du membre:", error);
-        throw error;
+        throw error.response?.data || error.message;
       }
     },
     async checkAuthStatus({ commit, state, dispatch }) {
@@ -674,7 +676,7 @@ const store = createStore({
 
         // Vérifier l'authentification
         const response = await state.api.get("/home/check-auth");
-        
+
         if (response.data.isAuthenticated) {
           commit("setToken", token);
           commit("setUser", userData);
@@ -691,13 +693,13 @@ const store = createStore({
         localStorage.removeItem("token");
         localStorage.removeItem("userData");
         localStorage.removeItem("userRoles");
-        
+
         // Réinitialiser le store
         commit("setToken", null);
         commit("setUser", null);
         commit("setRoles", []);
         commit("setLoggedIn", false);
-        
+
         return false;
       }
     },
@@ -723,7 +725,7 @@ const store = createStore({
         localStorage.removeItem("roles");
         localStorage.removeItem("isLoggedIn");
 
-        // Réinitialiser les données liées aux mises
+        // Réinitialiser les données li��es aux mises
         commit("updateLotMise", {
           idLot: null,
           montant: null,
@@ -815,7 +817,7 @@ const store = createStore({
         return reponse.data;
       } catch (error) {
         console.error("Erreur détaillée:", error.reponse || error);
-        throw error;
+        throw error.response?.data || error.message;
       }
     },
     async supprimerUnEncan({ commit, state }, numeroEncan) {
@@ -829,7 +831,7 @@ const store = createStore({
           "Erreur détaillée lors de la suppression de l'encan",
           error.reponse || error
         );
-        throw error;
+        throw error.response?.data || error.message;
       }
     },
     async obtenirUnEncanParId({ commit, state }, idEncan) {
@@ -843,7 +845,7 @@ const store = createStore({
           "Erreur détaillée lors de la suppression de l'encan",
           error.reponse || error
         );
-        throw error;
+        throw error.response?.data || error.message;
       }
     },
 
@@ -916,7 +918,7 @@ const store = createStore({
           data: error.reponse?.data,
           config: error.config,
         });
-        throw error;
+        throw error.response?.data || error.message;
       }
     },
     async chercherTousLotsParEncan({ state }, idEncan) {
@@ -933,7 +935,7 @@ const store = createStore({
           data: error.reponse?.data,
           config: error.config,
         });
-        throw error;
+        throw error.response?.data || error.message;
       }
     },
     async chercherDetailsLotParId({ commit, state }, idLot) {
@@ -1195,7 +1197,7 @@ const store = createStore({
         );
         return reponse;
       } catch (error) {
-        return "Erreur, veuillez r��essayer";
+        return "Erreur, veuillez réessayer";
       }
     },
 
@@ -1355,7 +1357,9 @@ const store = createStore({
       try {
         // Vérifier si l'utilisateur est connecté et a un token valide
         if (!state.token || !userId) {
-          console.log("Pas de token ou userId, abandon de la requête notifications");
+          console.log(
+            "Pas de token ou userId, abandon de la requête notifications"
+          );
           return;
         }
 
@@ -1363,19 +1367,19 @@ const store = createStore({
           `Notification/obtenirNotificationNonLu/${userId}`,
           {
             headers: {
-              Authorization: `Bearer ${state.token}`
-            }
+              Authorization: `Bearer ${state.token}`,
+            },
           }
         );
 
-        if (reponse && reponse.data) {
+        if (reponse.data) {
           commit("SET_NOTIFICATIONS", reponse.data);
         }
       } catch (error) {
         console.error("Erreur notifications:", {
           message: error.message,
           status: error.response?.status,
-          data: error.response?.data
+          data: error.response?.data,
         });
         // Ne pas bloquer le processus de connexion si les notifications échouent
         commit("SET_NOTIFICATIONS", []);
@@ -1402,7 +1406,12 @@ const store = createStore({
       const connection = new signalR.HubConnectionBuilder()
         .withUrl(`${cleanBaseUrl}/api/hub/NotificationHub`, {
           accessTokenFactory: () => state.token,
-        }) // Ajuste l'URL si nécessaire
+          skipNegotiation: true,
+          transport: signalR.HttpTransportType.WebSockets,
+          // withCredentials: true,
+          headers: { "X-Requested-With": "XMLHttpRequest" },
+        })
+        .configureLogging(signalR.LogLevel.Debug)
         .withAutomaticReconnect()
         .build();
 
@@ -1423,70 +1432,73 @@ const store = createStore({
       }
     },
 
-        async sendNotification({ state }, { userId, message }) {
-            if (state.notificationConnection) {
-                try {
-                    await state.notificationConnection.invoke(
-                        "SendNotification",
-                        userId,
-                        message
-                    );
-                } catch (err) {
-                    console.error("Error sending notification:", err);
-                }
-            }
-        },
+    async sendNotification({ state }, { userId, message }) {
+      if (state.notificationConnection) {
+        try {
+          await state.notificationConnection.invoke(
+            "SendNotification",
+            userId,
+            message
+          );
+        } catch (err) {
+          console.error("Error sending notification:", err);
+        }
+      }
+    },
 
     async getUserBidsGroupedByEncan({ state }) {
       try {
-        const response = await state.api.get('/lots/userBidsGroupedByEncan');
-        console.log('Réponse de la requête:', response.data);
+        const response = await state.api.get("/lots/userBidsGroupedByEncan");
+        console.log("Réponse de la requête:", response.data);
         return response.data;
       } catch (error) {
-        console.error('Erreur lors de la récupération des mises par encan:', error);
+        console.error(
+          "Erreur lors de la récupération des mises par encan:",
+          error
+        );
         throw error;
       }
     },
   },
   getters: {
-        isAdmin: (state) => {
-            const result =
-                Array.isArray(state.roles) && state.roles.includes("Administrateur");
-            return result;
-        },
-        isClient: (state) =>
-            Array.isArray(state.roles) && state.roles.includes("Client"),
-        currentUser: (state) => state.user,
-        username: (state) =>
-            state.user ? state.user.pseudonym || state.user.username : "USERNAME",
-        avatarUrl: (state) => {
-            if (state.user && state.user.photo) {
-                if (state.user.photo.startsWith("http")) {
-                    return state.user.photo;
-                } else {
-                    const baseUrl = state.api.defaults.avatarURL;
-                    const fullUrl = baseUrl + state.user.photo;
-                    return fullUrl;
-                }
-            }
-            return "/gamma2024.client/public/icons/Avatar.png";
-        },
-        hasUserBidOnLot: (state) => (lotId) => {
-            return state.userBids.includes(lotId);
-        },
-        getLot: (state) => (id) => {
-            return state.lots[id] || null;
-        },
-        getAllLots: (state) => {
-            return Object.values(state.lots);
-        },
-        getUniqueOffersCount: (state) => (lotId) => {
-            const lot = state.lots[lotId];
-            return lot?.nombreMises || 0;
-        },
-        allNotifications: (state) => state.notifications,
-        unreadNotifications: (state) => state.unreadCount,
+    isAdmin: (state) => {
+      const result =
+        Array.isArray(state.roles) && state.roles.includes("Administrateur");
+      return result;
     },
+    isClient: (state) =>
+      Array.isArray(state.roles) && state.roles.includes("Client"),
+    currentUser: (state) => state.user,
+    username: (state) =>
+      state.user ? state.user.pseudonym || state.user.username : "USERNAME",
+    avatarUrl: (state) => {
+      if (state.user && state.user.photo) {
+        if (state.user.photo.startsWith("http")) {
+          return state.user.photo;
+        } else {
+          const baseUrl = state.api.defaults.avatarURL;
+          const fullUrl = baseUrl + state.user.photo;
+          return fullUrl;
+        }
+      }
+      return "/gamma2024.client/public/icons/Avatar.png";
+    },
+    hasUserBidOnLot: (state) => (lotId) => {
+      return state.userBids.includes(lotId);
+    },
+    getLot: (state) => (id) => {
+      return state.lots[id] || null;
+    },
+    getAllLots: (state) => {
+      return Object.values(state.lots);
+    },
+    getUniqueOffersCount: (state) => (lotId) => {
+      const lot = state.lots[lotId];
+      return lot?.nombreMises || 0;
+    },
+    // allNotifications: (state) => state.notifications,
+    // unreadNotifications: (state) => state.nombreNotifNonLue,
+  },
 });
 
 // Initialiser le store immédiatement

@@ -35,10 +35,10 @@
                 {{ erreurPhotos }}
             </div>
             <!-- Le reste des champs du formulaire -->
-            <div class="mb-3">
+            <!--<div class="mb-3">
                 <label for="code" class="form-label">Numéro</label>
                 <input v-model="lot.numero" type="text" class="form-control" id="code" required>
-            </div>
+            </div>-->
             <div class="mb-3">
                 <label for="description" class="form-label">Description</label>
                 <textarea v-model="lot.description" class="form-control" id="description" required></textarea>
@@ -189,7 +189,7 @@
     const creerLot = async () => {
         try {
             const formData = new FormData();
-            formData.append('Numero', lot.value.numero);
+            formData.append('Numero', "0");
             formData.append('Description', lot.value.description);
             formData.append('ValeurEstimeMin', lot.value.valeurEstimeMin);
             formData.append('ValeurEstimeMax', lot.value.valeurEstimeMax);
@@ -215,15 +215,14 @@
                 setTimeout(() => {
                     router.push({ name: 'TableauDeBordInventaire' });
                 }, 2000);
-            } else {
-                erreur.value = "Erreur lors de la création du lot: " + reponse.data;
-                message.value = '';
             }
-        } catch (erreur) {
-            if (erreur.reponse && erreur.reponse.data) {
-                erreur.value = "Erreur lors de la création du lot: " + erreur.reponse.data;
+        } catch (err) {
+            if (err.response?.data) {
+                erreur.value = err.response.data;
+            } else if (typeof err === 'string') {
+                erreur.value = err;
             } else {
-                erreur.value = "Erreur lors de la création du lot: " + erreur.message;
+                erreur.value = "Une erreur est survenue lors de la création du lot";
             }
             message.value = '';
         }

@@ -21,26 +21,18 @@ namespace Gamma2024.Server.Controllers
         [HttpGet("obtenirNotificationNonLu/{userId}")]
         public async Task<IActionResult> GetNotifications(string userId)
         {
-            try
-                {
-                    if (string.IsNullOrEmpty(userId))
-                    {
-                        return BadRequest("UserId invalide");
-                    }
+            if (string.IsNullOrEmpty(userId))
+            {
+                return BadRequest("UserId invalide");
+            }
 
-                    var notifications = await _notificationService.GetUnreadNotification(userId);
-                    if (notifications == null)
-                    {
-                        return BadRequest("Aucune notification non lu trouvée");
-                    }
+            var notifications = await _notificationService.GetUnreadNotification(userId);
+            if (notifications == null)
+            {
+                return Ok();
+            }
 
             return Ok(notifications);
-                }
-                catch (Exception ex)
-                {
-                    return StatusCode(500, new { message = "Erreur lors de la récupération des notifications" });
-                }
-            
         }
 
 

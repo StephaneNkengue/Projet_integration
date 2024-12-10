@@ -5,6 +5,7 @@ using Gamma2024.Server.Validations;
 using Gamma2024.Server.ViewModels;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
+using System.Text.RegularExpressions;
 
 namespace Gamma2024.Server.Services
 {
@@ -16,8 +17,11 @@ namespace Gamma2024.Server.Services
         private readonly ILogger<LotService> _logger;
         private readonly EncanService _encanService;
         private readonly IHttpClientFactory _httpClientFactory;
+        private readonly NotificationService _notificationService;
 
-        public LotService(ApplicationDbContext context, IWebHostEnvironment environment, IHubContext<LotMiseHub, ILotMiseHub> hubContext, ILogger<LotService> logger, EncanService encanService, IHttpClientFactory httpClientFactory)
+        public LotService(ApplicationDbContext context, IWebHostEnvironment environment, IHubContext<LotMiseHub,
+            ILotMiseHub> hubContext, ILogger<LotService> logger, EncanService encanService,
+            IHttpClientFactory httpClientFactory, NotificationService notificationService)
         {
             _context = context;
             _environment = environment;
@@ -25,6 +29,7 @@ namespace Gamma2024.Server.Services
             _logger = logger;
             _encanService = encanService;
             _httpClientFactory = httpClientFactory;
+            _notificationService = notificationService;
         }
 
         public async Task<IEnumerable<LotAffichageVM>> ObtenirTousLots()
@@ -168,6 +173,61 @@ namespace Gamma2024.Server.Services
                     // Premier lot : date début + 30 secondes
                     dateFinDecompte = dateDebutDecompte.AddSeconds(30);
                 }
+
+                var lotsVendeurEncan = _context.EncanLots
+                                            .Include(el => el.Lot)
+                                            .Where(el => el.IdEncan == lotVM.IdEncan)
+                                            .Select(el => el.Lot)
+                                            .Where(el => el.IdVendeur == lotVM.IdVendeur)
+                                            .ToList();
+
+                char[] az = Enumerable.Range('a', 'z' - 'a' + 1).Select(i => (Char)i).ToArray();
+
+                if (lotsVendeurEncan.Count() > 0)
+                {
+                    var dernierLotVendeur = lotsVendeurEncan.OrderBy(el => el.Numero).Last().Numero;
+                    var num = 0;
+
+                    try
+                    {
+                        num = int.Parse(dernierLotVendeur);
+                        lotVM.Numero = num + "a";
+                    }
+                    catch
+                    {
+                        var dernLettre = dernierLotVendeur.Last();
+                        string nb = Regex.Replace(dernierLotVendeur, "[A-Za-z ]", "");
+                        var indexArray = Array.IndexOf(az, dernLettre);
+
+                        lotVM.Numero = nb + az[indexArray + 1];
+                    }
+
+                }
+                else
+                {
+                    var ordre = _context.EncanLots
+                                            .Include(el => el.Lot)
+                                            .Where(el => el.IdEncan == lotVM.IdEncan)
+                                            .Select(el => el.Lot)
+                                            .AsEnumerable();
+
+                    if (ordre.Count() > 0)
+                    {
+                        var dernierLotEncan = ordre.OrderBy(x =>
+                                 {
+                                     var nb = Regex.Replace(x.Numero, "[A-Za-z ]", "");
+
+                                     return int.Parse(nb);
+                                 }).Last().Numero;
+                        string nbDern = Regex.Replace(dernierLotEncan, "[A-Za-z ]", "");
+                        lotVM.Numero = (int.Parse(nbDern) + 1).ToString();
+                    }
+                    else
+                    {
+                        lotVM.Numero = "1";
+                    }
+                }
+
 
                 var lot = new Lot
                 {
@@ -648,6 +708,20 @@ namespace Gamma2024.Server.Services
                     .Where(m => m.LotId == lot.Id)
                     .OrderByDescending(m => m.DateMise)
                     .FirstOrDefaultAsync();
+
+                //envoyer une notification 
+                var avantDerniereMise = await _context.MiseAutomatiques
+                    .Where(m => m.LotId == lot.Id)
+                    .OrderByDescending(m => m.DateMise)
+                    .Take(2)
+                    .ToListAsync();
+
+                if (avantDerniereMise.LastOrDefault() != null && avantDerniereMise.Count == 2)
+                {
+                    var lelot = await _context.Lots.FindAsync(mise.LotId);
+                    var messageMise = $"Nouvelle mise sur le lot {lelot.Numero}";
+                    await _notificationService.SendBidNotification(avantDerniereMise.LastOrDefault().UserId, messageMise);
+                }
 
                 await _hubContext.Clients.All.ReceiveNewBid(new
                 {
