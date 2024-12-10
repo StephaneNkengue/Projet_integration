@@ -30,7 +30,15 @@ const store = createStore({
   },
   mutations: {
     SET_NOTIFICATIONS(state, myNotifications) {
-      state.notifications = myNotifications;
+      if (Array.isArray(myNotifications)) {
+        state.notifications = myNotifications;
+      } else if (
+        typeof myNotifications === "object" &&
+        myNotifications !== null
+      ) {
+        state.notifications.push(myNotifications);
+      }
+
       state.nombreNotifNonLue = state.notifications
         ? state.notifications.length
         : 0;
