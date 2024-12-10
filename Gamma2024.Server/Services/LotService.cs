@@ -685,7 +685,7 @@ namespace Gamma2024.Server.Services
                 {
                     var lelot = await _context.Lots.FindAsync(mise.LotId);
                     var messageMise = $"Nouvelle mise sur le lot {lelot.Numero}";
-                    await _notificationService.SendBidNotification(mise.LotId, avantDerniereMise.LastOrDefault().UserId, messageMise);
+                    await _notificationService.SendBidNotification(avantDerniereMise.LastOrDefault().UserId, messageMise);
                 }
 
                 await _hubContext.Clients.All.ReceiveNewBid(new

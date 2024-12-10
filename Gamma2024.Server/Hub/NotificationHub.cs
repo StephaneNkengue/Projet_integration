@@ -12,15 +12,15 @@ namespace Gamma2024.Server.Hub
     [Authorize]
     public class NotificationHub : Microsoft.AspNetCore.SignalR.Hub//<INotificationHub>
     {
-        public async Task SendNotification(string userId, string notifMessage)
-        {
-            await Clients.All.SendAsync("ReceiveNotification", new
-            {
-                ApplicationUserId = userId,
-                message = notifMessage,
-                CreatedAt = DateTime.Now
-            });
-        }
+        //public async Task SendNotification(string userId, string notifMessage)
+        //{
+        //    await Clients.All.SendAsync("ReceiveNotification", new
+        //    {
+        //        ApplicationUserId = userId,
+        //        message = notifMessage,
+        //        CreatedAt = DateTime.Now
+        //    });
+        //}
 
 
         private static readonly Dictionary<string, HashSet<string>> _userConnections = new();
@@ -39,19 +39,24 @@ namespace Gamma2024.Server.Hub
                 _userConnections[userId].Add(connectionId);
             }
 
-            await Clients.All.SendAsync("ReceiveNotification", $"Say hello to [{userId}] with connectionId [{connectionId}]");
-            var user = Context.User;
+            //await Clients.All.SendAsync("ReceiveNotification", $"Say hello to [{userId}] with connectionId [{connectionId}]");
+            // var user = Context.User;
             // Log authentication details
-            Console.WriteLine($"User connected: {user?.Identity?.Name}, IsAuthenticated: {user?.Identity?.IsAuthenticated}");
+            // Console.WriteLine($"User connected: {user?.Identity?.Name}, IsAuthenticated: {user?.Identity?.IsAuthenticated}");
 
             await base.OnConnectedAsync();
         }
 
         public async Task SendToUser(Notification notification)
         {
-            var senderUserId = Context.UserIdentifier!;
-            var targetUserId = _userConnections.Keys.First(x => x != senderUserId);
-            await Clients.User(targetUserId).SendAsync("ReceiveNotification", notification);
+            try
+            {
+                await Clients.User(notification.ApplicationUserId).SendAsync("ReceiveNotification", notification);
+            }
+            catch
+            {
+                return;
+            }
         }
 
         public override async Task OnDisconnectedAsync(Exception? ex)
@@ -64,7 +69,6 @@ namespace Gamma2024.Server.Hub
                 if (_userConnections.ContainsKey(userId))
                 {
                     _userConnections[userId].Remove(connectionId);
-                    // Remove the user entirely if they have no more connections
                     if (_userConnections[userId].Count == 0)
                     {
                         _userConnections.Remove(userId);
@@ -72,11 +76,9 @@ namespace Gamma2024.Server.Hub
                 }
             }
 
-            await Clients.All.SendAsync("justDisonnected", $"Say bye to [{userId}] with connectionId [{connectionId}]");
             await base.OnDisconnectedAsync(ex);
         }
 
-        // Helper method to get all connections for a user
         public HashSet<string> GetUserConnections(string userId)
         {
             lock (_userConnections)

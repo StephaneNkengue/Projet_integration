@@ -17,12 +17,12 @@ namespace Gamma2024.Server.Services
             _context = context;
         }
 
-        public async Task SendBidNotification(int lotId, string userId, string message)
+        public async Task SendBidNotification(string userReceiptId, string message)
         {
             // Enregistrer la notification dans la base de données
             var notification = new Notification
             {
-                ApplicationUserId = userId,
+                ApplicationUserId = userReceiptId,
                 Message = message,
                 CreeA = DateTime.Now,
                 EstLu = false

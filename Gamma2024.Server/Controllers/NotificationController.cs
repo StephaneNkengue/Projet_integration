@@ -24,7 +24,7 @@ namespace Gamma2024.Server.Controllers
             var notifications = await _notificationService.GetUnreadNotification(userId);
             if (notifications == null)
             {
-                return BadRequest("Aucune notification non lu trouvée");
+                return Ok();
             }
 
             return Ok(notifications);

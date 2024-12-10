@@ -7,7 +7,9 @@ using Gamma2024.Server.Services.Email;
 using jsreport.AspNetCore;
 using jsreport.Binary;
 using jsreport.Local;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -91,7 +93,65 @@ builder.Services.AddCors(options =>
     }
 });
 
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+//builder.Services.AddAuthentication(options =>
+//{
+//    // Identity made Cookie authentication the default.
+//    // However, we want JWT Bearer Auth to be the default.
+//    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+//    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+//}).AddJwtBearer(options =>
+//{
+//    // Configure the Authority to the expected value for
+//    // the authentication provider. This ensures the token
+//    // is appropriately validated.
+//    options.Authority = "VotreIssuer"; // TODO: Update URL
+
+//    // We have to hook the OnMessageReceived event in order to
+//    // allow the JWT authentication handler to read the access
+//    // token from the query string when a WebSocket or 
+//    // Server-Sent Events request comes in.
+
+//    // Sending the access token in the query string is required when using WebSockets or ServerSentEvents
+//    // due to a limitation in Browser APIs. We restrict it to only calls to the
+//    // SignalR hub in this code.
+//    // See https://docs.microsoft.com/aspnet/core/signalr/security#access-token-logging
+//    // for more information about security considerations when using
+//    // the query string to transmit the access token.
+//    options.Events = new JwtBearerEvents
+//    {
+//        OnMessageReceived = context =>
+//        {
+//            var accessToken = context.Request.Query["access_token"];
+
+//            // If the request is for our hub...
+//            var path = context.HttpContext.Request.Path;
+//            if (!string.IsNullOrEmpty(accessToken) &&
+//                (path.StartsWithSegments("/api/hub/")))
+//            {
+//                // Read the token out of the query string
+//                context.Token = accessToken;
+//            }
+//            return Task.CompletedTask;
+//        }
+//    };
+
+//    options.TokenValidationParameters = new TokenValidationParameters
+//    {
+//        ValidateIssuerSigningKey = true,
+//        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])),
+//        ValidateIssuer = true,
+//        ValidIssuer = builder.Configuration["Jwt:Issuer"],
+//        ValidateAudience = true,
+//        ValidAudience = builder.Configuration["Jwt:Audience"],
+//        ValidateLifetime = true,
+//        ClockSkew = TimeSpan.Zero
+//    };
+//});
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
     .AddJwtBearer(options =>
     {
         options.TokenValidationParameters = new TokenValidationParameters
@@ -105,7 +165,42 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateLifetime = true,
             ClockSkew = TimeSpan.Zero
         };
+
+        options.Events = new JwtBearerEvents
+        {
+            OnMessageReceived = context =>
+            {
+                var accessToken = context.Request.Query["access_token"];
+
+                // If the request is for our hub...
+                var path = context.HttpContext.Request.Path;
+                if (!string.IsNullOrEmpty(accessToken) &&
+                (path.StartsWithSegments("/api/hub")))
+                {
+                    // Read the token out of the query string
+                    context.Token = accessToken;
+                }
+                return Task.CompletedTask;
+            }
+        };
+    })
+    .AddCookie(options =>
+    {
+        //options.Events.OnRedirectToAccessDenied =
+        options.Events.OnRedirectToAccessDenied = c =>
+        {
+            c.Response.StatusCode = StatusCodes.Status401Unauthorized;
+            return Task.FromResult<object>(null);
+        };
     });
+
+var multiSchemePolicy = new AuthorizationPolicyBuilder(
+    CookieAuthenticationDefaults.AuthenticationScheme,
+    JwtBearerDefaults.AuthenticationScheme).RequireAuthenticatedUser()
+  .Build();
+
+builder.Services.AddAuthorization(o => o.DefaultPolicy = multiSchemePolicy);
+
 
 builder.Services.AddSession(options =>
 {

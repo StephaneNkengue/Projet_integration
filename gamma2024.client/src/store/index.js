@@ -28,7 +28,9 @@ const store = createStore({
   mutations: {
     SET_NOTIFICATIONS(state, notifications) {
       state.notifications = notifications;
-      state.unreadCount = notifications.filter((n) => !n.estLu).length;
+      state.unreadCount = notifications
+        ? notifications.filter((n) => !n.estLu).length
+        : 0;
     },
     ADD_NOTIFICATION(state, notification) {
       state.notifications.push(notification);
@@ -1404,7 +1406,7 @@ const store = createStore({
           accessTokenFactory: () => state.token,
           skipNegotiation: true,
           transport: signalR.HttpTransportType.WebSockets,
-          withCredentials: true,
+          // withCredentials: true,
           headers: { "X-Requested-With": "XMLHttpRequest" },
         })
         .configureLogging(signalR.LogLevel.Debug)
