@@ -521,9 +521,8 @@ const store = createStore({
         console.error("Erreur lors de la modification du vendeur:", error);
         return {
           success: false,
-          error:
-            error.reponse?.data?.message ||
-            "Erreur lors de la modification du vendeur",
+          error: error.response?.data?.message || 
+                "Erreur lors de la modification du vendeur"
         };
       }
     },
@@ -726,7 +725,7 @@ const store = createStore({
         localStorage.removeItem("roles");
         localStorage.removeItem("isLoggedIn");
 
-        // Réinitialiser les données liées aux mises
+        // Réinitialiser les données li��es aux mises
         commit("updateLotMise", {
           idLot: null,
           montant: null,

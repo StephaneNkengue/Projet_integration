@@ -306,14 +306,14 @@
             } else {
                 message.value = {
                     type: "danger",
-                    text: "Erreur lors de la modification du vendeur: " + resultat.error,
+                    text:  resultat.error,
                 };
             }
         } catch (erreur) {
             if (erreur.response?.data?.message) {
                 message.value = {
                     type: "danger",
-                    text: "Erreur lors de la modification du vendeur: " + erreur.response.data.message,
+                    text: erreur.response.data.message,
                 };
             } else {
                 message.value = {
