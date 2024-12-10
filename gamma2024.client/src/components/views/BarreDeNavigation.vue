@@ -277,257 +277,223 @@
           ($route.name == 'EncanPresent' && ilYAUnEncanPresent == true) ||
           $route.name == 'Encan' ||
           $route.name == 'ResultatRechercheLots'
-        "
-      >
-        <nav class="navbar bg-white navbarRechercheAvancee">
-          <div class="container-fluid d-flex justify-content-end">
-            <button
-              class="navbar-toggler loupetoggler"
-              type="button"
-              data-bs-toggle="collapse"
-              data-bs-target="#navbarToggleRechercheAvancee"
-              aria-controls="navbarToggleRechercheAvancee"
-              aria-expanded="false"
-              aria-label="Toggle navigation"
-            >
-              <span class="navbar-toggler-icon iconeloupe"></span>
-            </button>
-          </div>
-        </nav>
-        <div class="bg-white d-flex justify-content-center">
-          <div
-            class="collapse card mt-2 mx-2 mx-md-5 mb-md-5 bg-white col col-lg-9 col-xl-7"
-            id="navbarToggleRechercheAvancee"
-          >
-            <div class="card-header d-flex justify-content-center">
-              <h2>{{ titreBarreDeRechercheDeLots }}</h2>
-            </div>
-            <div class="card-body">
-              <div class="row">
-                <div class="col-6">
-                  <div class="col">
-                    <label
-                      class="text-nowrap recherchelabel fw-bold"
-                      for="rechercheLotsValeurEstimee"
-                    >
-                      Prix estimé
-                    </label>
-                    <div class="row">
-                      <div class="col-lg-4 mb-1 mb-lg-0">
-                        <select
-                          class="form-select py-0 selectPourListe"
-                          v-model="selectValeurEstimee"
-                          id="selectValeurEstimee"
-                          aria-label="Default select example"
-                        >
-                          <option class="py-0" value="0" selected>
-                            Égale à
-                          </option>
-                          <option class="py-0" value="1">Inférieure à</option>
-                          <option class="py-0" value="2">Supérieure à</option>
-                          <option class="py-0" value="3">Entre</option>
-                        </select>
-                      </div>
+        ">
+                <nav class="navbar bg-white navbarRechercheAvancee">
+                    <div class="container-fluid d-flex justify-content-end">
+                        <button class="navbar-toggler loupetoggler"
+                                type="button"
+                                data-bs-toggle="collapse"
+                                data-bs-target="#navbarToggleRechercheAvancee"
+                                aria-controls="navbarToggleRechercheAvancee"
+                                aria-expanded="false"
+                                aria-label="Toggle navigation">
+                            <span class="navbar-toggler-icon iconeloupe"></span>
+                        </button>
+                    </div>
+                </nav>
+                <div class="bg-white d-flex justify-content-center">
+                    <div class="collapse card mt-2 mx-2 mx-md-5 mb-md-5 bg-white col col-lg-9 col-xl-7"
+                         id="navbarToggleRechercheAvancee">
+                        <div class="card-header d-flex justify-content-center">
+                            <h2>{{ titreBarreDeRechercheDeLots }}</h2>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-2">
+                                    <div class="col">
+                                        <label class="text-nowrap recherchelabel fw-bold"
+                                               for="rechercheLotsNumeroLot">
+                                            Numéro de lot
+                                        </label>
+                                        <div class="row">
+                                            <div class="col-sm">
+                                                <input type="number"
+                                                       maxlength="10"
+                                                       class="form-control rechercheinput align-self-end"
+                                                       v-model="rechercheLotsNumeroLot"
+                                                       id="rechercheLotsNumeroLot" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-10">
+                                    <div class="col">
+                                        <label class="text-nowrap recherchelabel fw-bold"
+                                               for="rechercheLotsValeurEstimee">
+                                            Prix estimé
+                                        </label>
+                                        <div class="row">
+                                            <div class="col-lg-3 mb-1 mb-lg-0">
+                                                <select class="form-select py-0 selectPourListe"
+                                                        v-model="selectValeurEstimee"
+                                                        id="selectValeurEstimee"
+                                                        aria-label="Default select example">
+                                                    <option class="py-0" value="0" selected>
+                                                        Égale à
+                                                    </option>
+                                                    <option class="py-0" value="1">Inférieure à</option>
+                                                    <option class="py-0" value="2">Supérieure à</option>
+                                                    <option class="py-0" value="3">Entre</option>
+                                                </select>
+                                            </div>
 
-                      <div class="col-sm">
-                        <input
-                          type="number"
-                          maxlength="10"
-                          class="form-control rechercheinput align-self-end"
-                          v-model="rechercheLotsValeurEstimee"
-                          id="rechercheLotsValeurEstimee"
-                        />
-                      </div>
-                      <div
-                        v-if="selectValeurEstimee == 3"
-                        class="col-sm-auto align-items-center inputAAfficher"
-                      >
-                        <label class="fs-6">et</label>
-                      </div>
-                      <div v-if="selectValeurEstimee == 3" class="col-sm">
-                        <input
-                          type="number"
-                          maxlength="10"
-                          class="form-control rechercheinput align-self-end"
-                          v-model="rechercheLotsValeurEstimee2"
-                          id="rechercheLotsValeurEstimee2"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-6">
-                  <label
-                    class="text-nowrap recherchelabel fw-bold"
-                    for="rechercheLotsArtiste"
-                  >
-                    Artiste
-                  </label>
-                  <select
-                    class="form-select py-0 align-self-center selectPourListeQuiOntBesoinDeInvalide"
-                    v-model="selectArtiste"
-                    id="selectArtiste"
-                    aria-label="Default select example"
-                    required
-                  >
-                    <option class="py-0 pasDeChoix" value="" selected>
-                      Pas de choix
-                    </option>
-                    <option
-                      v-for="artiste in listeDesArtistes"
-                      :key="artiste.nomArtiste"
-                      class="py-0"
-                      :value="artiste.nomArtiste"
-                    >
-                      {{ artiste.nomArtiste }}
-                    </option>
-                  </select>
-                </div>
-              </div>
-              <div class="row mt-2">
-                <div class="col-md-6">
-                  <label
-                    class="text-nowrap recherchelabel fw-bold"
-                    for="rechercheLotsCategorie"
-                  >
-                    Catégorie
-                  </label>
-                  <select
-                    class="form-select py-0 align-self-center selectPourListeQuiOntBesoinDeInvalide"
-                    v-model="selectCategorie"
-                    id="selectCategorie"
-                    aria-label="Default select example"
-                    required
-                  >
-                    <option class="py-0 pasDeChoix" value="" selected>
-                      Pas de choix
-                    </option>
-                    <option
-                      v-for="categorie in listeDesCategories"
-                      :key="categorie.id"
-                      class="py-0"
-                      :value="categorie.id"
-                    >
-                      {{ categorie.nom }}
-                    </option>
-                  </select>
-                </div>
-                <div class="col-md-6">
-                  <label
-                    class="text-nowrap recherchelabel fw-bold"
-                    for="rechercheLotsMedium"
-                  >
-                    Medium
-                  </label>
-                  <select
-                    class="form-select py-0 align-self-center selectPourListeQuiOntBesoinDeInvalide"
-                    v-model="selectMedium"
-                    id="selectMedium"
-                    aria-label="Default select example"
-                    required
-                  >
-                    <option class="py-0 pasDeChoix" value="" selected>
-                      Pas de choix
-                    </option>
-                    <option
-                      v-for="medium in listeDesMediums"
-                      :key="medium.id"
-                      class="py-0"
-                      :value="medium.id"
-                    >
-                      {{ medium.type }}
-                    </option>
-                  </select>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-6">
-                  <div class="col mt-2">
-                    <label
-                      class="text-nowrap recherchelabel fw-bold"
-                      for="rechercheLotsHauteur"
-                    >
-                      Hauteur
-                    </label>
-                    <div class="row">
-                      <div class="col-lg-4 mb-1 mb-lg-0">
-                        <select
-                          class="form-select py-0 selectPourListe"
-                          v-model="selectHauteur"
-                          id="selectHauteur"
-                          aria-label="Default select example"
-                        >
-                          <option class="py-0" value="0" selected>
-                            Égale à
-                          </option>
-                          <option class="py-0" value="1">Inférieure à</option>
-                          <option class="py-0" value="2">Supérieure à</option>
-                          <option
-                            class="py-0"
-                            value="3"
-                            id="selectHauteurEntre"
-                          >
-                            Entre
-                          </option>
-                        </select>
-                      </div>
-                      <div class="col-sm">
-                        <input
-                          type="number"
-                          maxlength="10"
-                          class="form-control rechercheinput align-self-end"
-                          v-model="rechercheLotsHauteur"
-                          id="rechercheLotsHauteur"
-                        />
-                      </div>
-                      <div
-                        v-if="selectHauteur == 3"
-                        class="col-sm-auto align-items-center inputAAfficher"
-                      >
-                        <label class="fs-6">et</label>
-                      </div>
-                      <div v-if="selectHauteur == 3" class="col-sm">
-                        <input
-                          type="number"
-                          maxlength="10"
-                          class="form-control rechercheinput align-self-end"
-                          v-model="rechercheLotsHauteur2"
-                          id="rechercheLotsHauteur2"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-6">
-                  <div class="col mt-2">
-                    <label
-                      class="text-nowrap recherchelabel fw-bold"
-                      for="rechercheLotsLargeur"
-                    >
-                      Largeur
-                    </label>
-                    <div class="row">
-                      <div class="col-lg-4 mb-1 mb-lg-0">
-                        <select
-                          class="form-select py-0 selectPourListe"
-                          v-model="selectLargeur"
-                          id="selectLargeur"
-                          aria-label="Default select example"
-                        >
-                          <option class="py-0" value="0" selected>
-                            Égale à
-                          </option>
-                          <option class="py-0" value="1">Inférieure à</option>
-                          <option class="py-0" value="2">Supérieure à</option>
-                          <option
-                            class="py-0"
-                            value="3"
-                            id="selectLargeurEntre"
-                          >
-                            Entre
-                          </option>
-                        </select>
-                      </div>
+                                            <div class="col-sm">
+                                                <input type="number"
+                                                       maxlength="10"
+                                                       class="form-control rechercheinput align-self-end"
+                                                       v-model="rechercheLotsValeurEstimee"
+                                                       id="rechercheLotsValeurEstimee" />
+                                            </div>
+                                            <div v-if="selectValeurEstimee == 3"
+                                                 class="col-sm-auto align-items-center inputAAfficher">
+                                                <label class="fs-6">et</label>
+                                            </div>
+                                            <div v-if="selectValeurEstimee == 3" class="col-sm">
+                                                <input type="number"
+                                                       maxlength="10"
+                                                       class="form-control rechercheinput align-self-end"
+                                                       v-model="rechercheLotsValeurEstimee2"
+                                                       id="rechercheLotsValeurEstimee2" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mt-2">
+                                <div class="col-md-4">
+                                    <label class="text-nowrap recherchelabel fw-bold"
+                                           for="rechercheLotsArtiste">
+                                        Artiste
+                                    </label>
+                                    <select class="form-select py-0 align-self-center selectPourListeQuiOntBesoinDeInvalide"
+                                            v-model="selectArtiste"
+                                            id="selectArtiste"
+                                            aria-label="Default select example"
+                                            required>
+                                        <option class="py-0 pasDeChoix" value="" selected>
+                                            Pas de choix
+                                        </option>
+                                        <option v-for="artiste in listeDesArtistes"
+                                                :key="artiste.nomArtiste"
+                                                class="py-0"
+                                                :value="artiste.nomArtiste">
+                                            {{ artiste.nomArtiste }}
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="text-nowrap recherchelabel fw-bold"
+                                           for="rechercheLotsCategorie">
+                                        Catégorie
+                                    </label>
+                                    <select class="form-select py-0 align-self-center selectPourListeQuiOntBesoinDeInvalide"
+                                            v-model="selectCategorie"
+                                            id="selectCategorie"
+                                            aria-label="Default select example"
+                                            required>
+                                        <option class="py-0 pasDeChoix" value="" selected>
+                                            Pas de choix
+                                        </option>
+                                        <option v-for="categorie in listeDesCategories"
+                                                :key="categorie.id"
+                                                class="py-0"
+                                                :value="categorie.id">
+                                            {{ categorie.nom }}
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="text-nowrap recherchelabel fw-bold"
+                                           for="rechercheLotsMedium">
+                                        Medium
+                                    </label>
+                                    <select class="form-select py-0 align-self-center selectPourListeQuiOntBesoinDeInvalide"
+                                            v-model="selectMedium"
+                                            id="selectMedium"
+                                            aria-label="Default select example"
+                                            required>
+                                        <option class="py-0 pasDeChoix" value="" selected>
+                                            Pas de choix
+                                        </option>
+                                        <option v-for="medium in listeDesMediums"
+                                                :key="medium.id"
+                                                class="py-0"
+                                                :value="medium.id">
+                                            {{ medium.type }}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="col mt-2">
+                                        <label class="text-nowrap recherchelabel fw-bold"
+                                               for="rechercheLotsHauteur">
+                                            Hauteur
+                                        </label>
+                                        <div class="row">
+                                            <div class="col-lg-5 mb-1 mb-lg-0">
+                                                <select class="form-select py-0 selectPourListe"
+                                                        v-model="selectHauteur"
+                                                        id="selectHauteur"
+                                                        aria-label="Default select example">
+                                                    <option class="py-0" value="0" selected>
+                                                        Égale à
+                                                    </option>
+                                                    <option class="py-0" value="1">Inférieure à</option>
+                                                    <option class="py-0" value="2">Supérieure à</option>
+                                                    <option class="py-0"
+                                                            value="3"
+                                                            id="selectHauteurEntre">
+                                                        Entre
+                                                    </option>
+                                                </select>
+                                            </div>
+                                            <div class="col-sm">
+                                                <input type="number"
+                                                       maxlength="10"
+                                                       class="form-control rechercheinput align-self-end"
+                                                       v-model="rechercheLotsHauteur"
+                                                       id="rechercheLotsHauteur" />
+                                            </div>
+                                            <div v-if="selectHauteur == 3"
+                                                 class="col-sm-auto align-items-center inputAAfficher">
+                                                <label class="fs-6">et</label>
+                                            </div>
+                                            <div v-if="selectHauteur == 3" class="col-sm">
+                                                <input type="number"
+                                                       maxlength="10"
+                                                       class="form-control rechercheinput align-self-end"
+                                                       v-model="rechercheLotsHauteur2"
+                                                       id="rechercheLotsHauteur2" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="col mt-2">
+                                        <label class="text-nowrap recherchelabel fw-bold"
+                                               for="rechercheLotsLargeur">
+                                            Largeur
+                                        </label>
+                                        <div class="row">
+                                            <div class="col-lg-5 mb-1 mb-lg-0">
+                                                <select class="form-select py-0 selectPourListe"
+                                                        v-model="selectLargeur"
+                                                        id="selectLargeur"
+                                                        aria-label="Default select example">
+                                                    <option class="py-0" value="0" selected>
+                                                        Égale à
+                                                    </option>
+                                                    <option class="py-0" value="1">Inférieure à</option>
+                                                    <option class="py-0" value="2">Supérieure à</option>
+                                                    <option class="py-0"
+                                                            value="3"
+                                                            id="selectLargeurEntre">
+                                                        Entre
+                                                    </option>
+                                                </select>
+                                            </div>
 
                       <div class="col-sm">
                         <input
@@ -770,27 +736,28 @@ const listeDesArtistes = ref([]);
 const listeDesCategories = ref([]);
 const listeDesMediums = ref([]);
 
-const ilYAUnEncanPresent = ref(false);
-const titreBarreDeRechercheDeLots = ref("");
-var rechercheNumeroEncan = "";
-const selectValeurEstimee = ref(0);
-const rechercheLotsValeurEstimee = ref();
-const rechercheLotsValeurEstimee2 = ref();
-const selectArtiste = ref("");
-const selectCategorie = ref("");
-const selectMedium = ref("");
-const selectHauteur = ref(0);
-const rechercheLotsHauteur = ref();
-const rechercheLotsHauteur2 = ref();
-const selectLargeur = ref(0);
-const rechercheLotsLargeur = ref();
-const rechercheLotsLargeur2 = ref();
-const selectNumeroEncan = ref(0);
-const rechercheEncansNumeroEncan = ref();
-const rechercheEncansNumeroEncan2 = ref();
-const selectDate = ref(0);
-const rechercheEncansDate1 = ref();
-const rechercheEncansDate2 = ref();
+    const ilYAUnEncanPresent = ref(false);
+    const titreBarreDeRechercheDeLots = ref("");
+    var rechercheNumeroEncan = "";
+    const rechercheLotsNumeroLot = ref();
+    const selectValeurEstimee = ref(0);
+    const rechercheLotsValeurEstimee = ref();
+    const rechercheLotsValeurEstimee2 = ref();
+    const selectArtiste = ref("");
+    const selectCategorie = ref("");
+    const selectMedium = ref("");
+    const selectHauteur = ref(0);
+    const rechercheLotsHauteur = ref();
+    const rechercheLotsHauteur2 = ref();
+    const selectLargeur = ref(0);
+    const rechercheLotsLargeur = ref();
+    const rechercheLotsLargeur2 = ref();
+    const selectNumeroEncan = ref(0);
+    const rechercheEncansNumeroEncan = ref();
+    const rechercheEncansNumeroEncan2 = ref();
+    const selectDate = ref(0);
+    const rechercheEncansDate1 = ref();
+    const rechercheEncansDate2 = ref();
 
 watch(
   () => store.state.user,
@@ -877,37 +844,40 @@ async function rechercheAvanceeLots() {
     }
   }
 
-  stringquery["numeroEncan"] = rechercheNumeroEncan;
-  if (rechercheLotsValeurEstimee.value) {
-    stringquery["selectValeurEstimee"] = selectValeurEstimee.value;
-    stringquery["stringValeurEstimee"] = rechercheLotsValeurEstimee.value;
-    if (selectValeurEstimee.value == 3) {
-      stringquery["stringValeurEstimee2"] = rechercheLotsValeurEstimee2.value;
-    }
-  }
-  if (selectArtiste.value != 0) {
-    stringquery["selectArtiste"] = selectArtiste.value;
-  }
-  if (selectCategorie.value != 0) {
-    stringquery["selectCategorie"] = selectCategorie.value;
-  }
-  if (selectMedium.value != 0) {
-    stringquery["selectMedium"] = selectMedium.value;
-  }
-  if (rechercheLotsHauteur.value) {
-    stringquery["selectHauteur"] = selectHauteur.value;
-    stringquery["stringHauteur"] = rechercheLotsHauteur.value;
-    if (selectHauteur.value == 3) {
-      stringquery["stringHauteur2"] = rechercheLotsHauteur2.value;
-    }
-  }
-  if (rechercheLotsLargeur.value) {
-    stringquery["selectLargeur"] = selectLargeur.value;
-    stringquery["stringLargeur"] = rechercheLotsLargeur.value;
-    if (selectLargeur.value == 3) {
-      stringquery["stringLargeur2"] = rechercheLotsLargeur.value;
-    }
-  }
+        stringquery["numeroEncan"] = rechercheNumeroEncan;
+        if (rechercheLotsNumeroLot.value) {
+            stringquery["stringNumeroLot"] = rechercheLotsNumeroLot.value;
+        }
+        if (rechercheLotsValeurEstimee.value) {
+            stringquery["selectValeurEstimee"] = selectValeurEstimee.value;
+            stringquery["stringValeurEstimee"] = rechercheLotsValeurEstimee.value;
+            if (selectValeurEstimee.value == 3) {
+                stringquery["stringValeurEstimee2"] = rechercheLotsValeurEstimee2.value;
+            }
+        }
+        if (selectArtiste.value != 0) {
+            stringquery["selectArtiste"] = selectArtiste.value;
+        }
+        if (selectCategorie.value != 0) {
+            stringquery["selectCategorie"] = selectCategorie.value;
+        }
+        if (selectMedium.value != 0) {
+            stringquery["selectMedium"] = selectMedium.value;
+        }
+        if (rechercheLotsHauteur.value) {
+            stringquery["selectHauteur"] = selectHauteur.value;
+            stringquery["stringHauteur"] = rechercheLotsHauteur.value;
+            if (selectHauteur.value == 3) {
+                stringquery["stringHauteur2"] = rechercheLotsHauteur2.value;
+            }
+        }
+        if (rechercheLotsLargeur.value) {
+            stringquery["selectLargeur"] = selectLargeur.value;
+            stringquery["stringLargeur"] = rechercheLotsLargeur.value;
+            if (selectLargeur.value == 3) {
+                stringquery["stringLargeur2"] = rechercheLotsLargeur.value;
+            }
+        }
 
   router.push({
     path: "/resultatrecherchelots",
@@ -917,81 +887,82 @@ async function rechercheAvanceeLots() {
   });
 }
 
-// La barre de recherche avancée garde les informations ou non selon le changement de page
-router.beforeEach((to, from, next) => {
-  if (
-    from.name == "ResultatRechercheLots" ||
-    from.name == "Encan" ||
-    from.name == "EncanPresent"
-  ) {
-    var elementsAEffacer = [
-      rechercheLotsValeurEstimee,
-      rechercheLotsValeurEstimee2,
-      rechercheLotsHauteur,
-      rechercheLotsHauteur2,
-      rechercheLotsLargeur,
-      rechercheLotsLargeur2,
-    ];
-    var listeDesSelects = document.querySelectorAll(".selectPourListe");
-    var listeDesSelectsQuiOntBesoinDeInvalide = document.querySelectorAll(
-      ".selectPourListeQuiOntBesoinDeInvalide"
-    );
-    if (to.name == "ResultatRechercheLots") {
-      if (document.querySelector("#navbarToggleRechercheAvancee")) {
-        document
-          .querySelector("#navbarToggleRechercheAvancee")
-          .classList.remove("show");
-      }
-      next();
-    } else {
-      elementsAEffacer.forEach((element) => {
-        if (element) {
-          element.value = "";
-        }
-      });
-      listeDesSelects.forEach((select) => {
-        if (select) {
-          select.value = 0;
-        }
-      });
-      listeDesSelectsQuiOntBesoinDeInvalide.forEach((select) => {
-        if (select) {
-          select.value = "";
-        }
-      });
-      if (document.querySelector("#navbarToggleRechercheAvancee")) {
-        document
-          .querySelector("#navbarToggleRechercheAvancee")
-          .classList.remove("show");
-      }
-      next();
-    }
-  } else if (
-    from.name == "ResultatRechercheEncans" ||
-    from.name == "EncansPasses" ||
-    from.name == "EncansFuturs" ||
-    from.name == "TousLesEncans"
-  ) {
-    var elementsAEffacer = [
-      rechercheEncansNumeroEncan,
-      rechercheEncansNumeroEncan2,
-    ];
-    var datesAEffacer = [rechercheEncansDate1, rechercheEncansDate2];
-    var listeDesSelects = document.querySelectorAll(".selectPourListe");
-    if (to.name == "ResultatRechercheEncans") {
-      if (document.querySelector("#navbarToggleRechercheAvancee")) {
-        document
-          .querySelector("#navbarToggleRechercheAvancee")
-          .classList.remove("show");
-      }
-      next();
-    } else {
-      elementsAEffacer.forEach((element) => {
-        element.value = "";
-      });
-      datesAEffacer.forEach((date) => {
-        date.value = "";
-      });
+    // La barre de recherche avancée garde les informations ou non selon le changement de page
+    router.beforeEach((to, from, next) => {
+        if (
+            from.name == "ResultatRechercheLots" ||
+            from.name == "Encan" ||
+            from.name == "EncanPresent"
+        ) {
+            var elementsAEffacer = [
+                rechercheLotsNumeroLot,
+                rechercheLotsValeurEstimee,
+                rechercheLotsValeurEstimee2,
+                rechercheLotsHauteur,
+                rechercheLotsHauteur2,
+                rechercheLotsLargeur,
+                rechercheLotsLargeur2,
+            ];
+            var listeDesSelects = document.querySelectorAll(".selectPourListe");
+            var listeDesSelectsQuiOntBesoinDeInvalide = document.querySelectorAll(
+                ".selectPourListeQuiOntBesoinDeInvalide"
+            );
+            if (to.name == "ResultatRechercheLots") {
+                if (document.querySelector("#navbarToggleRechercheAvancee")) {
+                    document
+                        .querySelector("#navbarToggleRechercheAvancee")
+                        .classList.remove("show");
+                }
+                next();
+            } else {
+                elementsAEffacer.forEach((element) => {
+                    if (element) {
+                        element.value = "";
+                    }
+                });
+                listeDesSelects.forEach((select) => {
+                    if (select) {
+                        select.value = 0;
+                    }
+                });
+                listeDesSelectsQuiOntBesoinDeInvalide.forEach((select) => {
+                    if (select) {
+                        select.value = "";
+                    }
+                });
+                if (document.querySelector("#navbarToggleRechercheAvancee")) {
+                    document
+                        .querySelector("#navbarToggleRechercheAvancee")
+                        .classList.remove("show");
+                }
+                next();
+            }
+        } else if (
+            from.name == "ResultatRechercheEncans" ||
+            from.name == "EncansPasses" ||
+            from.name == "EncansFuturs" ||
+            from.name == "TousLesEncans"
+        ) {
+            var elementsAEffacer = [
+                rechercheEncansNumeroEncan,
+                rechercheEncansNumeroEncan2,
+            ];
+            var datesAEffacer = [rechercheEncansDate1, rechercheEncansDate2];
+            var listeDesSelects = document.querySelectorAll(".selectPourListe");
+            if (to.name == "ResultatRechercheEncans") {
+                if (document.querySelector("#navbarToggleRechercheAvancee")) {
+                    document
+                        .querySelector("#navbarToggleRechercheAvancee")
+                        .classList.remove("show");
+                }
+                next();
+            } else {
+                elementsAEffacer.forEach((element) => {
+                    element.value = "";
+                });
+                datesAEffacer.forEach((date) => {
+                    date.value = "";
+                });
 
       listeDesSelects.forEach((select) => {
         select.value = 0;
@@ -1066,68 +1037,71 @@ function verifierSiQueryDansURL() {
   if (route.query.data != null) {
     var stringquery = JSON.parse(route.query.data);
 
-    if (stringquery.numeroEncan) {
-      rechercheNumeroEncan = stringquery.numeroEncan;
-      if (titreBarreDeRechercheDeLots) {
-        titreBarreDeRechercheDeLots.value =
-          "Recherche avancée de lots dans l'Encan " + rechercheNumeroEncan;
-      }
+            if (stringquery.numeroEncan) {
+                rechercheNumeroEncan = stringquery.numeroEncan;
+                if (titreBarreDeRechercheDeLots) {
+                    titreBarreDeRechercheDeLots.value =
+                        "Recherche avancée de lots dans l'Encan " + rechercheNumeroEncan;
+                }
+            }
+            if (stringquery.stringNumeroLot) {
+                rechercheLotsNumeroLot.value = stringquery.stringNumeroLot;
+            }
+            if (stringquery.stringValeurEstimee) {
+                selectValeurEstimee.value = stringquery.selectValeurEstimee;
+                rechercheLotsValeurEstimee.value = stringquery.stringValeurEstimee;
+                if (
+                    stringquery.selectValeurEstimee == 3 &&
+                    stringquery.stringValeurEstimee2
+                ) {
+                    rechercheLotsValeurEstimee2.value = stringquery.stringValeurEstimee2;
+                }
+            }
+            if (stringquery.selectArtiste != 0 && stringquery.selectArtiste != null) {
+                selectArtiste.value = stringquery.selectArtiste;
+            }
+            if (
+                stringquery.selectCategorie != 0 &&
+                stringquery.selectCategorie != null
+            ) {
+                selectCategorie.value = stringquery.selectCategorie;
+            }
+            if (stringquery.selectMedium != 0 && stringquery.selectMedium != null) {
+                selectMedium.value = stringquery.selectMedium;
+            }
+            if (stringquery.stringHauteur) {
+                selectHauteur.value = stringquery.selectHauteur;
+                rechercheLotsHauteur.value = stringquery.stringHauteur;
+                if (stringquery.selectHauteur == 3 && stringquery.stringHauteur2) {
+                    rechercheLotsHauteur2.value = stringquery.stringHauteur2;
+                }
+            }
+            if (stringquery.stringLargeur) {
+                selectLargeur.value = stringquery.selectLargeur;
+                rechercheLotsLargeur.value = stringquery.stringLargeur;
+                if (stringquery.selectLargeur == 3 && stringquery.stringLargeur2) {
+                    rechercheLotsLargeur2.value = stringquery.stringLargeur2;
+                }
+            }
+            if (stringquery.stringNumeroEncan) {
+                selectNumeroEncan.value = stringquery.selectNumeroEncan;
+                rechercheEncansNumeroEncan.value = stringquery.stringNumeroEncan;
+                if (
+                    stringquery.selectNumeroEncan == 1 &&
+                    stringquery.stringNumeroEncan2
+                ) {
+                    rechercheEncansNumeroEncan2.value = stringquery.stringNumeroEncan2;
+                }
+            }
+            if (stringquery.stringDate) {
+                selectDate.value = stringquery.selectDate;
+                rechercheEncansDate1.value = moment(stringquery.stringDate);
+                if (stringquery.selectDate == 3 && stringquery.stringDate2) {
+                    rechercheEncansDate2.value = moment(stringquery.stringDate2);
+                }
+            }
+        }
     }
-    if (stringquery.stringValeurEstimee) {
-      selectValeurEstimee.value = stringquery.selectValeurEstimee;
-      rechercheLotsValeurEstimee.value = stringquery.stringValeurEstimee;
-      if (
-        stringquery.selectValeurEstimee == 3 &&
-        stringquery.stringValeurEstimee2
-      ) {
-        rechercheLotsValeurEstimee2.value = stringquery.stringValeurEstimee2;
-      }
-    }
-    if (stringquery.selectArtiste != 0 && stringquery.selectArtiste != null) {
-      selectArtiste.value = stringquery.selectArtiste;
-    }
-    if (
-      stringquery.selectCategorie != 0 &&
-      stringquery.selectCategorie != null
-    ) {
-      selectCategorie.value = stringquery.selectCategorie;
-    }
-    if (stringquery.selectMedium != 0 && stringquery.selectMedium != null) {
-      selectMedium.value = stringquery.selectMedium;
-    }
-    if (stringquery.stringHauteur) {
-      selectHauteur.value = stringquery.selectHauteur;
-      rechercheLotsHauteur.value = stringquery.stringHauteur;
-      if (stringquery.selectHauteur == 3 && stringquery.stringHauteur2) {
-        rechercheLotsHauteur2.value = stringquery.stringHauteur2;
-      }
-    }
-    if (stringquery.stringLargeur) {
-      selectLargeur.value = stringquery.selectLargeur;
-      rechercheLotsLargeur.value = stringquery.stringLargeur;
-      if (stringquery.selectLargeur == 3 && stringquery.stringLargeur2) {
-        rechercheLotsLargeur2.value = stringquery.stringLargeur2;
-      }
-    }
-    if (stringquery.stringNumeroEncan) {
-      selectNumeroEncan.value = stringquery.selectNumeroEncan;
-      rechercheEncansNumeroEncan.value = stringquery.stringNumeroEncan;
-      if (
-        stringquery.selectNumeroEncan == 1 &&
-        stringquery.stringNumeroEncan2
-      ) {
-        rechercheEncansNumeroEncan2.value = stringquery.stringNumeroEncan2;
-      }
-    }
-    if (stringquery.stringDate) {
-      selectDate.value = stringquery.selectDate;
-      rechercheEncansDate1.value = moment(stringquery.stringDate);
-      if (stringquery.selectDate == 3 && stringquery.stringDate2) {
-        rechercheEncansDate2.value = moment(stringquery.stringDate2);
-      }
-    }
-  }
-}
 
 // Définition de activationRecherche
 const activationRecherche = ref(false);
