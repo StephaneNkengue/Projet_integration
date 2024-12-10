@@ -36,7 +36,6 @@ import HistoriqueMisesParMembre from "@/components/views/HistoriqueMisesParMembr
 
 import ChoixLivraison from "@/components/views/ChoixLivraison.vue";
 import ConditionsCompagnie from "@/components/views/ConditionsCompagnie.vue";
-import ConfirmationCourriel from "@/components/views/ConfirmationCourriel.vue";
 
 const routes = [
   {
@@ -287,11 +286,6 @@ const routes = [
     component: HistoriqueMisesParMembre,
     meta: { requiresAuth: true, requiredRole: "Client" },
   },
-  {
-    path: "/ConfirmationCourriel",
-    name: "ConfirmationCourriel",
-    component: ConfirmationCourriel,
-  },
 ];
 
 const router = createRouter({
@@ -305,11 +299,11 @@ const router = createRouter({
 router.beforeEach(async (to, from, next) => {
   try {
     console.log("Navigation to:", to.path);
-    
+
     // Vérifier si un token existe
     const token = localStorage.getItem("token");
     const isLoggedIn = store.state.isLoggedIn;
-    
+
     if (token && !isLoggedIn) {
       console.log("Token found but not logged in, checking auth...");
       await store.dispatch("checkAuthStatus");
@@ -321,7 +315,10 @@ router.beforeEach(async (to, from, next) => {
       return;
     }
 
-    if (to.meta.requiredRole && !store.state.roles.includes(to.meta.requiredRole)) {
+    if (
+      to.meta.requiredRole &&
+      !store.state.roles.includes(to.meta.requiredRole)
+    ) {
       next({ name: "AccesNonAutorise" });
       return;
     }
