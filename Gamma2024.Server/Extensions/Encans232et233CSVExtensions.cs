@@ -61,6 +61,32 @@ namespace Gamma2024.Server.Extensions
                     }
 
                     var dimensions = columns[8].Split("x");
+                    var hauteur = 0.0;
+                    var largeur = 0.0;
+
+                    try
+                    {
+                        hauteur = double.Parse(dimensions[0].Trim());
+                    }
+                    catch
+                    {
+                        var fraction = ConvertirCaractereFraction(dimensions[0].Trim().Last());
+                        var entier = double.Parse(dimensions[0].Trim().Remove(dimensions[0].Trim().Length - 1));
+
+                        hauteur = fraction + entier;
+                    }
+
+                    try
+                    {
+                        largeur = double.Parse(dimensions[1].Trim());
+                    }
+                    catch
+                    {
+                        var fraction = ConvertirCaractereFraction(dimensions[0].Trim().Last());
+                        var entier = double.Parse(dimensions[1].Trim().Remove(dimensions[1].Trim().Length - 1));
+
+                        largeur = fraction + entier;
+                    }
 
                     yield return new LotEncan
                     {
@@ -76,10 +102,8 @@ namespace Gamma2024.Server.Extensions
                                 Nom = columns[6]
                             },
                             Artiste = columns[7],
-                            //Hauteur = double.Parse(dimensions[0].Trim()),
-                            Hauteur = 10,
-                            //Largeur = double.Parse(dimensions[1].Trim()),
-                            Largeur = 20,
+                            Hauteur = hauteur,
+                            Largeur = largeur,
                             Description = columns[9],
                             Medium = new Medium
                             {
@@ -122,6 +146,23 @@ namespace Gamma2024.Server.Extensions
                 }
 
             }
+        }
+
+        private static double ConvertirCaractereFraction(char caractereFraction)
+        {
+            if (caractereFraction == '½')
+            {
+                return 0.5;
+            }
+            else if (caractereFraction == '¼')
+            {
+                return 0.25;
+            }
+            else if (caractereFraction == '¾')
+            {
+                return 0.75;
+            }
+            return 0;
         }
     }
 }
