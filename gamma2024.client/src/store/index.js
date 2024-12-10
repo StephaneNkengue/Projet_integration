@@ -497,17 +497,12 @@ const store = createStore({
           return { success: false, error: reponse.data.message };
         }
       } catch (error) {
-        console.error(
-          "Erreur détaillée lors de la création du vendeur:",
-          error.reponse || error
-        );
+        console.error("Erreur détaillée lors de la création du vendeur:", error);
         return {
           success: false,
-          error:
-            error.reponse?.data?.message ||
-            error.message ||
-            "Erreur lors de la création du vendeur",
-          details: error.reponse?.data, // Ajoutez cette ligne pour obtenir plus de détails
+          error: error.response?.data?.message || 
+                error.message || 
+                "Erreur lors de la création du vendeur"
         };
       }
     },
@@ -526,9 +521,8 @@ const store = createStore({
         console.error("Erreur lors de la modification du vendeur:", error);
         return {
           success: false,
-          error:
-            error.reponse?.data?.message ||
-            "Erreur lors de la modification du vendeur",
+          error: error.response?.data?.message || 
+                "Erreur lors de la modification du vendeur"
         };
       }
     },
@@ -602,7 +596,7 @@ const store = createStore({
       }
     },
     async obtenirCategories({ state }) {
-      const reponse = await state.api.get("/lots/categories");
+      const reponse = await state.api.xget("/lots/categories");
       return reponse.data;
     },
     async obtenirVendeurs({ state }) {
@@ -731,7 +725,7 @@ const store = createStore({
         localStorage.removeItem("roles");
         localStorage.removeItem("isLoggedIn");
 
-        // Réinitialiser les données liées aux mises
+        // Réinitialiser les données li��es aux mises
         commit("updateLotMise", {
           idLot: null,
           montant: null,
@@ -1203,7 +1197,7 @@ const store = createStore({
         );
         return reponse;
       } catch (error) {
-        return "Erreur, veuillez r��essayer";
+        return "Erreur, veuillez réessayer";
       }
     },
 
