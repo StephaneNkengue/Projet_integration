@@ -82,7 +82,7 @@ namespace Gamma2024.Server.Extensions
                     }
                     catch
                     {
-                        var fraction = ConvertirCaractereFraction(dimensions[0].Trim().Last());
+                        var fraction = ConvertirCaractereFraction(dimensions[1].Trim().Last());
                         var entier = double.Parse(dimensions[1].Trim().Remove(dimensions[1].Trim().Length - 1));
 
                         largeur = fraction + entier;
