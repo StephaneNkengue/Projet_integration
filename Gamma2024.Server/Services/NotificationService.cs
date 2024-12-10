@@ -19,7 +19,6 @@ namespace Gamma2024.Server.Services
 
         public async Task SendBidNotification(string userReceiptId, string message)
         {
-            // Enregistrer la notification dans la base de données
             var notification = new Notification
             {
                 ApplicationUserId = userReceiptId,
@@ -31,7 +30,6 @@ namespace Gamma2024.Server.Services
             _context.Notifications.Add(notification);
             await _context.SaveChangesAsync();
 
-            // Envoyer la notification en temps réel via SignalR
             await _hubContext.SendToUser(notification);
         }
 

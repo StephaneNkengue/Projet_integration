@@ -10,19 +10,8 @@ namespace Gamma2024.Server.Hub
     }
 
     [Authorize]
-    public class NotificationHub : Microsoft.AspNetCore.SignalR.Hub//<INotificationHub>
+    public class NotificationHub : Microsoft.AspNetCore.SignalR.Hub
     {
-        //public async Task SendNotification(string userId, string notifMessage)
-        //{
-        //    await Clients.All.SendAsync("ReceiveNotification", new
-        //    {
-        //        ApplicationUserId = userId,
-        //        message = notifMessage,
-        //        CreatedAt = DateTime.Now
-        //    });
-        //}
-
-
         private static readonly Dictionary<string, HashSet<string>> _userConnections = new();
 
         public override async Task OnConnectedAsync()
@@ -39,10 +28,6 @@ namespace Gamma2024.Server.Hub
                 _userConnections[userId].Add(connectionId);
             }
 
-            //await Clients.All.SendAsync("ReceiveNotification", $"Say hello to [{userId}] with connectionId [{connectionId}]");
-            // var user = Context.User;
-            // Log authentication details
-            // Console.WriteLine($"User connected: {user?.Identity?.Name}, IsAuthenticated: {user?.Identity?.IsAuthenticated}");
 
             await base.OnConnectedAsync();
         }
