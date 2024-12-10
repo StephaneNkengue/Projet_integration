@@ -1,3 +1,4 @@
+using Gamma2024.Server.Extensions.Objets;
 using Gamma2024.Server.Models;
 using Microsoft.IdentityModel.Tokens;
 
@@ -39,13 +40,13 @@ namespace Gamma2024.Server.Extensions
             }
         }
 
-        public static IEnumerable<Lot> ToLotParEncan(this IEnumerable<string> source, int numeroEncan)
+        public static IEnumerable<LotEncan> ToLot(this IEnumerable<string> source)
         {
             foreach (var line in source)
             {
                 var columns = line.Split(';');
 
-                if (!string.IsNullOrEmpty(columns[1]) && int.Parse(columns[0]) == numeroEncan)
+                if (!string.IsNullOrEmpty(columns[1]))
                 {
                     var livrable = false;
                     if (columns[11] == "oui")
@@ -60,52 +61,108 @@ namespace Gamma2024.Server.Extensions
                     }
 
                     var dimensions = columns[8].Split("x");
+                    var hauteur = 0.0;
+                    var largeur = 0.0;
 
-                    yield return new Lot
+                    try
                     {
-                        Numero = columns[1],
-                        PrixOuverture = double.Parse(columns[2].Replace("$", "").Trim()),
-                        PrixMinPourVente = prixMinVente,
-                        ValeurEstimeMin = double.Parse(columns[4].Replace("$", "").Trim()),
-                        ValeurEstimeMax = double.Parse(columns[5].Replace("$", "").Trim()),
-                        Categorie = new Categorie
+                        hauteur = double.Parse(dimensions[0].Trim());
+                    }
+                    catch
+                    {
+                        var fraction = ConvertirCaractereFraction(dimensions[0].Trim().Last());
+                        var entier = double.Parse(dimensions[0].Trim().Remove(dimensions[0].Trim().Length - 1));
+
+                        hauteur = fraction + entier;
+                    }
+
+                    try
+                    {
+                        largeur = double.Parse(dimensions[1].Trim());
+                    }
+                    catch
+                    {
+                        var fraction = ConvertirCaractereFraction(dimensions[1].Trim().Last());
+                        var entier = double.Parse(dimensions[1].Trim().Remove(dimensions[1].Trim().Length - 1));
+
+                        largeur = fraction + entier;
+                    }
+
+                    yield return new LotEncan
+                    {
+                        Lot = new Lot
                         {
-                            Nom = columns[6]
+                            Numero = columns[1],
+                            PrixOuverture = double.Parse(columns[2].Replace("$", "").Trim()),
+                            PrixMinPourVente = prixMinVente,
+                            ValeurEstimeMin = double.Parse(columns[4].Replace("$", "").Trim()),
+                            ValeurEstimeMax = double.Parse(columns[5].Replace("$", "").Trim()),
+                            Categorie = new Categorie
+                            {
+                                Nom = columns[6]
+                            },
+                            Artiste = columns[7],
+                            Hauteur = hauteur,
+                            Largeur = largeur,
+                            Description = columns[9],
+                            Medium = new Medium
+                            {
+                                Type = columns[10]
+                            },
+                            EstLivrable = livrable,
+                            Mise = 0,
                         },
-                        Artiste = columns[7],
-                        Hauteur = double.Parse(dimensions[0].Trim()),
-                        Largeur = double.Parse(dimensions[1].Trim()),
-                        Description = columns[9],
-                        Medium = new Medium
-                        {
-                            Type = columns[10]
-                        },
-                        EstLivrable = livrable,
-                        Mise = 0
+                        NumeroEncan = int.Parse(columns[0])
                     };
                 }
 
             }
         }
 
-        public static IEnumerable<IEnumerable<string>> GetImagesParLotParEncan(this IEnumerable<string> source, int numeroEncan)
+        public static IEnumerable<LotImages> GetLotImages(this IEnumerable<string> source)
         {
             foreach (var line in source)
             {
                 var columns = line.Split(';');
 
-                if (!string.IsNullOrEmpty(columns[1]) && int.Parse(columns[0]) == numeroEncan)
+                if (!string.IsNullOrEmpty(columns[1]))
                 {
                     var images = new List<string>();
 
-                    images.Add(columns[12]);
-                    images.Add(columns[13]);
-                    images.Add(columns[14]);
+                    for (int i = 12; i < columns.Length && i < 16; i++)
+                    {
+                        if (!columns[i].IsNullOrEmpty())
+                        {
+                            images.Add(columns[i]);
+                        }
+                    }
 
-                    yield return images;
+                    yield return new LotImages
+                    {
+                        NomImages = images,
+                        NumeroLot = columns[1],
+                        NumeroEncan = int.Parse(columns[0])
+                    };
                 }
 
             }
+        }
+
+        private static double ConvertirCaractereFraction(char caractereFraction)
+        {
+            if (caractereFraction == '½')
+            {
+                return 0.5;
+            }
+            else if (caractereFraction == '¼')
+            {
+                return 0.25;
+            }
+            else if (caractereFraction == '¾')
+            {
+                return 0.75;
+            }
+            return 0;
         }
     }
 }
