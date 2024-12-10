@@ -382,7 +382,7 @@ const store = createStore({
           "Erreur lors de la récupération des informations du client:",
           error
         );
-        throw error;
+        throw error.response?.data || error.message;
       }
     },
 
@@ -404,7 +404,7 @@ const store = createStore({
           "Erreur lors de la mise à jour des informations du client:",
           error.reponse || error
         );
-        throw error;
+        throw error.response?.data || error.message;
       }
     },
 
@@ -438,7 +438,7 @@ const store = createStore({
           "Erreur détaillée lors de la mise à jour de l'avatar:",
           error.reponse || error
         );
-        throw error;
+        throw error.response?.data || error.message;
       }
     },
 
@@ -452,7 +452,7 @@ const store = createStore({
         return reponse.data.disponible;
       } catch (error) {
         console.error("Erreur lors de la vérification du pseudonyme:", error);
-        throw error;
+        throw error.response?.data || error.message;
       }
     },
 
@@ -464,7 +464,7 @@ const store = createStore({
         return reponse.data.disponible;
       } catch (error) {
         console.error("Erreur lors de la vérification de l'email:", error);
-        throw error;
+        throw error.response?.data || error.message;
       }
     },
 
@@ -477,7 +477,7 @@ const store = createStore({
           "Erreur lors de la récupération de tous les vendeurs:",
           error
         );
-        throw error;
+        throw error.response?.data || error.message;
       }
     },
     async creerVendeur({ commit, state }, vendeurData) {
@@ -530,7 +530,7 @@ const store = createStore({
         return reponse.data;
       } catch (error) {
         console.error("Erreur lors de la récupération du vendeur:", error);
-        throw error;
+        throw error.response?.data || error.message;
       }
     },
     async creerLot({ state }, formData) {
@@ -543,7 +543,7 @@ const store = createStore({
         return reponse.data;
       } catch (error) {
         console.error("Erreur lors de la création du lot:", error);
-        throw error;
+        throw error.response?.data || error.message;
       }
     },
 
@@ -557,7 +557,7 @@ const store = createStore({
         return reponse.data;
       } catch (error) {
         console.error("Erreur lors de la modification du lot:", error);
-        throw error;
+        throw error.response?.data || error.message;
       }
     },
 
@@ -570,7 +570,7 @@ const store = createStore({
           "Erreur lors de la récupération de tous les lots:",
           error
         );
-        throw error;
+        throw error.response?.data || error.message;
       }
     },
 
@@ -580,7 +580,7 @@ const store = createStore({
         return reponse.data;
       } catch (error) {
         console.error("Erreur lors de la récupération du lot:", error);
-        throw error;
+        throw error.response?.data || error.message;
       }
     },
 
@@ -590,7 +590,7 @@ const store = createStore({
         return reponse.data;
       } catch (error) {
         console.error("Erreur lors de la suppression du lot:", error);
-        throw error;
+        throw error.response?.data || error.message;
       }
     },
     async obtenirCategories({ state }) {
@@ -620,7 +620,7 @@ const store = createStore({
           "Erreur détaillée:",
           error.reponse?.data || error.message
         );
-        throw error;
+        throw error.response?.data || error.message;
       }
     },
 
@@ -632,7 +632,7 @@ const store = createStore({
         return reponse.data;
       } catch (error) {
         console.error("Erreur lors de la récupération du membre:", error);
-        throw error;
+        throw error.response?.data || error.message;
       }
     },
 
@@ -644,7 +644,7 @@ const store = createStore({
         return reponse.data;
       } catch (error) {
         console.error("Erreur lors du blocage du membre:", error);
-        throw error;
+        throw error.response?.data || error.message;
       }
     },
 
@@ -656,7 +656,7 @@ const store = createStore({
         return reponse.data;
       } catch (error) {
         console.error("Erreur lors du déblocage du membre:", error);
-        throw error;
+        throw error.response?.data || error.message;
       }
     },
     async checkAuthStatus({ commit, state, dispatch }) {
@@ -815,7 +815,7 @@ const store = createStore({
         return reponse.data;
       } catch (error) {
         console.error("Erreur détaillée:", error.reponse || error);
-        throw error;
+        throw error.response?.data || error.message;
       }
     },
     async supprimerUnEncan({ commit, state }, numeroEncan) {
@@ -829,7 +829,7 @@ const store = createStore({
           "Erreur détaillée lors de la suppression de l'encan",
           error.reponse || error
         );
-        throw error;
+        throw error.response?.data || error.message;
       }
     },
     async obtenirUnEncanParId({ commit, state }, idEncan) {
@@ -843,7 +843,7 @@ const store = createStore({
           "Erreur détaillée lors de la suppression de l'encan",
           error.reponse || error
         );
-        throw error;
+        throw error.response?.data || error.message;
       }
     },
 
@@ -916,7 +916,7 @@ const store = createStore({
           data: error.reponse?.data,
           config: error.config,
         });
-        throw error;
+        throw error.response?.data || error.message;
       }
     },
     async chercherTousLotsParEncan({ state }, idEncan) {
@@ -933,7 +933,7 @@ const store = createStore({
           data: error.reponse?.data,
           config: error.config,
         });
-        throw error;
+        throw error.response?.data || error.message;
       }
     },
     async chercherDetailsLotParId({ commit, state }, idLot) {

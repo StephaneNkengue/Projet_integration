@@ -239,18 +239,17 @@
                 setTimeout(() => {
                     router.push({ name: 'TableauDeBordInventaire' });
                 }, 2000);
-            } else {
-                erreur.value = "Erreur lors de la modification du lot: " + reponse.data;
-                message.value = '';
-            }
-        } catch (erreur) {
-            if (erreur.reponse && erreur.reponse.data) {
-                erreur.value = "Erreur lors de la modification du lot: " + erreur.reponse.data;
-            } else {
-                erreur.value = "Erreur lors de la modification du lot: " + erreur.message;
-            }
-            message.value = '';
+            }  } catch (err) {
+        // Correction de la gestion d'erreur
+        if (err.response?.data) {
+            erreur.value = err.response.data;
+        } else if (typeof err === 'string') {
+            erreur.value = err;
+        } else {
+            erreur.value = "Une erreur est survenue lors de la création du lot";
         }
+        message.value = '';
+    }
     };
 
     const chercherImageUrl = computed(() => (url) => {
