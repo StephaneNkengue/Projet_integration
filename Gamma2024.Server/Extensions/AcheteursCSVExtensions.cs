@@ -6,6 +6,7 @@ namespace Gamma2024.Server.Extensions
     {
         public static IEnumerable<ApplicationUser> ToApplicationUser(this IEnumerable<string> source)
         {
+            var listeUsersCourrielActive = new List<string> { "SimCar", "HugoLam", "MelB", "HouraAme", "MCLe" };
             foreach (var line in source)
             {
                 var columns = line.Split(';');
@@ -35,7 +36,7 @@ namespace Gamma2024.Server.Extensions
                     PhoneNumber = columns[4],
                     Email = columns[5],
                     NormalizedEmail = columns[5].ToUpper(),
-                    EmailConfirmed = true,
+                    EmailConfirmed = listeUsersCourrielActive.Contains(columns[2]),
                     Avatar = "/Avatars/Defaut.png",
                     SecurityStamp = Guid.NewGuid().ToString(),
                 };

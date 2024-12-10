@@ -274,6 +274,9 @@ namespace Gamma2024.Server.Migrations
                     b.Property<bool>("EstPublie")
                         .HasColumnType("bit");
 
+                    b.Property<bool>("EstTermine")
+                        .HasColumnType("bit");
+
                     b.Property<int>("NumeroEncan")
                         .HasColumnType("int");
 

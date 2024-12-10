@@ -18,12 +18,14 @@ namespace Gamma2024.Server.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly FactureService _factureService;
         private readonly FactureLivraisonService _factureLivraisonService;
+        private readonly ILogger<PaiementController> _logger;
 
-        public PaiementController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, FactureService factureService, FactureLivraisonService factureLivraisonService)
+        public PaiementController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, FactureService factureService, FactureLivraisonService factureLivraisonService, ILogger<PaiementController> logger)
         {
             _userManager = userManager;
             _factureService = factureService;
             _factureLivraisonService = factureLivraisonService;
+            _logger = logger;
         }
 
         [Authorize(Roles = "Client")]
@@ -94,10 +96,11 @@ namespace Gamma2024.Server.Controllers
             return Ok(cartes);
         }
 
-        [HttpPost("ChargerClients/{numEncan}")]
-        public async Task<ActionResult> ChargerClients(int numEncan)
+        [HttpPost("ChargerClients/{numeroEncan}")]
+        public async Task<IActionResult> ChargerClients(int numeroEncan)
         {
-            var factures = _factureService.ChercherFacturesParEncan(numEncan);
+            _logger.LogInformation($"Début traitement paiements pour encan #{numeroEncan}");
+            var factures = _factureService.ChercherFacturesParEncan(numeroEncan);
             var productService = new ProductService();
             var invoiceService = new InvoiceService();
             var invoiceItemService = new InvoiceItemService();
@@ -224,6 +227,7 @@ namespace Gamma2024.Server.Controllers
                 }
             }
 
+            _logger.LogInformation($"Fin traitement paiements pour encan #{numeroEncan}");
             return Ok();
         }
 
