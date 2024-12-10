@@ -24,7 +24,7 @@
 
                 <p v-if="tempsRestant" class="text-center mb-5 fs-1 fw-bolder textCount">
                     Début de la soirée de clotûre dans
-                    <span v-if="tempsRestant.days > 0">{{ tempsRestant.days }} jour{{ tempsRestant.days > 1 ? 's' : '' }}</span>
+                    <span class="fw-bold" v-if="tempsRestant.days > 0">{{ tempsRestant.days }} jour{{ tempsRestant.days > 1 ? 's' : '' }}</span>
                     {{ tempsRestant.hours }}h
                     {{ tempsRestant.minutes }}m
                     {{ tempsRestant.seconds }}s
