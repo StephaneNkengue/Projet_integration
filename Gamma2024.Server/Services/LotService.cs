@@ -16,8 +16,11 @@ namespace Gamma2024.Server.Services
         private readonly ILogger<LotService> _logger;
         private readonly EncanService _encanService;
         private readonly IHttpClientFactory _httpClientFactory;
+        private readonly NotificationService _notificationService;
 
-        public LotService(ApplicationDbContext context, IWebHostEnvironment environment, IHubContext<LotMiseHub, ILotMiseHub> hubContext, ILogger<LotService> logger, EncanService encanService, IHttpClientFactory httpClientFactory)
+        public LotService(ApplicationDbContext context, IWebHostEnvironment environment, IHubContext<LotMiseHub,
+            ILotMiseHub> hubContext, ILogger<LotService> logger, EncanService encanService,
+            IHttpClientFactory httpClientFactory, NotificationService notificationService)
         {
             _context = context;
             _environment = environment;
@@ -25,6 +28,7 @@ namespace Gamma2024.Server.Services
             _logger = logger;
             _encanService = encanService;
             _httpClientFactory = httpClientFactory;
+            _notificationService = notificationService;
         }
 
         public async Task<IEnumerable<LotAffichageVM>> ObtenirTousLots()

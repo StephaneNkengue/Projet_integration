@@ -26,23 +26,20 @@ const store = createStore({
     encanCourant: null,
     lotsEncanCourant: {}, // Pour l'encan actif
     soireeCloture: null,
-    unreadCount: 0,
+    nombreNotifNonLue: reactive(0),
   },
   mutations: {
-    SET_NOTIFICATIONS(state, notifications) {
-      state.notifications = notifications;
-      state.unreadCount = notifications
-        ? notifications.filter((n) => !n.estLu).length
+    SET_NOTIFICATIONS(state, myNotifications) {
+      state.notifications = myNotifications;
+      state.nombreNotifNonLue = state.notifications
+        ? state.notifications.length
         : 0;
-    },
-    ADD_NOTIFICATION(state, notification) {
-      state.notifications.push(notification);
-      state.unreadCount++;
+      console.log(state.nombreNotifNonLue);
     },
 
     MARK_AS_READ(state) {
       state.notifications = [];
-      state.unreadCount = 0;
+      state.nombreNotifNonLue = 0;
     },
 
     setLoggedIn(state, value) {
@@ -330,12 +327,12 @@ const store = createStore({
         }
         const reponse = await state.api.post("/home/login", userData);
         if (reponse.data && reponse.data.message === "Connexion réussie") {
-            commit("setLoggedIn", true);
+          commit("setLoggedIn", true);
 
           // Sauvegarder le token
           const token = reponse.data.token;
           localStorage.setItem("token", token);
-          
+
           // Sauvegarder l'utilisateur
           const user = {
             id: reponse.data.userId,
@@ -677,7 +674,7 @@ const store = createStore({
 
         // Vérifier l'authentification
         const response = await state.api.get("/home/check-auth");
-        
+
         if (response.data.isAuthenticated) {
           commit("setToken", token);
           commit("setUser", userData);
@@ -694,13 +691,13 @@ const store = createStore({
         localStorage.removeItem("token");
         localStorage.removeItem("userData");
         localStorage.removeItem("userRoles");
-        
+
         // Réinitialiser le store
         commit("setToken", null);
         commit("setUser", null);
         commit("setRoles", []);
         commit("setLoggedIn", false);
-        
+
         return false;
       }
     },
@@ -1358,7 +1355,9 @@ const store = createStore({
       try {
         // Vérifier si l'utilisateur est connecté et a un token valide
         if (!state.token || !userId) {
-          console.log("Pas de token ou userId, abandon de la requête notifications");
+          console.log(
+            "Pas de token ou userId, abandon de la requête notifications"
+          );
           return;
         }
 
@@ -1366,19 +1365,19 @@ const store = createStore({
           `Notification/obtenirNotificationNonLu/${userId}`,
           {
             headers: {
-              Authorization: `Bearer ${state.token}`
-            }
+              Authorization: `Bearer ${state.token}`,
+            },
           }
         );
 
-        if (reponse && reponse.data) {
+        if (reponse.data) {
           commit("SET_NOTIFICATIONS", reponse.data);
         }
       } catch (error) {
         console.error("Erreur notifications:", {
           message: error.message,
           status: error.response?.status,
-          data: error.response?.data
+          data: error.response?.data,
         });
         // Ne pas bloquer le processus de connexion si les notifications échouent
         commit("SET_NOTIFICATIONS", []);
@@ -1431,70 +1430,73 @@ const store = createStore({
       }
     },
 
-        async sendNotification({ state }, { userId, message }) {
-            if (state.notificationConnection) {
-                try {
-                    await state.notificationConnection.invoke(
-                        "SendNotification",
-                        userId,
-                        message
-                    );
-                } catch (err) {
-                    console.error("Error sending notification:", err);
-                }
-            }
-        },
+    async sendNotification({ state }, { userId, message }) {
+      if (state.notificationConnection) {
+        try {
+          await state.notificationConnection.invoke(
+            "SendNotification",
+            userId,
+            message
+          );
+        } catch (err) {
+          console.error("Error sending notification:", err);
+        }
+      }
+    },
 
     async getUserBidsGroupedByEncan({ state }) {
       try {
-        const response = await state.api.get('/lots/userBidsGroupedByEncan');
-        console.log('Réponse de la requête:', response.data);
+        const response = await state.api.get("/lots/userBidsGroupedByEncan");
+        console.log("Réponse de la requête:", response.data);
         return response.data;
       } catch (error) {
-        console.error('Erreur lors de la récupération des mises par encan:', error);
+        console.error(
+          "Erreur lors de la récupération des mises par encan:",
+          error
+        );
         throw error;
       }
     },
   },
   getters: {
-        isAdmin: (state) => {
-            const result =
-                Array.isArray(state.roles) && state.roles.includes("Administrateur");
-            return result;
-        },
-        isClient: (state) =>
-            Array.isArray(state.roles) && state.roles.includes("Client"),
-        currentUser: (state) => state.user,
-        username: (state) =>
-            state.user ? state.user.pseudonym || state.user.username : "USERNAME",
-        avatarUrl: (state) => {
-            if (state.user && state.user.photo) {
-                if (state.user.photo.startsWith("http")) {
-                    return state.user.photo;
-                } else {
-                    const baseUrl = state.api.defaults.avatarURL;
-                    const fullUrl = baseUrl + state.user.photo;
-                    return fullUrl;
-                }
-            }
-            return "/gamma2024.client/public/icons/Avatar.png";
-        },
-        hasUserBidOnLot: (state) => (lotId) => {
-            return state.userBids.includes(lotId);
-        },
-        getLot: (state) => (id) => {
-            return state.lots[id] || null;
-        },
-        getAllLots: (state) => {
-            return Object.values(state.lots);
-        },
-        getUniqueOffersCount: (state) => (lotId) => {
-            const lot = state.lots[lotId];
-            return lot?.nombreMises || 0;
-        },
-        allNotifications: (state) => state.notifications,
-        unreadNotifications: (state) => state.unreadCount,
+    isAdmin: (state) => {
+      const result =
+        Array.isArray(state.roles) && state.roles.includes("Administrateur");
+      return result;
     },
+    isClient: (state) =>
+      Array.isArray(state.roles) && state.roles.includes("Client"),
+    currentUser: (state) => state.user,
+    username: (state) =>
+      state.user ? state.user.pseudonym || state.user.username : "USERNAME",
+    avatarUrl: (state) => {
+      if (state.user && state.user.photo) {
+        if (state.user.photo.startsWith("http")) {
+          return state.user.photo;
+        } else {
+          const baseUrl = state.api.defaults.avatarURL;
+          const fullUrl = baseUrl + state.user.photo;
+          return fullUrl;
+        }
+      }
+      return "/gamma2024.client/public/icons/Avatar.png";
+    },
+    hasUserBidOnLot: (state) => (lotId) => {
+      return state.userBids.includes(lotId);
+    },
+    getLot: (state) => (id) => {
+      return state.lots[id] || null;
+    },
+    getAllLots: (state) => {
+      return Object.values(state.lots);
+    },
+    getUniqueOffersCount: (state) => (lotId) => {
+      const lot = state.lots[lotId];
+      return lot?.nombreMises || 0;
+    },
+    // allNotifications: (state) => state.notifications,
+    // unreadNotifications: (state) => state.nombreNotifNonLue,
+  },
 });
 
 // Initialiser le store immédiatement

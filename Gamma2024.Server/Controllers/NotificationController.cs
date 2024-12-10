@@ -34,25 +34,19 @@ namespace Gamma2024.Server.Controllers
 
             return Ok(notifications);
         }
-                catch (Exception ex)
-                {
-                    return StatusCode(500, new { message = "Erreur lors de la récupération des notifications" });
-                }
-            
-        }
 
 
         [Authorize(Roles = ApplicationRoles.CLIENT)]
-[HttpPost("marquerLues")]
-public async Task<IActionResult> MarkAsRead()
-{
+        [HttpPost("marquerLues")]
+        public async Task<IActionResult> MarkAsRead()
+        {
 
-    (bool success, string message) = await _notificationService.MarquerNotificationLu();
-    if (success)
-    {
-        return Ok(message);
-    }
-    return BadRequest("Erreur lors de la modification de la notification");
-}
+            (bool success, string message) = await _notificationService.MarquerNotificationLu();
+            if (success)
+            {
+                return Ok(message);
+            }
+            return BadRequest("Erreur lors de la modification de la notification");
+        }
     }
 }

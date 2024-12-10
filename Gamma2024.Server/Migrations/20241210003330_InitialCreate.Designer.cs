@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Gamma2024.Server.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241206141057_RenaneEstLuTableNotif")]
-    partial class RenaneEstLuTableNotif
+    [Migration("20241210003330_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -277,6 +277,9 @@ namespace Gamma2024.Server.Migrations
                     b.Property<bool>("EstPublie")
                         .HasColumnType("bit");
 
+                    b.Property<bool>("EstTermine")
+                        .HasColumnType("bit");
+
                     b.Property<int>("NumeroEncan")
                         .HasColumnType("int");
 
@@ -322,10 +325,6 @@ namespace Gamma2024.Server.Migrations
 
                     b.Property<DateTime>("DateAchat")
                         .HasColumnType("datetime2");
-
-                    b.Property<string>("FacturePDFPath")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<double>("FraisEncanteur")
                         .HasColumnType("float");
@@ -388,10 +387,6 @@ namespace Gamma2024.Server.Migrations
 
                     b.Property<bool>("EstPaye")
                         .HasColumnType("bit");
-
-                    b.Property<string>("FacturePDFPath")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("IdAdresse")
                         .HasColumnType("int");

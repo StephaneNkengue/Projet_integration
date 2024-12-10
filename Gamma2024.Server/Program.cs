@@ -189,7 +189,6 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
 });
 
-var jsReportOptions = builder.Configuration.GetSection("JsReport").Get<JsReportOptions>();
 
 var app = builder.Build();
 
