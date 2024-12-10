@@ -18,8 +18,8 @@
                     <label for="dateDebut" class="form-label">Date de début:</label>
                     <VueDatePicker type="date"
                                    v-model="formData.dateDebut"
-                                   :class="['form-control', { 'is-invalid': vuelidate.dateDebut.$error }]"
-                                   @blur="vuelidate.dateDebut.$touch()"
+                                   :class="['form-control', { 'is-invalid': v.dateDebut.$error }]"
+                                   @blur="v.dateDebut.$touch()"
                                    :min-date="new Date()"
                                    :max-date="desacDateDebutEntre"
                                    :enable-time-picker="false"
@@ -29,16 +29,16 @@
                                    :action-row="{ showNow: true }"
                                    :format-locale="fr"
                                    :year-range="[new Date().getFullYear(), new Date().getFullYear() + 1000]" />
-                    <div class="invalid-feedback" v-if="vuelidate.dateDebut.$error">
-                        {{ vuelidate.dateDebut.$errors[0].$message }}
+                    <div class="invalid-feedback" v-if="v.dateDebut.$error">
+                        {{ v.dateDebut.$errors[0].$message }}
                     </div>
                 </div>
                 <div class="mb-3">
                     <label for="dateFin" class="form-label">Date de fin:</label>
                     <VueDatePicker type="date"
                                    v-model="formData.dateFin"
-                                   :class="['form-control', { 'is-invalid': vuelidate.dateFin.$error }]"
-                                   @blur="vuelidate.dateFin.$touch()"
+                                   :class="['form-control', { 'is-invalid': v.dateFin.$error }]"
+                                   @blur="v.dateFin.$touch()"
                                    :min-date="desacDateFinEntre"
                                    :enable-time-picker="true"
                                    select-text="Choisir"
@@ -46,34 +46,34 @@
                                    :format-locale="fr"
                                    :year-range="[new Date().getFullYear(), new Date().getFullYear() + 1000]"
                                    :disabled="formData.dateDebut != '' ? disabled : ''" />
-                    <div class="invalid-feedback" v-if="vuelidate.dateFin.$error">
-                        {{ vuelidate.dateFin.$errors[0].$message }}
+                    <div class="invalid-feedback" v-if="v.dateFin.$error">
+                        {{ v.dateFin.$errors[0].$message }}
                     </div>
                 </div>
 
                 <div class="mb-3 d-flex flex-column">
                     <label for="pasLot" class="form-label">Pas de chaque lot (seconde):</label>
                     <input type="text"
-                           @blur="vuelidate.pasLot.$touch()"
+                           @blur="v.pasLot.$touch()"
                            aria-label="pasLot"
                            class="bordureGrise"
                            min="1"
                            v-model="formData.pasLot" />
-                    <div class="invalid-feedback" v-if="vuelidate.pasLot.$error">
-                        {{ vuelidate.pasLot.$errors[0].$message }}
+                    <div class="invalid-feedback" v-if="v.pasLot.$error">
+                        {{ v.pasLot.$errors[0].$message }}
                     </div>
                 </div>
 
                 <div class="mb-3 d-flex flex-column">
                     <label for="pasMise" class="form-label">Pas de chaque mise (seconde):</label>
                     <input type="search"
-                           @blur="vuelidate.pasMise.$touch()"
+                           @blur="v.pasMise.$touch()"
                            aria-label="Recherche"
                            class="bordureGrise"
                            min="1"
                            v-model="formData.pasMise" />
-                    <div class="invalid-feedback" v-if="vuelidate.pasMise.$error">
-                        {{ vuelidate.pasMise.$errors[0].$message }}
+                    <div class="invalid-feedback" v-if="v.pasMise.$error">
+                        {{ v.pasMise.$errors[0].$message }}
                     </div>
                 </div>
                 <router-link to="TableauDeBordEncans" class="text-decoration-none me-2">
@@ -124,7 +124,7 @@
         pasMise: ""
     });
 
-    let regles = computed(() => {
+    let rules = computed(() => {
         return {
             dateDebut: { required: messageRequis },
             dateFin: { required: messageRequis },
@@ -133,10 +133,10 @@
         };
     });
 
-    const vuelidate = useVuelidate(regles, formData);
+    const v = useVuelidate(rules, formData);
 
     const stateFinal = computed(() => {
-        return vuelidate.value.$invalid;
+        return v.value.$invalid;
     });
     var element;
 
@@ -151,7 +151,7 @@
     });
 
     const creerEncan = async () => {
-        const result = await vuelidate.value.$validate();
+        const result = await v.value.$validate();
 
         if (!result) {
             messageErreur.value = "Il y a des champs qui sont incorrectes.";
@@ -172,7 +172,7 @@
                 messageErreur.value = reponse.error;
                 messageSucces.value = "";
             }
-        } catch (erreur) {
+        } catch (error) {
             messageErreur.value =
                 "Une erreur est survenue lors de la création d'un encan.";
         }
