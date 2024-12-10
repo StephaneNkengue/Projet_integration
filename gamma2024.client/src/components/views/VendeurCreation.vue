@@ -232,21 +232,23 @@
         try {
             const resultat = await store.dispatch("creerVendeur", vendeur.value);
             if (resultat.success) {
-                message.value = { type: "success", text: resultat.message };
+                message.value = { 
+                    type: "success", 
+                    text: resultat.message 
+                };
                 setTimeout(() => {
                     router.push("/affichagevendeurs");
                 }, 2000);
             } else {
                 message.value = {
                     type: "danger",
-                    text: "Erreur lors de la création du vendeur: " + resultat.error,
+                    text: resultat.error
                 };
             }
         } catch (erreur) {
-            console.error("Erreur lors de la création du vendeur:", erreur);
             message.value = {
                 type: "danger",
-                text: "Erreur inattendue lors de la création du vendeur",
+                text: typeof erreur === 'string' ? erreur : "Une erreur est survenue lors de la création du vendeur"
             };
         }
     };
