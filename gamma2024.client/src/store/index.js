@@ -596,7 +596,7 @@ const store = createStore({
       }
     },
     async obtenirCategories({ state }) {
-      const reponse = await state.api.xget("/lots/categories");
+      const reponse = await state.api.get("/lots/categories");
       return reponse.data;
     },
     async obtenirVendeurs({ state }) {
