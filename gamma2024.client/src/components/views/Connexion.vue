@@ -185,7 +185,23 @@
                         }
                     }
                 } catch (erreur) {
-                    this.messageErreur = "Une erreur est survenue lors de la connexion.";
+                    if (erreur.response && erreur.response.data) {
+                        const { element, message } = erreur.response.data;
+                        if (element === "password") {
+                            this.motDePasseErreur = message;
+                        } else if (element === "lock") {
+                            this.messageVerrouiller = message;
+                            setTimeout(() => {
+                                this.messageVerrouiller = "";
+                            }, 5000);
+                        } else if (element === "user_pseudo") {
+                            this.emailOuPseudoErreur = message;
+                        } else {
+                            this.messageErreur = message || "Une erreur est survenue lors de la connexion.";
+                        }
+                    } else {
+                        this.messageErreur = "Une erreur est survenue lors de la connexion.";
+                    }
                 } finally {
                     this.isSubmitting = false;
                 }

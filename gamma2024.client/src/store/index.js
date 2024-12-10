@@ -372,7 +372,7 @@ const store = createStore({
         }
         return { success: false, error: "Réponse inattendue" };
       } catch (error) {
-        return { success: false, error: error.message };
+        throw error;
       }
     },
 
@@ -725,7 +725,7 @@ const store = createStore({
         localStorage.removeItem("roles");
         localStorage.removeItem("isLoggedIn");
 
-        // Réinitialiser les données li��es aux mises
+        // Réinitialiser les données liées aux mises
         commit("updateLotMise", {
           idLot: null,
           montant: null,
