@@ -1,10 +1,10 @@
-using Microsoft.AspNetCore.SignalR;
 using Gamma2024.Server.Data;
-using Gamma2024.Server.Models;
 using Gamma2024.Server.Services;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 
-namespace Gamma2024.Server.Hub {
+namespace Gamma2024.Server.Hub
+{
     public interface ILotMiseHub
     {
         Task ReceiveNewBid(object bid);
@@ -19,7 +19,7 @@ namespace Gamma2024.Server.Hub {
         private readonly LotService _lotService;
 
         public LotMiseHub(ApplicationDbContext context, LotService lotService)
-        {   
+        {
             _context = context;
             _lotService = lotService;
         }
