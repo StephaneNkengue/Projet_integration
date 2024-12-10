@@ -1,44 +1,42 @@
 using Gamma2024.Server.Data;
 using Gamma2024.Server.Hub;
 using Gamma2024.Server.Models;
-using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 
 namespace Gamma2024.Server.Services
 {
     public class NotificationService
     {
-        private readonly IHubContext<NotificationHub> _hubContext;
+        private readonly NotificationHub _hubContext;
         private readonly ApplicationDbContext _context;
 
-        public NotificationService(IHubContext<NotificationHub> hubContext, ApplicationDbContext context)
+
+        public NotificationService(NotificationHub hubContext, ApplicationDbContext context)
         {
             _hubContext = hubContext;
             _context = context;
         }
 
-        public async Task SendBidNotification(int lotId, string userId, string message)
+        public async Task SendBidNotification(string userReceiptId, string message)
         {
-            // Enregistrer la notification dans la base de données
             var notification = new Notification
             {
-                ApplicationUserId = userId,
+                ApplicationUserId = userReceiptId,
                 Message = message,
                 CreeA = DateTime.Now,
-                estLu = false
+                EstLu = false
             };
 
             _context.Notifications.Add(notification);
             await _context.SaveChangesAsync();
 
-            // Envoyer la notification en temps réel via SignalR
-            await _hubContext.Clients.User(userId.ToString()).SendAsync("ReceiveNotification", message);
+            await _hubContext.SendToUser(notification);
         }
 
         public async Task<ICollection<Notification>> GetUnreadNotification(string userId)
         {
             var notifications = _context.Notifications
-                                              .Where(n => n.ApplicationUserId == userId && !n.estLu)
+                                              .Where(n => n.ApplicationUserId == userId && !n.EstLu)
                                               .OrderByDescending(n => n.CreeA)
                                               .ToList();
             if (notifications.Any())
@@ -58,7 +56,7 @@ namespace Gamma2024.Server.Services
 
             foreach (var notif in notifications)
             {
-                notif.estLu = true;
+                notif.EstLu = true;
             }
 
             _context.Notifications.UpdateRange(notifications);
@@ -67,4 +65,5 @@ namespace Gamma2024.Server.Services
             return (true, "Notification lu avec succès");
         }
     }
+
 }

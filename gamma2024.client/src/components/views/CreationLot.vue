@@ -215,15 +215,14 @@
                 setTimeout(() => {
                     router.push({ name: 'TableauDeBordInventaire' });
                 }, 2000);
-            } else {
-                erreur.value = "Erreur lors de la création du lot: " + reponse.data;
-                message.value = '';
             }
-        } catch (erreur) {
-            if (erreur.reponse && erreur.reponse.data) {
-                erreur.value = "Erreur lors de la création du lot: " + erreur.reponse.data;
+        } catch (err) {
+            if (err.response?.data) {
+                erreur.value = err.response.data;
+            } else if (typeof err === 'string') {
+                erreur.value = err;
             } else {
-                erreur.value = "Erreur lors de la création du lot: " + erreur.message;
+                erreur.value = "Une erreur est survenue lors de la création du lot";
             }
             message.value = '';
         }

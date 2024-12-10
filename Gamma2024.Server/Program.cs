@@ -4,7 +4,10 @@ using Gamma2024.Server.Interface;
 using Gamma2024.Server.Models;
 using Gamma2024.Server.Services;
 using Gamma2024.Server.Services.Email;
+
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -41,8 +44,8 @@ builder.Services.AddControllers()
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddSignalR();
-
+builder.Services.AddSignalR(builder => builder.EnableDetailedErrors = true);
+builder.Services.AddSingleton<NotificationHub>();
 builder.Services.AddScoped<ClientInscriptionService>();
 builder.Services.AddScoped<ClientModificationService>();
 builder.Services.AddScoped<VendeurService>();
@@ -68,7 +71,7 @@ builder.Services.AddHttpClient("ApiClient", (serviceProvider, client) =>
 {
     var httpContextAccessor = serviceProvider.GetRequiredService<IHttpContextAccessor>();
     var request = httpContextAccessor.HttpContext?.Request;
-    
+
     string baseUrl;
     if (request != null)
     {
@@ -78,7 +81,7 @@ builder.Services.AddHttpClient("ApiClient", (serviceProvider, client) =>
     {
         baseUrl = "https://localhost:7206";
     }
-    
+
     client.BaseAddress = new Uri(baseUrl);
 });
 
@@ -112,7 +115,12 @@ builder.Services.AddCors(options =>
     }
 });
 
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
     .AddJwtBearer(options =>
     {
         options.TokenValidationParameters = new TokenValidationParameters
@@ -126,7 +134,42 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateLifetime = true,
             ClockSkew = TimeSpan.Zero
         };
+
+        options.Events = new JwtBearerEvents
+        {
+            OnMessageReceived = context =>
+            {
+                var accessToken = context.Request.Query["access_token"];
+
+                // If the request is for our hub...
+                var path = context.HttpContext.Request.Path;
+                if (!string.IsNullOrEmpty(accessToken) &&
+                (path.StartsWithSegments("/api/hub")))
+                {
+                    // Read the token out of the query string
+                    context.Token = accessToken;
+                }
+                return Task.CompletedTask;
+            }
+        };
+    })
+    .AddCookie(options =>
+    {
+        //options.Events.OnRedirectToAccessDenied =
+        options.Events.OnRedirectToAccessDenied = c =>
+        {
+            c.Response.StatusCode = StatusCodes.Status401Unauthorized;
+            return Task.FromResult<object>(null);
+        };
     });
+
+var multiSchemePolicy = new AuthorizationPolicyBuilder(
+    CookieAuthenticationDefaults.AuthenticationScheme,
+    JwtBearerDefaults.AuthenticationScheme).RequireAuthenticatedUser()
+  .Build();
+
+builder.Services.AddAuthorization(o => o.DefaultPolicy = multiSchemePolicy);
+
 
 builder.Services.AddSession(options =>
 {
@@ -135,7 +178,17 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;
 });
 
-var jsReportOptions = builder.Configuration.GetSection("JsReport").Get<JsReportOptions>();
+builder.Services.Configure<CookiePolicyOptions>(options =>
+{
+    options.MinimumSameSitePolicy = SameSiteMode.None;
+});
+
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.Cookie.SameSite = SameSiteMode.None;
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+});
+
 
 var app = builder.Build();
 
@@ -143,19 +196,28 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
-    app.UseCors("Development");
 }
 else
 {
     app.UseExceptionHandler("/Error");
     //app.UseDeveloperExceptionPage();
     app.UseHsts();
-    app.UseCors("Production");
 }
 
 app.UseHttpsRedirection();
-app.UseRouting();
 StripeConfiguration.ApiKey = builder.Configuration["Stripe:SecretKey"];
+app.UseRouting();
+
+if (app.Environment.IsDevelopment())
+{
+    app.UseCors("Development");
+
+}
+else
+{
+    app.UseCors("Production");
+
+}
 app.UseAuthentication();
 app.UseAuthorization();
 
