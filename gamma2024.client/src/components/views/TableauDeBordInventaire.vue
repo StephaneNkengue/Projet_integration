@@ -409,7 +409,6 @@
             i++
         ) {
             lotsAffiches.value.push(lotsFiltres.value[i]);
-            //lotsAffiches.value.sort((a, b) => a.code.localeCompare(b.code));
             lotsAffiches.value.sort(function (x, y) {
                 var xNb = parseInt(x.code.replace(/[^0-9]+/g, ""));
                 var yNb = parseInt(y.code.replace(/[^0-9]+/g, ""));
