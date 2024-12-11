@@ -70,7 +70,7 @@ var logger = builder.Services.BuildServiceProvider().GetRequiredService<ILogger<
 builder.Services.AddHttpClient("ApiClient", (serviceProvider, client) =>
 {
     // URL de production hardcodée
-    var apiUrl = "https://sqlinfocg.cegepgranby.qc.ca/2162067";
+    var apiUrl = "https://sqlinfocg.cegepgranby.qc.ca/2162067/";
     client.BaseAddress = new Uri(apiUrl);
     logger.LogInformation($"API Client configuré avec l'URL hardcodée: {apiUrl}");
 });
