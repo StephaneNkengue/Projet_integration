@@ -94,7 +94,7 @@ builder.Services.AddCors(options =>
     }
     else
     {
-        options.AddPolicy("Production", builder =>
+        options.AddPolicy("Release", builder =>
         {
             builder
                 .WithOrigins("https://sqlinfocg.cegepgranby.qc.ca/2135621")
