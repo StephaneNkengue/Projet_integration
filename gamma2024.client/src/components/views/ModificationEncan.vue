@@ -62,7 +62,7 @@
                 </div>
 
                 <div class="mb-3 d-flex flex-column">
-                    <label for="pasLot" class="form-label">Pas de chaque lot (seconde):</label>
+                    <label for="pasLot" class="form-label">Délai de base de chaque lot (seconde):</label>
                     <input type="text"
                            @blur="vuelidate.pasLot.$touch()"
                            aria-label="pasLot"
@@ -75,7 +75,7 @@
                 </div>
 
                 <div class="mb-3 d-flex flex-column">
-                    <label for="pasMise" class="form-label">Pas de chaque mise (seconde):</label>
+                    <label for="pasMise" class="form-label">Temps ajouté (seconde) lors d'une mise (­< 60 sec) :</label>
                     <input type="search"
                            @blur="vuelidate.pasMise.$touch()"
                            aria-label="Recherche"
