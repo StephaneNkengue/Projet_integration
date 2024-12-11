@@ -42,7 +42,7 @@
             <!-- Le reste des champs du formulaire -->
             <div class="mb-3">
                 <label for="code" class="form-label">Numéro</label>
-                <input v-model="lot.numero" type="text" class="form-control" id="code" required>
+                <input v-model="lot.numero" type="text" class="form-control" disabled id="code" required>
             </div>
             <div class="mb-3">
                 <label for="description" class="form-label">Description</label>
@@ -244,17 +244,18 @@
                 setTimeout(() => {
                     router.push({ name: 'TableauDeBordInventaire' });
                 }, 2000);
-            }  } catch (err) {
-        // Correction de la gestion d'erreur
-        if (err.response?.data) {
-            erreur.value = err.response.data;
-        } else if (typeof err === 'string') {
-            erreur.value = err;
-        } else {
-            erreur.value = "Une erreur est survenue lors de la création du lot";
+            }
+        } catch (err) {
+            // Correction de la gestion d'erreur
+            if (err.response?.data) {
+                erreur.value = err.response.data;
+            } else if (typeof err === 'string') {
+                erreur.value = err;
+            } else {
+                erreur.value = "Une erreur est survenue lors de la création du lot";
+            }
+            message.value = '';
         }
-        message.value = '';
-    }
     };
 
     const chercherImageUrl = computed(() => (url) => {

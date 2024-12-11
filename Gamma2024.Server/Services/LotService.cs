@@ -313,6 +313,63 @@ namespace Gamma2024.Server.Services
                     .Include(l => l.EncanLots)
                     .FirstOrDefaultAsync(l => l.Id == id);
 
+                if (lot.IdVendeur != lotVM.IdVendeur || lot.EncanLots.FirstOrDefault(el => el.IdEncan == lotVM.IdEncan) == null)
+                {
+                    var lotsVendeurEncan = _context.EncanLots
+                                            .Include(el => el.Lot)
+                                            .Where(el => el.IdEncan == lotVM.IdEncanModifie)
+                                            .Select(el => el.Lot)
+                                            .Where(el => el.IdVendeur == lotVM.IdVendeur)
+                                            .ToList();
+
+                    char[] az = Enumerable.Range('a', 'z' - 'a' + 1).Select(i => (Char)i).ToArray();
+
+                    if (lotsVendeurEncan.Count() > 0)
+                    {
+                        var dernierLotVendeur = lotsVendeurEncan.OrderBy(el => el.Numero).Last().Numero;
+                        var num = 0;
+
+                        try
+                        {
+                            num = int.Parse(dernierLotVendeur);
+                            lotVM.Numero = num + "a";
+                        }
+                        catch
+                        {
+                            var dernLettre = dernierLotVendeur.Last();
+                            string nb = Regex.Replace(dernierLotVendeur, "[A-Za-z ]", "");
+                            var indexArray = Array.IndexOf(az, dernLettre);
+
+                            lotVM.Numero = nb + az[indexArray + 1];
+                        }
+
+                    }
+                    else
+                    {
+                        var ordre = _context.EncanLots
+                                                .Include(el => el.Lot)
+                                                .Where(el => el.IdEncan == lotVM.IdEncanModifie)
+                                                .Select(el => el.Lot)
+                                                .ToList();
+
+                        if (ordre.Count() > 0)
+                        {
+                            var dernierLotEncan = ordre.OrderBy(x =>
+                            {
+                                var nb = Regex.Replace(x.Numero, "[A-Za-z ]", "");
+
+                                return int.Parse(nb);
+                            }).Last().Numero;
+                            string nbDern = Regex.Replace(dernierLotEncan, "[A-Za-z ]", "");
+                            lotVM.Numero = (int.Parse(nbDern) + 1).ToString();
+                        }
+                        else
+                        {
+                            lotVM.Numero = "1";
+                        }
+                    }
+                }
+
                 if (lot == null)
                 {
                     return (false, "Lot non trouvé", null);
