@@ -1132,16 +1132,21 @@ namespace Gamma2024.Server.Services
         {
             try
             {
-                _logger.LogInformation($"Début de la finalisation de l'encan #{numeroEncan}");
-
                 var client = _httpClientFactory.CreateClient("ApiClient");
+                
+                // Log l'URL de base du client
+                _logger.LogInformation($"BaseAddress du client: {client.BaseAddress}");
 
-                _logger.LogInformation("Création des factures...");
+                // Construction des URLs complètes pour le logging
+                var urlFactures = $"{client.BaseAddress}api/factures/CreerFacturesParEncan/{numeroEncan}";
+                var urlPaiements = $"{client.BaseAddress}api/paiement/ChargerClients/{numeroEncan}";
+
+                _logger.LogInformation($"Tentative d'appel à l'URL des factures: {urlFactures}");
                 var factureResponse = await client.PostAsync($"api/factures/CreerFacturesParEncan/{numeroEncan}", null);
                 var factureContent = await factureResponse.Content.ReadAsStringAsync();
                 _logger.LogInformation($"Réponse création factures: {factureResponse.StatusCode} - {factureContent}");
 
-                _logger.LogInformation("Traitement des paiements...");
+                _logger.LogInformation($"Tentative d'appel à l'URL des paiements: {urlPaiements}");
                 var paiementResponse = await client.PostAsync($"api/paiement/ChargerClients/{numeroEncan}", null);
                 var paiementContent = await paiementResponse.Content.ReadAsStringAsync();
                 _logger.LogInformation($"Réponse paiements: {paiementResponse.StatusCode} - {paiementContent}");
