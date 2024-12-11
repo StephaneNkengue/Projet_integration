@@ -97,7 +97,7 @@ builder.Services.AddCors(options =>
         options.AddPolicy("Production", builder =>
         {
             builder
-                .WithOrigins("https://sqlinfocg.cegepgranby.qc.ca/2162067")
+                .WithOrigins("https://sqlinfocg.cegepgranby.qc.ca/2135621")
                 .AllowAnyMethod()
                 .AllowAnyHeader()
                 .AllowCredentials();
