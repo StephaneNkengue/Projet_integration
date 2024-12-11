@@ -66,7 +66,11 @@
             </div>
             <div class="mb-3">
                 <label for="artiste" class="form-label">Artiste</label>
-                <input v-model="lot.artiste" type="text" class="form-control" id="artiste" required>
+                <select v-model="lot.artiste" class="form-select" id="artiste" required>
+                    <option v-for="artiste in artistes" :key="artiste.nomArtiste" :value="artiste.nomArtiste">
+                        {{ artiste.nomArtiste }}
+                    </option>
+                </select>
             </div>
             <div class="mb-3">
                 <label for="idCategorie" class="form-label">Catégorie</label>
@@ -134,6 +138,7 @@
     const route = useRoute();
 
     const lot = ref(null);
+    const artistes = ref([]);
     const categories = ref([]);
     const vendeurs = ref([]);
     const mediums = ref([]);
@@ -180,6 +185,7 @@
     onMounted(async () => {
         try {
             lot.value = await store.dispatch('obtenirLot', route.params.id);
+            artistes.value = await store.dispatch("obtenirArtistes");
             categories.value = await store.dispatch('obtenirCategories');
             vendeurs.value = await store.dispatch('obtenirVendeurs');
             mediums.value = await store.dispatch('obtenirMediums');
