@@ -49,7 +49,7 @@ namespace Gamma2024.Server.Extensions
                 if (!string.IsNullOrEmpty(columns[1]))
                 {
                     var livrable = false;
-                    if (columns[11] == "oui")
+                    if (columns[11].ToLower() == "oui")
                     {
                         livrable = true;
                     }

@@ -66,7 +66,11 @@
             </div>
             <div class="mb-3">
                 <label for="artiste" class="form-label">Artiste</label>
-                <input v-model="lot.artiste" type="text" class="form-control" id="artiste" required>
+                <select v-model="lot.artiste" class="form-select" id="artiste" required>
+                    <option v-for="artiste in artistes" :key="artiste.nomArtiste" :value="artiste.nomArtiste">
+                        {{ artiste.nomArtiste }}
+                    </option>
+                </select>
             </div>
             <div class="mb-3">
                 <label for="idCategorie" class="form-label">Catégorie</label>
@@ -99,7 +103,7 @@
             <div class="mb-3">
                 <label for="idEncan" class="form-label">Encan</label>
                 <select v-model="lot.idEncanModifie" class="form-select" id="idEncan" required>
-                    <option v-for="encan in encans" :key="encan.id" :value="encan.id">
+                    <option v-for="encan in encansFuturs" :key="encan.id" :value="encan.id">
                         {{ encan.numeroEncan }}
                     </option>
                 </select>
@@ -134,10 +138,12 @@
     const route = useRoute();
 
     const lot = ref(null);
+    const artistes = ref([]);
     const categories = ref([]);
     const vendeurs = ref([]);
     const mediums = ref([]);
     const encans = ref([]);
+    const encansFuturs = ref([]);
     const nouvellesPhotos = ref([]);
     const photosASupprimer = ref([]);
     const message = ref('');
@@ -179,10 +185,26 @@
     onMounted(async () => {
         try {
             lot.value = await store.dispatch('obtenirLot', route.params.id);
+            artistes.value = await store.dispatch("obtenirArtistes");
             categories.value = await store.dispatch('obtenirCategories');
             vendeurs.value = await store.dispatch('obtenirVendeurs');
             mediums.value = await store.dispatch('obtenirMediums');
             encans.value = await store.dispatch('obtenirEncans');
+
+            const dernierEncan = await store.dispatch(
+                "chercherNumeroEncanEnCours"
+            );
+            if (dernierEncan.data != 0) {
+                var numeroLimiteEncan = dernierEncan.data;
+            }
+            else {
+                const encansPasses = await store.dispatch(
+                    "chercherEncansPasses"
+                );
+                var numeroLimiteEncan = Math.max(...encansPasses.data.map(encan => encan.numeroEncan))
+            }
+            encansFuturs.value = encans.value.filter((encan) => encan.numeroEncan > numeroLimiteEncan);
+
         } catch (erreur) {
             console.error("Erreur lors de la récupération des données:", erreur);
             // Optionnel: Afficher un message d'erreur à l'utilisateur
