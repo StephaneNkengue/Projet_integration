@@ -26,7 +26,7 @@ namespace Gamma2024.Server.Services
 
         public ICollection<FactureAffichageVM> ChercherFactures()
         {
-            var factures = _context.Factures.Include(f => f.FactureLivraison).Include(f => f.Lots).AsEnumerable().Select(f =>
+            var factures = _context.Factures.Include(f => f.FactureLivraison).Include(f => f.Lots).OrderByDescending(f => f.NumeroEncan).AsEnumerable().Select(f =>
             {
                 var factureAffichage = new FactureAffichageVM()
                 {
@@ -62,7 +62,7 @@ namespace Gamma2024.Server.Services
 
         public ICollection<FactureAffichageMembreVM> ChercherFacturesMembre(string id)
         {
-            var factures = _context.Factures.Include(f => f.Lots).Include(f => f.FactureLivraison).Where(c => c.IdClient == id).AsEnumerable().Select(f =>
+            var factures = _context.Factures.Include(f => f.Lots).Include(f => f.FactureLivraison).Where(c => c.IdClient == id).OrderByDescending(f => f.NumeroEncan).AsEnumerable().Select(f =>
             {
                 var factureAffichage = new FactureAffichageMembreVM()
                 {
