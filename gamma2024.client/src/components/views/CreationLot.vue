@@ -60,8 +60,12 @@
                 <input v-model.number="lot.prixMinPourVente" type="number" class="form-control" id="prixMinPourVente" required>
             </div>
             <div class="mb-3">
-                <label for="artiste" class="form-label">Artiste</label>
-                <input v-model="lot.artiste" type="text" class="form-control" id="artiste" required>
+                <label for="idArtiste" class="form-label">Artiste</label>
+                <select v-model="lot.idArtiste" class="form-select" id="idArtiste" required>
+                    <option v-for="artiste in artistes" :key="artiste.nomArtiste" :value="artiste.nomArtiste">
+                        {{ artiste.nomArtiste }}
+                    </option>
+                </select>
             </div>
             <div class="mb-3">
                 <label for="idCategorie" class="form-label">Catégorie</label>
@@ -134,7 +138,7 @@
         valeurEstimeMax: 0,
         prixOuverture: 0,
         prixMinPourVente: 0,
-        artiste: '',
+        artiste: null,
         idCategorie: null,
         idVendeur: null,
         estLivrable: false,
@@ -143,6 +147,7 @@
         hauteur: 0,
         largeur: 0
     });
+    const artistes = ref([]);
     const categories = ref([]);
     const vendeurs = ref([]);
     const mediums = ref([]);
@@ -155,6 +160,7 @@
 
     onMounted(async () => {
         try {
+            artistes.value = await store.dispatch("obtenirArtistes");
             categories.value = await store.dispatch('obtenirCategories');
             vendeurs.value = await store.dispatch('obtenirVendeurs');
             mediums.value = await store.dispatch('obtenirMediums');
