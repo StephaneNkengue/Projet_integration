@@ -275,7 +275,7 @@
 </template>
 
 <script setup>
-    import { onMounted, ref, watch } from "vue";
+    import { onMounted, ref, watch, computed } from "vue";
     import { useStore } from "vuex";
     import { useRouter } from "vue-router";
 
@@ -409,6 +409,25 @@
             i++
         ) {
             lotsAffiches.value.push(lotsFiltres.value[i]);
+            //lotsAffiches.value.sort((a, b) => a.code.localeCompare(b.code));
+            lotsAffiches.value.sort(function (x, y) {
+                var xNb = parseInt(x.code.replace(/[^0-9]+/g, ""));
+                var yNb = parseInt(y.code.replace(/[^0-9]+/g, ""));
+
+                if (xNb == yNb) {
+                    var xLtr = x.code.replace(/[^A-Za-z]+/g, "");
+                    var yLtr = y.code.replace(/[^A-Za-z]+/g, "");
+
+                    return xLtr.localeCompare(yLtr)
+                }
+                else if (xNb < yNb) {
+                    return -1;
+                }
+                else {
+                    return 1;
+                }
+            })
+            lotsAffiches.value.sort((a, b) => a.numeroEncan.localeCompare(b.numeroEncan));
         }
     }
 
@@ -646,19 +665,6 @@
     const afficherLotsParPage = (nbLots) => {
         changerNbLotParPage(nbLots);
     };
-
-    // async function VerifEstPasse(estVendu, numeroEncan) {
-    //     const numEncan = await store.dispatch("chercherEncanEnCours");
-    //     console.log("test" + numEncan.data.numeroEncan);
-    //     if (!estVendu && numeroEncan == numEncan.data.numeroEncan) {
-
-    //         return false;
-    //     }
-    //     else {
-
-    //         return true;
-    //     }
-    // }
 </script>
 
 <style scoped>
