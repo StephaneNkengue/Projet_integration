@@ -9,102 +9,50 @@
                 </p>
             </div>
 
-            <div class="w-100 px-5 mb-4">
+            <div class="w-100 px-5">
                 <div class="accordion" id="accordionCommentMiser">
                     <div class="accordion-item">
                         <h2 class="accordion-header">
                             <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseCommentMiser" aria-expanded="true" aria-controls="collapseCommentMiser">
-                                <h2>Vous devez vous connecter pour miser</h2>
+                                <h2>Comment faire des mises</h2>
                             </button>
                         </h2>
                         <div id="collapseCommentMiser" class="accordion-collapse collapse" data-bs-parent="#accordionCommentMiser">
                             <div class="accordion-body">
 
                                 <div class="w-100">
-                                    <ol class="list list-group-numbered fs-5">
+                                    <ol class="list list-group-numbered fs-5 justifyText">
                                         <li class="list-group-item">
-                                            Pour pouvoir faire des mises, vous devez être connecté.
+                                            Pour faire une mise, tout d'abord, vous devez être connecté. Par la suite, vous devez cliquer sur le bouton Miser. Une fenêtre contextuelle va apparaître. Dans celle-ci, vous pouvez faire une enchère en cliquant sur le bouton Miser. Cette mise a une valeur prédéterminée car il faut respecter les pas de l'enchère. Le pas de l'enchère est le prix minimum pour une nouvelle enchère. Veuillez-vous référer à la page des Conditions de la compagnie sous la Majoration de l'enchère pour la valeur du pas selon la valeur du lot.
                                             <div class="w-100 d-flex justify-content-center">
                                                 <div class="d-flex col-5 justify-content-center">
-                                                    <img src="/images/ImageManuelUtilisateur/ConnecterPourMiser.png" class="img-fluid" alt="Image qui affiche une notification qui indique qu'on doit se connecter pour pouvoir miser" />
+                                                    <img src="/images/ImageManuelUtilisateur/CliquerSurMiser.png" class="img-fluid" alt="Image qui affiche un lot avec une souris qui clique sur le bouton miser" />
+
+                                                    <img src="/images/ImageManuelUtilisateur/MiseReguliere.png" class="img-fluid" alt="Image qui affiche une fenêtre contextuelle pour les mises" />
                                                 </div>
                                             </div>
                                         </li>
                                         <li class="list-group-item">
-                                            Pour vous connectez, vous devez appyer sur bouton Connexion en haut à droite.
+                                            Lorsque vous voyez que le lot est entouré d'une couleur verte, cela veut dire que vous avez la plus haute mise. De plus, vous allez voir une notification de succès s'affichée en haut à droite de la page.
                                             <div class="w-100 d-flex justify-content-center">
                                                 <div class="d-flex col-5 justify-content-center">
-                                                    <img src="/images/ImageManuelUtilisateur/BoutonConnexion.png" class="img-fluid" alt="Image qui affiche le bouton de connexion" />
+                                                    <img src="/images/ImageManuelUtilisateur/MiseReguliereEffectue.png" class="img-fluid" alt="Image qui affiche un lot dont un membre a miser dessus" />
                                                 </div>
                                             </div>
                                         </li>
                                         <li class="list-group-item">
-                                            Entrez votre pseudonyme ou votre adresse courriel puis votre mot de passe. Ensuite, cliquez sur le bouton Connexion.
+                                            Lorsque vous voyez que le lot est entouré d'une couleur rouge, cela veut dire que votre mise a été dépassée. De plus, vous allez voir une notification s'affichée en haut à droite de la page où se trouve une petite cloche pour vous avisez que quelqu'un vous a dépasser sur le lot dont vous avez miser.
                                             <div class="w-100 d-flex justify-content-center">
                                                 <div class="d-flex col-5 justify-content-center">
-                                                    <img src="/images/ImageManuelUtilisateur/PageConnexion.png" class="img-fluid" alt="Image qui affiche la page de connexion" />
+                                                    <img src="/images/ImageManuelUtilisateur/MiseReguliereDepasse.png" class="img-fluid" alt="Image qui affiche la page de connexion" />
                                                 </div>
                                             </div>
                                         </li>
                                         <li class="list-group-item">
-                                            Si c'est la première fois que vous vous connectez, vous allez devoir entrer les informations de votre carte. Par la suite, vous serez rediriger vers l'encan courant. S'il y a un encan courant, vous allez voir les lots qui sont mis en enchères, sinon il y aura un message qui vous indiquera qu'il n'y a pas d'encan courant.
+
                                             <div class="w-100 d-flex justify-content-center">
                                                 <div class="d-flex  justify-content-center">
-                                                    <img src="/images/ImageManuelUtilisateur/EnregistrementCarte.png" class="img-fluid" alt="Image qui affiche la page d'ajout d'une carte" />
-                                                </div>
-                                            </div>
-                                        </li>
-                                    </ol>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-
-            <div class="w-100 px-5">
-                <div class="accordion" id="accordionExample">
-                    <div class="accordion-item">
-                        <h2 class="accordion-header">
-                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                <h2>Comment faire des mises</h2>
-                            </button>
-                        </h2>
-                        <div id="collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
-                            <div class="accordion-body">
-
-                                <div class="w-100">
-                                    <ol class="list list-group-numbered fs-5">
-                                        <li class="list-group-item">
-                                            Pour pouvoir faire des mises, vous devez être connecté.
-                                            <div class="w-100 d-flex justify-content-center">
-                                                <div class="d-flex col-5 justify-content-center">
-                                                    <img src="/images/ImageManuelUtilisateur/ConnecterPourMiser.png" class="img-fluid" alt="Image qui affiche une notification qui indique qu'on doit se connecter pour pouvoir miser" />
-                                                </div>
-                                            </div>
-                                        </li>
-                                        <li class="list-group-item">
-                                            Pour vous connectez, vous devez appyer sur bouton Connexion en haut à droite.
-                                            <div class="w-100 d-flex justify-content-center">
-                                                <div class="d-flex col-5 justify-content-center">
-                                                    <img src="/images/ImageManuelUtilisateur/BoutonConnexion.png" class="img-fluid" alt="Image qui affiche le bouton de connexion" />
-                                                </div>
-                                            </div>
-                                        </li>
-                                        <li class="list-group-item">
-                                            Entrez votre pseudonyme ou votre adresse courriel puis votre mot de passe. Ensuite, cliquez sur le bouton Connexion.
-                                            <div class="w-100 d-flex justify-content-center">
-                                                <div class="d-flex col-5 justify-content-center">
-                                                    <img src="/images/ImageManuelUtilisateur/PageConnexion.png" class="img-fluid" alt="Image qui affiche la page de connexion" />
-                                                </div>
-                                            </div>
-                                        </li>
-                                        <li class="list-group-item">
-                                            Si c'est la première fois que vous vous connectez, vous allez devoir entrer les informations de votre carte. Par la suite, vous serez rediriger vers l'encan courant. S'il y a un encan courant, vous allez voir les lots qui sont mis en enchères, sinon il y aura un message qui vous indiquera qu'il n'y a pas d'encan courant.
-                                            <div class="w-100 d-flex justify-content-center">
-                                                <div class="d-flex  justify-content-center">
-                                                    <img src="/images/ImageManuelUtilisateur/EnregistrementCarte.png" class="img-fluid" alt="Image qui affiche la page d'ajout d'une carte" />
+                                                    <!--<img src="/images/ImageManuelUtilisateur/EnregistrementCarte.png" class="img-fluid" alt="Image qui affiche la page d'ajout d'une carte" />-->
                                                 </div>
                                             </div>
                                         </li>
