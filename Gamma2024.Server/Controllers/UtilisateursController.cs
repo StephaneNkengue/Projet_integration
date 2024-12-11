@@ -145,11 +145,10 @@ namespace Gamma2024.Server.Controllers
         }
 
         [Authorize(Roles = "Client")]
-        [HttpPut("MiseAJourInfoClient")]
+        [HttpPut("miseajourinfoclient")]
         public async Task<IActionResult> UpdateClientInfo([FromBody] UpdateClientInfoVM model)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
             var (success, message, updatedUser) = await _modificationService.MettreAJourClient(userId, model);
 
             if (success)

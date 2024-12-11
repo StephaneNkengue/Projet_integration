@@ -107,31 +107,63 @@ namespace Gamma2024.Server.Controllers
 		[HttpGet("categories")]
 		public async Task<ActionResult<IEnumerable<Categorie>>> ObtenirCategories()
 		{
-			var categories = await _context.Categories.ToListAsync();
-			return Ok(categories);
+			try 
+			{
+				var categories = await _context.Categories.ToListAsync();
+				return Ok(categories);
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError(ex, "Erreur lors de la récupération des catégories");
+				return StatusCode(500, "Erreur lors de la récupération des catégories");
+			}
 		}
 
 		[Authorize(Roles = ApplicationRoles.ADMINISTRATEUR)]
 		[HttpGet("vendeurs")]
 		public async Task<ActionResult<IEnumerable<Vendeur>>> ObtenirVendeurs()
 		{
-			var vendeurs = await _context.Vendeurs.ToListAsync();
-			return Ok(vendeurs);
+			try 
+			{
+				var vendeurs = await _context.Vendeurs.ToListAsync();
+				return Ok(vendeurs);
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError(ex, "Erreur lors de la récupération des vendeurs");
+				return StatusCode(500, "Erreur lors de la récupération des vendeurs");
+			}
 		}
 
 		[HttpGet("mediums")]
 		public async Task<ActionResult<IEnumerable<Medium>>> ObtenirMediums()
 		{
-			var mediums = await _context.Mediums.ToListAsync();
-			return Ok(mediums);
+			try 
+			{
+				var mediums = await _context.Mediums.ToListAsync();
+				return Ok(mediums);
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError(ex, "Erreur lors de la récupération des mediums");
+				return StatusCode(500, "Erreur lors de la récupération des mediums");
+			}
 		}
 
 		[Authorize(Roles = ApplicationRoles.ADMINISTRATEUR)]
 		[HttpGet("encans")]
 		public async Task<ActionResult<IEnumerable<Encan>>> ObtenirEncans()
 		{
-			var encans = await _context.Encans.ToListAsync();
-			return Ok(encans);
+			try 
+			{
+				var encans = await _context.Encans.ToListAsync();
+				return Ok(encans);
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError(ex, "Erreur lors de la récupération des encans");
+				return StatusCode(500, "Erreur lors de la récupération des encans");
+			}
 		}
 
 		[HttpGet("cherchertouslotsrecherche")]

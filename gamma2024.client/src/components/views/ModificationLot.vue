@@ -185,6 +185,11 @@
             encans.value = await store.dispatch('obtenirEncans');
         } catch (erreur) {
             console.error("Erreur lors de la récupération des données:", erreur);
+            // Optionnel: Afficher un message d'erreur à l'utilisateur
+            message.value = {
+                type: 'error',
+                text: "Erreur lors du chargement des données. Veuillez réessayer."
+            };
         }
     });
 

@@ -213,7 +213,7 @@
                                 <img v-else src="/icons/NonLivrable.png" width="40" height="40" />
                             </td>
                             <td>
-                                <div class="d-flex">
+                                <div class="d-flex" v-if="!lot.estVendu && parseInt(numeroEncanCourrant)!=lot.numeroEncan">
                                     <router-link :to="{ name: 'ModificationLot', params: { id: lot.id } }">
                                         <button class="btn btnModifierIcone bleuMarinSecondaireFond px-3 me-3">
                                             <img src="/icons/ModifierBtn.png" width="30" height="30" />
@@ -294,6 +294,7 @@
     const lotsAffiches = ref();
     const chargement = ref(true);
     const nbPages = ref();
+    const numeroEncanCourrant = ref()
     let genererListeDeLotsFiltree = function () { };
 
     const colonnesVisibles = ref({
@@ -421,6 +422,7 @@
 
         try {
             initialiserDonnees();
+
         } catch (erreur) {
             console.error("Erreur lors de la récupération des lots:", erreur);
         }
@@ -581,6 +583,9 @@
 
         chercherLotsAAfficher();
         chargement.value = false;
+
+        const numEncCour = await store.dispatch("chercherEncanEnCours");
+        numeroEncanCourrant.value = numEncCour.data.numeroEncan;
     }
 
     watch(rechercheDansListeDeLot, (nouvelleValeur) => {
@@ -641,6 +646,19 @@
     const afficherLotsParPage = (nbLots) => {
         changerNbLotParPage(nbLots);
     };
+
+    // async function VerifEstPasse(estVendu, numeroEncan) {
+    //     const numEncan = await store.dispatch("chercherEncanEnCours");
+    //     console.log("test" + numEncan.data.numeroEncan);
+    //     if (!estVendu && numeroEncan == numEncan.data.numeroEncan) {
+
+    //         return false;
+    //     }
+    //     else {
+
+    //         return true;
+    //     }
+    // }
 </script>
 
 <style scoped>

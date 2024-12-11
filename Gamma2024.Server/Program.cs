@@ -69,20 +69,16 @@ var logger = builder.Services.BuildServiceProvider().GetRequiredService<ILogger<
 
 builder.Services.AddHttpClient("ApiClient", (serviceProvider, client) =>
 {
-    var httpContextAccessor = serviceProvider.GetRequiredService<IHttpContextAccessor>();
-    var request = httpContextAccessor.HttpContext?.Request;
-
-    string baseUrl;
-    if (request != null)
+    // Utiliser l'URL de l'API depuis la configuration
+    var apiUrl = builder.Configuration["ApiUrl"];
+    if (string.IsNullOrEmpty(apiUrl))
     {
-        baseUrl = $"{request.Scheme}://{request.Host}";
+        // Fallback pour le développement local
+        apiUrl = "https://localhost:7206";
     }
-    else
-    {
-        baseUrl = "https://localhost:7206";
-    }
-
-    client.BaseAddress = new Uri(baseUrl);
+    
+    client.BaseAddress = new Uri(apiUrl);
+    logger.LogInformation($"API Client configured with base address: {apiUrl}");
 });
 
 
@@ -107,7 +103,7 @@ builder.Services.AddCors(options =>
         options.AddPolicy("Production", builder =>
         {
             builder
-                .WithOrigins("https://sqlinfocg.cegepgranby.qc.ca")
+                .WithOrigins("https://sqlinfocg.cegepgranby.qc.ca/2162067")
                 .AllowAnyMethod()
                 .AllowAnyHeader()
                 .AllowCredentials();

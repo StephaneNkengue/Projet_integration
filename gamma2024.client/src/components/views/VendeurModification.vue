@@ -304,14 +304,23 @@
                     router.push("/affichagevendeurs");
                 }, 2000);
             } else {
-                message.value = { type: "danger", text: resultat.error };
+                message.value = {
+                    type: "danger",
+                    text:  resultat.error,
+                };
             }
         } catch (erreur) {
-            console.error("Erreur lors de la modification du vendeur:", erreur);
-            message.value = {
-                type: "danger",
-                text: "Une erreur est survenue lors de la modification du vendeur.",
-            };
+            if (erreur.response?.data?.message) {
+                message.value = {
+                    type: "danger",
+                    text: erreur.response.data.message,
+                };
+            } else {
+                message.value = {
+                    type: "danger",
+                    text: "Une erreur est survenue lors de la modification du vendeur",
+                };
+            }
         }
     };
 
