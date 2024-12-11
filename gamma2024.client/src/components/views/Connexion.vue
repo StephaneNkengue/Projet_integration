@@ -1,10 +1,10 @@
 <template>
-    <div class="bg-image pt-5 imageDeFondEsquise h-100">
+    <div class="bg-image p-2 pt-md-5 imageDeFondEsquise h-100">
         <transition name="fade">
-            <div v-if="messageLockout"
+            <div v-if="messageVerrouiller"
                  class="container lockMessage alert alert-warning"
                  role="alert">
-                {{ messageLockout }}
+                {{ messageVerrouiller }}
             </div>
         </transition>
         <div class="container d-flex flex-column justify-content-start align-items-stretch bg-white bg-opacity-75 cadreBlanc">
@@ -28,10 +28,10 @@
                                    class="form-control"
                                    id="emailOuPseudo"
                                    v-model="emailOuPseudo"
-                                   @input="validateEmailOuPseudo"
-                                   :class="{ 'is-invalid': emailOuPseudoError }" />
-                            <div v-if="emailOuPseudoError" class="invalid-feedback">
-                                {{ emailOuPseudoError }}
+                                   @input="validerEmailOuPseudo"
+                                   :class="{ 'is-invalid': emailOuPseudoErreur }" />
+                            <div v-if="emailOuPseudoErreur" class="retroaction-invalide">
+                                {{ emailOuPseudoErreur }}
                             </div>
                         </div>
                     </div>
@@ -41,11 +41,11 @@
                             <input type="password"
                                    class="form-control"
                                    id="motDePasse"
-                                   v-model="password"
-                                   @input="validatePassword"
-                                   :class="{ 'is-invalid': passwordError }" />
-                            <div v-if="passwordError" class="invalid-feedback">
-                                {{ passwordError }}
+                                   v-model="motDePasse"
+                                   @input="validerMotDePasse"
+                                   :class="{ 'is-invalid': motDePasseErreur }" />
+                            <div v-if="motDePasseErreur" class="retroaction-invalide">
+                                {{ motDePasseErreur }}
                             </div>
                         </div>
                     </div>
@@ -91,10 +91,10 @@
         data() {
             return {
                 emailOuPseudo: "",
-                password: "",
-                emailOuPseudoError: "",
-                passwordError: "",
-                messageLockout: "",
+                motDePasse: "",
+                emailOuPseudoErreur: "",
+                motDePasseErreur: "",
+                messageVerrouiller: "",
                 messageErreur: "",
                 isSubmitting: false,
                 invalide: false,
@@ -103,7 +103,7 @@
 
         computed: {
             isValide() {
-                if (this.emailOuPseudo.trim() !== "" && this.password.trim() !== "") {
+                if (this.emailOuPseudo.trim() !== "" && this.motDePasse.trim() !== "") {
                     return true;
                 }
                 return false;
@@ -111,26 +111,26 @@
         },
 
         methods: {
-            validateEmailOuPseudo() {
+            validerEmailOuPseudo() {
                 if (this.emailOuPseudo.trim() === "") {
-                    this.emailOuPseudoError =
+                    this.emailOuPseudoErreur =
                         "L'email ou le pseudonyme est requis pour la connexion";
                     return;
                 }
-                this.emailOuPseudoError = "";
+                this.emailOuPseudoErreur = "";
             },
-            validatePassword() {
-                if (this.password.trim() === "") {
-                    this.passwordError = "Le mot de passe est requis pour la connexion";
+            validerMotDePasse() {
+                if (this.motDePasse.trim() === "") {
+                    this.motDePasseErreur = "Le mot de passe est requis pour la connexion";
                     return;
                 }
-                this.passwordError = "";
+                this.motDePasseErreur = "";
             },
 
             async connexion() {
                 this.isSubmitting = true;
-                this.validateEmailOuPseudo();
-                this.validatePassword();
+                this.validerEmailOuPseudo();
+                this.validerMotDePasse();
 
                 if (!this.isValide) {
                     this.isSubmitting = false;
@@ -140,7 +140,7 @@
                 try {
                     let result = await this.$store.dispatch("login", {
                         emailOuPseudo: this.emailOuPseudo,
-                        password: this.password,
+                        password: this.motDePasse,
                     });
                     if (result.success) {
                         // Vérifiez la structure de result.roles
@@ -157,9 +157,9 @@
                         }
                         else if (rolesString == 'Client') {
 
-                            let response = await this.$store.dispatch("chercherCartesUser");
+                            let reponse = await this.$store.dispatch("chercherCartesUser");
 
-                            if (response.data.length < 1) {
+                            if (reponse.data.length < 1) {
                                 this.$router.push({ name: 'EnregistrerCarte' });
                             }
                             else {
@@ -174,18 +174,34 @@
 
                     } else {
                         if (result.element == "password") {
-                            this.passwordError = result.error;
+                            this.motDePasseErreur = result.error;
                         } else if (result.element === "lock") {
-                            this.messageLockout = result.error;
+                            this.messageVerrouiller = result.error;
                             setTimeout(() => {
-                                this.messageLockout = "";
+                                this.messageVerrouiller = "";
                             }, 5000);
                         } else {
-                            this.emailOuPseudoError = result.error;
+                            this.emailOuPseudoErreur = result.error;
                         }
                     }
-                } catch (error) {
-                    this.messageErreur = "Une erreur est survenue lors de la connexion.";
+                } catch (erreur) {
+                    if (erreur.response && erreur.response.data) {
+                        const { element, message } = erreur.response.data;
+                        if (element === "password") {
+                            this.motDePasseErreur = message;
+                        } else if (element === "lock") {
+                            this.messageVerrouiller = message;
+                            setTimeout(() => {
+                                this.messageVerrouiller = "";
+                            }, 5000);
+                        } else if (element === "user_pseudo") {
+                            this.emailOuPseudoErreur = message;
+                        } else {
+                            this.messageErreur = message || "Une erreur est survenue lors de la connexion.";
+                        }
+                    } else {
+                        this.messageErreur = "Une erreur est survenue lors de la connexion.";
+                    }
                 } finally {
                     this.isSubmitting = false;
                 }
@@ -231,7 +247,7 @@
         font-size: 0.875rem;
     }
 
-    .invalid-feedback {
+    .retroaction-invalide {
         display: block;
         color: #dc3545;
         font-size: 0.875rem;

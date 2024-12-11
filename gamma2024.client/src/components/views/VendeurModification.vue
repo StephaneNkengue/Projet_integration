@@ -3,7 +3,7 @@
         <div class="container py-5 h-100">
             <div class="row d-flex justify-content-center align-items-center h-100">
                 <div class="col">
-                    <form @submit.prevent="submitForm">
+                    <form @submit.prevent="soumettreFormulaire">
                         <div class="card my-4">
                             <div class="row g-0">
                                 <div class="col-xl-12">
@@ -150,7 +150,7 @@
 
                                                 <div class="form-outline mb-4">
                                                     <label class="form-label" for="codePostal">Code postal</label>
-                                                    <input v-model="formattedCodePostal"
+                                                    <input v-model="codePostalFormate"
                                                            type="text"
                                                            id="codePostal"
                                                            class="form-control form-control-lg"
@@ -165,7 +165,7 @@
                                         <div class="d-flex justify-content-end pt-3">
                                             <button type="button"
                                                     class="btn btn-light btn-lg"
-                                                    @click="resetForm">
+                                                    @click="effacerFormulaire">
                                                 Réinitialiser
                                             </button>
                                             <button type="submit" class="btn btnSurvolerBleuMoyenFond text-white btn-lg ms-2">
@@ -225,16 +225,16 @@
         "YT": "Yukon"
     };
 
-    const normalizeString = (str) =>
+    const stringNormaliser = (str) =>
         str
             .toLowerCase()
             .normalize("NFD")
             .replace(/[\u0300-\u036f]/g, "");
 
-    const normalizedProvinces = computed(() =>
+    const provincesNormaliser = computed(() =>
         provinces.map((province) => ({
             original: province,
-            normalized: normalizeString(province),
+            normalized: stringNormaliser(province),
         }))
     );
 
@@ -257,71 +257,79 @@
 
     onMounted(async () => {
         try {
-            const vendeurData = await store.dispatch("obtenirVendeur", route.params.id);
+            const vendeurDonnees = await store.dispatch("obtenirVendeur", route.params.id);
             vendeur.value = {
-                id: vendeurData.id,
-                nom: vendeurData.nom,
-                prenom: vendeurData.prenom,
-                courriel: vendeurData.courriel,
-                telephone: vendeurData.telephone,
+                id: vendeurDonnees.id,
+                nom: vendeurDonnees.nom,
+                prenom: vendeurDonnees.prenom,
+                courriel: vendeurDonnees.courriel,
+                telephone: vendeurDonnees.telephone,
                 adresse: {
-                    numeroCivique: vendeurData.adresse.numeroCivique,
-                    rue: vendeurData.adresse.rue,
-                    ville: vendeurData.adresse.ville,
-                    province: provinceAbbreviations[vendeurData.adresse.province] || vendeurData.adresse.province,
-                    pays: vendeurData.adresse.pays,
-                    codePostal: vendeurData.adresse.codePostal,
-                    appartement: vendeurData.adresse.appartement,
+                    numeroCivique: vendeurDonnees.adresse.numeroCivique,
+                    rue: vendeurDonnees.adresse.rue,
+                    ville: vendeurDonnees.adresse.ville,
+                    province: provinceAbbreviations[vendeurDonnees.adresse.province] || vendeurDonnees.adresse.province,
+                    pays: vendeurDonnees.adresse.pays,
+                    codePostal: vendeurDonnees.adresse.codePostal,
+                    appartement: vendeurDonnees.adresse.appartement,
                 },
             };
 
             // Normaliser et trouver la correspondance
-            const normalizedLoadedProvince = normalizeString(
+            const provinceNormaliseeChargee = stringNormaliser(
                 vendeur.value.adresse.province
             );
-            const matchedProvince = normalizedProvinces.value.find(
-                (p) => p.normalized === normalizedLoadedProvince
+            const provinceAssortie = provincesNormaliser.value.find(
+                (p) => p.normalized === provinceNormaliseeChargee
             );
-            if (matchedProvince) {
-                vendeur.value.adresse.province = matchedProvince.original;
+            if (provinceAssortie) {
+                vendeur.value.adresse.province = provinceAssortie.original;
             }
-        } catch (error) {
+        } catch (erreur) {
             console.error(
                 "Erreur lors de la récupération des données du vendeur:",
-                error
+                erreur
             );
         }
     });
 
     const message = ref(null);
 
-    const submitForm = async () => {
+    const soumettreFormulaire = async () => {
         try {
-            const result = await store.dispatch("modifierVendeur", vendeur.value);
-            if (result.success) {
-                message.value = { type: "success", text: result.message };
+            const resultat = await store.dispatch("modifierVendeur", vendeur.value);
+            if (resultat.success) {
+                message.value = { type: "success", text: resultat.message };
                 setTimeout(() => {
                     router.push("/affichagevendeurs");
                 }, 2000);
             } else {
-                console.log("test 3");
-                message.value = { type: "danger", text: result.error };
+                message.value = {
+                    type: "danger",
+                    text:  resultat.error,
+                };
             }
-        } catch (error) {
-            console.error("Erreur lors de la modification du vendeur:", error);
-            message.value = {
-                type: "danger",
-                text: "Une erreur est survenue lors de la modification du vendeur.",
-            };
+        } catch (erreur) {
+            if (erreur.response?.data?.message) {
+                message.value = {
+                    type: "danger",
+                    text: erreur.response.data.message,
+                };
+            } else {
+                message.value = {
+                    type: "danger",
+                    text: "Une erreur est survenue lors de la modification du vendeur",
+                };
+            }
         }
     };
 
-    const resetForm = () => {
+    const effacerFormulaire = () => {
         // Réinitialiser le formulaire aux valeurs originales du vendeur
         onMounted();
     };
 
-    const formattedCodePostal = computed({
+    const codePostalFormate = computed({
         get: () => {
             const code = vendeur.value.adresse.codePostal;
             if (!code) return "";
@@ -338,8 +346,8 @@
         },
     });
 
-    const formatCodePostal = (event) => {
-        let value = event.target.value.toUpperCase();
+    const formatCodePostal = (evenement) => {
+        let value = evenement.target.value.toUpperCase();
         // Supprime tous les caractères non alphanumériques
         value = value.replace(/[^A-Z0-9]/g, "");
 
@@ -349,7 +357,7 @@
         }
 
         // Met à jour la valeur dans le champ
-        event.target.value = value;
+        evenement.target.value = value;
         // Met à jour le modèle
         vendeur.value.adresse.codePostal = value.replace(/\s/g, "");
     };

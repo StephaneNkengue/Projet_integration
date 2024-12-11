@@ -1,34 +1,76 @@
+using Gamma2024.Server.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 
-namespace Gamma2024.Server.Hub{
+namespace Gamma2024.Server.Hub
+{
     public interface INotificationHub
     {
-        Task ReceiveNotification(string message);
+        Task ReceiveNotification(object value);
     }
 
-    public class NotificationHub : Hub<INotificationHub>
+    [Authorize]
+    public class NotificationHub : Microsoft.AspNetCore.SignalR.Hub
     {
-        // Méthode pour envoyer une notification aux utilisateurs
-        public async Task SendNotification(string userId, string message)
+        private static readonly Dictionary<string, HashSet<string>> _userConnections = new();
+
+        public override async Task OnConnectedAsync()
         {
-            await Clients.User(userId).ReceiveNotification(message);
+            var userId = Context.UserIdentifier!;
+            var connectionId = Context.ConnectionId;
+
+            lock (_userConnections)
+            {
+                if (!_userConnections.ContainsKey(userId))
+                {
+                    _userConnections[userId] = [];
+                }
+                _userConnections[userId].Add(connectionId);
+            }
+
+
+            await base.OnConnectedAsync();
         }
 
-
-        // Méthode pour notifier tous les utilisateurs ayant misé sur le lot
-        public async Task NotifyUsers(string lotId, string message)
+        public async Task SendToUser(Notification notification)
         {
-            await Clients.Group(lotId).ReceiveNotification(message);
+            try
+            {
+                await Clients.User(notification.ApplicationUserId).SendAsync("ReceiveNotification", notification);
+            }
+            catch
+            {
+                return;
+            }
         }
 
-
-        // Joindre un utilisateur à un groupe de lot spécifique
-        public async Task JoinLotGroup(string lotId)
+        public override async Task OnDisconnectedAsync(Exception? ex)
         {
-            await Groups.AddToGroupAsync(Context.ConnectionId, lotId);
+            var userId = Context.UserIdentifier!;
+            var connectionId = Context.ConnectionId;
+
+            lock (_userConnections)
+            {
+                if (_userConnections.ContainsKey(userId))
+                {
+                    _userConnections[userId].Remove(connectionId);
+                    if (_userConnections[userId].Count == 0)
+                    {
+                        _userConnections.Remove(userId);
+                    }
+                }
+            }
+
+            await base.OnDisconnectedAsync(ex);
+        }
+
+        public HashSet<string> GetUserConnections(string userId)
+        {
+            lock (_userConnections)
+            {
+                return _userConnections.GetValueOrDefault(userId, new HashSet<string>());
+            }
         }
 
     }
-
-
 }

@@ -1,15 +1,17 @@
 <template>
-    <FactureModal v-if="factureLivraisonCreee != ''" :facturePdfPath="factureLivraisonCreee.pathFactureLivraison" :idFacture="'Livraison'+factureLivraisonCreee.idFacture"></FactureModal>
+    <span v-if="idFactureLivraisonCreee != ''">
+        <FactureLivraisonModal :idFacture="idFactureLivraisonCreee"></FactureLivraisonModal>
+    </span>
 
     <div class="container d-flex flex-column align-items-center">
         <h1>Choix de livraison</h1>
 
         <p id="message" v-show="siMessage"></p>
 
-        <div v-if="factureLivraisonCreee != ''" class="d-flex flex-column gap-2">
+        <div v-if="idFactureLivraisonCreee != ''" class="d-flex flex-column gap-2">
             <button class="btn btnSurvolerBleuMoyenFond text-white"
                     data-bs-toggle="modal"
-                    :data-bs-target="'#modalLivraison'+factureLivraisonCreee.idFacture">
+                    :data-bs-target="'#modalFactureLivraison'+idFactureLivraisonCreee">
                 Voir la facture de livraison
             </button>
 
@@ -155,7 +157,7 @@
                         <form v-show="siAutreAdresse">
                             <div class="alert alert-warning"
                                  role="alert"
-                                 v-show="siAlert"
+                                 v-show="siAlerte"
                                  id="messageAdresse">
                                 A simple warning alert—check it out!
                             </div>
@@ -273,10 +275,10 @@
 <script setup>
     import InputMask from "primevue/inputmask";
     import Button from "primevue/button";
-    import { onMounted, ref, reactive } from "vue";
+    import { onMounted, ref } from "vue";
     import { useStore } from "vuex";
     import { useRouter } from "vue-router";
-    import FactureModal from "@/components/modals/VoirFactureModal.vue";
+    import FactureLivraisonModal from "@/components/modals/VoirFactureLivraisonModal.vue";
 
     const router = useRouter();
 
@@ -302,7 +304,7 @@
     });
     const adresses = ref([]);
     const siMessage = ref(false);
-    const siAlert = ref(false);
+    const siAlerte = ref(false);
     const chargementSauvegarde = ref(false);
     const cartes = ref([]);
     const adresse = ref({
@@ -330,24 +332,24 @@
         { text: "Nunavut", value: "NU" },
         { text: "Yukon", value: "YT" },
     ]);
-    const factureLivraisonCreee = ref("");
+    const idFactureLivraisonCreee = ref("");
 
     onMounted(async () => {
         try {
-            const response = await store.dispatch(
+            const reponse = await store.dispatch(
                 "chercherPrevisualisationLivraison",
                 parseInt(props.idFacture)
             );
-            facture.value = response.data;
+            facture.value = reponse.data;
 
-            const adresseResponse = await store.dispatch("chercherAdressesClient");
-            adresses.value = adresseResponse.data;
+            const adresseReponse = await store.dispatch("chercherAdressesClient");
+            adresses.value = adresseReponse.data;
 
-            const cartesResponse = await store.dispatch("chercherCartesUser");
-            cartes.value = cartesResponse.data;
+            const cartesReponse = await store.dispatch("chercherCartesUser");
+            cartes.value = cartesReponse.data;
         } catch (error) {
             siMessage.value = true;
-            document.getElementById("message").innerText = error.response.data;
+            document.getElementById("message").innerText = error.reponse.data;
         }
         chargement.value = false;
     });
@@ -356,7 +358,7 @@
         chargementSauvegarde.value = true;
         document.querySelector("#submit").disabled = true;
         try {
-            siAlert.value = false;
+            siAlerte.value = false;
             var choixLivraison = {};
             var valide = true;
             if (montrerFormLivraison.value) {
@@ -377,19 +379,19 @@
                     if (adresse.value.codePostal == "") {
                         divMessage.innerHTML = "Code postal invalide";
                         valide = false;
-                        siAlert.value = true;
+                        siAlerte.value = true;
                     } else if (adresse.value.numeroCivique == "") {
                         divMessage.innerHTML = "Numéro civique invalide";
                         valide = false;
-                        siAlert.value = true;
+                        siAlerte.value = true;
                     } else if (adresse.value.rue == "") {
                         divMessage.innerHTML = "Rue invalide";
                         valide = false;
-                        siAlert.value = true;
+                        siAlerte.value = true;
                     } else if (adresse.value.ville == "") {
                         divMessage.innerHTML = "Ville invalide";
                         valide = false;
-                        siAlert.value = true;
+                        siAlerte.value = true;
                     }
 
                     adresse.value.numeroCivique = adresse.value.numeroCivique.toString();
@@ -421,16 +423,15 @@
                     adresse: null
                 };
             }
-            console.log(valide)
             if (valide) {
 
-                const response = await store.dispatch("enregistrerChoixLivraison", choixLivraison)
-                factureLivraisonCreee.value = response.data;
+                const reponse = await store.dispatch("enregistrerChoixLivraison", choixLivraison)
+                idFactureLivraisonCreee.value = reponse.data;
 
                 siMessage.value = true
                 document.getElementById("message").innerText = "Choix de livraison sauvegardé et payé."
 
-                if (factureLivraisonCreee.value == '') {
+                if (idFactureLivraisonCreee.value == '0') {
                     siMessage.value = true
                     document.getElementById("message").innerText = "Choix de livraison sauvegardé."
 
@@ -445,7 +446,7 @@
             }
         } catch (error) {
             siMessage.value = true
-            document.getElementById("message").innerText = error.response
+            document.getElementById("message").innerText = error.reponse
         }
     });
 </script>

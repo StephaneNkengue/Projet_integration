@@ -17,31 +17,15 @@ namespace Gamma2024.Server.Validations
             if (lot is LotModificationVM modificationLot)
             {
                 query = query.Where(l => l.Id != modificationLot.Id);
-                
+
                 // Vérifier dans l'encan cible
-                var lotExistant = await query.AnyAsync(l => 
+                var lotExistant = await query.AnyAsync(l =>
                     l.EncanLots.Any(el => el.IdEncan == modificationLot.IdEncanModifie));
 
                 if (lotExistant)
                 {
                     return (false, "Un lot avec ce numéro existe déjà dans l'encan cible.");
                 }
-            }
-            else
-            {
-                // Pour la création, vérifier dans l'encan spécifié
-                var lotExistant = await query.AnyAsync(l => 
-                    l.EncanLots.Any(el => el.IdEncan == lot.IdEncan));
-
-                if (lotExistant)
-                {
-                    return (false, "Un lot avec ce numéro existe déjà dans cet encan.");
-                }
-            }
-
-            if (string.IsNullOrWhiteSpace(lot.Numero))
-            {
-                return (false, "Le numéro du lot est obligatoire.");
             }
 
             if (string.IsNullOrWhiteSpace(lot.Description))

@@ -3,7 +3,6 @@ using Gamma2024.Server.Interface;
 using Gamma2024.Server.Models;
 using Gamma2024.Server.Services;
 using Gamma2024.Server.ViewModels;
-using jsreport.AspNetCore;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -15,21 +14,21 @@ namespace Gamma2024.Server.Controllers
     [Route("api/[controller]")]
     public class FacturesController : Controller
     {
-        private readonly IJsReportMVCService _jsReportService;
         private readonly ApplicationDbContext _context;
         private readonly IEmailSender _emailSender;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly FactureService _factureService;
         private readonly IWebHostEnvironment _environment;
+        private readonly ILogger<FacturesController> _logger;
 
-        public FacturesController(IJsReportMVCService jsReportService, IWebHostEnvironment environment, ApplicationDbContext context, UserManager<ApplicationUser> userManager, FactureService factureService, IEmailSender emailSender)
+        public FacturesController(IWebHostEnvironment environment, ApplicationDbContext context, UserManager<ApplicationUser> userManager, FactureService factureService, IEmailSender emailSender, ILogger<FacturesController> logger)
         {
-            _jsReportService = jsReportService;
             _context = context;
             _userManager = userManager;
             _factureService = factureService;
             _emailSender = emailSender;
             _environment = environment;
+            _logger = logger;
         }
 
         [HttpGet("chercherFactures")]
@@ -55,7 +54,9 @@ namespace Gamma2024.Server.Controllers
         [HttpPost("CreerFacturesParEncan/{numeroEncan}")]
         public async Task<IActionResult> CreerFacturesParEncan(int numeroEncan)
         {
+            _logger.LogInformation($"Début création factures pour encan #{numeroEncan}");
             ICollection<Facture> factures = await _factureService.CreerFacturesParEncan(numeroEncan);
+            _logger.LogInformation($"Fin création factures pour encan #{numeroEncan}");
             return Ok(factures);
         }
 
@@ -83,6 +84,13 @@ namespace Gamma2024.Server.Controllers
             var factures = _factureService.ChercherFacturesParEncan(numeroEncan);
 
             return Ok(factures);
+        }
+
+        [HttpGet("chercherDetailsFacture/{idFacture}")]
+        public IActionResult ChercherDetailsFacture(int idFacture)
+        {
+            var facture = _factureService.ChercherDetailsFacture(idFacture);
+            return Ok(facture);
         }
     }
 }

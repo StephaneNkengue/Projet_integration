@@ -10,5 +10,6 @@ namespace Gamma2024.Server.Models
 
         public ICollection<Adresse> Adresses { get; set; } = [];
         public string StripeCustomer { get; set; } = null!;
+        public ICollection<Notification> Notifications { get; set; } = [];
     }
 }

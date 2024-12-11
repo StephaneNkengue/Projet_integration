@@ -3,7 +3,7 @@
         <div class="container py-5 h-100">
             <div class="row d-flex justify-content-center align-items-center h-100">
                 <div class="col">
-                    <form @submit.prevent="submitForm">
+                    <form @submit.prevent="soumettreFormulaire">
                         <div class="card my-4">
                             <div class="row g-0">
                                 <div class="col-xl-12">
@@ -165,7 +165,7 @@
                                             <div class="d-flex justify-content-end pt-3">
                                                 <button type="button"
                                                         class="btn btn-light btn-lg"
-                                                        @click="resetForm">
+                                                        @click="effacerFormulaire">
                                                     Réinitialiser
                                                 </button>
                                                 <button type="submit"
@@ -228,30 +228,32 @@
 
     const message = ref(null);
 
-    const submitForm = async () => {
+    const soumettreFormulaire = async () => {
         try {
-            const result = await store.dispatch("creerVendeur", vendeur.value);
-            if (result.success) {
-                message.value = { type: "success", text: result.message };
+            const resultat = await store.dispatch("creerVendeur", vendeur.value);
+            if (resultat.success) {
+                message.value = { 
+                    type: "success", 
+                    text: resultat.message 
+                };
                 setTimeout(() => {
                     router.push("/affichagevendeurs");
                 }, 2000);
             } else {
                 message.value = {
                     type: "danger",
-                    text: "Erreur lors de la création du vendeur: " + result.error,
+                    text: resultat.error
                 };
             }
-        } catch (error) {
-            console.error("Erreur lors de la création du vendeur:", error);
+        } catch (erreur) {
             message.value = {
                 type: "danger",
-                text: "Erreur inattendue lors de la création du vendeur",
+                text: typeof erreur === 'string' ? erreur : "Une erreur est survenue lors de la création du vendeur"
             };
         }
     };
 
-    const resetForm = () => {
+    const effacerFormulaire = () => {
         vendeur.value = {
             nom: "",
             prenom: "",

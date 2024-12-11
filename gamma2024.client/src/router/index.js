@@ -303,23 +303,37 @@ const router = createRouter({
 });
 
 router.beforeEach(async (to, from, next) => {
-    if (!store.state.api) {
-        await store.dispatch("initializeStore");
-    }
+  try {
+    console.log("Navigation to:", to.path);
 
+    // Vérifier si un token existe
+    const token = localStorage.getItem("token");
     const isLoggedIn = store.state.isLoggedIn;
-    const userRoles = store.state.roles;
 
-    if (to.meta.requiresAuth && !isLoggedIn) {
-        next("/connexion");
-    } else if (
-        to.meta.requiredRole &&
-        !userRoles.includes(to.meta.requiredRole)
-    ) {
-        next({ name: "AccesNonAutorise" });
-    } else {
-        next();
+    if (token && !isLoggedIn) {
+      console.log("Token found but not logged in, checking auth...");
+      await store.dispatch("checkAuthStatus");
     }
+
+    // Vérifier les autorisations
+    if (to.meta.requiresAuth && !store.state.isLoggedIn) {
+      next("/connexion");
+      return;
+    }
+
+    if (
+      to.meta.requiredRole &&
+      !store.state.roles.includes(to.meta.requiredRole)
+    ) {
+      next({ name: "AccesNonAutorise" });
+      return;
+    }
+
+    next();
+  } catch (error) {
+    console.error("Navigation error:", error);
+    next("/connexion");
+  }
 });
 
 export default router;

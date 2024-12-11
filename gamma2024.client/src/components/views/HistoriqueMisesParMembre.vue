@@ -4,48 +4,48 @@
 
         <div class="d-flex gap-2 w-100 justify-content-center" v-if="chargement">
             <div class="spinner-border" role="status">
-                <span class="visually-hidden">Chargement des lots...</span>
+                <span class="visually-hidden">Chargement des mises...</span>
             </div>
-            <p>Chargement des lots en cours...</p>
+            <p>Chargement des mises en cours...</p>
         </div>
 
-        <div v-else class="w-100">
-            <h5 class="text-center" v-if="lotsAvecMises.length === 0">
-                Aucune mise trouvée
-            </h5>
+        <div v-else>
+            <div v-if="!misesParEncan || misesParEncan.length === 0" class="text-center">
+                <h5>Aucune mise trouvée</h5>
+            </div>
 
-            <div v-else class="d-flex flex-column align-items-center">
-                <div class="d-flex flex-row-reverse w-100 px-4 me-2 gap-2">
+            <div v-else class="d-flex flex-column gap-4">
+                <!-- Contrôles d'affichage -->
+                <div class="d-flex flex-row-reverse px-4 me-2 gap-2">
                     <button class="rounded btn btnSurvolerBleuMoyenFond"
-                            v-if="!siTuile"
-                            @click="changerTypeAffichage('tuile')">
-                        <img src="/icons/TableauOption.png"
-                             alt="Affichage en tableau"
-                             height="25" />
-                    </button>
-                    <button class="rounded btn btnSurvolerBleuMoyenFond"
-                            v-else
-                            @click="changerTypeAffichage('liste')">
-                        <img src="/icons/ListeOption.png"
-                             alt="Affichage en liste"
+                            @click="toggleAffichage">
+                        <img :src="siTuile ? '/icons/ListeOption.png' : '/icons/TableauOption.png'"
+                             :alt="siTuile ? 'Affichage en liste' : 'Affichage en tableau'"
                              height="25" />
                     </button>
                 </div>
 
-                <div v-if="siTuile"
-                     class="row row-cols-lg-5 row-cols-md-3 row-cols-sm-2 row-cols-1 w-100 px-3">
-                    <div v-for="lot in lotsAvecMises"
-                         :key="lot.id"
-                         class="col p-2 d-flex">
-                        <LotTuile :lotRecu="lot" />
+                <!-- Section par encan -->
+                <div v-for="encan in misesParEncan" 
+                     :key="encan.numeroEncan" 
+                     class="mb-5">
+                    <h3 class="mb-4">Encan {{ encan.numeroEncan }}</h3>
+                    
+                    <div v-if="siTuile" 
+                         class="row row-cols-lg-5 row-cols-md-3 row-cols-sm-2 row-cols-1">
+                        <div v-for="lot in encan.lots" 
+                             :key="lot.lotId" 
+                             class="col p-2">
+                            <LotTuile :lotRecu="mapLotToViewModel(lot)" />
+                        </div>
                     </div>
-                </div>
-
-                <div v-else class="d-flex flex-column px-5 w-100">
-                    <div v-for="lot in lotsAvecMises"
-                         :key="lot.id"
-                         class="p-2">
-                        <LotListe :lotRecu="lot" />
+                    
+                    <div v-else class="d-flex flex-column gap-3">
+                        <div v-for="lot in encan.lots" 
+                             :key="lot.lotId" 
+                             class="w-100">
+                            <LotListe :lotRecu="mapLotToViewModel(lot)" />
+                        </div>
                     </div>
                 </div>
             </div>
@@ -54,48 +54,63 @@
 </template>
 
 <script setup>
-    import { ref, onMounted, computed, watch } from 'vue';
-    import { useStore } from 'vuex';
-    import LotTuile from './LotTuile.vue';
-    import LotListe from './LotListe.vue';
+import { ref, onMounted } from 'vue';
+import { useStore } from 'vuex';
+import LotTuile from './LotTuile.vue';
+import LotListe from './LotListe.vue';
 
-    const store = useStore();
-    const chargement = ref(true);
-    const siTuile = ref(true);
+const store = useStore();
+const chargement = ref(true);
+const siTuile = ref(true);
+const misesParEncan = ref([]);
 
-    // Computed property pour filtrer les lots avec mises
-    const lotsAvecMises = computed(() => {
-        const userBids = store.state.userBids;
-        return Object.values(store.state.lots)
-            .filter(lot => userBids.includes(lot.id))
-            .map(lot => ({
-                ...lot,
-                userHasBid: true
-            }));
-    });
+const toggleAffichage = () => {
+    siTuile.value = !siTuile.value;
+};
 
-    // Watch pour les changements dans le store
-    watch(() => store.state.lots, () => {
-        if (store.state.isLoggedIn) {
-            store.dispatch('fetchUserBids');
-        }
-    }, { deep: true });
+const mapLotToViewModel = (lot) => ({
+    id: lot.lotId,
+    numero: lot.numero,
+    artiste: lot.artiste,
+    hauteur: lot.hauteur,
+    largeur: lot.largeur,
+    mise: lot.derniereMise,
+    valeurEstimeMin: lot.valeurEstimeMin,
+    valeurEstimeMax: lot.valeurEstimeMax,
+    prixOuverture: lot.prixOuverture,
+    prixMinPourVente: lot.prixMinPourVente,
+    estVendu: lot.estVendu,
+    photos: [{ lien: `/api/${lot.photoPrincipale.replace(/\\/g, '/')}` }],
+    dateFinDecompteLot: lot.dateFinDecompteLot,
+    userHasBid: true,
+    estPlusHautEncherisseur: lot.estPlusHautEncherisseur,
+    estLivrable: lot.estLivrable,
+    description: lot.description,
+    idCategorie: lot.idCategorie,
+    categorie: lot.categorie,
+    idMedium: lot.idMedium,
+    medium: lot.medium,
+    idVendeur: lot.idVendeur,
+    vendeur: lot.vendeur,
+    seraLivree: lot.seraLivree
+});
 
-    const changerTypeAffichage = (type) => {
-        siTuile.value = type === 'tuile';
-    };
+const chargerMises = async () => {
+    try {
+        chargement.value = true;
+        const response = await store.dispatch('getUserBidsGroupedByEncan');
+        misesParEncan.value = response || [];
+    } catch (error) {
+        console.error('Erreur lors du chargement des mises:', error);
+        misesParEncan.value = [];
+    } finally {
+        chargement.value = false;
+    }
+};
 
-    onMounted(async () => {
-        try {
-            if (store.state.isLoggedIn) {
-                await store.dispatch('fetchUserBids');
-            }
-        } catch (error) {
-            console.error("Erreur lors du chargement des mises:", error);
-        } finally {
-            chargement.value = false;
-        }
-    });
+onMounted(() => {
+    chargerMises();
+});
 </script>
 
 <style scoped>

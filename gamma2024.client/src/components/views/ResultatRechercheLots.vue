@@ -121,17 +121,17 @@
 
     onMounted(async () => {
         try {
-            initialiseData();
-        } catch (error) {
+            initialiserDonnees();
+        } catch (erreur) {
         }
     });
 
     const queryChangement = computed(() => route.query)
-    watch(queryChangement, initialiseData)
+    watch(queryChangement, initialiserDonnees)
 
-    async function initialiseData() {
-        const response = await store.dispatch("chercherTousLotsRecherche");
-        lots.value = response.data.map((lot) => ({
+    async function initialiserDonnees() {
+        const reponse = await store.dispatch("chercherTousLotsRecherche");
+        lots.value = reponse.data.map((lot) => ({
             ...lot,
         }));
         genererListeDeLotsFiltree();
@@ -148,6 +148,7 @@
     function genererListeDeLotsFiltree() {
         lotsFiltres.value = lots.value;
         filtrerLesLotsParNumeroEncan();
+        filtrerLesLotsParNumeroLot();
         filtrerLesLotsParValeurEstimee();
         filtrerLesLotsParArtiste();
         filtrerLesLotsParCategorie();
@@ -157,11 +158,11 @@
     };
 
     function filtrerLesLotsParNumeroEncan() {
-        var stringquery = JSON.parse(route.query.data);
-        document.getElementById("titreRechercheLots").innerHTML = "Résultat de la recherche de lots pour l'Encan " + stringquery.numeroEncan;
+        var stringDeRequete = JSON.parse(route.query.data);
+        document.getElementById("titreRechercheLots").innerHTML = "Résultat de la recherche de lots pour l'Encan " + stringDeRequete.numeroEncan;
         lotsFiltres.value = lotsFiltres.value.filter((lot) => {
-            if (stringquery.numeroEncan) {
-                if (lot.numeroEncan.valueOf() == stringquery.numeroEncan) {
+            if (stringDeRequete.numeroEncan) {
+                if (lot.numeroEncan.valueOf() == stringDeRequete.numeroEncan) {
                     return true
                 }
                 else { return false }
@@ -169,30 +170,43 @@
         });
     };
 
-    function filtrerLesLotsParValeurEstimee() {
-        var stringquery = JSON.parse(route.query.data);
+    function filtrerLesLotsParNumeroLot() {
+        var stringDeRequete = JSON.parse(route.query.data);
         lotsFiltres.value = lotsFiltres.value.filter((lot) => {
-            if (stringquery.stringValeurEstimee) {
-                if (stringquery.selectValeurEstimee == 0) {
-                    if (lot.valeurEstimeMin.valueOf() <= stringquery.stringValeurEstimee && lot.valeurEstimeMax.valueOf() >= stringquery.stringValeurEstimee) {
+            if (stringDeRequete.stringNumeroLot) {
+                if (lot.numero.valueOf() == stringDeRequete.stringNumeroLot) {
+                    return true
+                }
+                else { return false }
+            }
+            return true
+        });
+    };
+
+    function filtrerLesLotsParValeurEstimee() {
+        var stringDeRequete = JSON.parse(route.query.data);
+        lotsFiltres.value = lotsFiltres.value.filter((lot) => {
+            if (stringDeRequete.stringValeurEstimee) {
+                if (stringDeRequete.selectValeurEstimee == 0) {
+                    if (lot.valeurEstimeMin.valueOf() <= stringDeRequete.stringValeurEstimee && lot.valeurEstimeMax.valueOf() >= stringDeRequete.stringValeurEstimee) {
                         return true
                     }
                     return false
                 }
-                if (stringquery.selectValeurEstimee == 1) {
-                    if (lot.valeurEstimeMin.valueOf() <= stringquery.stringValeurEstimee) {
+                if (stringDeRequete.selectValeurEstimee == 1) {
+                    if (lot.valeurEstimeMin.valueOf() <= stringDeRequete.stringValeurEstimee) {
                         return true
                     }
                     return false
                 }
-                if (stringquery.selectValeurEstimee == 2) {
-                    if (lot.valeurEstimeMax.valueOf() >= stringquery.stringValeurEstimee) {
+                if (stringDeRequete.selectValeurEstimee == 2) {
+                    if (lot.valeurEstimeMax.valueOf() >= stringDeRequete.stringValeurEstimee) {
                         return true
                     }
                     return false
                 }
-                if (stringquery.selectValeurEstimee == 3 && stringquery.stringValeurEstimee2) {
-                    if (lot.valeurEstimeMax.valueOf() >= stringquery.stringValeurEstimee && lot.valeurEstimeMin.valueOf() <= stringquery.stringValeurEstimee2) {
+                if (stringDeRequete.selectValeurEstimee == 3 && stringDeRequete.stringValeurEstimee2) {
+                    if (lot.valeurEstimeMax.valueOf() >= stringDeRequete.stringValeurEstimee && lot.valeurEstimeMin.valueOf() <= stringDeRequete.stringValeurEstimee2) {
                         return true
                     }
                     return false
@@ -203,10 +217,10 @@
     };
 
     function filtrerLesLotsParArtiste() {
-        var stringquery = JSON.parse(route.query.data);
+        var stringDeRequete = JSON.parse(route.query.data);
         lotsFiltres.value = lotsFiltres.value.filter((lot) => {
-            if (stringquery.selectArtiste != 0 && stringquery.selectArtiste) {
-                if (lot.artiste.valueOf() == stringquery.selectArtiste) {
+            if (stringDeRequete.selectArtiste != 0 && stringDeRequete.selectArtiste) {
+                if (lot.artiste.valueOf() == stringDeRequete.selectArtiste) {
                     return true
                 }
                 return false
@@ -216,10 +230,10 @@
     };
 
     function filtrerLesLotsParCategorie() {
-        var stringquery = JSON.parse(route.query.data);
+        var stringDeRequete = JSON.parse(route.query.data);
         lotsFiltres.value = lotsFiltres.value.filter((lot) => {
-            if (stringquery.selectCategorie != 0 && stringquery.selectCategorie) {
-                if (lot.idCategorie.valueOf() == stringquery.selectCategorie) {
+            if (stringDeRequete.selectCategorie != 0 && stringDeRequete.selectCategorie) {
+                if (lot.idCategorie.valueOf() == stringDeRequete.selectCategorie) {
                     return true
                 }
                 return false
@@ -229,10 +243,10 @@
     };
 
     function filtrerLesLotsParMedium() {
-        var stringquery = JSON.parse(route.query.data);
+        var stringDeRequete = JSON.parse(route.query.data);
         lotsFiltres.value = lotsFiltres.value.filter((lot) => {
-            if (stringquery.selectMedium != 0 && stringquery.selectMedium) {
-                if (lot.idMedium.valueOf() == stringquery.selectMedium) {
+            if (stringDeRequete.selectMedium != 0 && stringDeRequete.selectMedium) {
+                if (lot.idMedium.valueOf() == stringDeRequete.selectMedium) {
                     return true
                 }
                 return false
@@ -242,29 +256,29 @@
     };
 
     function filtrerLesLotsParHauteur() {
-        var stringquery = JSON.parse(route.query.data);
+        var stringDeRequete = JSON.parse(route.query.data);
         lotsFiltres.value = lotsFiltres.value.filter((lot) => {
-            if (stringquery.stringHauteur) {
-                if (stringquery.selectHauteur == 0) {
-                    if (lot.hauteur.valueOf() == stringquery.stringHauteur) {
+            if (stringDeRequete.stringHauteur) {
+                if (stringDeRequete.selectHauteur == 0) {
+                    if (lot.hauteur.valueOf() == stringDeRequete.stringHauteur) {
                         return true
                     }
                     return false
                 }
-                if (stringquery.selectHauteur == 1) {
-                    if (lot.hauteur.valueOf() <= stringquery.stringHauteur) {
+                if (stringDeRequete.selectHauteur == 1) {
+                    if (lot.hauteur.valueOf() <= stringDeRequete.stringHauteur) {
                         return true
                     }
                     return false
                 }
-                if (stringquery.selectHauteur == 2) {
-                    if (lot.hauteur.valueOf() >= stringquery.stringHauteur) {
+                if (stringDeRequete.selectHauteur == 2) {
+                    if (lot.hauteur.valueOf() >= stringDeRequete.stringHauteur) {
                         return true
                     }
                     return false
                 }
-                if (stringquery.selectHauteur == 3 && stringquery.stringHauteur2) {
-                    if (lot.hauteur.valueOf() >= stringquery.stringHauteur && lot.hauteur.valueOf() <= stringquery.stringHauteur2) {
+                if (stringDeRequete.selectHauteur == 3 && stringDeRequete.stringHauteur2) {
+                    if (lot.hauteur.valueOf() >= stringDeRequete.stringHauteur && lot.hauteur.valueOf() <= stringDeRequete.stringHauteur2) {
                         return true
                     }
                     return false
@@ -275,29 +289,29 @@
     };
 
     function filtrerLesLotsParLargeur() {
-        var stringquery = JSON.parse(route.query.data);
+        var stringDeRequete = JSON.parse(route.query.data);
         lotsFiltres.value = lotsFiltres.value.filter((lot) => {
-            if (stringquery.stringLargeur) {
-                if (stringquery.selectLargeur == 0) {
-                    if (lot.largeur.valueOf() == stringquery.stringLargeur) {
+            if (stringDeRequete.stringLargeur) {
+                if (stringDeRequete.selectLargeur == 0) {
+                    if (lot.largeur.valueOf() == stringDeRequete.stringLargeur) {
                         return true
                     }
                     return false
                 }
-                if (stringquery.selectLargeur == 1) {
-                    if (lot.largeur.valueOf() <= stringquery.stringLargeur) {
+                if (stringDeRequete.selectLargeur == 1) {
+                    if (lot.largeur.valueOf() <= stringDeRequete.stringLargeur) {
                         return true
                     }
                     return false
                 }
-                if (stringquery.selectLargeur == 2) {
-                    if (lot.largeur.valueOf() >= stringquery.stringLargeur) {
+                if (stringDeRequete.selectLargeur == 2) {
+                    if (lot.largeur.valueOf() >= stringDeRequete.stringLargeur) {
                         return true
                     }
                     return false
                 }
-                if (stringquery.selectLargeur == 3 && stringquery.stringLargeur2) {
-                    if (lot.largeur.valueOf() >= stringquery.stringLargeur && lot.largeur.valueOf() <= stringquery.stringLargeur2) {
+                if (stringDeRequete.selectLargeur == 3 && stringDeRequete.stringLargeur2) {
+                    if (lot.largeur.valueOf() >= stringDeRequete.stringLargeur && lot.largeur.valueOf() <= stringDeRequete.stringLargeur2) {
                         return true
                     }
                     return false

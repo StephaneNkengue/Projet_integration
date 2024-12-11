@@ -18,6 +18,36 @@ builder.Configuration
 
 StripeConfiguration.ApiKey = builder.Configuration["Stripe:SecretKey"];
 
+Console.WriteLine("Voulez vous vider la BD? Entrez 1 pour oui et autre pour non");
+var choix = Console.ReadLine();
+
+if (choix == "1")
+{
+    Console.WriteLine("Vider les données BD...");
+    context.Encans.RemoveRange(context.Encans);
+    context.Lots.RemoveRange(context.Lots);
+    context.EncanLots.RemoveRange(context.EncanLots);
+    context.Categories.RemoveRange(context.Categories);
+    context.Mediums.RemoveRange(context.Mediums);
+    context.Photos.RemoveRange(context.Photos);
+    context.FactureLivraisons.RemoveRange(context.FactureLivraisons);
+    context.Factures.RemoveRange(context.Factures);
+    context.Charites.RemoveRange(context.Charites);
+    context.Adresses.RemoveRange(context.Adresses.Where(a => a.IdApplicationUser != "8e445865-a24d-4543-a6c6-9443d048cdb9" && a.IdApplicationUser != "1d8ac862-e54d-4f10-b6f8-638808c02967"));
+    context.Vendeurs.RemoveRange(context.Vendeurs);
+    context.Users.RemoveRange(context.Users.Where(c => c.Id != "8e445865-a24d-4543-a6c6-9443d048cdb9" && c.Id != "1d8ac862-e54d-4f10-b6f8-638808c02967"));
+    context.Notifications.RemoveRange(context.Notifications);
+    context.MiseAutomatiques.RemoveRange(context.MiseAutomatiques);
+
+    context.SaveChanges();
+}
+else
+{
+    Console.WriteLine("Garder les données du BD");
+}
+
+
+var usersExistants = context.Users.Include(u => u.Adresses);
 var customerService = new CustomerService();
 var options = new CustomerListOptions { Limit = 100 };
 StripeList<Customer> customersTemp = customerService.List(options);
@@ -29,7 +59,29 @@ while (customersTemp.Data.Count == 100)
     customersTemp = customerService.List(new CustomerListOptions { Limit = 100, StartingAfter = customers.Data.Last().Id });
 }
 
-var usersExistants = context.Users.Include(u => u.Adresses);
+Console.WriteLine("Voulez vous supprimer les clients Stripe? Entre 1 pour oui et autre pour non");
+choix = Console.ReadLine();
+
+if (choix == "1")
+{
+    Console.WriteLine("Suppression des clients Stripe...");
+    foreach (var customer in customers.Data)
+    {
+        customerService.Delete(customer.Id);
+    }
+    customers = customerService.List(options);
+    foreach (var user in usersExistants)
+    {
+        user.StripeCustomer = "";
+        context.Users.Update(user);
+        context.SaveChanges();
+    }
+}
+else
+{
+    Console.WriteLine("Garder les clients Stripe");
+}
+
 
 foreach (var user in usersExistants)
 {
@@ -43,7 +95,7 @@ foreach (var user in usersExistants)
         }
         else
         {
-            var customer = customerService.Create(new CustomerCreateOptions
+            var createOptions = new CustomerCreateOptions
             {
                 Email = user.Email,
                 Name = user.FirstName + " " + user.Name,
@@ -59,11 +111,13 @@ foreach (var user in usersExistants)
                     City = user.Adresses.First().Ville,
                     Country = user.Adresses.First().Pays,
                     Line1 = $"{user.Adresses.First().Numero} {user.Adresses.First().Rue}",
-                    //Line2 = user.Adresses.First().Appartement,
+                    Line2 = user.Adresses.First().Appartement,
                     PostalCode = user.Adresses.First().CodePostal,
-                    State = user.Adresses.First().Province
-                }
-            });
+                    State = user.Adresses.First().Province,
+                },
+                Phone = user.PhoneNumber,
+            };
+            var customer = customerService.Create(createOptions);
             user.StripeCustomer = customer.Id;
             context.Update(user);
 
@@ -78,7 +132,7 @@ Console.WriteLine("Ajout des utilisateurs");
 
 var passwordHasher = new PasswordHasher<ApplicationUser>();
 
-var utilisateurs = System.IO.File.ReadAllLines("CSV/Acheteurs.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
+var utilisateurs = System.IO.File.ReadAllLines("CSV/DonneesDec/Acheteur.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
                         .Skip(1)
                         .Where(x => x.Length > 1)
                         .ToApplicationUser()
@@ -111,7 +165,8 @@ var utilisateurs = System.IO.File.ReadAllLines("CSV/Acheteurs.csv", System.Text.
                                         Line2 = u.Adresses.First().Appartement,
                                         PostalCode = u.Adresses.First().CodePostal,
                                         State = u.Adresses.First().Province
-                                    }
+                                    },
+                                    Phone = u.PhoneNumber
                                 };
                                 var customer = customerService.Create(options);
                                 u.StripeCustomer = customer.Id;
@@ -144,7 +199,7 @@ context.SaveChanges();
 
 Console.WriteLine("Ajout des vendeurs");
 
-var vendeurs = System.IO.File.ReadAllLines("CSV/Vendeurs.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
+var vendeurs = System.IO.File.ReadAllLines("CSV/DonneesDec/VendeursEtVentes.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
                 .Skip(1)
                 .Where(l => l.Length > 1)
                 .ToVendeur()
@@ -155,229 +210,220 @@ context.SaveChanges();
 
 Console.WriteLine("Ajout des categories");
 
-var categoriesLotsUniques = System.IO.File.ReadAllLines("CSV/Encan232et233.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
-                        .Skip(1)
-                        .Where(l => l.Length > 1)
-                        .GetCategories()
-                        .GroupBy(c => c.Nom)
-                        .Select(c => c.First())
-                        .ToList();
+var categoriesLotsUniques = System.IO.File.ReadAllLines("CSV/DonneesDec/Encan232Et233.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
+                            .Skip(1)
+                            .Where(l => l.Length > 1)
+                            .GetCategories()
+                            .ToList();
+
+categoriesLotsUniques.AddRange(System.IO.File.ReadAllLines("CSV/DonneesDec/Encan234.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
+                            .Skip(1)
+                            .Where(l => l.Length > 1)
+                            .GetCategories()
+                            .ToList());
+
+categoriesLotsUniques.AddRange(System.IO.File.ReadAllLines("CSV/DonneesDec/Encan235.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
+                            .Skip(1)
+                            .Where(l => l.Length > 1)
+                            .GetCategories()
+                            .ToList());
+
+categoriesLotsUniques = categoriesLotsUniques
+                            .GroupBy(c => c.Nom)
+                            .Select(c => c.First())
+                            .ToList();
 
 context.Categories.AddRange(categoriesLotsUniques);
 context.SaveChanges();
 
 Console.WriteLine("Ajout des médiums");
 
-var mediumsLotsUniques = System.IO.File.ReadAllLines("CSV/Encan232et233.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
-                        .Skip(1)
-                        .Where(l => l.Length > 1)
-                        .GetMediums()
-                        .GroupBy(m => m.Type)
-                        .Select(m => m.First())
-                        .ToList();
+var mediumsLotsUniques = System.IO.File.ReadAllLines("CSV/DonneesDec/Encan232Et233.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
+                            .Skip(1)
+                            .Where(l => l.Length > 1)
+                            .GetMediums()
+                            .ToList();
+
+mediumsLotsUniques.AddRange(System.IO.File.ReadAllLines("CSV/DonneesDec/Encan234.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
+                            .Skip(1)
+                            .Where(l => l.Length > 1)
+                            .GetMediums()
+                            .ToList());
+
+mediumsLotsUniques.AddRange(System.IO.File.ReadAllLines("CSV/DonneesDec/Encan235.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
+                            .Skip(1)
+                            .Where(l => l.Length > 1)
+                            .GetMediums()
+                            .ToList());
+
+mediumsLotsUniques = mediumsLotsUniques.GroupBy(m => m.Type).Select(m => m.First()).ToList();
 
 context.Mediums.AddRange(mediumsLotsUniques);
 context.SaveChanges();
 
 Console.WriteLine("Ajout des lots");
 
-var lotsVendeurs232 = System.IO.File.ReadAllLines("CSV/Vendeurs.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
-                .Skip(1)
-                .Where(l => l.Length > 1)
-                .GetNumeroLotsEncan232()
-                .ToList();
+var vendeursLots = System.IO.File.ReadAllLines("CSV/DonneesDec/VendeursEtVentes.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
+                    .Skip(1)
+                    .Where(l => l.Length > 1)
+                    .GetVendeurLots()
+                    .ToList();
 
-var imagesLots232 = System.IO.File.ReadAllLines("CSV/Encan232et233.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
+var lotImages = System.IO.File.ReadAllLines("CSV/DonneesDec/Encan232Et233.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
                         .Skip(1)
                         .Where(l => l.Length > 1)
-                        .GetImagesParLotParEncan(232)
+                        .GetLotImages()
                         .ToList();
 
-var lots232 = System.IO.File.ReadAllLines("CSV/Encan232et233.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
+lotImages.AddRange(System.IO.File.ReadAllLines("CSV/DonneesDec/Encan234.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
                         .Skip(1)
                         .Where(l => l.Length > 1)
-                        .ToLotParEncan(232)
-                        .Select(l =>
+                        .GetLotImages()
+                        .ToList());
+
+lotImages.AddRange(System.IO.File.ReadAllLines("CSV/DonneesDec/Encan235.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
+                        .Skip(1)
+                        .Where(l => l.Length > 1)
+                        .GetLotImages()
+                        .ToList());
+
+var lots = System.IO.File.ReadAllLines("CSV/DonneesDec/Encan232Et233.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
+                        .Skip(1)
+                        .Where(l => l.Length > 1)
+                        .ToLot()
+                        .ToList();
+
+lots.AddRange(System.IO.File.ReadAllLines("CSV/DonneesDec/Encan234.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
+                        .Skip(1)
+                        .Where(l => l.Length > 1)
+                        .ToLot()
+                        .ToList());
+
+lots.AddRange(System.IO.File.ReadAllLines("CSV/DonneesDec/Encan235.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
+                        .Skip(1)
+                        .Where(l => l.Length > 1)
+                        .ToLot()
+                        .ToList());
+
+lots = lots.Select(l =>
                         {
                             foreach (var item in categoriesLotsUniques)
                             {
-                                if (l.Categorie.Nom == item.Nom)
+                                if (l.Lot.Categorie.Nom == item.Nom)
                                 {
-                                    l.IdCategorie = item.Id;
-                                    l.Categorie = item;
+                                    l.Lot.IdCategorie = item.Id;
+                                    l.Lot.Categorie = item;
                                     break;
                                 }
                             }
                             foreach (var item in mediumsLotsUniques)
                             {
-                                if (l.Medium.Type == item.Type)
+                                if (l.Lot.Medium.Type == item.Type)
                                 {
-                                    l.IdMedium = item.Id;
-                                    l.Medium = item;
+                                    l.Lot.IdMedium = item.Id;
+                                    l.Lot.Medium = item;
                                     break;
                                 }
                             }
-                            var position = 0;
-                            foreach (var item in lotsVendeurs232)
+                            foreach (var item in vendeursLots)
                             {
-                                if (item.Contains(l.Numero))
+                                if (item.NumeroEncan == l.NumeroEncan && item.NumerosLots.Contains(l.Lot.Numero.Trim()))
                                 {
-                                    l.IdVendeur = vendeurs[position].Id;
-                                    l.Vendeur = vendeurs[position];
+                                    l.Lot.IdVendeur = vendeurs.First(v => v.Courriel.Trim().ToLower() == item.Courriel.Trim().ToLower()).Id;
+                                    l.Lot.Vendeur = vendeurs.Find(v => v.Courriel == item.Courriel);
                                     break;
                                 }
-                                position++;
                             }
+                            l.Lot.DateDepot = DateTime.Now;
                             return l;
                         })
                         .ToList();
 
-var acheteurs232 = System.IO.File.ReadAllLines("CSV/AcheteurEncan232.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
+var acheteurs = System.IO.File.ReadAllLines("CSV/DonneesDec/AcheteurEncan232.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
                         .Skip(1)
                         .Where(l => l.Length > 1)
-                        .GetAcheteursEncan232()
+                        .GetAcheteurs(232)
                         .ToList();
 
-for (int i = 0; i < lots232.Count; i++)
+acheteurs.AddRange(System.IO.File.ReadAllLines("CSV/DonneesDec/AcheteurEncan232.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
+                        .Skip(1)
+                        .Where(l => l.Length > 1)
+                        .GetAcheteurs(233)
+                        .ToList());
+
+foreach (var lot in lots)
 {
-    foreach (var nomImage in imagesLots232[i])
+    foreach (var lotImage in lotImages.ToList())
     {
-        if (nomImage.IsNullOrEmpty())
+        if (lotImage.NumeroEncan == lot.NumeroEncan && lotImage.NumeroLot == lot.Lot.Numero)
         {
-            break;
-        }
-        else
-        {
-            var imagePath = Path.Combine("Images", "ImagesEncan232", nomImage);
-            lots232[i].Photos.Add(new Photo
+            foreach (var image in lotImage.NomImages)
             {
-                Lien = imagePath
-            });
+                var imagePath = Path.Combine("Images", $"ImagesEncan{lot.NumeroEncan}", image);
+
+                lot.Lot.Photos.Add(new Photo
+                {
+                    Lien = imagePath
+                });
+            }
+            lotImages.Remove(lotImage);
         }
     }
 }
 
-context.Lots.AddRange(lots232);
-context.SaveChanges();
-
-var lotsVendeurs233 = System.IO.File.ReadAllLines("CSV/Vendeurs.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
-                .Skip(1)
-                .Where(l => l.Length > 1)
-                .GetNumeroLotsEncan233()
-                .ToList();
-
-var imagesLots233 = System.IO.File.ReadAllLines("CSV/Encan232et233.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
-                        .Skip(1)
-                        .Where(l => l.Length > 1)
-                        .GetImagesParLotParEncan(233)
-                        .ToList();
-
-var lots233 = System.IO.File.ReadAllLines("CSV/Encan232et233.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
-                        .Skip(1)
-                        .Where(l => l.Length > 1)
-                        .ToLotParEncan(233)
-                        .Select(l =>
-                        {
-                            foreach (var item in categoriesLotsUniques)
-                            {
-                                if (l.Categorie.Nom == item.Nom)
-                                {
-                                    l.IdCategorie = item.Id;
-                                    l.Categorie = item;
-                                    break;
-                                }
-                            }
-                            foreach (var item in mediumsLotsUniques)
-                            {
-                                if (l.Medium.Type == item.Type)
-                                {
-                                    l.IdMedium = item.Id;
-                                    l.Medium = item;
-                                    break;
-                                }
-                            }
-                            var position = 0;
-                            foreach (var item in lotsVendeurs233)
-                            {
-                                if (item.Contains(l.Numero))
-                                {
-                                    l.IdVendeur = vendeurs[position].Id;
-                                    l.Vendeur = vendeurs[position];
-                                    break;
-                                }
-                                position++;
-                            }
-                            return l;
-                        })
-                        .ToList();
-
-for (int i = 0; i < lots233.Count; i++)
-{
-    foreach (var nomImage in imagesLots233[i])
-    {
-        if (nomImage.IsNullOrEmpty())
-        {
-            break;
-        }
-        else
-        {
-            var imagePath = Path.Combine("Images", "ImagesEncan233", nomImage);
-            lots233[i].Photos.Add(new Photo
-            {
-                Lien = imagePath
-            });
-        }
-    }
-}
-
-context.Lots.AddRange(lots233);
+context.Lots.AddRange(lots.Select(l => l.Lot).ToList());
 context.SaveChanges();
 
 Console.WriteLine("Ajout des encans");
+
 var encans = new List<Encan>();
 
 encans.Add(new Encan
 {
     NumeroEncan = 232,
-    DateDebut = new DateTime(2005, 3, 15, 6, 0, 0),
-    DateFin = new DateTime(2005, 3, 18, 6, 0, 0),
-    DateDebutSoireeCloture = new DateTime(2005, 3, 18, 6, 0, 1),
+    DateDebut = new DateTime(2023, 3, 15, 6, 0, 0),
+    DateFin = new DateTime(2023, 4, 15, 6, 0, 0),
+    DateDebutSoireeCloture = new DateTime(2023, 3, 18, 6, 0, 0),
     EstPublie = true,
     PasLot = 30,
-    PasMise = 120
+    EstTermine = true,
+    PasMise = 60
 });
 
 encans.Add(new Encan
 {
     NumeroEncan = 233,
-    DateDebut = new DateTime(2024, 3, 15, 6, 0, 0),
-    DateFin = DateTime.Now.AddMinutes(1),
-    DateDebutSoireeCloture = DateTime.Now.AddMinutes(1),
+    DateDebut = new DateTime(2024, 5, 18, 6, 0, 0),
+    DateFin = new DateTime(2024, 6, 15, 6, 0, 0),
+    DateDebutSoireeCloture = new DateTime(2024, 6, 15, 6, 0, 0),
     EstPublie = true,
-    PasLot = 10,
-    PasMise = 120
+    EstTermine = true,
+    PasLot = 30,
+    PasMise = 60
 });
 
 encans.Add(new Encan
 {
     NumeroEncan = 234,
-    DateDebut = new DateTime(2027, 3, 15, 6, 0, 0),
-    DateFin = new DateTime(2027, 3, 18, 6, 0, 0),
-    DateDebutSoireeCloture = new DateTime(2027, 3, 18, 6, 0, 1),
+    DateDebut = new DateTime(2024, 12, 9, 8, 0, 0),
+    DateFin = DateTime.Now,
+    DateDebutSoireeCloture = DateTime.Now,
     EstPublie = true,
-    PasLot = 20,
-    PasMise = 120
+    EstTermine = false,
+    PasLot = 30,
+    PasMise = 60
 });
 
 encans.Add(new Encan
 {
     NumeroEncan = 235,
-    DateDebut = new DateTime(2008, 3, 15, 6, 0, 0),
-    DateFin = new DateTime(2008, 3, 18, 6, 0, 0),
-    DateDebutSoireeCloture = new DateTime(2008, 3, 18, 6, 0, 1),
+    DateDebut = new DateTime(2025, 1, 6, 9, 0, 0),
+    DateFin = new DateTime(2025, 1, 13, 18, 0, 0),
+    DateDebutSoireeCloture = new DateTime(2025, 1, 13, 18, 0, 0),
     EstPublie = true,
     PasLot = 30,
-    PasMise = 120
+    EstTermine = false,
+    PasMise = 60
 });
 
 
@@ -388,59 +434,34 @@ context.SaveChanges();
 Console.WriteLine("Association des lots au encans respectifs");
 var encanLots = new List<EncanLot>();
 
-foreach (var item in lots232)
+foreach (var item in lots)
 {
     encanLots.Add(new EncanLot
     {
-        Lot = item,
-        IdLot = item.Id,
-        Encan = encans[0],
-        IdEncan = encans[0].Id
+        Lot = item.Lot,
+        IdLot = item.Lot.Id,
+        Encan = encans.First(e => e.NumeroEncan == item.NumeroEncan),
+        IdEncan = encans.First(e => e.NumeroEncan == item.NumeroEncan).Id
     });
 }
-
-context.Encans.Update(encans[0]);
-context.SaveChanges();
-
-foreach (var item in lots233)
-{
-    encanLots.Add(new EncanLot
-    {
-        Lot = item,
-        IdLot = item.Id,
-        Encan = encans[1],
-        IdEncan = encans[1].Id
-    });
-}
-
-context.Encans.Update(encans[1]);
 
 context.EncanLots.AddRange(encanLots);
 context.SaveChanges();
 
-
 ///Ajout des decomptes 
-var nbLot233 = 0;
-foreach (var item in lots233)
+foreach (var encan in encans)
 {
-    nbLot233++;
-    item.DateDebutDecompteLot = encans[1].DateDebutSoireeCloture;
-    item.DateFinDecompteLot = encans[1].DateDebutSoireeCloture + TimeSpan.FromSeconds(encans[1].PasLot * nbLot233);
+    var nbLot = 0;
+    foreach (var lot in encan.EncanLots.Select(el => el.Lot))
+    {
+        lot.DateDebutDecompteLot = encan.DateDebutSoireeCloture;
+        lot.DateFinDecompteLot = encan.DateDebutSoireeCloture + TimeSpan.FromMinutes(1);
+        nbLot++;
+    }
 }
 
-context.UpdateRange(lots233);
-context.SaveChanges();
-
-///// 
-var nbLot232 = 0;
-foreach (var item in lots232)
-{
-    nbLot232++;
-    item.DateDebutDecompteLot = encans[0].DateDebutSoireeCloture;
-    item.DateFinDecompteLot = encans[0].DateDebutSoireeCloture + TimeSpan.FromSeconds(encans[0].PasLot * nbLot232);
-}
-
-context.UpdateRange(lots232);
+context.Encans.UpdateRange(encans);
+context.Lots.UpdateRange(lots.Select(l => l.Lot));
 context.SaveChanges();
 
 Console.WriteLine("Ajout des charités");
@@ -464,11 +485,18 @@ context.SaveChanges();
 
 
 Console.WriteLine("Ajout des factures");
-var infoFactures = System.IO.File.ReadAllLines("CSV/AcheteurEncan232.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
+var infoFactures = System.IO.File.ReadAllLines("CSV/DonneesDec/AcheteurEncan232.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
                 .Skip(1)
                 .Where(l => l.Length > 1)
-                .GetAcheteursEncan232()
+                .GetAcheteurs(232)
                 .ToList();
+
+infoFactures.AddRange(System.IO.File.ReadAllLines("CSV/DonneesDec/AcheteurEncan233.csv", System.Text.Encoding.GetEncoding("iso-8859-1"))
+                .Skip(1)
+                .Where(l => l.Length > 1)
+                .GetAcheteurs(233)
+                .ToList());
+
 
 foreach (var item in utilisateurs)
 {
@@ -476,43 +504,93 @@ foreach (var item in utilisateurs)
 
     if (achats.Any())
     {
-        var facture = new Facture
-        {
-            IdClient = item.Id,
-            Client = item,
-            DateAchat = DateTime.Now,
-            PrixLots = 0,
-            NumeroEncan = 232,
-            FacturePDFPath = "",
-            estPaye = true
-        };
+        var achatsParEncan = achats.GroupBy(a => a.NumeroEncan).ToList();
 
-        foreach (var a in achats)
+        foreach (var achatParEncan in achatsParEncan)
         {
-            var lot = lots232.FirstOrDefault(l => l.Numero == a.Lot);
-            lot.EstVendu = true;
-            lot.Mise = a.PrixAchete;
-            lot.IdClientMise = item.Id;
-            lot.ClientMise = item;
-            lot.SeraLivree = a.Livraison;
-            lot.DateFinVente = DateTime.Now;
-            facture.Lots.Add(lot);
+            var facture = new Facture
+            {
+                IdClient = item.Id,
+                Client = item,
+                DateAchat = DateTime.Now,
+                PrixLots = 0,
+                NumeroEncan = 0,
+                estPaye = true
+            };
+
+            foreach (var a in achatParEncan)
+            {
+                var lotInfo = lots.FirstOrDefault(l => l.Lot.Numero == a.Lot && l.NumeroEncan == a.NumeroEncan);
+                var lot = lotInfo.Lot;
+                lot.EstVendu = true;
+                lot.Mise = a.PrixAchete;
+                lot.IdClientMise = item.Id;
+                lot.ClientMise = item;
+                lot.SeraLivree = a.Livraison;
+                lot.DateFinVente = DateTime.Now;
+                facture.Lots.Add(lot);
+                facture.NumeroEncan = achatParEncan.Key;
+            }
+
+            facture.CalculerFacture();
+            context.Factures.Add(facture);
+            context.SaveChanges();
         }
-
-        facture.CalculerFacture();
-        context.Factures.Add(facture);
-        context.SaveChanges();
-
-        facture.FacturePDFPath = $"Factures/F232/F232_{facture.Id}.pdf";
-
-        context.Factures.Update(facture);
-
         infoFactures.RemoveAll(i => i.Pseudonyme == item.UserName);
     }
 }
 
-
-context.Lots.UpdateRange(lots232);
+context.Lots.UpdateRange(lots.Select(l => l.Lot));
 context.SaveChanges();
+
+Console.WriteLine("Ajout des mises dans l'encan 234");
+
+var lotsSimNumeros = new List<string> { "8", "10", "16" };
+var lotsHugNumeros = new List<string> { "5", "15a", "21" };
+
+var lotsSim = lots.Where(l => l.NumeroEncan == 234 && lotsSimNumeros.Contains(l.Lot.Numero)).Select(l => l.Lot).ToList();
+var lotsHug = lots.Where(l => l.NumeroEncan == 234 && lotsHugNumeros.Contains(l.Lot.Numero)).Select(l => l.Lot).ToList();
+
+var simon = utilisateurs.First(u => u.UserName == "SimCar");
+var hugo = utilisateurs.First(u => u.UserName == "HugoLam");
+
+foreach (var lot in lotsSim)
+{
+    lot.ClientMise = simon;
+    lot.IdClientMise = simon.Id;
+    var mise = new MiseAutomatique
+    {
+        LotId = lot.Id,
+        UserId = simon.Id,
+        Montant = (decimal)(lot.PrixOuverture),
+        DateMise = DateTime.UtcNow,
+        EstMiseAutomatique = false
+    };
+    lot.Mise = (double)mise.Montant;
+
+    context.MiseAutomatiques.Add(mise);
+    context.Lots.Update(lot);
+    context.SaveChanges();
+}
+
+
+foreach (var lot in lotsHug)
+{
+    lot.ClientMise = hugo;
+    lot.IdClientMise = hugo.Id;
+    var mise = new MiseAutomatique
+    {
+        LotId = lot.Id,
+        UserId = hugo.Id,
+        Montant = (decimal)(lot.PrixOuverture),
+        DateMise = DateTime.UtcNow,
+        EstMiseAutomatique = false
+    };
+    lot.Mise = (double)mise.Montant;
+
+    context.MiseAutomatiques.Add(mise);
+    context.Lots.Update(lot);
+    context.SaveChanges();
+}
 
 Console.WriteLine("Fin du seed");
