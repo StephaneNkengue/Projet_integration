@@ -19,14 +19,16 @@ namespace Gamma2024.Server.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly FactureService _factureService;
         private readonly IWebHostEnvironment _environment;
+        private readonly ILogger<FacturesController> _logger;
 
-        public FacturesController(IWebHostEnvironment environment, ApplicationDbContext context, UserManager<ApplicationUser> userManager, FactureService factureService, IEmailSender emailSender)
+        public FacturesController(IWebHostEnvironment environment, ApplicationDbContext context, UserManager<ApplicationUser> userManager, FactureService factureService, IEmailSender emailSender, ILogger<FacturesController> logger)
         {
             _context = context;
             _userManager = userManager;
             _factureService = factureService;
             _emailSender = emailSender;
             _environment = environment;
+            _logger = logger;
         }
 
         [HttpGet("chercherFactures")]
@@ -52,7 +54,9 @@ namespace Gamma2024.Server.Controllers
         [HttpPost("CreerFacturesParEncan/{numeroEncan}")]
         public async Task<IActionResult> CreerFacturesParEncan(int numeroEncan)
         {
+            _logger.LogInformation($"Début création factures pour encan #{numeroEncan}");
             ICollection<Facture> factures = await _factureService.CreerFacturesParEncan(numeroEncan);
+            _logger.LogInformation($"Fin création factures pour encan #{numeroEncan}");
             return Ok(factures);
         }
 

@@ -61,6 +61,32 @@
                     </div>
                 </div>
 
+                <div class="mb-3 d-flex flex-column">
+                    <label for="pasLot" class="form-label">Délai de base de chaque lot (seconde):</label>
+                    <input type="text"
+                           @blur="vuelidate.pasLot.$touch()"
+                           aria-label="pasLot"
+                           class="bordureGrise"
+                           min="1"
+                           v-model="encanData.pasLot" />
+                    <div class="invalid-feedback d-inline" v-if="vuelidate.pasLot.$error">
+                        {{ vuelidate.pasLot.$errors[0].$message }}
+                    </div>
+                </div>
+
+                <div class="mb-3 d-flex flex-column">
+                    <label for="pasMise" class="form-label">Temps ajouté (seconde) lors d'une mise (­< 60 sec) :</label>
+                    <input type="search"
+                           @blur="vuelidate.pasMise.$touch()"
+                           aria-label="Recherche"
+                           class="bordureGrise"
+                           min="1"
+                           v-model="encanData.pasMise" />
+                    <div class="invalid-feedback d-inline" v-if="vuelidate.pasMise.$error">
+                        {{ vuelidate.pasMise.$errors[0].$message }}
+                    </div>
+                </div>
+
                 <button type="button"
                         @click="effaceFormulaire"
                         class="btn btn-secondary me-3"
@@ -80,7 +106,7 @@
 <script setup>
     import { ref, reactive, computed, onMounted, watch } from "vue";
     import useVuelidate from "@vuelidate/core";
-    import { required, helpers } from "@vuelidate/validators";
+    import { required, helpers, minValue } from "@vuelidate/validators";
     import { useStore } from "vuex";
     import { useRoute, useRouter } from "vue-router";
     import VueDatePicker from "@vuepic/vue-datepicker";
@@ -100,11 +126,18 @@
     let changementFormulaire = ref(false);
     let formulaireInitial = ref({});
 
+    const valeurMinimum = helpers.withMessage(
+        "Ce champ doit être supérieur à 1 seconde",
+        minValue(1)
+    );
+
     let encanData = reactive({
         id: "",
         numeroEncan: "",
         dateDebut: "",
         dateFin: "",
+        pasLot: "",
+        pasMise: "",
     });
 
     onMounted(async () => {
@@ -114,6 +147,8 @@
             encanData.numeroEncan = reponse.numeroEncan;
             encanData.dateDebut = reponse.dateDebut;
             encanData.dateFin = reponse.dateFin;
+            encanData.pasLot = reponse.pasLot;
+            encanData.pasMise = reponse.pasMise;
         }
 
         formulaireInitial.value = JSON.parse(JSON.stringify(encanData));
@@ -125,6 +160,8 @@
             numeroEncan: { required: messageRequis },
             dateDebut: { required: messageRequis },
             dateFin: { required: messageRequis },
+            pasLot: { required: messageRequis, minValueValue: valeurMinimum },
+            pasMise: { required: messageRequis, minValueValue: valeurMinimum }
         };
     });
 

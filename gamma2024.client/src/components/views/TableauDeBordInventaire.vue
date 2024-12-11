@@ -213,7 +213,7 @@
                                 <img v-else src="/icons/NonLivrable.png" width="40" height="40" />
                             </td>
                             <td>
-                                <div class="d-flex">
+                                <div class="d-flex" v-if="!lot.estVendu && parseInt(numeroEncanCourrant)!=lot.numeroEncan">
                                     <router-link :to="{ name: 'ModificationLot', params: { id: lot.id } }">
                                         <button class="btn btnModifierIcone bleuMarinSecondaireFond px-3 me-3">
                                             <img src="/icons/ModifierBtn.png" width="30" height="30" />
@@ -275,7 +275,7 @@
 </template>
 
 <script setup>
-    import { onMounted, ref, watch } from "vue";
+    import { onMounted, ref, watch, computed } from "vue";
     import { useStore } from "vuex";
     import { useRouter } from "vue-router";
 
@@ -294,6 +294,7 @@
     const lotsAffiches = ref();
     const chargement = ref(true);
     const nbPages = ref();
+    const numeroEncanCourrant = ref()
     let genererListeDeLotsFiltree = function () { };
 
     const colonnesVisibles = ref({
@@ -408,6 +409,24 @@
             i++
         ) {
             lotsAffiches.value.push(lotsFiltres.value[i]);
+            lotsAffiches.value.sort(function (x, y) {
+                var xNb = parseInt(x.code.replace(/[^0-9]+/g, ""));
+                var yNb = parseInt(y.code.replace(/[^0-9]+/g, ""));
+
+                if (xNb == yNb) {
+                    var xLtr = x.code.replace(/[^A-Za-z]+/g, "");
+                    var yLtr = y.code.replace(/[^A-Za-z]+/g, "");
+
+                    return xLtr.localeCompare(yLtr)
+                }
+                else if (xNb < yNb) {
+                    return -1;
+                }
+                else {
+                    return 1;
+                }
+            })
+            lotsAffiches.value.sort((a, b) => a.numeroEncan.localeCompare(b.numeroEncan));
         }
     }
 
@@ -421,6 +440,7 @@
 
         try {
             initialiserDonnees();
+
         } catch (erreur) {
             console.error("Erreur lors de la récupération des lots:", erreur);
         }
@@ -581,6 +601,9 @@
 
         chercherLotsAAfficher();
         chargement.value = false;
+
+        const numEncCour = await store.dispatch("chercherEncanEnCours");
+        numeroEncanCourrant.value = numEncCour.data.numeroEncan;
     }
 
     watch(rechercheDansListeDeLot, (nouvelleValeur) => {

@@ -148,6 +148,7 @@
     function genererListeDeLotsFiltree() {
         lotsFiltres.value = lots.value;
         filtrerLesLotsParNumeroEncan();
+        filtrerLesLotsParNumeroLot();
         filtrerLesLotsParValeurEstimee();
         filtrerLesLotsParArtiste();
         filtrerLesLotsParCategorie();
@@ -166,6 +167,19 @@
                 }
                 else { return false }
             }
+        });
+    };
+
+    function filtrerLesLotsParNumeroLot() {
+        var stringDeRequete = JSON.parse(route.query.data);
+        lotsFiltres.value = lotsFiltres.value.filter((lot) => {
+            if (stringDeRequete.stringNumeroLot) {
+                if (lot.numero.valueOf() == stringDeRequete.stringNumeroLot) {
+                    return true
+                }
+                else { return false }
+            }
+            return true
         });
     };
 

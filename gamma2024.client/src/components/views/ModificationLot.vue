@@ -42,7 +42,7 @@
             <!-- Le reste des champs du formulaire -->
             <div class="mb-3">
                 <label for="code" class="form-label">Numéro</label>
-                <input v-model="lot.numero" type="text" class="form-control" id="code" required>
+                <input v-model="lot.numero" type="text" class="form-control" disabled id="code" required>
             </div>
             <div class="mb-3">
                 <label for="description" class="form-label">Description</label>
@@ -185,6 +185,11 @@
             encans.value = await store.dispatch('obtenirEncans');
         } catch (erreur) {
             console.error("Erreur lors de la récupération des données:", erreur);
+            // Optionnel: Afficher un message d'erreur à l'utilisateur
+            message.value = {
+                type: 'error',
+                text: "Erreur lors du chargement des données. Veuillez réessayer."
+            };
         }
     });
 
@@ -239,15 +244,15 @@
                 setTimeout(() => {
                     router.push({ name: 'TableauDeBordInventaire' });
                 }, 2000);
-            } else {
-                erreur.value = "Erreur lors de la modification du lot: " + reponse.data;
-                message.value = '';
             }
-        } catch (erreur) {
-            if (erreur.reponse && erreur.reponse.data) {
-                erreur.value = "Erreur lors de la modification du lot: " + erreur.reponse.data;
+        } catch (err) {
+            // Correction de la gestion d'erreur
+            if (err.response?.data) {
+                erreur.value = err.response.data;
+            } else if (typeof err === 'string') {
+                erreur.value = err;
             } else {
-                erreur.value = "Erreur lors de la modification du lot: " + erreur.message;
+                erreur.value = "Une erreur est survenue lors de la création du lot";
             }
             message.value = '';
         }
@@ -255,8 +260,8 @@
 
     const chercherImageUrl = computed(() => (url) => {
         if (!url) return '';
-        const baseUrl = store.state.api.defaults.baseURL.replace('/api', '');
-        return new URL(url, baseUrl).href;
+        const baseUrl = store.state.api.defaults.baseURL.replace('\api', '');
+        return baseUrl + url;
     });
 
     const ajouterNouvellesPhotos = (evenement) => {

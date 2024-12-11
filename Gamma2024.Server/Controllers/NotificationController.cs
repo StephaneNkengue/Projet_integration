@@ -21,10 +21,15 @@ namespace Gamma2024.Server.Controllers
         [HttpGet("obtenirNotificationNonLu/{userId}")]
         public async Task<IActionResult> GetNotifications(string userId)
         {
+            if (string.IsNullOrEmpty(userId))
+            {
+                return BadRequest("UserId invalide");
+            }
+
             var notifications = await _notificationService.GetUnreadNotification(userId);
             if (notifications == null)
             {
-                return BadRequest("Aucune notification non lu trouvée");
+                return Ok();
             }
 
             return Ok(notifications);

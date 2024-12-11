@@ -135,7 +135,7 @@
                                     <span v-if="nombreNotificationsNonLues > 0"
                                           class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
                                         {{ nombreNotificationsNonLues }}
-                                        <span class="visually-hidden">unread notifications</span>
+                                        <span class="visually-hidden">notifications non lues</span>
                                     </span>
                                 </button>
                                 <ul class="dropdown-menu dropdown-menu-end"
@@ -144,8 +144,9 @@
                                         class="dropdown-item text-muted">
                                         Aucune notification
                                     </li>
-                                    <li v-for="notification in notifications"
-                                        :key="notification.id"
+                                    <li v-else
+                                        v-for="(notification, index) in notifications"
+                                        :key="index"
                                         class="dropdown-item">
                                         {{ notification.message }}
                                         <small class="text-muted fs-6 d-block">
@@ -225,49 +226,64 @@
                         </div>
                         <div class="card-body">
                             <div class="row">
-                                <div class="col-6">
-                                    <div class="col">
-                                        <label class="text-nowrap recherchelabel fw-bold"
-                                               for="rechercheLotsValeurEstimee">
-                                            Prix estimé
-                                        </label>
-                                        <div class="row">
-                                            <div class="col-lg-4 mb-1 mb-lg-0">
-                                                <select class="form-select py-0 selectPourListe"
-                                                        v-model="selectValeurEstimee"
-                                                        id="selectValeurEstimee"
-                                                        aria-label="Default select example">
-                                                    <option class="py-0" value="0" selected>
-                                                        Égale à
-                                                    </option>
-                                                    <option class="py-0" value="1">Inférieure à</option>
-                                                    <option class="py-0" value="2">Supérieure à</option>
-                                                    <option class="py-0" value="3">Entre</option>
-                                                </select>
-                                            </div>
-
-                                            <div class="col-sm">
-                                                <input type="number"
-                                                       maxlength="10"
-                                                       class="form-control rechercheinput align-self-end"
-                                                       v-model="rechercheLotsValeurEstimee"
-                                                       id="rechercheLotsValeurEstimee" />
-                                            </div>
-                                            <div v-if="selectValeurEstimee == 3"
-                                                 class="col-sm-auto align-items-center inputAAfficher">
-                                                <label class="fs-6">et</label>
-                                            </div>
-                                            <div v-if="selectValeurEstimee == 3" class="col-sm">
-                                                <input type="number"
-                                                       maxlength="10"
-                                                       class="form-control rechercheinput align-self-end"
-                                                       v-model="rechercheLotsValeurEstimee2"
-                                                       id="rechercheLotsValeurEstimee2" />
-                                            </div>
+                                <div class="col-md-2">
+                                    <label class="text-nowrap recherchelabel fw-bold"
+                                           for="rechercheLotsNumeroLot">
+                                        Numéro de lot
+                                    </label>
+                                    <div class="row">
+                                        <div class="col-sm">
+                                            <input type="number"
+                                                   maxlength="10"
+                                                   class="form-control rechercheinput align-self-end"
+                                                   v-model="rechercheLotsNumeroLot"
+                                                   id="rechercheLotsNumeroLot" />
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-6">
+                                <div class="col-md-10">
+                                    <label class="text-nowrap recherchelabel fw-bold"
+                                           for="rechercheLotsValeurEstimee">
+                                        Prix estimé
+                                    </label>
+                                    <div class="row">
+                                        <div class="col-lg-3 mb-1 mb-lg-0">
+                                            <select class="form-select py-0 selectPourListe"
+                                                    v-model="selectValeurEstimee"
+                                                    id="selectValeurEstimee"
+                                                    aria-label="Default select example">
+                                                <option class="py-0" value="0" selected>
+                                                    Égale à
+                                                </option>
+                                                <option class="py-0" value="1">Inférieure à</option>
+                                                <option class="py-0" value="2">Supérieure à</option>
+                                                <option class="py-0" value="3">Entre</option>
+                                            </select>
+                                        </div>
+
+                                        <div class="col-sm">
+                                            <input type="number"
+                                                   maxlength="10"
+                                                   class="form-control rechercheinput align-self-end"
+                                                   v-model="rechercheLotsValeurEstimee"
+                                                   id="rechercheLotsValeurEstimee" />
+                                        </div>
+                                        <div v-if="selectValeurEstimee == 3"
+                                             class="col-sm-auto align-items-center inputAAfficher">
+                                            <label class="fs-6">et</label>
+                                        </div>
+                                        <div v-if="selectValeurEstimee == 3" class="col-sm">
+                                            <input type="number"
+                                                   maxlength="10"
+                                                   class="form-control rechercheinput align-self-end"
+                                                   v-model="rechercheLotsValeurEstimee2"
+                                                   id="rechercheLotsValeurEstimee2" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mt-2">
+                                <div class="col-md-4">
                                     <label class="text-nowrap recherchelabel fw-bold"
                                            for="rechercheLotsArtiste">
                                         Artiste
@@ -288,9 +304,7 @@
                                         </option>
                                     </select>
                                 </div>
-                            </div>
-                            <div class="row mt-2">
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <label class="text-nowrap recherchelabel fw-bold"
                                            for="rechercheLotsCategorie">
                                         Catégorie
@@ -311,7 +325,7 @@
                                         </option>
                                     </select>
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <label class="text-nowrap recherchelabel fw-bold"
                                            for="rechercheLotsMedium">
                                         Medium
@@ -341,7 +355,7 @@
                                             Hauteur
                                         </label>
                                         <div class="row">
-                                            <div class="col-lg-4 mb-1 mb-lg-0">
+                                            <div class="col-lg-5 mb-1 mb-lg-0">
                                                 <select class="form-select py-0 selectPourListe"
                                                         v-model="selectHauteur"
                                                         id="selectHauteur"
@@ -386,7 +400,7 @@
                                             Largeur
                                         </label>
                                         <div class="row">
-                                            <div class="col-lg-4 mb-1 mb-lg-0">
+                                            <div class="col-lg-5 mb-1 mb-lg-0">
                                                 <select class="form-select py-0 selectPourListe"
                                                         v-model="selectLargeur"
                                                         id="selectLargeur"
@@ -608,6 +622,7 @@
     const ilYAUnEncanPresent = ref(false);
     const titreBarreDeRechercheDeLots = ref("");
     var rechercheNumeroEncan = "";
+    const rechercheLotsNumeroLot = ref();
     const selectValeurEstimee = ref(0);
     const rechercheLotsValeurEstimee = ref();
     const rechercheLotsValeurEstimee2 = ref();
@@ -667,8 +682,10 @@
 
             if (type === "courant" || type === "soireeCloture") {
                 ilYAUnEncanPresent.value = true;
-                const reponseNumEncanCourrant = await store.dispatch("chercherNumeroEncanEnCours");
-                if (reponseNumEncanCourrant.data != '') {
+                const reponseNumEncanCourrant = await store.dispatch(
+                    "chercherNumeroEncanEnCours"
+                );
+                if (reponseNumEncanCourrant.data != "") {
                     numeroEncanPresent = reponseNumEncanCourrant.data;
                 }
             } else {
@@ -711,6 +728,9 @@
         }
 
         stringquery["numeroEncan"] = rechercheNumeroEncan;
+        if (rechercheLotsNumeroLot.value) {
+            stringquery["stringNumeroLot"] = rechercheLotsNumeroLot.value;
+        }
         if (rechercheLotsValeurEstimee.value) {
             stringquery["selectValeurEstimee"] = selectValeurEstimee.value;
             stringquery["stringValeurEstimee"] = rechercheLotsValeurEstimee.value;
@@ -758,6 +778,7 @@
             from.name == "EncanPresent"
         ) {
             var elementsAEffacer = [
+                rechercheLotsNumeroLot,
                 rechercheLotsValeurEstimee,
                 rechercheLotsValeurEstimee2,
                 rechercheLotsHauteur,
@@ -906,6 +927,9 @@
                         "Recherche avancée de lots dans l'Encan " + rechercheNumeroEncan;
                 }
             }
+            if (stringquery.stringNumeroLot) {
+                rechercheLotsNumeroLot.value = stringquery.stringNumeroLot;
+            }
             if (stringquery.stringValeurEstimee) {
                 selectValeurEstimee.value = stringquery.selectValeurEstimee;
                 rechercheLotsValeurEstimee.value = stringquery.stringValeurEstimee;
@@ -965,7 +989,6 @@
     // Définition de activationRecherche
     const activationRecherche = ref(false);
     const activationDropdownProfil = ref(false);
-    const notification = ref(false);
 
     const deconnecter = async () => {
         await store.dispatch("logout");
@@ -997,15 +1020,19 @@
         }
     );
 
-    const notifications = computed(() => store.getters.allNotifications);
-    const nombreNotificationsNonLues = computed(() => store.getters.unreadNotifications);
+    const notifications = computed(() => {
+        return store.state.notifications;
+    });
+    const nombreNotificationsNonLues = computed(() => {
+        return store.state.nombreNotifNonLue;
+    });
+    console.log("contenu des notif", notifications.value);
 
     const marqueCommeLu = async function () {
         await store.dispatch("marquerToutesNotifLues");
     };
 </script>
 <style scoped>
-
     .imgProfile {
         width: 40px;
         height: 40px;
