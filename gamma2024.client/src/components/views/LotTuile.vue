@@ -29,14 +29,14 @@
                          alt="Image du lot" />
                 </div>
 
-                <p class="text-center mb-0">
+                <p class="text-center mb-0 fs-9">
                     Mise actuelle: {{ formatMontant(miseActuelle) }}$
                 </p>
-                <p class="text-center mb-0">
+                <p class="text-center mb-0 fs-9">
                     Valeur: {{ formatMontant(lot.valeurEstimeMin) }}$ -
                     {{ formatMontant(lot.valeurEstimeMax) }}$
                 </p>
-                <p class="text-center mb-0 text-muted">
+                <p class="text-center mb-0 text-muted fs-9">
                     {{ nombreOffres }} {{ nombreOffres <= 1 ? 'offre' : 'offres' }}
                 </p>
                 <p v-if="showDecompte" class="text-center mb-0" :class="{'text-danger': tempsRestant < 60}">
@@ -45,7 +45,7 @@
 
                 <div class="d-flex justify-content-around pt-2">
                     <button type="button"
-                            class="btn text-white btnSurvolerBleuMoyenFond"
+                            class="btn text-white btnSurvolerBleuMoyenFond fs-9"
                             @click.stop.prevent="gererCliquerSurMiser"
                             v-if="!estAdmin && peutMiser">
                         Miser {{ formatMontant(chercherMiseMinimale) }}$
@@ -329,9 +329,10 @@
     const mettreAJourCompteur = () => {
         if (tempsRestant.value <= 0) {
             cancelAnimationFrame(rafId);
-            if (store.state.connection?.state === "Connected") {
-                store.state.connection.invoke("LotVendu", props.lotRecu.id);
-            }
+            
+            // Plus d'appel au serveur via SignalR
+            // Juste une mise à jour locale via le store
+            store.commit('SET_LOT_VENDU', props.lotRecu.id);
             return;
         }
         rafId = requestAnimationFrame(mettreAJourCompteur);
@@ -390,6 +391,8 @@
         return !lot.estVendu && finDecompte > maintenant;
     });
 
+
+
 </script>
 
 <style scoped>
@@ -398,7 +401,11 @@
     }
 
     .fs-8 {
-        font-size: 0.60rem;
+        font-size: 0.65rem;
+    }
+
+    .fs-9 {
+        font-size: 0.80rem;
     }
 
     .card {

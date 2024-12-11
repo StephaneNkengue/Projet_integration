@@ -11,21 +11,23 @@ using System.Security.Claims;
 
 namespace Gamma2024.Server.Controllers
 {
-	[ApiController]
-	[Route("api/[controller]")]
-	public class LotsController : ControllerBase
-	{
-		private readonly LotService _lotService;
-		private readonly ApplicationDbContext _context;
-		private readonly IHubContext<LotMiseHub> _hubContext;
+    [ApiController]
+    [Route("api/[controller]")]
+    public class LotsController : ControllerBase
+    {
+        private readonly LotService _lotService;
+        private readonly ApplicationDbContext _context;
+        private readonly IHubContext<LotMiseHub> _hubContext;
+		private readonly ILogger<LotsController> _logger;
 
 
-		public LotsController(LotService lotService, ApplicationDbContext context, IHubContext<LotMiseHub> hubContext)
-		{
-			_lotService = lotService;
-			_context = context;
-			_hubContext = hubContext;
-		}
+        public LotsController(LotService lotService, ApplicationDbContext context, IHubContext<LotMiseHub> hubContext, ILogger<LotsController> logger)
+        {
+            _lotService = lotService;
+            _context = context;
+            _hubContext = hubContext;
+			_logger = logger;
+        }
 
 		[Authorize(Roles = ApplicationRoles.ADMINISTRATEUR)]
 		[HttpGet("tous")]
@@ -105,31 +107,63 @@ namespace Gamma2024.Server.Controllers
 		[HttpGet("categories")]
 		public async Task<ActionResult<IEnumerable<Categorie>>> ObtenirCategories()
 		{
-			var categories = await _context.Categories.ToListAsync();
-			return Ok(categories);
+			try 
+			{
+				var categories = await _context.Categories.ToListAsync();
+				return Ok(categories);
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError(ex, "Erreur lors de la récupération des catégories");
+				return StatusCode(500, "Erreur lors de la récupération des catégories");
+			}
 		}
 
 		[Authorize(Roles = ApplicationRoles.ADMINISTRATEUR)]
 		[HttpGet("vendeurs")]
 		public async Task<ActionResult<IEnumerable<Vendeur>>> ObtenirVendeurs()
 		{
-			var vendeurs = await _context.Vendeurs.ToListAsync();
-			return Ok(vendeurs);
+			try 
+			{
+				var vendeurs = await _context.Vendeurs.ToListAsync();
+				return Ok(vendeurs);
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError(ex, "Erreur lors de la récupération des vendeurs");
+				return StatusCode(500, "Erreur lors de la récupération des vendeurs");
+			}
 		}
 
 		[HttpGet("mediums")]
 		public async Task<ActionResult<IEnumerable<Medium>>> ObtenirMediums()
 		{
-			var mediums = await _context.Mediums.ToListAsync();
-			return Ok(mediums);
+			try 
+			{
+				var mediums = await _context.Mediums.ToListAsync();
+				return Ok(mediums);
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError(ex, "Erreur lors de la récupération des mediums");
+				return StatusCode(500, "Erreur lors de la récupération des mediums");
+			}
 		}
 
 		[Authorize(Roles = ApplicationRoles.ADMINISTRATEUR)]
 		[HttpGet("encans")]
 		public async Task<ActionResult<IEnumerable<Encan>>> ObtenirEncans()
 		{
-			var encans = await _context.Encans.ToListAsync();
-			return Ok(encans);
+			try 
+			{
+				var encans = await _context.Encans.ToListAsync();
+				return Ok(encans);
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError(ex, "Erreur lors de la récupération des encans");
+				return StatusCode(500, "Erreur lors de la récupération des encans");
+			}
 		}
 
 		[HttpGet("cherchertouslotsrecherche")]
@@ -217,17 +251,31 @@ namespace Gamma2024.Server.Controllers
 			}
 		}
 
-		[Authorize(Roles = ApplicationRoles.CLIENT)]
+		[Authorize]
 		[HttpGet("userBids/{userId}")]
 		public async Task<IActionResult> GetUserBids(string userId)
 		{
-			if (userId != User.FindFirst(ClaimTypes.NameIdentifier)?.Value)
+			try
 			{
-				return Unauthorized();
-			}
+				_logger.LogInformation($"Contrôleur - Début GetUserBids pour userId: {userId}");
+				
+				var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+				_logger.LogInformation($"Contrôleur - CurrentUserId: {currentUserId}, RequestedUserId: {userId}");
 
-			var userBids = await _lotService.GetUserBids(userId);
-			return Ok(userBids);
+				if (currentUserId != userId)
+				{
+					_logger.LogWarning($"Contrôleur - Accès non autorisé: currentUserId ({currentUserId}) != requestedUserId ({userId})");
+					return Forbid();
+				}
+
+				var userBids = await _lotService.GetUserBids(userId);
+				return Ok(userBids);
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError(ex, $"Contrôleur - Erreur dans GetUserBids pour userId: {userId}");
+				return StatusCode(500, "Une erreur est survenue lors de la récupération des mises");
+			}
 		}
 
 		[Authorize]
@@ -244,5 +292,28 @@ namespace Gamma2024.Server.Controllers
 			return Ok(lastBid);
 		}
 
-	}
+		[Authorize]
+		[HttpGet("userBidsGroupedByEncan")]
+		public async Task<IActionResult> GetUserBidsGroupedByEncan()
+		{
+			try
+			{
+				var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+				if (string.IsNullOrEmpty(userId))
+				{
+					return Unauthorized();
+				}
+
+				var misesParEncan = await _lotService.GetUserBidsGroupedByEncan(userId);
+				return Ok(misesParEncan);
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError(ex, "Erreur lors de la récupération des mises groupées par encan");
+				return StatusCode(500, "Une erreur est survenue");
+			}
+		}
+
+
+    }
 }

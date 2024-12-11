@@ -274,6 +274,9 @@ namespace Gamma2024.Server.Migrations
                     b.Property<bool>("EstPublie")
                         .HasColumnType("bit");
 
+                    b.Property<bool>("EstTermine")
+                        .HasColumnType("bit");
+
                     b.Property<int>("NumeroEncan")
                         .HasColumnType("int");
 
@@ -575,12 +578,12 @@ namespace Gamma2024.Server.Migrations
                     b.Property<DateTime>("CreeA")
                         .HasColumnType("datetime2");
 
+                    b.Property<bool>("EstLu")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Message")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("estLu")
-                        .HasColumnType("bit");
 
                     b.HasKey("Id");
 
