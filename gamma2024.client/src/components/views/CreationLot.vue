@@ -94,7 +94,7 @@
             <div class="mb-3">
                 <label for="idEncan" class="form-label">Encan</label>
                 <select v-model="lot.idEncan" class="form-select" id="idEncan" required>
-                    <option v-for="encan in encans" :key="encan.id" :value="encan.id">
+                    <option v-for="encan in encansFuturs" :key="encan.id" :value="encan.id">
                         {{ encan.numeroEncan }}
                     </option>
                 </select>
@@ -147,6 +147,7 @@
     const vendeurs = ref([]);
     const mediums = ref([]);
     const encans = ref([]);
+    const encansFuturs = ref([]);
     const nouvellesPhotos = ref([]);
     const message = ref('');
     const erreur = ref('');
@@ -158,6 +159,21 @@
             vendeurs.value = await store.dispatch('obtenirVendeurs');
             mediums.value = await store.dispatch('obtenirMediums');
             encans.value = await store.dispatch('obtenirEncans');
+
+            const dernierEncan = await store.dispatch(
+                "chercherNumeroEncanEnCours"
+            );
+            if (dernierEncan.data != 0) {
+                var numeroLimiteEncan = dernierEncan.data;
+            }
+            else {
+                const encansPasses = await store.dispatch(
+                    "chercherEncansPasses"
+                );
+                var numeroLimiteEncan = Math.max(...encansPasses.data.map(encan => encan.numeroEncan))
+            }
+            encansFuturs.value = encans.value.filter((encan) => encan.numeroEncan > numeroLimiteEncan);
+
         } catch (erreur) {
             console.error("Erreur lors de la récupération des données:", erreur);
         }
