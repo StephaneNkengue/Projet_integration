@@ -139,6 +139,31 @@
 
             if (reponse && reponse.data) {
                 listeLots.value = reponse.data;
+
+                listeLots.value = listeLots.value.sort(function (x, y) {
+                    var xNb = parseInt(x.numero.replace(/[^0-9]+/g, ""));
+                    var yNb = parseInt(y.numero.replace(/[^0-9]+/g, ""));
+
+                    if (xNb == yNb) {
+                        var xLtr = x.numero.replace(/[^A-Za-z]+/g, "");
+                        var yLtr = y.numero.replace(/[^A-Za-z]+/g, "");
+
+                        if (x.Ltr < yLtr) {
+                            return -1;
+                        }
+                        else {
+                            return 0;
+                        }
+                    }
+                    else if (xNb < yNb) {
+                        return -1;
+                    }
+                    else {
+                        return 1;
+                    }
+                })
+
+
                 nbLotsRecus.value = listeLots.value.length;
                 lotsParPage.value = nbLotsRecus.value;
                 nbPages.value = recalculerNbPages();
