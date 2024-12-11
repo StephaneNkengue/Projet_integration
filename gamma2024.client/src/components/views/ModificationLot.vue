@@ -260,8 +260,8 @@
 
     const chercherImageUrl = computed(() => (url) => {
         if (!url) return '';
-        const baseUrl = store.state.api.defaults.baseURL.replace('/api', '');
-        return new URL(url, baseUrl).href;
+        const baseUrl = store.state.api.defaults.baseURL.replace('\api', '');
+        return baseUrl + url;
     });
 
     const ajouterNouvellesPhotos = (evenement) => {
