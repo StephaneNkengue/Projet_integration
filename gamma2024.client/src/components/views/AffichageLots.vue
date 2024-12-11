@@ -148,12 +148,7 @@
                         var xLtr = x.numero.replace(/[^A-Za-z]+/g, "");
                         var yLtr = y.numero.replace(/[^A-Za-z]+/g, "");
 
-                        if (x.Ltr < yLtr) {
-                            return -1;
-                        }
-                        else {
-                            return 0;
-                        }
+                        return xLtr.localeCompare(yLtr)
                     }
                     else if (xNb < yNb) {
                         return -1;
