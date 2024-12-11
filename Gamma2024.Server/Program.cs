@@ -69,16 +69,10 @@ var logger = builder.Services.BuildServiceProvider().GetRequiredService<ILogger<
 
 builder.Services.AddHttpClient("ApiClient", (serviceProvider, client) =>
 {
-    // Utiliser l'URL de l'API depuis la configuration
-    var apiUrl = builder.Configuration["ApiUrl"];
-    if (string.IsNullOrEmpty(apiUrl))
-    {
-        // Fallback pour le développement local
-        apiUrl = "https://localhost:7206";
-    }
-    
+    // URL de production hardcodée
+    var apiUrl = "https://sqlinfocg.cegepgranby.qc.ca/2162067/";
     client.BaseAddress = new Uri(apiUrl);
-    logger.LogInformation($"API Client configured with base address: {apiUrl}");
+    logger.LogInformation($"API Client configuré avec l'URL hardcodée: {apiUrl}");
 });
 
 

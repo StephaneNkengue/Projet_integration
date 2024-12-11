@@ -42,7 +42,7 @@
             <!-- Le reste des champs du formulaire -->
             <div class="mb-3">
                 <label for="code" class="form-label">Numéro</label>
-                <input v-model="lot.numero" type="text" class="form-control" id="code" required>
+                <input v-model="lot.numero" type="text" class="form-control" disabled id="code" required>
             </div>
             <div class="mb-3">
                 <label for="description" class="form-label">Description</label>
@@ -99,7 +99,7 @@
             <div class="mb-3">
                 <label for="idEncan" class="form-label">Encan</label>
                 <select v-model="lot.idEncanModifie" class="form-select" id="idEncan" required>
-                    <option v-for="encan in encans" :key="encan.id" :value="encan.id">
+                    <option v-for="encan in encansFuturs" :key="encan.id" :value="encan.id">
                         {{ encan.numeroEncan }}
                     </option>
                 </select>
@@ -138,6 +138,7 @@
     const vendeurs = ref([]);
     const mediums = ref([]);
     const encans = ref([]);
+    const encansFuturs = ref([]);
     const nouvellesPhotos = ref([]);
     const photosASupprimer = ref([]);
     const message = ref('');
@@ -183,6 +184,21 @@
             vendeurs.value = await store.dispatch('obtenirVendeurs');
             mediums.value = await store.dispatch('obtenirMediums');
             encans.value = await store.dispatch('obtenirEncans');
+
+            const dernierEncan = await store.dispatch(
+                "chercherNumeroEncanEnCours"
+            );
+            if (dernierEncan.data != 0) {
+                var numeroLimiteEncan = dernierEncan.data;
+            }
+            else {
+                const encansPasses = await store.dispatch(
+                    "chercherEncansPasses"
+                );
+                var numeroLimiteEncan = Math.max(...encansPasses.data.map(encan => encan.numeroEncan))
+            }
+            encansFuturs.value = encans.value.filter((encan) => encan.numeroEncan > numeroLimiteEncan);
+
         } catch (erreur) {
             console.error("Erreur lors de la récupération des données:", erreur);
             // Optionnel: Afficher un message d'erreur à l'utilisateur
@@ -244,23 +260,24 @@
                 setTimeout(() => {
                     router.push({ name: 'TableauDeBordInventaire' });
                 }, 2000);
-            }  } catch (err) {
-        // Correction de la gestion d'erreur
-        if (err.response?.data) {
-            erreur.value = err.response.data;
-        } else if (typeof err === 'string') {
-            erreur.value = err;
-        } else {
-            erreur.value = "Une erreur est survenue lors de la création du lot";
+            }
+        } catch (err) {
+            // Correction de la gestion d'erreur
+            if (err.response?.data) {
+                erreur.value = err.response.data;
+            } else if (typeof err === 'string') {
+                erreur.value = err;
+            } else {
+                erreur.value = "Une erreur est survenue lors de la création du lot";
+            }
+            message.value = '';
         }
-        message.value = '';
-    }
     };
 
     const chercherImageUrl = computed(() => (url) => {
         if (!url) return '';
-        const baseUrl = store.state.api.defaults.baseURL.replace('/api', '');
-        return new URL(url, baseUrl).href;
+        const baseUrl = store.state.api.defaults.baseURL.replace('\api', '');
+        return baseUrl + url;
     });
 
     const ajouterNouvellesPhotos = (evenement) => {
