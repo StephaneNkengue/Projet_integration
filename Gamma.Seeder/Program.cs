@@ -406,8 +406,8 @@ encans.Add(new Encan
 {
     NumeroEncan = 234,
     DateDebut = new DateTime(2024, 12, 9, 8, 0, 0),
-    DateFin = new DateTime(2024, 12, 16, 18, 0, 0),
-    DateDebutSoireeCloture = new DateTime(2024, 12, 16, 18, 0, 0),
+    DateFin = DateTime.Now,
+    DateDebutSoireeCloture = DateTime.Now,
     EstPublie = true,
     EstTermine = false,
     PasLot = 30,
@@ -455,7 +455,8 @@ foreach (var encan in encans)
     foreach (var lot in encan.EncanLots.Select(el => el.Lot))
     {
         lot.DateDebutDecompteLot = encan.DateDebutSoireeCloture;
-        lot.DateFinDecompteLot = encan.DateDebutSoireeCloture + TimeSpan.FromSeconds(encan.PasLot * nbLot);
+        lot.DateFinDecompteLot = encan.DateDebutSoireeCloture + TimeSpan.FromMinutes(1);
+        nbLot++;
     }
 }
 
