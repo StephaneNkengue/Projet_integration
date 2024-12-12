@@ -70,7 +70,7 @@ var logger = builder.Services.BuildServiceProvider().GetRequiredService<ILogger<
 builder.Services.AddHttpClient("ApiClient", (serviceProvider, client) =>
 {
     // URL de production hardcodée
-    var apiUrl = "https://sqlinfocg.cegepgranby.qc.ca/2162067/";
+    var apiUrl = "https://sqlinfocg.cegepgranby.qc.ca/2135621/";
     client.BaseAddress = new Uri(apiUrl);
     logger.LogInformation($"API Client configuré avec l'URL hardcodée: {apiUrl}");
 });
@@ -97,7 +97,7 @@ builder.Services.AddCors(options =>
         options.AddPolicy("Production", builder =>
         {
             builder
-                .WithOrigins("https://sqlinfocg.cegepgranby.qc.ca/2162067")
+                .WithOrigins("https://sqlinfocg.cegepgranby.qc.ca/2135621")
                 .AllowAnyMethod()
                 .AllowAnyHeader()
                 .AllowCredentials();
