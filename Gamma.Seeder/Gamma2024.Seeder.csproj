@@ -17,6 +17,7 @@
 	    <DesignTime>True</DesignTime>
 	    <AutoGen>True</AutoGen>
 	    <DependentUpon>Resources.resx</DependentUpon>
+		
 	  </Compile>
 	</ItemGroup>
 
