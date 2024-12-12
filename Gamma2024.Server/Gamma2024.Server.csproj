@@ -117,6 +117,7 @@
 	  <Content Update="wwwroot\Images\ImagesEncan234\10_1.jpg">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </Content>
+	  
 	  <Content Update="wwwroot\Images\ImagesEncan234\10_2.jpg">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </Content>
