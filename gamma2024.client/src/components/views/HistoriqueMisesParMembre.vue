@@ -68,32 +68,41 @@ const toggleAffichage = () => {
     siTuile.value = !siTuile.value;
 };
 
-const mapLotToViewModel = (lot) => ({
-    id: lot.lotId,
-    numero: lot.numero,
-    artiste: lot.artiste,
-    hauteur: lot.hauteur,
-    largeur: lot.largeur,
-    mise: lot.derniereMise,
-    valeurEstimeMin: lot.valeurEstimeMin,
-    valeurEstimeMax: lot.valeurEstimeMax,
-    prixOuverture: lot.prixOuverture,
-    prixMinPourVente: lot.prixMinPourVente,
-    estVendu: lot.estVendu,
-    photos: [{ lien: `/api/${lot.photoPrincipale.replace(/\\/g, '/')}` }],
-    dateFinDecompteLot: lot.dateFinDecompteLot,
-    userHasBid: true,
-    estPlusHautEncherisseur: lot.estPlusHautEncherisseur,
-    estLivrable: lot.estLivrable,
-    description: lot.description,
-    idCategorie: lot.idCategorie,
-    categorie: lot.categorie,
-    idMedium: lot.idMedium,
-    medium: lot.medium,
-    idVendeur: lot.idVendeur,
-    vendeur: lot.vendeur,
-    seraLivree: lot.seraLivree
-});
+const mapLotToViewModel = (lot) => {
+    // Nettoyer le chemin de l'image
+    const cleanImagePath = lot.photoPrincipale
+        ?.replace(/\\/g, '/') // Remplacer les backslashes par des forward slashes
+        ?.replace(/^Images\//, ''); // Enlever le "Images/" initial si présent
+
+    return {
+        id: lot.lotId,
+        numero: lot.numero,
+        artiste: lot.artiste,
+        hauteur: lot.hauteur,
+        largeur: lot.largeur,
+        mise: lot.derniereMise,
+        valeurEstimeMin: lot.valeurEstimeMin,
+        valeurEstimeMax: lot.valeurEstimeMax,
+        prixOuverture: lot.prixOuverture,
+        prixMinPourVente: lot.prixMinPourVente,
+        estVendu: lot.estVendu,
+        photos: [{
+            lien: cleanImagePath ? `/Images/${cleanImagePath}` : ''
+        }],
+        dateFinDecompteLot: lot.dateFinDecompteLot,
+        userHasBid: true,
+        estPlusHautEncherisseur: lot.estPlusHautEncherisseur,
+        estLivrable: lot.estLivrable,
+        description: lot.description,
+        idCategorie: lot.idCategorie,
+        categorie: lot.categorie,
+        idMedium: lot.idMedium,
+        medium: lot.medium,
+        idVendeur: lot.idVendeur,
+        vendeur: lot.vendeur,
+        seraLivree: lot.seraLivree
+    };
+};
 
 const chargerMises = async () => {
     try {
